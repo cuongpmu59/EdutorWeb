@@ -2,102 +2,139 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Học cùng Thầy Cường</title>
     <style type="text/css">
-        body, section, footer, aside, nav, article, figure, figcaption{
-                display: block;}
-        body{
+        body, section, footer, aside, nav, article, figure, figcaption {
+            display: block;
+        }
+        body {
             color: #666666;
             background-color: #f9f8f6;
             background-position: center;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             line-height: 1.4em;
-            margin: 0px ;}
-        wrapper{
-            width: 940px;
-            margin: 20px auto 20px auto;
-            background-color: #ffffffff;
-            border: 2px, solid, #eeeeee;}
-        header{
-            height: 160px;
-            background-image: url("images/header.png");}
-        h1{
-            text-indent: -9999px;
-            width:940px;
-            height:130px;
-            margin:0px;}
-        nav, footer{
-            clear: both;
-            color:#ffffff;
-            background-color:#aeaca8;}
-        nav ul{
             margin: 0px;
-            padding:5px 0px 5px 30px;}
-        nav li{
+        }
+        .wrapper {
+            width: 940px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 2px solid #eeeeee;
+        }
+        header {
+            height: 160px;
+            background-image: url("images/header.png");
+        }
+        h1 {
+            text-indent: -9999px;
+            width: 940px;
+            height: 130px;
+            margin: 0px;
+        }
+        nav, footer {
+            clear: both;
+            color: #ffffff;
+            background-color: #aeaca8;
+        }
+        nav ul {
+            margin: 0px;
+            padding: 5px 0px 5px 30px;
+        }
+        nav li {
             display: inline;
-            margin-right:40px;}
-        nav li a{
-            color:#ffffff;}
-        nav li a:hover{
-            color:#000000;}
-        nav li a.current{
-            color:#000000;}
-        a{
-            color:#de6581;
-            text-decoration: none;}
-        section.courses{
-            float:left;
+            margin-right: 40px;
+        }
+        nav li a {
+            color: #ffffff;
+        }
+        nav li a:hover, nav li a.current {
+            color: #000000;
+        }
+        a {
+            color: #de6581;
+            text-decoration: none;
+        }
+        section.courses {
+            float: left;
             width: 659px;
-            border-right: 1px solid #eeeeee;}
-        article{
-            clear:both;
+            border-right: 1px solid #eeeeee;
+        }
+        article {
+            clear: both;
             overflow: auto;
-            width: 100%;}
-        hgroup{
-            margin-top:40px;}
-        figure{
-            float:left;
+            width: 100%;
+        }
+        hgroup {
+            margin-top: 40px;
+        }
+        figure {
+            float: left;
             width: 220px;
             height: 220px;
-            padding:5px;
-            margin:20px;
-            border:1px solid #eeeeee;}
-        figure img{
+            padding: 5px;
+            margin: 20px;
+            border: 1px solid #eeeeee;
+        }
+        figure img {
             width: 220px;
-            height: 220px;}
-        figcaption{
+            height: 220px;
+        }
+        figcaption {
             font-size: 90%;
-            text-align: left;}
-        aside{
+            text-align: left;
+        }
+        aside {
             width: 230px;
-            float: left; 
-            padding: 0px 0px 0px 20px}
-        aside section a{
-            display:block;
+            float: left;
+            padding: 0px 0px 0px 20px;
+        }
+        aside section a {
+            display: block;
             padding: 10px;
-            border-bottom: 1p,solid,#eeeeee;}
-        aside section a:hover{
+            border-bottom: 1px solid #eeeeee;
+        }
+        aside section a:hover {
             color: #985d6a;
-            background-color: #efefef;}
-        h1, h2, h3{
-            font-weight: normal;}
-        h2{
+            background-color: #efefef;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h2 {
             margin: 10px 0px 5px 0px;
-            padding: 0px;}
-        h3{
+            padding: 0px;
+        }
+        h3 {
             margin: 0px 0px 10px 0px;
-            color: #de6581;}
-        aside h2{
+            color: #de6581;
+        }
+        aside h2 {
             padding: 30px 0px 10px 0px;
-            color: #de6581;}
-        footer{
+            color: #de6581;
+        }
+        footer {
             font-size: 80%;
-            padding: 7px 0px 0px 20px;}   
+            padding: 7px 0px 0px 20px;
+        }
+        .cta {
+            text-align: center;
+            padding: 20px;
+        }
+        .cta button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #de6581;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cta button:hover {
+            background-color: #c94d6c;
+        }
     </style>
 </head>
 <body>
-<<<<<<< HEAD
     <div class="wrapper">
         <header>
             <h1>Cuong's Kitchen</h1>
@@ -110,24 +147,10 @@
                 </ul>
             </nav>
         </header>
+
         <section class="cta">
-=======
-    <header>
-        
-        <p>Nhiệt tình - Tận tâm - Hiệu quả</p>
-    </header>
-
-    <nav>
-        <a href="#services">Dịch vụ</a>
-        <a href="#tutors">Gia sư</a>
-        <a href="#feedbacks">Phản hồi</a>
-        <a href="#contact">Liên hệ</a>
-    </nav>
-
-    <section class="cta">
->>>>>>> 3dfda9c6e3e0c8de537b43ebd80e69eca089bf52
-        <button>Đăng ký học</button>
-        <button>Tìm gia sư ngay</button>
+            <button>Đăng ký học</button>
+            <button>Tìm gia sư ngay</button>
         </section>
 
         <section id="services" class="services">
@@ -149,13 +172,13 @@
         <section id="feedbacks" class="feedbacks">
             <h2>Phản hồi từ phụ huynh và học sinh</h2>
             <blockquote>
-                “Con tôi tiến bộ rõ rệt sau 2 tháng học cùng gia sư ở đây!” — Chị Như Ý Q.8, TP.HCM
+                “Con tôi tiến bộ rõ rệt sau 2 tháng học cùng gia sư ở đây!” — Chị Như Ý, Q.8, TP.HCM
             </blockquote>
             <blockquote>
-                “Dịch vụ chuyên nghiệp, liên hệ nhanh, học phí hợp lý.” — Chị Minh Trang, Q.7
+                “Dịch vụ chuyên nghiệp, liên hệ nhanh, học phí hợp lý.” — Chị Minh Trang, Q.7
             </blockquote>
             <blockquote>
-                “Cảm ơn thầy đã dạy hai đứa con tôi vào đại học, một vào trường FPT và một vào trường Y Khoa Phạm Ngọc Thạch, thầy dạy có tâm, nhiệt tình.” — Anh Đạt, Huyện Nhà Bè        </blockquote>
+                “Cảm ơn thầy đã dạy hai đứa con tôi vào đại học: một vào FPT, một vào Y Khoa Phạm Ngọc Thạch. Thầy dạy rất tận tâm.” — Anh Đạt, Huyện Nhà Bè
             </blockquote>
         </section>
 
@@ -164,7 +187,7 @@
             <p>📞 Hotline: 0913 159 942</p>
             <p>💬 Zalo: 0913 159 942</p>
             <p>📧 Email: phungkhaccuong59@gmail.com</p>
-            <p>🏠 Địa chỉ: 1135/15/4 Huỳnh Tấn Phát, Phường Phú Thuận, Q.7, TP.HCM</p>
+            <p>🏠 Địa chỉ: 1135/15/4 Huỳnh Tấn Phát, Phường Phú Thuận, Q.7, TP.HCM</p>
         </section>
 
         <footer>
