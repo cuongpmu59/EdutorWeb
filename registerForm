@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tôi Muốn Học Gia Sư</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    .register-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .register-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chào mừng bạn đến với dịch vụ học gia sư!</h1>
+  <p>Bấm vào nút bên dưới để đăng ký học gia sư.</p>
+  
+  <button class="register-btn" onclick="window.location.href='https://example.com/dang-ky'">
+    Đăng ký học gia sư
+  </button>
+</body>
+</html>
