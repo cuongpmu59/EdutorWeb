@@ -22,7 +22,6 @@
             border: 2px solid #eeeeee;
         }
 
-        /* Header mới */
         header {
             background-image: url("images/header.png");
             background-size: cover;
@@ -32,174 +31,76 @@
             flex-direction: column;
             align-items: flex-start;
         }
+
         .header-top {
             display: flex;
             align-items: center;
             width: 100%;
         }
+
         .header-top img {
             height: 100px;
             margin-right: 20px;
             border-radius: 8px;
         }
+
         .header-top h1 {
             font-size: 1px;
             color: transparent;
             text-indent: -9999px;
             margin: 0;
         }
+
         nav {
             width: 100%;
             margin-top: 10px;
             background-color: #aeaca8;
         }
+
         nav ul {
             list-style: none;
             padding: 10px 20px;
             margin: 0;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: row;
             justify-content: flex-start;
             gap: 20px;
         }
-        nav li {
-            display: inline;
-        }
+
         nav li a {
+            display: block;
             color: #fff;
             font-weight: bold;
+            padding: 8px 12px;
+            text-decoration: none;
         }
+
         nav li a:hover,
         nav li a.current {
             color: #000;
         }
 
-        /* Các phần còn lại giữ nguyên */
         a {
             color: #de6581;
             text-decoration: none;
         }
+
         section.courses {
             float: left;
             width: 659px;
             border-right: 1px solid #eeeeee;
         }
+
         article {
             clear: both;
             overflow: auto;
             width: 100%;
         }
+
         hgroup {
             margin-top: 40px;
         }
+
         figure {
             float: left;
             width: 220px;
-            height: 220px;
-            padding: 5px;
-            margin: 20px;
-            border: 1px solid #eeeeee;
-        }
-        figure img {
-            width: 220px;
-            height: 220px;
-        }
-        figcaption {
-            font-size: 90%;
-            text-align: left;
-        }
-        aside {
-            width: 230px;
-            float: left;
-            padding: 0px 0px 0px 20px;
-        }
-        aside section a {
-            display: block;
-            padding: 10px;
-            border-bottom: 1px solid #eeeeee;
-        }
-        aside section a:hover {
-            color: #985d6a;
-            background-color: #efefef;
-        }
-        h1, h2, h3 {
-            font-weight: normal;
-        }
-        h2 {
-            margin: 10px 0px 5px 0px;
-            padding: 0px;
-        }
-        h3 {
-            margin: 0px 0px 10px 0px;
-            color: #de6581;
-        }
-        aside h2 {
-            padding: 30px 0px 10px 0px;
-            color: #de6581;
-        }
-        footer {
-            font-size: 80%;
-            padding: 7px 0px 0px 20px;
-            color: #ffffff;
-            background-color: #aeaca8;
-            clear: both;
-        }
-        .cta {
-            text-align: center;
-            padding: 20px;
-        }
-        .cta button {
-            margin: 10px;
-            padding: 10px 20px;
-            background-color: #de6581;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .cta button:hover {
-            background-color: #c94d6c;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .wrapper {
-                width: 95%;
-                margin: 10px auto;
-            }
-            .header-top {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-            .header-top img {
-                height: 80px;
-                margin: 0 0 10px 0;
-            }
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="wrapper">
-        <header>
-            <div class="header-top">
-                <img src="images/cuong.png" alt="Thầy Cường">
-                <h1>Học cùng Thầy Cường</h1>
-            </div>
-            <nav aria-label="Điều hướng chính">
-                <ul>
-                    <li><a href="#services">Dịch vụ</a></li>
-                    <li><a href="#tutors">Gia sư</a></li>
-                    <li><a href="#feedbacks">Phản hồi</a></li>
-                    <li><a href="#contact">Liên hệ</a></li>
-                </ul>
-            </nav>
-        </header>
-
-        <section class="cta">
-            <a href="registerForm.html" style="display: inline
