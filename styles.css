@@ -117,3 +117,33 @@ footer {
     width: 100%;
     bottom: 0;
 }
+
+/* Bố cục chia hình trái - text phải cho phần dạy kèm tại nhà */
+.tutor-flex {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap; /* Đảm bảo hiển thị tốt trên mobile */
+}
+
+.tutor-image {
+    flex: 1;
+    min-width: 200px;
+}
+
+.tutor-text {
+    flex: 2;
+}
+
+.tutor-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.tutor-image figcaption {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
