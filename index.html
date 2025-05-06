@@ -21,35 +21,60 @@
             background-color: #ffffff;
             border: 2px solid #eeeeee;
         }
+
+        /* Header mới */
         header {
-            height: 160px;
             background-image: url("images/header.png");
+            background-size: cover;
+            background-position: center;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        h1 {
+        .header-top {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .header-top img {
+            height: 100px;
+            margin-right: 20px;
+            border-radius: 8px;
+        }
+        .header-top h1 {
+            font-size: 1px;
+            color: transparent;
             text-indent: -9999px;
-            width: 940px;
-            height: 130px;
-            margin: 0px;
+            margin: 0;
         }
-        nav, footer {
-            clear: both;
-            color: #ffffff;
+        nav {
+            width: 100%;
+            margin-top: 10px;
             background-color: #aeaca8;
         }
         nav ul {
-            margin: 0px;
-            padding: 5px 0px 5px 30px;
+            list-style: none;
+            padding: 10px 20px;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px;
         }
         nav li {
             display: inline;
-            margin-right: 40px;
         }
         nav li a {
-            color: #ffffff;
+            color: #fff;
+            font-weight: bold;
         }
-        nav li a:hover, nav li a.current {
-            color: #000000;
+        nav li a:hover,
+        nav li a.current {
+            color: #000;
         }
+
+        /* Các phần còn lại giữ nguyên */
         a {
             color: #de6581;
             text-decoration: none;
@@ -115,6 +140,9 @@
         footer {
             font-size: 80%;
             padding: 7px 0px 0px 20px;
+            color: #ffffff;
+            background-color: #aeaca8;
+            clear: both;
         }
         .cta {
             text-align: center;
@@ -132,14 +160,38 @@
         .cta button:hover {
             background-color: #c94d6c;
         }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .wrapper {
+                width: 95%;
+                margin: 10px auto;
+            }
+            .header-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .header-top img {
+                height: 80px;
+                margin: 0 0 10px 0;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <header>
-            <img src="images/cuong.png" alt="Thầy Cường" style="float: left; height: 130px; margin: 15px 20px 0 10px;">
-            <h1>Cuong's Kitchen</h1>
-            <nav>
+            <div class="header-top">
+                <img src="images/cuong.png" alt="Thầy Cường">
+                <h1>Học cùng Thầy Cường</h1>
+            </div>
+            <nav aria-label="Điều hướng chính">
                 <ul>
                     <li><a href="#services">Dịch vụ</a></li>
                     <li><a href="#tutors">Gia sư</a></li>
@@ -150,58 +202,4 @@
         </header>
 
         <section class="cta">
-          
-            <a href="registerForm.html" style="display: inline-block; background-color: #4CAF50; 
-             color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-size: 16px;">
-             Đăng ký học </a>
-
-
-
-            <button>Tìm gia sư ngay</button>
-        </section>
-
-        <section id="services" class="services">
-            <h2>Dịch vụ của chúng tôi</h2>
-            <ul>
-                <li>Gia sư cấp 1: Toán, Tiếng Việt, Rèn chữ, tiếng Anh</li>
-                <li>Gia sư cấp 2: Luyện thi vào 10, Toán - Lý - Hoá - Anh</li>
-                <li>Gia sư cấp 3: Ôn thi THPT Quốc Gia, các môn Toán - Lý - Hoá - Anh</li>
-                <li>Luyện thi chứng chỉ: IELTS, TOEIC, Tin học văn phòng</li>
-            </ul>
-        </section>
-
-        <section id="tutors" class="services">
-            <h2>Đội ngũ gia sư</h2>
-            <p>Gia sư là sinh viên giỏi từ các trường đại học danh tiếng như Bách Khoa, Sư Phạm, Ngoại Thương...</p>
-            <p>Giáo viên kinh nghiệm lâu năm, tận tâm và chuyên môn vững.</p>
-        </section>
-
-        <section id="feedbacks" class="feedbacks">
-            <h2>Phản hồi từ phụ huynh và học sinh</h2>
-            <blockquote>
-                “Con tôi tiến bộ rõ rệt sau 2 tháng học cùng gia sư ở đây!” — Chị Như Ý, Q.8, TP.HCM
-            </blockquote>
-            <blockquote>
-                “Dịch vụ chuyên nghiệp, liên hệ nhanh, học phí hợp lý.” — Chị Minh Trang, Q.7
-            </blockquote>
-            <blockquote>
-                “Cảm ơn thầy đã dạy hai đứa con tôi vào đại học: một vào FPT, một vào Y Khoa Phạm Ngọc Thạch. Thầy dạy rất tận tâm.” — Anh Đạt, Huyện Nhà Bè
-            </blockquote>
-        </section>
-
-        <section id="contact" class="contact">
-            <h2>Liên hệ với chúng tôi</h2>
-            <p>📞 Hotline: 0913 159 942</p>
-            <p>💬 Zalo: 0913 159 942</p>
-            <p>📧 Email: phungkhaccuong59@gmail.com</p>
-            <p>🏠 Địa chỉ: 1135/15/4 Huỳnh Tấn Phát, Phường Phú Thuận, Q.7, TP.HCM</p>
-            <p>💳 Tài khoản ngân hàng:</p>
-            <img src="images/nganhang.png" alt="Tài khoản ngân hàng" style="width: 120px; height: 80px; border: 1px solid #ccc; padding: 5px;">
-        </section>
-
-        <footer>
-            <p>&copy; 2025 Học cùng thầy Cường. All rights reserved.</p>
-        </footer>
-    </div>
-</body>
-</html>
+            <a href="registerForm.html" style="display: inline
