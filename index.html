@@ -3,23 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <title>Học cùng Thầy Cường</title>
-    <style type="text/css">
-        body, section, footer, aside, nav, article, figure, figcaption {
-            display: block;
+    <style>
+        * {
+            box-sizing: border-box;
         }
+
         body {
-            color: #666666;
+            color: #666;
             background-color: #f9f8f6;
-            background-position: center;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             line-height: 1.4em;
-            margin: 0px;
+            margin: 0;
         }
+
         .wrapper {
             width: 940px;
             margin: 20px auto;
-            background-color: #ffffff;
-            border: 2px solid #eeeeee;
+            background-color: #fff;
+            border: 2px solid #eee;
         }
 
         header {
@@ -62,13 +63,10 @@
             padding: 10px 20px;
             margin: 0;
             display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
             gap: 20px;
         }
 
         nav li a {
-            display: block;
             color: #fff;
             font-weight: bold;
             padding: 8px 12px;
@@ -80,21 +78,23 @@
             color: #000;
         }
 
-        a {
-            color: #de6581;
-            text-decoration: none;
+        main {
+            display: flex;
         }
 
         section.courses {
-            float: left;
-            width: 659px;
-            border-right: 1px solid #eeeeee;
+            flex: 2;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+
+        aside {
+            flex: 1;
+            padding: 20px;
         }
 
         article {
-            clear: both;
-            overflow: auto;
-            width: 100%;
+            margin-bottom: 20px;
         }
 
         hgroup {
@@ -104,3 +104,104 @@
         figure {
             float: left;
             width: 220px;
+            margin-right: 20px;
+        }
+
+        figure img {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: #f5f5f5;
+        }
+
+        figcaption {
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #aeaca8;
+            color: white;
+        }
+
+        a {
+            color: #de6581;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="header-top">
+                <img src="images/logo.png" alt="Logo Học cùng Thầy Cường" />
+                <h1>Học cùng Thầy Cường</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="current">Dịch vụ</a></li>
+                    <li><a href="#">Gia sư</a></li>
+                    <li><a href="#">Phản hồi</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="courses">
+                <article>
+                    <hgroup>
+                        <h2>Dịch vụ học tập</h2>
+                        <h3>Chúng tôi cung cấp các khóa học chuyên sâu</h3>
+                    </hgroup>
+                    <figure>
+                        <img src="images/service.jpg" alt="Dịch vụ học tập" />
+                        <figcaption>Dịch vụ học tập chất lượng</figcaption>
+                    </figure>
+                    <p>Chúng tôi cung cấp các dịch vụ học tập đa dạng từ các khóa học về lập trình, thiết kế web, cho đến các môn học khác. Tất cả đều được giảng dạy bởi các giảng viên giàu kinh nghiệm.</p>
+                </article>
+
+                <article>
+                    <hgroup>
+                        <h2>Gia sư</h2>
+                        <h3>Hỗ trợ học viên 1 kèm 1</h3>
+                    </hgroup>
+                    <figure>
+                        <img src="images/tutor.jpg" alt="Gia sư" />
+                        <figcaption>Gia sư tận tâm</figcaption>
+                    </figure>
+                    <p>Chúng tôi cung cấp dịch vụ gia sư, giúp học viên tiến bộ nhanh chóng với sự hướng dẫn trực tiếp từ các gia sư giàu kinh nghiệm và nhiệt huyết.</p>
+                </article>
+            </section>
+
+            <aside>
+                <h2>Phản hồi</h2>
+                <p>Chúng tôi luôn lắng nghe và cải thiện dịch vụ từ các phản hồi quý báu từ học viên.</p>
+                <ul>
+                    <li><a href="#">Đọc thêm các phản hồi từ học viên</a></li>
+                    <li><a href="#">Chia sẻ ý kiến của bạn</a></li>
+                </ul>
+
+                <h2>Liên hệ</h2>
+                <p>Để biết thêm thông tin chi tiết về các dịch vụ của chúng tôi, vui lòng liên hệ qua các phương thức dưới đây:</p>
+                <ul>
+                    <li><a href="#">Điện thoại: 0123456789</a></li>
+                    <li><a href="#">Email: contact@hocwiththaycuong.com</a></li>
+                    <li><a href="#">Địa chỉ: 123, Đường ABC, Thành phố XYZ</a></li>
+                </ul>
+            </aside>
+        </main>
+
+        <footer>
+            &copy; 2025 Học cùng Thầy Cường. Mọi quyền được bảo lưu.
+        </footer>
+    </div>
+</body>
+</html>
