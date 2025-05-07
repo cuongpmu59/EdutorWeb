@@ -1,21 +1,3 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-a {
-    color: #0077cc;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 /* Header Styles */
 header {
     display: flex;
@@ -43,9 +25,9 @@ header .banner img {
 
 header .logo {
     position: absolute;
-    left: 20px; /* Đặt logo ở phía trái */
+    left: 10px; /* Đặt logo ở phía trái với khoảng cách nhỏ hơn */
     top: 20px; /* Đảm bảo logo không bị chồng lên banner */
-    max-width: 100px;
+    max-width: 70px; /* Giảm kích thước logo */
     background: white;
     padding: 6px;
     border-radius: 50%;
@@ -101,7 +83,7 @@ main {
 }
 
 .tutor-image img {
-    max-width: 220px; /* tăng từ 200px lên 220px */
+    max-width: 220px;
     width: 100%;
     height: auto;
     border-radius: 6px;
@@ -154,7 +136,7 @@ main {
 
     header .logo {
         position: relative;
-        left: unset; /* Đặt lại vị trí logo trên thiết bị di động */
+        left: unset;
         top: unset;
     }
 }
