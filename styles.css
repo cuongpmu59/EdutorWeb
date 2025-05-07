@@ -1,7 +1,6 @@
 /* Header Styles */
 header {
     display: flex;
-    flex-direction: row; /* Đặt các phần tử theo hàng */
     justify-content: space-between; /* Chia khoảng cách đều giữa logo và banner */
     align-items: center;
     padding: 10px 20px;
@@ -9,29 +8,27 @@ header {
     color: white;
 }
 
-header .banner {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end; /* Đưa banner sang bên phải */
-}
-
-header .banner img {
-    width: 100%;
-    max-width: 800px; /* Giảm chiều rộng tối đa */
+header .logo img {
+    max-width: 50px; /* Giảm kích thước logo */
     height: auto;
-    display: block;
-    border-radius: 0 0 8px 8px;
-}
-
-header .logo {
-    position: absolute;
-    left: 10px; /* Đặt logo ở phía trái với khoảng cách nhỏ hơn */
-    top: 20px; /* Đảm bảo logo không bị chồng lên banner */
-    max-width: 70px; /* Giảm kích thước logo */
     background: white;
     padding: 6px;
     border-radius: 50%;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+header .banner {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* Đẩy banner sang bên phải */
+}
+
+header .banner img {
+    width: 100%;
+    max-width: 800px; /* Giảm chiều rộng tối đa của banner */
+    height: auto;
+    display: block;
+    border-radius: 0 0 8px 8px;
 }
 
 header .title h1 {
