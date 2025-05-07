@@ -93,10 +93,16 @@ main {
 }
 
 .tutor-image img {
-    max-width: 200px;
+    max-width: 220px; /* tăng từ 200px lên 220px */
     width: 100%;
     height: auto;
     border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1); /* thêm bóng nhẹ nếu muốn nổi bật hơn */
+    transition: transform 0.3s ease;
+}
+
+.tutor-service:hover .tutor-image img {
+    transform: scale(1.05); /* hiệu ứng phóng nhẹ khi hover */
 }
 
 .tutor-image figure {
