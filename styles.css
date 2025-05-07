@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,7 +6,6 @@ body {
     color: #333;
 }
 
-/* Header Styles */
 header {
     background-color: #005a87;
     color: white;
@@ -18,6 +16,8 @@ header {
 header img {
     max-width: 100px;
     height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 header h1 {
@@ -25,16 +25,12 @@ header h1 {
     font-size: 2rem;
 }
 
-/* Main Section */
 main {
-    display: flex;
-    justify-content: space-between;
     padding: 20px;
-    gap: 20px;
 }
 
 .courses {
-    flex: 2;
+    margin-bottom: 40px;
 }
 
 .courses article {
@@ -43,10 +39,6 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
-}
-
-.courses article header {
-    margin-bottom: 15px;
 }
 
 .courses img {
@@ -64,7 +56,6 @@ figcaption {
     color: #555;
 }
 
-/* Tutor Service Section */
 .tutor-service {
     margin-bottom: 20px;
 }
@@ -78,15 +69,42 @@ figcaption {
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
+    display: block;
 }
 
-/* Aside */
+.tutor-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.tutor-image {
+    flex: 1 1 300px;
+}
+
+.tutor-text {
+    flex: 2 1 400px;
+}
+
+@media (max-width: 768px) {
+    .tutor-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .tutor-text {
+        text-align: left;
+    }
+}
+
 aside {
-    flex: 1;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
 }
 
 aside section {
@@ -107,43 +125,10 @@ aside a:hover {
     text-decoration: underline;
 }
 
-/* Footer */
 footer {
     text-align: center;
     background-color: #005a87;
     color: white;
     padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-
-/* Bố cục chia hình trái - text phải cho phần dạy kèm tại nhà */
-.tutor-flex {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap; /* Đảm bảo hiển thị tốt trên mobile */
-}
-
-.tutor-image {
-    flex: 1;
-    min-width: 200px;
-}
-
-.tutor-text {
-    flex: 2;
-}
-
-.tutor-image img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}
-
-.tutor-image figcaption {
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-}
+    margin-top: 40px;
+} /* Bố cục chia hình trái - text phải */
