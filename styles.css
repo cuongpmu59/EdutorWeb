@@ -58,7 +58,7 @@ header .logo {
 header .logo img {
     max-width: 80px; /* Đã giảm kích thước logo */
     height: auto;
-    border-radius: 50%;
+
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
