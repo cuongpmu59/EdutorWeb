@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,6 +7,7 @@ body {
     color: #333;
 }
 
+/* Header Styles */
 header {
     background-color: #005a87;
     color: white;
@@ -16,8 +18,6 @@ header {
 header img {
     max-width: 100px;
     height: auto;
-    display: block;
-    margin: 0 auto;
 }
 
 header h1 {
@@ -25,10 +25,12 @@ header h1 {
     font-size: 2rem;
 }
 
+/* Main Section */
 main {
     padding: 20px;
 }
 
+/* Courses Section */
 .courses {
     margin-bottom: 40px;
 }
@@ -39,6 +41,10 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
+}
+
+.courses article header {
+    margin-bottom: 15px;
 }
 
 .courses img {
@@ -56,79 +62,36 @@ figcaption {
     color: #555;
 }
 
+/* Tutor Service Section */
 .tutor-service {
-    margin-bottom: 20px;
-}
-
-.tutor-service h4 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-}
-
-.tutor-service figure img {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    display: block;
-}
-
-.tutor-flex {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    align-items: center;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .tutor-image {
     flex: 1 1 300px;
+    max-width: 400px;
+}
+
+.tutor-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
 }
 
 .tutor-text {
-    flex: 2 1 400px;
+    flex: 2 1 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-@media (max-width: 768px) {
-    .tutor-flex {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .tutor-text {
-        text-align: left;
-    }
-}
-
-aside {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 0 auto 30px auto;
-}
-
-aside section {
-    margin-bottom: 20px;
-}
-
-aside h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
-
-aside a {
-    color: #005a87;
-    text-decoration: none;
-}
-
-aside a:hover {
-    text-decoration: underline;
-}
-
-footer {
-    text-align: center;
-    background-color: #005a87;
-    color: white;
-    padding: 10px 0;
-    margin-top: 40px;
-} /* Bố cục chia hình trái - text phải */
+.tutor-text h4 {
+    font-size: 1.4rem;
+    margin-bo
