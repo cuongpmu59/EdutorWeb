@@ -93,7 +93,7 @@ main {
 }
 
 .tutor-image img {
-    max-width: 220px; /* tăng từ 200px lên 220px */
+    max-width: 300px; /* tăng từ 200px lên 220px */
     width: 100%;
     height: auto;
     border-radius: 6px;
