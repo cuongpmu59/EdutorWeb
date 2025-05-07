@@ -1,107 +1,161 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Dịch vụ học tập và gia sư chất lượng cao" />
-    <title>Học cùng Thầy Cường</title>
-    <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-    <header>
-        <img src="images/logo.png" alt="Logo Học Với Thầy Cường" />
-        <h1>Học cùng Thầy Cường</h1>
-    </header>
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
 
-    <main>
-        <section class="courses">
-            <article>
-                <header>
-                    <h2>Dịch vụ học tập</h2>
-                    <h3>Chúng tôi cung cấp các khóa học chuyên sâu</h3>
-                </header>
-                <figure>
-                    <img src="images/service.jpg" alt="Dịch vụ học tập" />
-                    <figcaption>Dịch vụ học tập chất lượng</figcaption>
-                </figure>
-                <p>Chúng tôi cung cấp các dịch vụ học tập đa dạng từ các khóa học về lập trình, thiết kế web, cho đến các môn học khác. Tất cả đều được giảng dạy bởi các giảng viên giàu kinh nghiệm.</p>
-            </article>
+/* Header Styles */
+header {
+    background: url('images/header-tutor.jpg') no-repeat center center/cover;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    height: 250px;
+}
 
-            <article>
-                <header>
-                    <h2>Gia sư</h2>
-                    <h3>Chúng tôi cung cấp các dịch vụ gia sư đa dạng</h3>
-                </header>
+header .logo img {
+    max-width: 120px;
+    height: auto;
+}
 
-                <section class="tutor-service tutor-flex">
-                    <div class="tutor-image">
-                        <figure>
-                            <img src="images/offline.png" alt="Gia sư dạy kèm tại nhà" />
-                            <figcaption>Gia sư dạy tại nhà, tận tâm và hiệu quả</figcaption>
-                        </figure>
-                    </div>
-                    <div class="tutor-text">
-                        <h4>Gia sư dạy kèm tại nhà</h4>
-                        <p>Chương trình gia sư tại nhà được thiết kế riêng biệt theo từng học sinh, giúp tối ưu hóa quá trình học tập và phát triển toàn diện. Gia sư không chỉ giảng dạy kiến thức mà còn đóng vai trò như người định hướng học tập, giúp học sinh hình thành kỹ năng tự học, giải quyết vấn đề và quản lý thời gian. Với phương pháp tiếp cận cá nhân hóa, học sinh sẽ cảm thấy tự tin hơn, hiểu sâu vấn đề hơn và đạt kết quả cao hơn trong học tập. Hãy để con bạn trải nghiệm môi trường học tại nhà thoải mái nhưng đầy tính chuyên nghiệp.</p>
-                    </div>
-                </section>
+header .title h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-align: right;
+    font-weight: bold;
+}
 
-                <section class="tutor-service tutor-flex">
-                    <div class="tutor-image">
-                        <figure>
-                            <img src="images/online.png" alt="Gia sư dạy online" />
-                            <figcaption>Học online mọi lúc mọi nơi</figcaption>
-                        </figure>
-                    </div>
-                    <div class="tutor-text">
-                        <h4>Gia sư dạy online</h4>
-                        <p>Với dịch vụ gia sư online, học viên có thể tiếp cận kiến thức mọi lúc, mọi nơi thông qua nền tảng học tập hiện đại. Hệ thống học trực tuyến tích hợp bài giảng tương tác, tài liệu điện tử và bài kiểm tra định kỳ giúp quá trình học trở nên sinh động, hiệu quả và phù hợp với nhịp độ của từng người học. Đây là lựa chọn hoàn hảo cho những ai bận rộn nhưng vẫn muốn duy trì hiệu suất học tập cao mà không cần phải di chuyển. Đội ngũ gia sư trực tuyến của chúng tôi luôn sẵn sàng hỗ trợ bạn vượt qua mọi thử thách trong học tập.</p>
-                    </div>
-                </section>
+/* Main Section */
+main {
+    padding: 20px;
+}
 
-                <section class="tutor-service tutor-flex">
-                    <div class="tutor-image">
-                        <figure>
-                            <img src="images/nhom.png" alt="Gia sư dạy theo nhóm" />
-                            <figcaption>Gia sư dạy theo nhóm, học tập vui vẻ</figcaption>
-                        </figure>
-                    </div>
-                    <div class="tutor-text">
-                        <h4>Gia sư dạy theo nhóm</h4>
-                        <p>Dịch vụ gia sư theo nhóm là giải pháp tiết kiệm chi phí nhưng vẫn đảm bảo chất lượng giảng dạy. Học sinh được học tập cùng bạn bè trong môi trường sôi nổi, kích thích sự trao đổi kiến thức và phát triển kỹ năng làm việc nhóm. Các hoạt động nhóm như thảo luận, giải đề theo nhóm, thi đua học tập giúp tăng cường động lực học và sự gắn kết giữa các học viên. Phù hợp với nhóm học sinh có cùng trình độ và mục tiêu học tập, chương trình học nhóm sẽ giúp các em cùng tiến bộ một cách hiệu quả và bền vững.</p>
-                    </div>
-                </section>
-            </article>
-        </section>
-    </main>
+/* Courses Section */
+.courses {
+    margin-bottom: 40px;
+}
 
-    <aside>
-        <section>
-            <header>
-                <h2>Phản hồi</h2>
-            </header>
-            <p>Chúng tôi luôn lắng nghe và cải thiện dịch vụ từ các phản hồi quý báu từ học viên.</p>
-            <ul>
-                <li><a href="#">Đọc thêm các phản hồi từ học viên</a></li>
-                <li><a href="#">Chia sẻ ý kiến của bạn</a></li>
-            </ul>
-        </section>
+.courses article {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
-        <section>
-            <header>
-                <h2>Liên hệ</h2>
-            </header>
-            <p>Để biết thêm thông tin chi tiết về các dịch vụ của chúng tôi, vui lòng liên hệ qua các phương thức dưới đây:</p>
-            <ul>
-                <li><a href="#">Điện thoại: 0123456789</a></li>
-                <li><a href="#">Email: contact@hocwiththaycuong.com</a></li>
-                <li><a href="#">Địa chỉ: 123, Đường ABC, Thành phố XYZ</a></li>
-            </ul>
-        </section>
-    </aside>
+.courses article header {
+    margin-bottom: 15px;
+}
 
-    <footer>
-        <p>&copy; 2025 Học Với Thầy Cường. Tất cả các quyền được bảo lưu.</p>
-    </footer>
-</body>
-</html>
+.courses img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+figure {
+    margin: 10px 0;
+    text-align: center;
+}
+
+figcaption {
+    font-style: italic;
+    color: #555;
+}
+
+/* Tutor Service Section */
+.tutor-service {
+    margin-bottom: 20px;
+}
+
+.tutor-service h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.tutor-service figure img {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.tutor-service .tutor-image {
+    flex: 1;
+    padding: 10px;
+}
+
+/* Aside Section */
+aside {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+}
+
+aside section {
+    margin-bottom: 20px;
+}
+
+aside h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+aside a {
+    color: #005a87;
+    text-decoration: none;
+}
+
+aside a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    background-color: #005a87;
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+    }
+
+    header .logo img {
+        max-width: 100px;
+    }
+
+    header .title h1 {
+        font-size: 2rem;
+        margin-top: 10px;
+    }
+
+    .tutor-service {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tutor-service .tutor-image {
+        width: 100%;
+        text-align: center;
+    }
+
+    .tutor-service figure img {
+        max-width: 100%;
+    }
+}
