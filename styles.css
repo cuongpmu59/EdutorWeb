@@ -7,6 +7,15 @@ body {
     color: #333;
 }
 
+a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 /* Header Styles */
 header {
     background: url('images/header-tutor.jpg') no-repeat center center/cover;
@@ -46,4 +55,103 @@ main {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin-bot
+    margin-bottom: 20px;
+}
+
+.courses h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.courses h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+/* Tutor Services Layout */
+.tutor-service {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.tutor-image img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.tutor-image figure {
+    margin: 0;
+    text-align: center;
+}
+
+.tutor-image figcaption {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+}
+
+.tutor-text h4 {
+    font-size: 1.3rem;
+    margin: 0 0 10px 0;
+    color: #222;
+}
+
+.tutor-text p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Responsive Flex Layout for Tutor Services */
+@media (max-width: 768px) {
+    .tutor-service {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .tutor-text {
+        text-align: left;
+    }
+}
+
+/* Aside */
+aside {
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+aside section {
+    margin-bottom: 30px;
+}
+
+aside h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+aside ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: #eee;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+}
