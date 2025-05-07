@@ -80,7 +80,7 @@ main {
 }
 
 .tutor-image img {
-    max-width: 350px; /* Tăng kích thước hình ảnh trong Dịch vụ gia sư */
+    max-width: 450px; /* Tăng kích thước hình ảnh trong Dịch vụ gia sư */
     width: 100%;
     height: auto;
     border-radius: 6px;
