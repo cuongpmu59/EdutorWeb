@@ -178,7 +178,7 @@ main {
 }
 
 /* ====================
-   Các phần gia sư dạy nhóm
+   Các phần gia sư dạy online
 ==================== */
 .tutor-service {
     display: flex;
@@ -192,7 +192,7 @@ main {
     box-shadow: 0 0 6px rgba(0,0,0,0.1);
 }
 
-/* Đặt hình ảnh bên trái và văn bản bên phải */
+/* Đặt hình ảnh bên phải và văn bản bên trái */
 .tutor-image {
     flex: 0 0 30%; /* Hình ảnh chiếm 30% chiều rộng */
     max-width: 300px; /* Giới hạn kích thước hình ảnh */
@@ -210,10 +210,12 @@ main {
     transform: scale(1.05);
 }
 
+/* Chuyển phần text sang bên phải */
 .tutor-text {
     flex: 1;
     min-width: 250px;
     text-align: left; /* Canh chỉnh văn bản bên trái */
+    order: 1; /* Đảm bảo văn bản hiển thị sau hình ảnh */
 }
 
 .tutor-text h4 {
@@ -235,6 +237,7 @@ main {
 .tutor-text ul li {
     margin-bottom: 10px;
 }
+
 /* ====================
    Footer
 ==================== */
