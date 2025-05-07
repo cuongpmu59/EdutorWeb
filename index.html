@@ -9,31 +9,34 @@
 </head>
 <body>
     <header>
-        <!-- Banner (Bên trái) -->
-        <div class="logo">
-            <img src="images/logo.png" alt="Logo Học Với Thầy Cường">
+        <div class="header-container">
+            <div class="banner">
+                <img src="images/tieude.png" alt="Banner Học cùng Thầy Cường">
+            </div>
+            <div class="title">
+                <h1>Học cùng Thầy Cường</h1>
+            </div>
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo Học Với Thầy Cường">
+            </div>
         </div>
-        
-        <!-- Tiêu đề ở giữa -->
-        <div class="title">
-            <h1>Học cùng Thầy Cường</h1>
-        </div>
-
-        <!-- Logo (Bên phải) -->
-        <div class="banner">
-            <img src="images/cuong.png" alt="Gia sư chất lượng – Đồng hành cùng bạn đến thành công">
-        </div>
-
-
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#dichvu">Dịch vụ</a></li>
+                <li><a href="#giasu">Gia Sư</a></li>
+                <li><a href="#phanhoi">Phản hồi</a></li>
+                <li><a href="#lienhe">Liên hệ</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main>
-        <section class="courses">
+        <section class="courses" id="dichvu">
             <!-- DỊCH VỤ HỌC TẬP -->
             <article>
                 <header>
                     <h2>Dịch vụ học tập</h2>
-                    <h3>Chúng tôi cung cấp các khóa học chuyên sâu</h3>
+                    <h3>Chúng tôi cung cấp các lớp học chất lượng</h3>
                 </header>
 
                 <section class="tutor-service">
@@ -50,7 +53,7 @@
             </article>
 
             <!-- GIA SƯ -->
-            <article>
+            <article id="giasu">
                 <header>
                     <h2>Gia sư</h2>
                     <h3>Chúng tôi cung cấp các dịch vụ gia sư đa dạng</h3>
@@ -97,13 +100,28 @@
                         <p>Dịch vụ gia sư theo nhóm là giải pháp tiết kiệm chi phí nhưng vẫn đảm bảo chất lượng giảng dạy...</p>
                     </div>
                 </section>
+
+                 <!-- Gia sư học tại nhà gia sư -->
+                 <section class="tutor-service">
+                    <div class="tutor-image">
+                        <figure>
+                            <img src="images/teacherHome.png" alt="Gia sư dạy tại nhà gia sư" />
+                            <figcaption>Gia sư dạy tại nhà gia sư, học tập trung nhiều bạn mới</figcaption>
+                        </figure>
+                    </div>
+                    <div class="tutor-text">
+                        <h4>Gia sư dạy tại nhà gia sư</h4>
+                        <p>Dịch vụ gia sư dạy tại nhà gia sư là giải pháp tiết kiệm chi phí nhưng vẫn đảm bảo chất lượng học tập ...</p>
+                    </div>
+                </section>
+
             </article>
         </section>
     </main>
 
     <!-- PHẢN HỒI + LIÊN HỆ -->
     <aside>
-        <section>
+        <section id="phanhoi">
             <header>
                 <h2>Phản hồi</h2>
             </header>
@@ -114,7 +132,7 @@
             </ul>
         </section>
 
-        <section>
+        <section id="lienhe">
             <header>
                 <h2>Liên hệ</h2>
             </header>
