@@ -1,45 +1,70 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 /* Header Styles */
 header {
     display: flex;
-    justify-content: space-between; /* Chia khoảng cách đều giữa logo và banner */
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #004aad;
-    color: white;
-}
-
-header .logo img {
-    max-width: 50px; /* Giảm kích thước logo */
-    height: auto;
-    background: white;
-    padding: 6px;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
 }
 
 header .banner {
     flex: 1;
-    display: flex;
-    justify-content: flex-end; /* Đẩy banner sang bên phải */
+    text-align: left;
 }
 
 header .banner img {
     width: 100%;
-    max-width: 800px; /* Giảm chiều rộng tối đa của banner */
+    max-width: 940px;
     height: auto;
     display: block;
     border-radius: 0 0 8px 8px;
 }
 
+header .title {
+    flex: 2;
+    text-align: center;
+}
+
 header .title h1 {
     font-size: 2rem;
-    margin: 10px 0;
-    color: white;
+    color: #333;
+    margin: 0;
+}
+
+header .logo {
+    flex: 1;
+    text-align: right;
+}
+
+header .logo img {
+    max-width: 80px; /* Đã giảm kích thước logo */
+    height: auto;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Main Section */
 main {
-    padding: 40px 20px;
+    padding: 20px;
 }
 
 /* Courses Section */
@@ -48,9 +73,9 @@ main {
 }
 
 .courses article {
-    background-color: #fff;
+    background-color: #f8f8f8;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -70,7 +95,7 @@ main {
 .tutor-service {
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     margin: 20px 0;
     padding: 20px;
     display: flex;
@@ -80,17 +105,16 @@ main {
 }
 
 .tutor-image img {
-    max-width: 450px; /* Tăng kích thước hình ảnh trong Dịch vụ gia sư */
+    max-width: 250px; /* Đã tăng kích thước hình ảnh */
     width: 100%;
     height: auto;
     border-radius: 6px;
     box-shadow: 0 0 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .tutor-service:hover .tutor-image img {
     transform: scale(1.05); /* Hiệu ứng phóng nhẹ khi hover */
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ khi hover */
 }
 
 .tutor-image figure {
@@ -125,17 +149,6 @@ main {
     .tutor-text {
         text-align: left;
     }
-
-    header {
-        flex-direction: column;
-        padding: 20px 0;
-    }
-
-    header .logo {
-        position: relative;
-        left: unset;
-        top: unset;
-    }
 }
 
 /* Aside */
@@ -154,7 +167,7 @@ aside section {
 aside h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #004aad;
+    color: #444;
 }
 
 aside ul {
