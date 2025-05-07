@@ -80,7 +80,7 @@ main {
 }
 
 .tutor-image img {
-    max-width: 220px;
+    max-width: 300px; /* Tăng kích thước hình ảnh */
     width: 100%;
     height: auto;
     border-radius: 6px;
@@ -89,8 +89,8 @@ main {
 }
 
 .tutor-service:hover .tutor-image img {
-    transform: scale(1.05); /* hiệu ứng phóng nhẹ khi hover */
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* thêm bóng đổ khi hover */
+    transform: scale(1.05); /* Hiệu ứng phóng nhẹ khi hover */
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ khi hover */
 }
 
 .tutor-image figure {
