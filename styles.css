@@ -22,8 +22,10 @@ header {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 0;
-    background-color: #f9f9f9;
+    padding: 20px 0;
+    background-color: #004aad;
+    color: white;
+    border-radius: 8px;
 }
 
 header .banner img {
@@ -46,13 +48,13 @@ header .logo img {
 header .title h1 {
     font-size: 2rem;
     margin: 10px 0;
-    color: #333;
+    color: white;
 }
 
 
 /* Main Section */
 main {
-    padding: 20px;
+    padding: 40px 20px;
 }
 
 /* Courses Section */
@@ -61,9 +63,9 @@ main {
 }
 
 .courses article {
-    background-color: blue;
+    background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -83,7 +85,7 @@ main {
 .tutor-service {
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 20px 0;
     padding: 20px;
     display: flex;
@@ -97,12 +99,13 @@ main {
     width: 100%;
     height: auto;
     border-radius: 6px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.1); /* thêm bóng nhẹ nếu muốn nổi bật hơn */
-    transition: transform 0.3s ease;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tutor-service:hover .tutor-image img {
     transform: scale(1.05); /* hiệu ứng phóng nhẹ khi hover */
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* thêm bóng đổ khi hover */
 }
 
 .tutor-image figure {
@@ -137,6 +140,10 @@ main {
     .tutor-text {
         text-align: left;
     }
+
+    header {
+        padding: 20px 0;
+    }
 }
 
 /* Aside */
@@ -155,7 +162,7 @@ aside section {
 aside h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #444;
+    color: #004aad;
 }
 
 aside ul {
