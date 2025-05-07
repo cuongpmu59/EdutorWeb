@@ -16,6 +16,7 @@ header {
     justify-content: space-between;
     padding: 20px 40px;
     height: 250px;
+    flex-wrap: wrap;
 }
 
 header .logo img {
@@ -45,117 +46,4 @@ main {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin-bottom: 20px;
-}
-
-.courses article header {
-    margin-bottom: 15px;
-}
-
-.courses img {
-    width: 100%;
-    border-radius: 8px;
-}
-
-figure {
-    margin: 10px 0;
-    text-align: center;
-}
-
-figcaption {
-    font-style: italic;
-    color: #555;
-}
-
-/* Tutor Service Section */
-.tutor-service {
-    margin-bottom: 20px;
-}
-
-.tutor-service h4 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-}
-
-.tutor-service figure img {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.tutor-service .tutor-image {
-    flex: 1;
-    padding: 10px;
-}
-
-/* Aside Section */
-aside {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 0 auto 30px auto;
-}
-
-aside section {
-    margin-bottom: 20px;
-}
-
-aside h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
-
-aside a {
-    color: #005a87;
-    text-decoration: none;
-}
-
-aside a:hover {
-    text-decoration: underline;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    background-color: #005a87;
-    color: white;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-    header {
-        flex-direction: column;
-        text-align: center;
-        height: auto;
-    }
-
-    header .logo img {
-        max-width: 100px;
-    }
-
-    header .title h1 {
-        font-size: 2rem;
-        margin-top: 10px;
-    }
-
-    .tutor-service {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .tutor-service .tutor-image {
-        width: 100%;
-        text-align: center;
-    }
-
-    .tutor-service figure img {
-        max-width: 100%;
-    }
-}
+    margin-bot
