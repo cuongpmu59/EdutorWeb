@@ -19,26 +19,33 @@ a:hover {
 /* Header Styles */
 header {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Đặt các phần tử theo hàng */
+    justify-content: space-between; /* Chia khoảng cách đều giữa logo và banner */
     align-items: center;
-    text-align: center;
-    padding: 20px 0;
+    padding: 10px 20px;
     background-color: #004aad;
     color: white;
-    border-radius: 8px;
+}
+
+header .banner {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* Đưa banner sang bên phải */
 }
 
 header .banner img {
     width: 100%;
-    max-width: 940px;
+    max-width: 800px; /* Giảm chiều rộng tối đa */
     height: auto;
     display: block;
     border-radius: 0 0 8px 8px;
 }
 
-header .logo img {
+header .logo {
+    position: absolute;
+    left: 20px; /* Đặt logo ở phía trái */
+    top: 20px; /* Đảm bảo logo không bị chồng lên banner */
     max-width: 100px;
-    margin-top: -40px; /* đẩy logo lồng lên banner */
     background: white;
     padding: 6px;
     border-radius: 50%;
@@ -50,7 +57,6 @@ header .title h1 {
     margin: 10px 0;
     color: white;
 }
-
 
 /* Main Section */
 main {
@@ -142,7 +148,14 @@ main {
     }
 
     header {
+        flex-direction: column;
         padding: 20px 0;
+    }
+
+    header .logo {
+        position: relative;
+        left: unset; /* Đặt lại vị trí logo trên thiết bị di động */
+        top: unset;
     }
 }
 
