@@ -163,7 +163,7 @@ main {
 .tutor-text {
     flex: 1;
     min-width: 250px;
-    text-align: right; /* Canh chỉnh văn bản bên trái */
+    text-align: left; /* Canh chỉnh văn bản bên trái */
 }
 
 .tutor-text h4 {
@@ -223,7 +223,7 @@ main {
 .tutor-text-online {
     flex: 1;
     min-width: 250px;
-    text-align: right; /* Canh chỉnh văn bản bên trái */
+    text-align: left; /* Canh chỉnh văn bản bên trái */
 }
 
 .tutor-text-online h4 {
