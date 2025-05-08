@@ -141,57 +141,6 @@ main {
     box-shadow: 0 0 6px rgba(0,0,0,0.1);
 }
 
-.tutor-image img {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    border-radius: 6px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.tutor-service:hover .tutor-image img {
-    transform: scale(1.05);
-}
-
-.tutor-image figcaption {
-    font-size: 0.9rem;
-    color: #333;
-    margin-top: 5px;
-    text-align: center;
-}
-
-.tutor-text {
-    flex: 1;
-    min-width: 250px;
-}
-
-.tutor-text h4 {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    color: #005fa3;
-}
-
-.tutor-text p {
-    line-height: 1.6;
-    font-size: 1rem;
-}
-
-/* ====================
-   Gia sư dạy online
-==================== */
-.tutor-service {
-    display: flex;
-    gap: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    color: #000;
-    flex-wrap: wrap;
-    box-shadow: 0 0 6px rgba(0,0,0,0.1);
-}
-
 /* Đảm bảo hình ảnh nằm bên trái và văn bản bên phải */
 .tutor-image {
     flex: 0 0 30%; /* Hình ảnh chiếm 30% chiều rộng */
@@ -210,7 +159,7 @@ main {
     transform: scale(1.05);
 }
 
-/* Chuyển phần text sang bên phải */
+/* Đảm bảo các phần text bên phải */
 .tutor-text {
     flex: 1;
     min-width: 250px;
@@ -238,6 +187,66 @@ main {
 }
 
 /* ====================
+   Gia sư dạy online
+==================== */
+.tutor-service-online {
+    display: flex;
+    gap: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #000;
+    flex-wrap: wrap;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+}
+
+/* Đảm bảo hình ảnh nằm bên trái và văn bản bên phải */
+.tutor-image-online {
+    flex: 0 0 30%; /* Hình ảnh chiếm 30% chiều rộng */
+    max-width: 300px; /* Giới hạn kích thước hình ảnh */
+}
+
+.tutor-image-online img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.tutor-service-online:hover .tutor-image-online img {
+    transform: scale(1.05);
+}
+
+/* Đảm bảo các phần text bên phải */
+.tutor-text-online {
+    flex: 1;
+    min-width: 250px;
+    text-align: left; /* Canh chỉnh văn bản bên trái */
+}
+
+.tutor-text-online h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #005fa3;
+}
+
+.tutor-text-online p {
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.tutor-text-online ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.tutor-text-online ul li {
+    margin-bottom: 10px;
+}
+
+/* ====================
    Footer
 ==================== */
 footer {
@@ -256,7 +265,7 @@ footer {
         text-align: center;
     }
 
-    .tutor-service {
+    .tutor-service, .tutor-service-online {
         flex-direction: column;
         text-align: center;
     }
@@ -268,5 +277,10 @@ footer {
     .main-nav li {
         display: block;
         margin: 10px 0;
+    }
+
+    /* Đảm bảo hình ảnh không bị zoom quá lớn trên mobile */
+    .tutor-image img, .tutor-image-online img {
+        transform: scale(1);
     }
 }
