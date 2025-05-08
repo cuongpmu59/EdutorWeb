@@ -284,3 +284,41 @@ footer {
         transform: scale(1);
     }
 }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
+
+/* Tiêu đề chính của các phần */
+.section-title,
+#phanhoi h2,
+#lienhe h2 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 2rem;
+  color: #ffffff;
+  background-color: #2a7ae2;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+/* Nền phần Phản hồi và Liên hệ */
+#phanhoi,
+#lienhe {
+  background-color: #2a7ae2;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+#phanhoi ul li a,
+#lienhe ul li a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+#phanhoi ul li a:hover,
+#lienhe ul li a:hover {
+  color: #d6e8ff;
+}
