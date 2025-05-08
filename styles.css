@@ -288,10 +288,8 @@ footer {
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
 
-/* Tiêu đề chính của các phần */
-.section-title,
-#phanhoi h2,
-#lienhe h2 {
+/* Tiêu đề của các phần (Dịch vụ, Gia sư, Phản hồi, Liên hệ) */
+h2 {
   font-family: 'Roboto Slab', serif;
   font-size: 2rem;
   color: #ffffff;
@@ -300,22 +298,16 @@ footer {
   border-radius: 8px;
   display: inline-block;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Nền phần Phản hồi và Liên hệ */
-#phanhoi,
-#lienhe {
-  background-color: #2a7ae2;
-  color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 30px;
-}
-
+/* Đảm bảo các liên kết trong phản hồi và liên hệ có màu sắc và hiệu ứng hover */
 #phanhoi ul li a,
 #lienhe ul li a {
   color: #ffffff;
   text-decoration: underline;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 #phanhoi ul li a:hover,
