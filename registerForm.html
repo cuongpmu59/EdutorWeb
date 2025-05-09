@@ -12,7 +12,7 @@
     .container {
       background-color: #fff;
       padding: 30px;
-      max-width: 500px;
+      max-width: 800px;
       margin: auto;
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -21,66 +21,26 @@
       text-align: center;
       color: #333;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, textarea, select {
+    iframe {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px;
+      height: 1000px;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 20px;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #45a049;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Đăng ký học gia sư</h2>
-    <form action="#" method="post">
-      <label for="fullname">Họ và tên</label>
-      <input type="text" id="fullname" name="fullname" required>
-      
-      <label for="phone">Điện thoại</label>
-      <input type="text" id="phone" name="phone" required>
-      
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required>
+    
+    <!-- Nhúng Google Form vào đây -->
+    <iframe 
+      src="<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeuI6fRgdNnGzJZzatwmxv30NK0rFZSbtJv_7wfZC8jpz5gvQ/viewform?embedded=true" width="640" height="1781" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>" 
+      frameborder="0" 
+      marginheight="0" 
+      marginwidth="0">
+      Đang tải…
+    </iframe>
 
-      <label for="address">Địa chỉ</label>
-      <input type="text" id="address" name="address" required>
-
-      <label for="subject">Môn học muốn học</label>
-      <select id="subject" name="subject" required>
-        <option value="">-- Chọn môn học --</option>
-        <option value="Toán">Toán</option>
-        <option value="Lý">Vật Lý</option>
-        <option value="Hóa">Hóa Học</option>
-        <option value="Anh">Tiếng Anh</option>
-        <option value="Khác">Khác</option>
-      </select>
-
-      <label for="note">Ghi chú</label>
-      <textarea id="note" name="note" rows="4" placeholder="Ví dụ: Cần học cấp tốc trong 2 tháng..."></textarea>
-
-      <button type="submit">Gửi đăng ký</button>
-    </form>
   </div>
 </body>
 </html>
