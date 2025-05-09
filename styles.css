@@ -61,7 +61,6 @@ header .title h1 {
 header .logo img {
     max-width: 80px;
     height: auto;
-    border-radius: 50%;
     background-color: #fff;
     padding: 5px;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
