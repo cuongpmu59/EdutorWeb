@@ -58,6 +58,12 @@ header .title h1 {
     margin: 0;
 }
 
+header .slogan {
+    font-size: 1.5em; /* Hoặc dùng px như 24px */
+    color: white;
+    font-weight: bold;
+  }
+
 header .logo img {
     max-width: 120px;
     height: auto;
