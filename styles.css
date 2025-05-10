@@ -230,7 +230,7 @@ main {
     flex: 1;
     min-width: 250px;
     text-align: left; /* Canh chỉnh văn bản bên trái */
-    margin-top: 15px; /* Thêm khoảng cách giữa hình và chữ */
+    margin-top: 20px; /* Thêm khoảng cách giữa hình và chữ */
 }
 
 .tutor-text-online h4 {
