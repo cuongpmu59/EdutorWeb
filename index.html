@@ -206,19 +206,33 @@
       </section>
 
         <!-- Form chia sẻ ý kiến -->
-        <form id="feedback-form" class="feedback-form">
-          <label for="name">Họ và tên:</label>
-          <input type="text" id="name" name="name" required />
-      
-          <label for="email">Email liên hệ:</label>
-          <input type="email" id="email" name="email" required />
-      
-          <label for="message">Nội dung phản hồi:</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-      
-          <button type="submit">Gửi phản hồi</button>
+    <section id="feedback">
+        <h2>Chia sẻ ý kiến của bạn</h2>
+        <form action="#" method="post" class="feedback-form">
+            <label for="name">Họ và tên:</label>
+            <input type="text" id="name" name="name" placeholder="Nhập họ và tên của bạn" required>
+    
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+    
+            <label for="feedback">Ý kiến của bạn:</label>
+            <textarea id="feedback" name="feedback" placeholder="Chia sẻ ý kiến của bạn tại đây..." rows="4" required></textarea>
+            <button type="submit" class="btn-submit">Gửi ý kiến</button>
         </form>
-      </section>
+    </section>
+    
+    <section id="feedback-display">
+        <h2>Ý kiến của người dùng</h2>
+        <div class="feedback-item">
+            <p class="feedback-text">"Dịch vụ học tập rất tuyệt vời, tôi đã học được nhiều điều bổ ích!"</p>
+            <p class="feedback-author">- Nguyễn Văn A</p>
+        </div>
+        <div class="feedback-item">
+            <p class="feedback-text">"Cảm ơn các gia sư đã giúp đỡ tôi trong suốt quá trình học!"</p>
+            <p class="feedback-author">- Trần Thị B</p>
+        </div>
+    </section>
+    
       
 
 
