@@ -1,6 +1,7 @@
 /* ====================
    Tổng thể
 ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -289,9 +290,6 @@ footer {
         transform: scale(1);
     }
 }
-
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
 
 /* Tiêu đề của các phần (Dịch vụ, Gia sư, Phản hồi, Liên hệ) */
 h2 {
