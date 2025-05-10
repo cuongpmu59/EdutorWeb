@@ -334,3 +334,42 @@ h2 {
 .btn-register:hover {
     background-color: #0056b3;
 }
+
+.sidebar {
+    background-color: #f9fbfd;
+    padding: 2rem;
+    border-top: 2px solid #dee2e6;
+    margin-top: 2rem;
+  }
+  
+  .sidebar section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  .sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+  }
+  
+  .feedback-links li,
+  .contact-info li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+  
+  .feedback-links a,
+  .contact-info a {
+    color: #0077cc;
+    text-decoration: none;
+  }
+  
+  .feedback-links a:hover,
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  
