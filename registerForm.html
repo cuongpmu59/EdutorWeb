@@ -23,8 +23,23 @@
     }
     iframe {
       width: 100%;
-      height: 1800px;
+      height: 1000px;
       border: none;
+    }
+    .submit-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 32px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+    }
+    .submit-btn:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -35,12 +50,27 @@
     <!-- Nhúng Google Form vào đây -->
     <iframe 
       src="https://docs.google.com/forms/d/e/1FAIpQLSeuI6fRgdNnGzJZzatwmxv30NK0rFZSbtJv_7wfZC8jpz5gvQ/viewform?embedded=true" 
+      width="640" 
+      height="1781" 
       frameborder="0" 
       marginheight="0" 
       marginwidth="0">
       Đang tải…
     </iframe>
 
+    <!-- Nút "Gửi đăng ký" -->
+    <button class="submit-btn" onclick="submitForm()">Gửi đăng ký</button>
   </div>
+
+  <script>
+    // Hàm gửi dữ liệu từ form
+    function submitForm() {
+      // Hiển thị thông báo gửi đăng ký thành công
+      alert("Cảm ơn bạn đã đăng ký! Thông tin của bạn đã được gửi.");
+      
+      // Bạn có thể tích hợp mã gửi dữ liệu qua Zalo hoặc các dịch vụ khác nếu muốn
+      // Ví dụ: Gửi thông tin tới API của Zalo nếu cần
+    }
+  </script>
 </body>
 </html>
