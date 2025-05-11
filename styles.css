@@ -78,6 +78,22 @@ header .logo img {
     width: 100%;
 }
 
+@media (max-width: 768px) {
+    h2 {
+        font-size: 1.5rem;
+        padding: 8px 12px;
+    }
+
+    .slogan {
+        font-size: 1.2em;
+    }
+
+    .tutor-text h4,
+    .tutor-text-online h4 {
+        font-size: 1.1rem;
+    }
+}
+
 
 /* ====================
    Navigation
