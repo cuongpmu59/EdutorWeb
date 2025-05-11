@@ -3,55 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng ký học gia sư</title>
+  <title>Phản hồi học viên</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      padding: 40px;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
     }
+
     .container {
-      background-color: #fff;
-      padding: 30px;
-      max-width: 800px;
-      margin: auto;
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+
     h2 {
       text-align: center;
       color: #333;
     }
-    iframe {
-      width: 100%;
-      min-height: 1200px;
-      border: none;
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
     }
-    .submit-btn {
-      background-color: #4CAF50;
-      color: white;
-      padding: 15px 32px;
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
       font-size: 16px;
+    }
+
+    .rating {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+
+    .rating input {
+      display: none;
+    }
+
+    .rating label {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ccc;
+    }
+
+    .rating input:checked ~ label,
+    .rating label:hover,
+    .rating label:hover ~ label {
+      color: gold;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
       border: none;
+      font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
-      display: block;
-      margin: 20px auto;
-      text-align: center;
     }
-    .submit-btn:hover {
-      background-color: #45a049;
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 15px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Đăng ký học gia sư</h2>
-    
-    <iframe 
-      src="https://docs.google.com/forms/d/e/1FAIpQLSeuI6fRgdNnGzJZzatwmxv30NK0rFZSbtJv_7wfZC8jpz5gvQ/viewform?embedded=true">
-      Đang tải…
-    </iframe>
+    <h2>Phản hồi từ học viên</h2>
+    <form action="#" method="post">
+      <label for="name">Họ và tên:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email">
+
+      <label>Đánh giá (1-5 sao):</label>
+      <div class="rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+      </div>
+
+      <label for="message">Ý kiến đóng góp:</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+
+      <button type="submit">Gửi phản hồi</button>
+    </form>
   </div>
 </body>
 </html>
