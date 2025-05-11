@@ -254,5 +254,42 @@
       <p>&copy; 2025 Học Với Thầy Cường. Tất cả các quyền được bảo lưu.</p>
     </footer>
   </div>
+<!-- Nút mở popup -->
+<button class="open-popup-btn">Gửi phản hồi</button>
+
+<!-- Popup phản hồi -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup">
+    <button class="close-btn" id="closePopup">&times;</button>
+    <h2>Phản hồi từ học viên</h2>
+    <form id="feedbackForm">
+      <label for="name">Họ và tên:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email">
+
+      <label>Đánh giá (1-5 sao):</label>
+      <div class="rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+      </div>
+
+      <label for="message">Ý kiến đóng góp:</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+
+      <button type="submit">Gửi phản hồi</button>
+      <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
 </body>
 </html>
