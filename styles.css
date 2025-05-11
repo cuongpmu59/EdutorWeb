@@ -559,3 +559,41 @@ h2 {
     font-weight: bold;
     color: #0077cc;
 }
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .button {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    flex: 1;
+  }
+  
+  .button:hover {
+    background-color: #218838;
+  }
+  
+  /* Thiết bị di động: hiển thị nút trên cùng một hàng */
+  @media (max-width: 768px) {
+    .button-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  
+    .button {
+      flex: 1 1 45%; /* Đảm bảo 2 nút nằm cạnh nhau, chiếm mỗi cái khoảng 45% */
+      margin: 5px;
+    }
+  }
+  
