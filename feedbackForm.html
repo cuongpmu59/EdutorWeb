@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Phản hồi học viên - Popup</title>
+  <title>Phản hồi học viên</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,52 +12,30 @@
       background: #f0f4f8;
     }
 
-    .open-popup-btn {
-      display: block;
+    .feedback-form-container {
+      width: 100%;
+      max-width: 600px;
       margin: 40px auto;
-      padding: 12px 24px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .popup {
-      background: white;
-      border-radius: 10px;
+      background-color: white;
       padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.3);
-      position: relative;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
-    .popup h2 {
+    .feedback-form-container h2 {
       text-align: center;
       margin-bottom: 20px;
     }
 
-    .popup label {
+    .feedback-form-container label {
       display: block;
       margin-top: 10px;
       font-weight: bold;
     }
 
-    .popup input[type="text"],
-    .popup input[type="email"],
-    .popup textarea {
+    .feedback-form-container input[type="text"],
+    .feedback-form-container input[type="email"],
+    .feedback-form-container textarea {
       width: 100%;
       padding: 10px;
       border-radius: 5px;
@@ -88,7 +66,7 @@
       color: gold;
     }
 
-    .popup button[type="submit"] {
+    .feedback-form-container button[type="submit"] {
       width: 100%;
       padding: 10px;
       margin-top: 15px;
@@ -98,17 +76,6 @@
       font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
-    }
-
-    .popup .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 18px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #666;
     }
 
     .success-message {
@@ -121,52 +88,35 @@
 </head>
 <body>
 
- 
+  <div class="feedback-form-container">
+    <h2>Phản hồi từ học viên</h2>
+    <form id="feedbackForm">
+      <label for="name">Họ và tên:</label>
+      <input type="text" id="name" name="name" required>
 
-  <div class="popup-overlay" id="popupOverlay">
-    <div class="popup">
-      <button class="close-btn" id="closePopup">&times;</button>
-      <h2>Phản hồi từ học viên</h2>
-      <form id="feedbackForm">
-        <label for="name">Họ và tên:</label>
-        <input type="text" id="name" name="name" required>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email">
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
+      <label>Đánh giá (1-5 sao):</label>
+      <div class="rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+      </div>
 
-        <label>Đánh giá (1-5 sao):</label>
-        <div class="rating">
-          <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
-          <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
-          <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
-          <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
-          <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
-        </div>
+      <label for="message">Ý kiến đóng góp:</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
 
-        <label for="message">Ý kiến đóng góp:</label>
-        <textarea id="message" name="message" rows="4" required></textarea>
-
-        <button type="submit">Gửi phản hồi</button>
-        <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
-      </form>
-    </div>
+      <button type="submit">Gửi phản hồi</button>
+      <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
+    </form>
   </div>
 
   <script>
-    const openBtn = document.querySelector('.open-popup-btn');
-    const overlay = document.getElementById('popupOverlay');
-    const closeBtn = document.getElementById('closePopup');
     const form = document.getElementById('feedbackForm');
     const successMsg = document.getElementById('successMessage');
-
-    openBtn.addEventListener('click', () => {
-      overlay.style.display = 'flex';
-      successMsg.style.display = 'none';
-    });
-
-    closeBtn.addEventListener('click', () => {
-      overlay.style.display = 'none';
-    });
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -175,9 +125,7 @@
       fetch("https://formsubmit.co/ajax/phungkhaccuong59@gmail.com", {
         method: "POST",
         body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       })
       .then(response => {
         if (response.ok) {
@@ -192,45 +140,6 @@
       });
     });
   </script>
-
-<script>
-  const openBtn = document.querySelector('.open-popup-btn');
-  const overlay = document.getElementById('popupOverlay');
-  const closeBtn = document.getElementById('closePopup');
-  const form = document.getElementById('feedbackForm');
-  const successMsg = document.getElementById('successMessage');
-
-  openBtn.addEventListener('click', () => {
-    overlay.style.display = 'flex';
-    successMsg.style.display = 'none';
-  });
-
-  closeBtn.addEventListener('click', () => {
-    overlay.style.display = 'none';
-  });
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const data = new FormData(form);
-
-    fetch("https://formsubmit.co/ajax/phungkhaccuong59@gmail.com", {
-      method: "POST",
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(response => {
-      if (response.ok) {
-        form.reset();
-        successMsg.style.display = 'block';
-      } else {
-        alert("Có lỗi xảy ra khi gửi. Vui lòng thử lại.");
-      }
-    })
-    .catch(() => {
-      alert("Không thể kết nối. Vui lòng thử lại sau.");
-    });
-  });
-</script>
   
 </body>
 </html>
