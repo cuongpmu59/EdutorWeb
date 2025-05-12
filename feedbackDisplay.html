@@ -2,29 +2,153 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Phản hồi từ học viên" />
-  <title>Phản hồi từ học viên</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phản hồi học viên</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+    }
+
+    .feedback-form-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .feedback-form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .feedback-form-container label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .feedback-form-container input[type="text"],
+    .feedback-form-container input[type="email"],
+    .feedback-form-container textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .rating {
+      display: flex;
+      gap: 5px;
+      margin: 10px 0;
+    }
+
+    .rating input {
+      display: none;
+    }
+
+    .rating label {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ccc;
+    }
+
+    .rating input:checked ~ label,
+    .rating label:hover,
+    .rating label:hover ~ label {
+      color: gold;
+    }
+
+    .feedback-form-container button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .success-message {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Phản hồi từ học viên</h1>
-    <a href="index.htm">Quay lại trang chính</a>  <!-- Liên kết quay lại trang chính -->
-  </header>
 
-  <section class="feedbacks">
-    <h2>Phản hồi 1</h2>
-    <p>Đây là nội dung phản hồi từ học viên 1.</p>
+  <div class="feedback-form-container">
+    <h2>Phản hồi từ học viên</h2>
+    <form id="feedbackForm">
+      <label for="name">Họ và tên:</label>
+      <input type="text" id="name" name="name" required>
 
-    <h2>Phản hồi 2</h2>
-    <p>Đây là nội dung phản hồi từ học viên 2.</p>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email">
 
-    <!-- Các phản hồi khác -->
-  </section>
+      <label>Đánh giá (1-5 sao):</label>
+      <div class="rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+      </div>
 
-  <footer>
-    <p>&copy; 2025 Học cùng Thầy Cường</p>
-  </footer>
+      <label for="message">Ý kiến đóng góp:</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+
+      <button type="submit">Gửi phản hồi</button>
+      <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('feedbackForm');
+    const successMsg = document.getElementById('successMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      fetch("https://formsubmit.co/ajax/phungkhaccuong59@gmail.com", {
+        method: "POST",
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          form.reset();
+          successMsg.style.display = 'block';
+        } else {
+          alert("Có lỗi xảy ra khi gửi. Vui lòng thử lại.");
+        }
+      })
+      .catch(() => {
+        alert("Không thể kết nối. Vui lòng thử lại sau.");
+      });
+    });
+  </script>
+  <script>
+    // Hàm này sẽ được gọi khi form được submit
+    document.getElementById('feedbackForm').onsubmit = function(event) {
+      event.preventDefault();  // Ngừng hành động submit mặc định của form
+      setTimeout(function() {
+        window.location.href = '/';  // Chuyển hướng về trang chính (đổi '/' thành URL của trang chính của bạn)
+      }, 1000);  // Đợi 1 giây (có thể thay đổi thời gian nếu muốn)
+    };
+  </script>
+  
 </body>
 </html>
