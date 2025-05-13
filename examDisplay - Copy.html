@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thi Trắc Nghiệm Toán THPT</title>
+  <link rel="stylesheet" href="css/styles_Exam.css">
+
+  <!-- MathJax -->
+ <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <script>
+          // Đoạn mã đồng hồ đếm ngược
+          var countdownTime = 10 * 60; // Thời gian đếm ngược (10 phút)
+          var timerElement = document.getElementById('timer');
+        
+          function updateTimer() {
+            var minutes = Math.floor(countdownTime / 60);
+            var seconds = countdownTime % 60;
+        
+            // Hiển thị thời gian còn lại dưới dạng mm:ss
+            timerElement.textContent = 'Thời gian còn lại: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        
+            if (countdownTime <= 0) {
+              clearInterval(timerInterval);
+              alert('Hết giờ!');
+            } else {
+              countdownTime--;
+            }
+          }
+        
+          var timerInterval = setInterval(updateTimer, 1000); // Cập nhật mỗi giây
+        </script>
+</head>
+<body>
+
+  <h2>Thi Thử Toán THPT</h2>
+  <div id="timer">Thời gian còn lại: 10:00</div>
+  <form id="quizForm">
+    
+    <!-- Câu hỏi về Hàm số -->
+    <fieldset>
+      <legend>Hàm số</legend>
+      <div>
+        <p>Câu 1: Tính đạo hàm của hàm số \( f(x) = \sin(x) + \cos(x) \).</p>
+        <label><input type="radio" name="q1" value="A"> A. \( \cos(x) - \sin(x) \)</label><br>
+        <label><input type="radio" name="q1" value="B"> B. \( \sin(x) - \cos(x) \)</label><br>
+        <label><input type="radio" name="q1" value="C"> C. \( \cos(x) + \sin(x) \)</label><br>
+        <label><input type="radio" name="q1" value="D"> D. \( -\cos(x) - \sin(x) \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Tích phân -->
+    <fieldset>
+      <legend>Tích phân</legend>
+      <div>
+        <p>Câu 2: Tính tích phân \( \int (x^2 + 3x) dx \).</p>
+        <label><input type="radio" name="q2" value="A"> A. \( \frac{x^3}{3} + \frac{3x^2}{2} + C \)</label><br>
+        <label><input type="radio" name="q2" value="B"> B. \( \frac{x^3}{3} + \frac{x^2}{2} + C \)</label><br>
+        <label><input type="radio" name="q2" value="C"> C. \( \frac{x^2}{2} + 3x + C \)</label><br>
+        <label><input type="radio" name="q2" value="D"> D. \( x^3 + 3x^2 + C \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Xác suất -->
+    <fieldset>
+      <legend>Xác suất</legend>
+      <div>
+        <p>Câu 3: Một thùng chứa 4 quả bóng đỏ và 6 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được quả bóng xanh là:</p>
+        <label><input type="radio" name="q3" value="A"> A. \( \frac{4}{10} \)</label><br>
+        <label><input type="radio" name="q3" value="B"> B. \( \frac{6}{10} \)</label><br>
+        <label><input type="radio" name="q3" value="C"> C. \( \frac{2}{5} \)</label><br>
+        <label><input type="radio" name="q3" value="D"> D. \( \frac{6}{4} \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
+    <fieldset>
+      <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
+      <div>
+        <p>Câu 4: Phương trình của mặt phẳng đi qua điểm \( P(1, 1, 1) \) và có phương vector pháp tuyến \( \vec{n} = (1, 2, 3) \) là:</p>
+        <label><input type="radio" name="q4" value="A"> A. \( x + 2y + 3z = 6 \)</label><br>
+        <label><input type="radio" name="q4" value="B"> B. \( x + 2y + 3z = 3 \)</label><br>
+        <label><input type="radio" name="q4" value="C"> C. \( x - 2y + 3z = 3 \)</label><br>
+        <label><input type="radio" name="q4" value="D"> D. \( x + y + z = 6 \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Hình học không gian -->
+    <fieldset>
+      <legend>Hình học không gian</legend>
+      <div>
+        <p>Câu 5: Tính thể tích hình cầu có bán kính 4.</p>
+        <label><input type="radio" name="q5" value="A"> A. \( \frac{4\pi}{3} \)</label><br>
+        <label><input type="radio" name="q5" value="B"> B. \( \frac{16\pi}{3} \)</label><br>
+        <label><input type="radio" name="q5" value="C"> C. \( \frac{64\pi}{3} \)</label><br>
+        <label><input type="radio" name="q5" value="D"> D. \( \frac{128\pi}{3} \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Hàm số -->
+    <fieldset>
+      <legend>Hàm số</legend>
+      <div>
+        <p>Câu 6: Tính đạo hàm của hàm số \( f(x) = e^x + \ln(x) \).</p>
+        <label><input type="radio" name="q6" value="A"> A. \( e^x + \frac{1}{x} \)</label><br>
+        <label><input type="radio" name="q6" value="B"> B. \( e^x - \frac{1}{x} \)</label><br>
+        <label><input type="radio" name="q6" value="C"> C. \( e^x + x \)</label><br>
+        <label><input type="radio" name="q6" value="D"> D. \( e^x + \frac{1}{2x} \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Tích phân -->
+    <fieldset>
+      <legend>Tích phân</legend>
+      <div>
+        <p>Câu 7: Tính tích phân \( \int_0^1 (2x + 3) dx \).</p>
+        <label><input type="radio" name="q7" value="A"> A. \( \frac{7}{3} \)</label><br>
+        <label><input type="radio" name="q7" value="B"> B. \( \frac{5}{3} \)</label><br>
+        <label><input type="radio" name="q7" value="C"> C. \( \frac{8}{3} \)</label><br>
+        <label><input type="radio" name="q7" value="D"> D. \( \frac{10}{3} \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Xác suất -->
+    <fieldset>
+      <legend>Xác suất</legend>
+      <div>
+        <p>Câu 8: Một hộp chứa 5 quả bóng đỏ và 3 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được quả bóng đỏ là:</p>
+        <label><input type="radio" name="q8" value="A"> A. \( \frac{5}{8} \)</label><br>
+        <label><input type="radio" name="q8" value="B"> B. \( \frac{3}{8} \)</label><br>
+        <label><input type="radio" name="q8" value="C"> C. \( \frac{5}{3} \)</label><br>
+        <label><input type="radio" name="q8" value="D"> D. \( \frac{2}{5} \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
+    <fieldset>
+      <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
+      <div>
+        <p>Câu 9: Phương trình của mặt phẳng chứa điểm \( P(2, 3, 4) \) và có vector pháp tuyến \( \vec{n} = (1, -1, 2) \) là:</p>
+        <label><input type="radio" name="q9" value="A"> A. \( x - y + 2z = 12 \)</label><br>
+        <label><input type="radio" name="q9" value="B"> B. \( x - y + 2z = 10 \)</label><br>
+        <label><input type="radio" name="q9" value="C"> C. \( 2x - y + z = 10 \)</label><br>
+        <label><input type="radio" name="q9" value="D"> D. \( x + y + z = 12 \)</label><br>
+      </div>
+    </fieldset>
+
+    <!-- Câu hỏi về Hình học không gian -->
+    <fieldset>
+      <legend>Hình học không gian</legend>
+      <div>
+        <p>Câu 10: Tính thể tích hình chóp có đáy là hình vuông cạnh 4 và chiều cao 6.</p>
+        <label><input type="radio" name="q10" value="A"> A. \( 96 \)</label><br>
+        <label><input type="radio" name="q10" value="B"> B. \( 72 \)</label><br>
+        <label><input type="radio" name="q10" value="C"> C. \( 48 \)</label><br>
+        <label><input type="radio" name="q10" value="D"> D. \( 60 \)</label><br>
+      </div>
+    </fieldset>
+
+<fieldset>
+  <legend>Hàm số</legend>
+  <div>
+    <p>Câu 11: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
+    <label><input type="radio" name="q11" value="A"> A. \( \sec^2(x) + \frac{1}{x} \)</label><br>
+    <label><input type="radio" name="q11" value="B"> B. \( \sec^2(x) - \frac{1}{x} \)</label><br>
+    <label><input type="radio" name="q11" value="C"> C. \( \tan(x) + \frac{1}{x} \)</label><br>
+    <label><input type="radio" name="q11" value="D"> D. \( \sec(x) + \frac{1}{x} \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Tích phân</legend>
+  <div>
+    <p>Câu 12: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
+    <label><input type="radio" name="q12" value="A"> A. \( 4 \)</label><br>
+    <label><input type="radio" name="q12" value="B"> B. \( 3 \)</label><br>
+    <label><input type="radio" name="q12" value="C"> C. \( 2 \)</label><br>
+    <label><input type="radio" name="q12" value="D"> D. \( 1 \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Xác suất</legend>
+  <div>
+    <p>Câu 13: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
+    <label><input type="radio" name="q13" value="A"> A. \( \frac{6}{10} \)</label><br>
+    <label><input type="radio" name="q13" value="B"> B. \( \frac{5}{9} \)</label><br>
+    <label><input type="radio" name="q13" value="C"> C. \( \frac{6}{9} \)</label><br>
+    <label><input type="radio" name="q13" value="D"> D. \( \frac{5}{10} \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hình học không gian</legend>
+  <div>
+    <p>Câu 14: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
+    <label><input type="radio" name="q14" value="A"> A. \( \frac{250\pi}{3} \)</label><br>
+    <label><input type="radio" name="q14" value="B"> B. \( \frac{500\pi}{3} \)</label><br>
+    <label><input type="radio" name="q14" value="C"> C. \( \frac{200\pi}{3} \)</label><br>
+    <label><input type="radio" name="q14" value="D"> D. \( \frac{300\pi}{3} \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hình học phẳng</legend>
+  <div>
+    <p>Câu 15: Tính diện tích hình vuông có cạnh dài 8.</p>
+    <label><input type="radio" name="q15" value="A"> A. \( 64 \)</label><br>
+    <label><input type="radio" name="q15" value="B"> B. \( 32 \)</label><br>
+    <label><input type="radio" name="q15" value="C"> C. \( 16 \)</label><br>
+    <label><input type="radio" name="q15" value="D"> D. \( 128 \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hàm số</legend>
+  <div>
+    <p>Câu 16: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
+    <label><input type="radio" name="q16" value="A"> A. 0</label><br>
+    <label><input type="radio" name="q16" value="B"> B. 1</label><br>
+    <label><input type="radio" name="q16" value="C"> C. Không xác định</label><br>
+    <label><input type="radio" name="q16" value="D"> D. \( \infty \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Tích phân</legend>
+  <div>
+    <p>Câu 17: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
+    <label><input type="radio" name="q17" value="A"> A. \( 2 \)</label><br>
+    <label><input type="radio" name="q17" value="B"> B. \( 1 \)</label><br>
+    <label><input type="radio" name="q17" value="C"> C. \( 3 \)</label><br>
+    <label><input type="radio" name="q17" value="D"> D. \( 4 \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Xác suất</legend>
+  <div>
+    <p>Câu 18: Tính xác suất rút được quả bóng xanh từ một thùng chứa có 3 quả bóng đỏ và 7 quả bóng xanh.</p>
+    <label><input type="radio" name="q18" value="A"> A. \( \frac{3}{10} \)</label><br>
+    <label><input type="radio" name="q18" value="B"> B. \( \frac{7}{10} \)</label><br>
+    <label><input type="radio" name="q18" value="C"> C. \( \frac{1}{2} \)</label><br>
+    <label><input type="radio" name="q18" value="D"> D. \( \frac{2}{5} \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hình học không gian</legend>
+  <div>
+    <p>Câu 19: Tính diện tích mặt cầu có bán kính 6.</p>
+    <label><input type="radio" name="q19" value="A"> A. \( 144\pi \)</label><br>
+    <label><input type="radio" name="q19" value="B"> B. \( 72\pi \)</label><br>
+    <label><input type="radio" name="q19" value="C"> C. \( 36\pi \)</label><br>
+    <label><input type="radio" name="q19" value="D"> D. \( 18\pi \)</label><br>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hình học phẳng</legend>
+  <div>
+    <p>Câu 20: Tính diện tích tam giác có ba cạnh dài 5, 12 và 13.</p>
+    <label><input type="radio" name="q20" value="A"> A. \( 30 \)</label><br>
+    <label><input type="radio" name="q20" value="B"> B. \( 35 \)</label><br>
+    <label><input type="radio" name="q20" value="C"> C. \( 60 \)</label><br>
+    <label><input type="radio" name="q20" value="D"> D. \( 40 \)</label><br>
+  </div>
+</fieldset>
+
+
+      <fieldset>
+        <legend>Hàm số</legend>
+        <div>
+          <p>Câu 21: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
+          <label><input type="radio" name="q11" value="A"> A. \( \sec^2(x) + \frac{1}{x} \)</label><br>
+          <label><input type="radio" name="q11" value="B"> B. \( \sec^2(x) - \frac{1}{x} \)</label><br>
+          <label><input type="radio" name="q11" value="C"> C. \( \tan(x) + \frac{1}{x} \)</label><br>
+          <label><input type="radio" name="q11" value="D"> D. \( \sec(x) + \frac{1}{x} \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Tích phân</legend>
+        <div>
+          <p>Câu 22: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
+          <label><input type="radio" name="q12" value="A"> A. \( 4 \)</label><br>
+          <label><input type="radio" name="q12" value="B"> B. \( 3 \)</label><br>
+          <label><input type="radio" name="q12" value="C"> C. \( 2 \)</label><br>
+          <label><input type="radio" name="q12" value="D"> D. \( 1 \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Xác suất</legend>
+        <div>
+          <p>Câu 23: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
+          <label><input type="radio" name="q13" value="A"> A. \( \frac{6}{10} \)</label><br>
+          <label><input type="radio" name="q13" value="B"> B. \( \frac{5}{9} \)</label><br>
+          <label><input type="radio" name="q13" value="C"> C. \( \frac{6}{9} \)</label><br>
+          <label><input type="radio" name="q13" value="D"> D. \( \frac{5}{10} \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Hình học không gian</legend>
+        <div>
+          <p>Câu 24: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
+          <label><input type="radio" name="q14" value="A"> A. \( \frac{250\pi}{3} \)</label><br>
+          <label><input type="radio" name="q14" value="B"> B. \( \frac{500\pi}{3} \)</label><br>
+          <label><input type="radio" name="q14" value="C"> C. \( \frac{200\pi}{3} \)</label><br>
+          <label><input type="radio" name="q14" value="D"> D. \( \frac{300\pi}{3} \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Hình học phẳng</legend>
+        <div>
+          <p>Câu 25: Tính diện tích hình vuông có cạnh dài 8.</p>
+          <label><input type="radio" name="q15" value="A"> A. \( 64 \)</label><br>
+          <label><input type="radio" name="q15" value="B"> B. \( 32 \)</label><br>
+          <label><input type="radio" name="q15" value="C"> C. \( 16 \)</label><br>
+          <label><input type="radio" name="q15" value="D"> D. \( 128 \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Hàm số</legend>
+        <div>
+          <p>Câu 26: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
+          <label><input type="radio" name="q16" value="A"> A. 0</label><br>
+          <label><input type="radio" name="q16" value="B"> B. 1</label><br>
+          <label><input type="radio" name="q16" value="C"> C. Không xác định</label><br>
+          <label><input type="radio" name="q16" value="D"> D. \( \infty \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Tích phân</legend>
+        <div>
+          <p>Câu 27: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
+          <label><input type="radio" name="q17" value="A"> A. \( 2 \)</label><br>
+          <label><input type="radio" name="q17" value="B"> B. \( 1 \)</label><br>
+          <label><input type="radio" name="q17" value="C"> C. \( 3 \)</label><br>
+          <label><input type="radio" name="q17" value="D"> D. \( 4 \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Xác suất</legend>
+        <div>
+          <p>Câu 28: Tính xác suất rút được quả bóng xanh từ một thùng chứa có 3 quả bóng đỏ và 7 quả bóng xanh.</p>
+          <label><input type="radio" name="q18" value="A"> A. \( \frac{3}{10} \)</label><br>
+          <label><input type="radio" name="q18" value="B"> B. \( \frac{7}{10} \)</label><br>
+          <label><input type="radio" name="q18" value="C"> C. \( \frac{1}{2} \)</label><br>
+          <label><input type="radio" name="q18" value="D"> D. \( \frac{2}{5} \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Hình học không gian</legend>
+        <div>
+          <p>Câu 29: Tính diện tích mặt cầu có bán kính 6.</p>
+          <label><input type="radio" name="q19" value="A"> A. \( 144\pi \)</label><br>
+          <label><input type="radio" name="q19" value="B"> B. \( 72\pi \)</label><br>
+          <label><input type="radio" name="q19" value="C"> C. \( 36\pi \)</label><br>
+          <label><input type="radio" name="q19" value="D"> D. \( 18\pi \)</label><br>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Hình học phẳng</legend>
+        <div>
+          <p>Câu 30: Tính diện tích tam giác có ba cạnh dài 5, 12 và 13.</p>
+          <label><input type="radio" name="q20" value="A"> A. \( 30 \)</label><br>
+          <label><input type="radio" name="q20" value="B"> B. \( 35 \)</label><br>
+          <label><input type="radio" name="q20" value="C"> C. \( 60 \)</label><br>
+          <label><input type="radio" name="q20" value="D"> D. \( 40 \)</label><br>
+        </div>
+      </fieldset>
+      
+      <button type="button" onclick="submitQuiz()">Nộp bài</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function submitQuiz() {
+      const answers = {
+        q1: "B",
+        q2: "B",
+        q3: "B",
+        q4: "C",
+        q5: "B",
+        q6: "A",
+        q7: "A",
+        q8: "B",
+        q9: "B",
+        q10: "C"
+        q11: "A",
+        q12: "A",
+        q13: "B",
+        q14: "A",
+        q15: "A",
+        q16: "B",
+        q17: "A",
+        q18: "B",
+        q19: "A"
+        q20: "A",
+        q21: "A",
+        q22: "B",
+        q24: "A",
+        q25: "A",
+        q26: "B",
+        q27: "A",
+        q28: "B",
+        q29: "A"
+        q30: "A"
+    };
+
+      let score = 0;
+      let total = Object.keys(answers).length;
+
+      for (let q in answers) {
+        const radios = document.getElementsByName(q);
+        for (let radio of radios) {
+          if (radio.checked && radio.value === answers[q]) {
+            score++;
+          }
+        }
+      }
+
+      const result = document.getElementById("result");
+      result.textContent = `Bạn làm đúng ${score}/${total} câu. Điểm: ${(score / total * 10).toFixed(1)}`;
+    }
+  </script>
+</body>
+</html>
