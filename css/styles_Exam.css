@@ -19,4 +19,19 @@ body {
       font-size: 16px;
     }
   }
+
+  .submit-btn {
+    background-color: #4CAF50; /* Màu nền */
+    color: white; /* Màu chữ */
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  
+  .submit-btn:hover {
+    background-color: #45a049;
+  }
+  
   
