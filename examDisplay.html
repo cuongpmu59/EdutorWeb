@@ -18,7 +18,28 @@
 <script id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-
+        <script>
+          // Đoạn mã đồng hồ đếm ngược
+          var countdownTime = 10 * 60; // Thời gian đếm ngược (10 phút)
+          var timerElement = document.getElementById('timer');
+        
+          function updateTimer() {
+            var minutes = Math.floor(countdownTime / 60);
+            var seconds = countdownTime % 60;
+        
+            // Hiển thị thời gian còn lại dưới dạng mm:ss
+            timerElement.textContent = 'Thời gian còn lại: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        
+            if (countdownTime <= 0) {
+              clearInterval(timerInterval);
+              alert('Hết giờ!');
+            } else {
+              countdownTime--;
+            }
+          }
+        
+          var timerInterval = setInterval(updateTimer, 1000); // Cập nhật mỗi giây
+        </script>
 </head>
 <body>
 
@@ -266,24 +287,44 @@
 
 <script src="js/quiz.js"></script>
 
+
+
+<button type="button" onclick="submitQuiz()">Nộp bài</button>
 <script>
-  let time = 600; // 10 phút = 600 giây
-  const timerElement = document.getElementById("timer");
+  function submitQuiz() {
+    const answers = {
+      q1: "A",
+      q2: "A",
+      q3: "B",
+      q4: "B",
+      q5: "C",
+      q6: "A",
+      q7: "D",
+      q8: "A",
+      q9: "A",
+      q10: "C",
+      q11: "A",
+      q12: "A",
+      q13: "B",
+      q14: "A",
+      q15: "A",
+      q16: "B",
+      q17: "A",
+      q18: "B",
+      q19: "A"
+    };
 
-  const countdown = setInterval(() => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    timerElement.textContent = `Thời gian còn lại: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    time--;
-
-    if (time < 0) {
-      clearInterval(countdown);
-      timerElement.textContent = "Hết giờ!";
-      document.getElementById("quizForm").submit(); // hoặc hiển thị cảnh báo
+    let score = 0;
+    for (let q in answers) {
+      const selected = document.querySelector(`input[name="${q}"]:checked`);
+      if (selected && selected.value === answers[q]) {
+        score++;
+      }
     }
-  }, 1000);
-</script>
 
+    alert(`Bạn đã đúng ${score}/${Object.keys(answers).length} câu.`);
+  }
+</script>
 
 
 </body>
