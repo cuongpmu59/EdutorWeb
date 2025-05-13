@@ -277,226 +277,11 @@
   </div>
 </fieldset>
 
-<h3 id="result"></h3>
-
-<script src="js/quiz.js"></script>
-  <button type="button" onclick="submitQuiz()">Nộp bài</button>
-<script>
-  function submitQuiz() {
-    const answers = {
-      q1: "A",
-      q2: "A",
-      q3: "B",
-      q4: "B",
-      q5: "C",
-      q6: "A",
-      q7: "D",
-      q8: "A",
-      q9: "A",
-      q10: "C",
-      q11: "A",
-      q12: "A",
-      q13: "B",
-      q14: "A",
-      q15: "A",
-      q16: "B",
-      q17: "A",
-      q18: "B",
-      q19: "A"
-    };
-
-    let score = 0;
-    for (let q in answers) {
-      const selected = document.querySelector(`input[name="${q}"]:checked`);
-      if (selected && selected.value === answers[q]) {
-        score++;
-      }
-    }
-
-    alert(`Bạn đã đúng ${score}/${Object.keys(answers).length} câu.`);
-  }
-</script>
-
-
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bài thi trắc nghiệm Toán THPT</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    .question {
-      margin-bottom: 25px;
-    }
-    .question p {
-      font-weight: bold;
-    }
-    .answers label {
-      display: block;
-      margin: 6px 0;
-    }
-    button {
-      background-color: #3498db;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-    #result {
-      margin-top: 25px;
-      font-size: 20px;
-      color: #27ae60;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Bài thi trắc nghiệm Toán THPT</h1>
-    <form id="quizForm">
-
-      <!-- Câu hỏi 1 -->
-      <div class="question">
-        <p>Câu 1: Đạo hàm của hàm số \( y = x^3 \) là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q1" value="A"> A. 3x</label>
-          <label><input type="radio" name="q1" value="B"> B. 3x²</label>
-          <label><input type="radio" name="q1" value="C"> C. x²</label>
-          <label><input type="radio" name="q1" value="D"> D. 2x</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 2 -->
-      <div class="question">
-        <p>Câu 2: Hàm số nào sau đây là hàm lẻ?</p>
-        <div class="answers">
-          <label><input type="radio" name="q2" value="A"> A. \( y = x^2 \)</label>
-          <label><input type="radio" name="q2" value="B"> B. \( y = x^3 \)</label>
-          <label><input type="radio" name="q2" value="C"> C. \( y = x + 1 \)</label>
-          <label><input type="radio" name="q2" value="D"> D. \( y = \sqrt{x} \)</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 3 -->
-      <div class="question">
-        <p>Câu 3: Hàm số nào sau đây nghịch biến trên khoảng (0; +∞)?</p>
-        <div class="answers">
-          <label><input type="radio" name="q3" value="A"> A. \( y = x^2 \)</label>
-          <label><input type="radio" name="q3" value="B"> B. \( y = \frac{1}{x} \)</label>
-          <label><input type="radio" name="q3" value="C"> C. \( y = \sqrt{x} \)</label>
-          <label><input type="radio" name="q3" value="D"> D. \( y = x^3 \)</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 4 -->
-      <div class="question">
-        <p>Câu 4: Hàm số \( y = -x^2 + 4x - 1 \) đạt giá trị lớn nhất tại x bằng:</p>
-        <div class="answers">
-          <label><input type="radio" name="q4" value="A"> A. 0</label>
-          <label><input type="radio" name="q4" value="B"> B. 1</label>
-          <label><input type="radio" name="q4" value="C"> C. 2</label>
-          <label><input type="radio" name="q4" value="D"> D. 4</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 5 -->
-      <div class="question">
-        <p>Câu 5: Hàm số \( y = \ln x \) có tập xác định là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q5" value="A"> A. \( \mathbb{R} \)</label>
-          <label><input type="radio" name="q5" value="B"> B. \( (0; +\infty) \)</label>
-          <label><input type="radio" name="q5" value="C"> C. \( (-\infty; 0) \)</label>
-          <label><input type="radio" name="q5" value="D"> D. \( [0; +\infty) \)</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 6 -->
-      <div class="question">
-        <p>Câu 6: Đạo hàm của hàm số \( y = \sqrt{x} \) là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q6" value="A"> A. \( \frac{1}{2\sqrt{x}} \)</label>
-          <label><input type="radio" name="q6" value="B"> B. \( \frac{1}{\sqrt{x}} \)</label>
-          <label><input type="radio" name="q6" value="C"> C. \( 2\sqrt{x} \)</label>
-          <label><input type="radio" name="q6" value="D"> D. \( \sqrt{x} \)</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 7 -->
-      <div class="question">
-        <p>Câu 7: Giá trị nhỏ nhất của hàm số \( y = x^2 - 4x + 5 \) là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q7" value="A"> A. 1</label>
-          <label><input type="radio" name="q7" value="B"> B. 5</label>
-          <label><input type="radio" name="q7" value="C"> C. 0</label>
-          <label><input type="radio" name="q7" value="D"> D. 2</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 8 -->
-      <div class="question">
-        <p>Câu 8: Hàm số \( y = \frac{1}{x} \) là hàm:</p>
-        <div class="answers">
-          <label><input type="radio" name="q8" value="A"> A. Đồng biến trên R</label>
-          <label><input type="radio" name="q8" value="B"> B. Nghịch biến trên từng khoảng xác định</label>
-          <label><input type="radio" name="q8" value="C"> C. Không xác định</label>
-          <label><input type="radio" name="q8" value="D"> D. Không đồng biến không nghịch biến</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 9 -->
-      <div class="question">
-        <p>Câu 9: Hàm số \( y = e^x \) có đạo hàm là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q9" value="A"> A. \( e^{2x} \)</label>
-          <label><input type="radio" name="q9" value="B"> B. \( e^x \)</label>
-          <label><input type="radio" name="q9" value="C"> C. \( \ln x \)</label>
-          <label><input type="radio" name="q9" value="D"> D. \( x^e \)</label>
-        </div>
-      </div>
-
-      <!-- Câu hỏi 10 -->
-      <div class="question">
-        <p>Câu 10: Tập xác định của hàm số \( y = \sqrt{1 - x^2} \) là:</p>
-        <div class="answers">
-          <label><input type="radio" name="q10" value="A"> A. \( (-1; 1) \)</label>
-          <label><input type="radio" name="q10" value="B"> B. \( (-\infty; +\infty) \)</label>
-          <label><input type="radio" name="q10" value="C"> C. \( [-1; 1] \)</label>
-          <label><input type="radio" name="q10" value="D"> D. \( (1; +\infty) \)</label>
-        </div>
-      </div>
 
       <fieldset>
         <legend>Hàm số</legend>
         <div>
-          <p>Câu 11: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
+          <p>Câu 21: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
           <label><input type="radio" name="q11" value="A"> A. \( \sec^2(x) + \frac{1}{x} \)</label><br>
           <label><input type="radio" name="q11" value="B"> B. \( \sec^2(x) - \frac{1}{x} \)</label><br>
           <label><input type="radio" name="q11" value="C"> C. \( \tan(x) + \frac{1}{x} \)</label><br>
@@ -507,7 +292,7 @@
       <fieldset>
         <legend>Tích phân</legend>
         <div>
-          <p>Câu 12: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
+          <p>Câu 22: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
           <label><input type="radio" name="q12" value="A"> A. \( 4 \)</label><br>
           <label><input type="radio" name="q12" value="B"> B. \( 3 \)</label><br>
           <label><input type="radio" name="q12" value="C"> C. \( 2 \)</label><br>
@@ -518,7 +303,7 @@
       <fieldset>
         <legend>Xác suất</legend>
         <div>
-          <p>Câu 13: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
+          <p>Câu 23: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
           <label><input type="radio" name="q13" value="A"> A. \( \frac{6}{10} \)</label><br>
           <label><input type="radio" name="q13" value="B"> B. \( \frac{5}{9} \)</label><br>
           <label><input type="radio" name="q13" value="C"> C. \( \frac{6}{9} \)</label><br>
@@ -529,7 +314,7 @@
       <fieldset>
         <legend>Hình học không gian</legend>
         <div>
-          <p>Câu 14: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
+          <p>Câu 24: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
           <label><input type="radio" name="q14" value="A"> A. \( \frac{250\pi}{3} \)</label><br>
           <label><input type="radio" name="q14" value="B"> B. \( \frac{500\pi}{3} \)</label><br>
           <label><input type="radio" name="q14" value="C"> C. \( \frac{200\pi}{3} \)</label><br>
@@ -540,7 +325,7 @@
       <fieldset>
         <legend>Hình học phẳng</legend>
         <div>
-          <p>Câu 15: Tính diện tích hình vuông có cạnh dài 8.</p>
+          <p>Câu 25: Tính diện tích hình vuông có cạnh dài 8.</p>
           <label><input type="radio" name="q15" value="A"> A. \( 64 \)</label><br>
           <label><input type="radio" name="q15" value="B"> B. \( 32 \)</label><br>
           <label><input type="radio" name="q15" value="C"> C. \( 16 \)</label><br>
@@ -551,7 +336,7 @@
       <fieldset>
         <legend>Hàm số</legend>
         <div>
-          <p>Câu 16: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
+          <p>Câu 26: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
           <label><input type="radio" name="q16" value="A"> A. 0</label><br>
           <label><input type="radio" name="q16" value="B"> B. 1</label><br>
           <label><input type="radio" name="q16" value="C"> C. Không xác định</label><br>
@@ -562,7 +347,7 @@
       <fieldset>
         <legend>Tích phân</legend>
         <div>
-          <p>Câu 17: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
+          <p>Câu 27: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
           <label><input type="radio" name="q17" value="A"> A. \( 2 \)</label><br>
           <label><input type="radio" name="q17" value="B"> B. \( 1 \)</label><br>
           <label><input type="radio" name="q17" value="C"> C. \( 3 \)</label><br>
@@ -573,7 +358,7 @@
       <fieldset>
         <legend>Xác suất</legend>
         <div>
-          <p>Câu 18: Tính xác suất rút được quả bóng xanh từ một thùng chứa có 3 quả bóng đỏ và 7 quả bóng xanh.</p>
+          <p>Câu 28: Tính xác suất rút được quả bóng xanh từ một thùng chứa có 3 quả bóng đỏ và 7 quả bóng xanh.</p>
           <label><input type="radio" name="q18" value="A"> A. \( \frac{3}{10} \)</label><br>
           <label><input type="radio" name="q18" value="B"> B. \( \frac{7}{10} \)</label><br>
           <label><input type="radio" name="q18" value="C"> C. \( \frac{1}{2} \)</label><br>
@@ -584,7 +369,7 @@
       <fieldset>
         <legend>Hình học không gian</legend>
         <div>
-          <p>Câu 19: Tính diện tích mặt cầu có bán kính 6.</p>
+          <p>Câu 29: Tính diện tích mặt cầu có bán kính 6.</p>
           <label><input type="radio" name="q19" value="A"> A. \( 144\pi \)</label><br>
           <label><input type="radio" name="q19" value="B"> B. \( 72\pi \)</label><br>
           <label><input type="radio" name="q19" value="C"> C. \( 36\pi \)</label><br>
@@ -595,7 +380,7 @@
       <fieldset>
         <legend>Hình học phẳng</legend>
         <div>
-          <p>Câu 20: Tính diện tích tam giác có ba cạnh dài 5, 12 và 13.</p>
+          <p>Câu 30: Tính diện tích tam giác có ba cạnh dài 5, 12 và 13.</p>
           <label><input type="radio" name="q20" value="A"> A. \( 30 \)</label><br>
           <label><input type="radio" name="q20" value="B"> B. \( 35 \)</label><br>
           <label><input type="radio" name="q20" value="C"> C. \( 60 \)</label><br>
@@ -603,9 +388,6 @@
         </div>
       </fieldset>
       
-
-
-
       <button type="button" onclick="submitQuiz()">Nộp bài</button>
     </form>
 
@@ -625,7 +407,26 @@
         q8: "B",
         q9: "B",
         q10: "C"
-      };
+        q11: "A",
+        q12: "A",
+        q13: "B",
+        q14: "A",
+        q15: "A",
+        q16: "B",
+        q17: "A",
+        q18: "B",
+        q19: "A"
+        q20: "A",
+        q21: "A",
+        q22: "B",
+        q24: "A",
+        q25: "A",
+        q26: "B",
+        q27: "A",
+        q28: "B",
+        q29: "A"
+        q30: "A"
+    };
 
       let score = 0;
       let total = Object.keys(answers).length;
