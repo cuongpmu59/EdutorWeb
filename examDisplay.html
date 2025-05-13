@@ -265,5 +265,26 @@
 <h3 id="result"></h3>
 
 <script src="js/quiz.js"></script>
+
+<script>
+  let time = 600; // 10 phút = 600 giây
+  const timerElement = document.getElementById("timer");
+
+  const countdown = setInterval(() => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    timerElement.textContent = `Thời gian còn lại: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    time--;
+
+    if (time < 0) {
+      clearInterval(countdown);
+      timerElement.textContent = "Hết giờ!";
+      document.getElementById("quizForm").submit(); // hoặc hiển thị cảnh báo
+    }
+  }, 1000);
+</script>
+
+
+
 </body>
 </html>
