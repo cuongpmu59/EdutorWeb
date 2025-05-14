@@ -130,6 +130,15 @@ button[type="submit"]:hover {
   }
 }
 
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  let score = 0;
+  if (document.querySelector('input[name="q1"]:checked')?.value === 'B') score++;
+  if (document.querySelector('input[name="q2"]:checked')?.value === 'B') score++;
+
+  alert(`Bạn đúng ${score}/2 câu`);
+});
+
 
 
 
