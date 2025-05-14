@@ -15,11 +15,24 @@ body {
 }
 
 /* Bố cục 2 cột linh hoạt */
+
 .container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
 }
+.left-column, .right-column {
+  flex: 1 1 100%;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .left-column, .right-column {
+    flex: 1;
+  }
+}
+
+
+
 
 /* Cột trái và phải */
 .left-column, .right-column {
@@ -116,4 +129,7 @@ button[type="submit"]:hover {
     font-size: 16px;
   }
 }
+
+
+
 
