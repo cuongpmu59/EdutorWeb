@@ -1,38 +1,35 @@
-document.getElementById('quizForm').addEventListener('submit', function(event) {
-  event.preventDefault();  // Ngăn không cho form được gửi đi
+document.addEventListener('DOMContentLoaded', () => {
+  const totalQuestions = 2; // ← Thay số lượng câu hỏi tại đây nếu có thêm
 
-  // Lấy các giá trị đã chọn từ các câu hỏi
-  const q1Answer = document.querySelector('input[name="q1"]:checked');
-  const q2Answer = document.querySelector('input[name="q2"]:checked');
+  for (let i = 1; i <= totalQuestions; i++) {
+    const quizRadios = document.querySelectorAll(`input[name="q${i}"]`);
+    const answerRadios = document.querySelectorAll(`input[name="q${i}-answer"]`);
+    const answerSpan = document.getElementById(`answer${i}`);
 
-  // Cập nhật phiếu trả lời
-  if (q1Answer) {
-    document.getElementById('answer1').textContent = q1Answer.nextSibling.textContent.trim();
-  } else {
-    document.getElementById('answer1').textContent = 'Chưa chọn';
+    // Khi chọn ở phần bài thi → cập nhật bên phiếu trả lời và span
+    quizRadios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        answerRadios.forEach((r) => {
+          r.checked = (r.value === radio.value);
+        });
+        if (answerSpan) answerSpan.textContent = radio.value;
+      });
+    });
+
+    // Khi chọn ở phiếu trả lời → cập nhật bên bài thi và span
+    answerRadios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        quizRadios.forEach((r) => {
+          r.checked = (r.value === radio.value);
+        });
+        if (answerSpan) answerSpan.textContent = radio.value;
+      });
+    });
   }
 
-  if (q2Answer) {
-    document.getElementById('answer2').textContent = q2Answer.nextSibling.textContent.trim();
-  } else {
-    document.getElementById('answer2').textContent = 'Chưa chọn';
-  }
-
-  // Nếu có thêm câu hỏi, tiếp tục cập nhật tương tự
-});
-
-document.getElementById("quizForm").addEventListener("change", function (e) {
-  if (e.target.name.startsWith("q")) {
-    const questionNumber = e.target.name.substring(1);
-    const answerValue = e.target.value;
-    const answerSpan = document.getElementById("answer" + questionNumber);
-    if (answerSpan) {
-      answerSpan.textContent = answerValue;
-    }
-  }
-});
-
-document.getElementById("quizForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-  alert("Bài làm đã được nộp!");
+  // Xử lý khi nộp bài
+  document.getElementById("quizForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert("Bài làm đã được nộp!");
+  });
 });
