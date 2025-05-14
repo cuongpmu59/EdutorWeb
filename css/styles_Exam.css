@@ -130,14 +130,57 @@ button[type="submit"]:hover {
   }
 }
 
-document.getElementById('quizForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  let score = 0;
-  if (document.querySelector('input[name="q1"]:checked')?.value === 'B') score++;
-  if (document.querySelector('input[name="q2"]:checked')?.value === 'B') score++;
+const correctAnswers = {
+  q1: "B",
+  q2: "B",
+  q3: "C",
+  q4: "D",
+  q5: "A",
+  q6: "B",
+  q7: "D",
+  q8: "C",
+  q9: "A",
+  q10: "B",
+  q11: "C",
+  q12: "D",
+  q13: "B",
+  q14: "C",
+  q15: "A",
+  q16: "B",
+  q17: "D",
+  q18: "A",
+  q19: "C",
+  q20: "B",
+  q21: "A",
+  q22: "B",
+  q23: "D",
+  q24: "C",
+  q25: "A",
+  q26: "B",
+  q27: "D",
+  q28: "C",
+  q29: "B",
+  q30: "A"
+};
 
-  alert(`Bạn đúng ${score}/2 câu`);
+
+document.getElementById('quizForm').addEventListener('submit', function(e) {
+  e.preventDefault(); // Ngăn reload trang
+
+  let score = 0;
+  let total = Object.keys(correctAnswers).length;
+
+  for (let key in correctAnswers) {
+    let selected = document.querySelector(`input[name="${key}"]:checked`);
+    if (selected && selected.value === correctAnswers[key]) {
+      score++;
+    }
+  }
+
+  alert(`Bạn đã trả lời đúng ${score}/${total} câu`);
 });
+
+
 
 
 
