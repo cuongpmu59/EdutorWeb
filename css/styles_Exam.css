@@ -130,6 +130,24 @@ button[type="submit"]:hover {
   }
 }
 
+/* file style.css */
+.main-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.quiz-column {
+  flex: 3;
+  padding: 10px;
+}
+
+.answer-sheet-column {
+  flex: 1;
+  padding: 10px;
+}
+
+
 
 
 
