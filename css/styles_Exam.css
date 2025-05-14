@@ -147,6 +147,26 @@ button[type="submit"]:hover {
   padding: 10px;
 }
 
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* Cột bên trái (Bài thi): rộng hơn */
+.left-column {
+  flex: 3;
+  padding: 10px;
+  background-color: #f9f9f9; /* tuỳ chọn */
+}
+
+/* Cột bên phải (Phiếu trả lời): hẹp hơn */
+.right-column {
+  flex: 1;
+  padding: 10px;
+  background-color: #f0f0f0; /* tuỳ chọn */
+}
 
 
 
