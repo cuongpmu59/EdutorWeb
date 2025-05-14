@@ -702,5 +702,28 @@ h2 {
     display: none;
   }
   
+  /* Nút "Lên đầu trang" */
+.back-to-top {
+    display: none; /* Ẩn nút khi chưa kéo xuống */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .back-to-top:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Hiển thị nút khi kéo xuống */
+  body.scrolled .back-to-top {
+    display: block;
+  }
   
 
