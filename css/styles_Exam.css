@@ -68,6 +68,28 @@ body {
   color: #ff6600;
 }
 
+.answer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+  flex-wrap: wrap; /* Đảm bảo không tràn trên thiết bị nhỏ */
+}
+
+.answer p {
+  margin: 0;
+  min-width: 60px; /* giữ cố định phần "Câu X:" */
+  font-weight: bold;
+}
+
+.answer label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+
 /* Nút nộp bài */
 button[type="submit"] {
   padding: 10px 20px;
@@ -94,3 +116,4 @@ button[type="submit"]:hover {
     font-size: 16px;
   }
 }
+
