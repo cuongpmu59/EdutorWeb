@@ -1,68 +1,43 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 10px;
-    line-height: 1.6;
-    background-color: #f9f9f9;
-  }
-  fieldset {
-    margin-bottom: 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 5px;
-  }
-  legend {
-    font-weight: bold;
-  }
-  @media (max-width: 600px) {
-    body {
-      font-size: 16px;
-    }
-  }
-
-  .submit-btn {
-    background-color: #4CAF50; /* Màu nền */
-    color: white; /* Màu chữ */
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-  }
-  
-  .submit-btn:hover {
-    background-color: #45a049;
-  }
-  
-  /* Reset mặc định một số thẻ */
+/* Reset mặc định */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Thiết lập chung cho body */
 body {
   font-family: Arial, sans-serif;
   background-color: #f7f9fc;
   color: #333;
   padding: 20px;
+  line-height: 1.6;
 }
 
-/* Bố cục 2 cột */
+/* Bố cục 2 cột linh hoạt */
 .container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-/* Cột trái: bài thi */
+/* Cột trái và phải */
 .left-column, .right-column {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
   flex: 1;
   min-width: 300px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.left-column {
+  background-color: #f9f9f9;
+  border-right: 2px solid #ccc;
+}
+
+.right-column {
+  background-color: #eef;
 }
 
 /* Tiêu đề */
@@ -72,8 +47,8 @@ body {
   color: #0077cc;
 }
 
-/* Câu hỏi */
-.question {
+/* Câu hỏi và câu trả lời */
+.question, .answer {
   margin-bottom: 20px;
 }
 
@@ -86,6 +61,11 @@ body {
   display: block;
   margin-left: 10px;
   margin-bottom: 5px;
+}
+
+.answer span {
+  font-weight: bold;
+  color: #ff6600;
 }
 
 /* Nút nộp bài */
@@ -104,56 +84,13 @@ button[type="submit"]:hover {
   background-color: #005fa3;
 }
 
-/* Phiếu trả lời */
-.answer {
-  margin-bottom: 15px;
-}
-
-.answer span {
-  font-weight: bold;
-  color: #ff6600;
-}
-
-/* Responsive cho màn hình nhỏ */
+/* Responsive cho thiết bị nhỏ */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
-}
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20px;
-}
-
-.left-column, .right-column {
-  flex: 1;
-  min-width: 300px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.left-column {
-  background-color: #f9f9f9;
-  border-right: 2px solid #ccc;
-}
-
-.right-column {
-  background-color: #eef;
-}
-
-.question, .answer {
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
+  body {
+    font-size: 16px;
+  }
 }
