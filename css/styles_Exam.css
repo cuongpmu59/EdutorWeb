@@ -34,4 +34,89 @@ body {
     background-color: #45a049;
   }
   
-  
+  /* Reset mặc định một số thẻ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fc;
+  color: #333;
+  padding: 20px;
+}
+
+/* Bố cục 2 cột */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Cột trái: bài thi */
+.left-column, .right-column {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Tiêu đề */
+.left-column h2, .right-column h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #0077cc;
+}
+
+/* Câu hỏi */
+.question {
+  margin-bottom: 20px;
+}
+
+.question p {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.question label {
+  display: block;
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+
+/* Nút nộp bài */
+button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #005fa3;
+}
+
+/* Phiếu trả lời */
+.answer {
+  margin-bottom: 15px;
+}
+
+.answer span {
+  font-weight: bold;
+  color: #ff6600;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}
