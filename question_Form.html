@@ -49,6 +49,14 @@
     <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
     <button type="button" onclick="MathJax.typesetPromise()">Xem trước công thức</button>
 
+    <button type="button" onclick="previewMath()">Xem trước công thức</button>
+    <div id="preview" style="margin-top: 10px; padding: 10px; border: 1px dashed #ccc; min-height: 40px;">
+      <em>Xem trước công thức sẽ hiển thị ở đây</em>
+    </div>
+    
+
+
+
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
 
@@ -100,6 +108,17 @@
         }
       });
     </script>
+<script>
+  function previewMath() {
+    const input = document.getElementById('question').value;
+    const preview = document.getElementById('preview');
+    preview.innerHTML = input;
+    MathJax.typesetPromise([preview]);
+  }
+</script>
+
+
+
   </body>
   
 </body>
