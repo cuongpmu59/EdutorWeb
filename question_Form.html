@@ -34,6 +34,12 @@
       font-size: 16px;
       cursor: pointer;
     }
+    button[type="button"] {
+    margin-top: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
   </style>
 </head>
 <body>
@@ -41,6 +47,7 @@
   <form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
     <label for="question">Câu hỏi:</label>
     <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
+    <button type="button" onclick="MathJax.typesetPromise()">Xem trước công thức</button>
 
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
@@ -70,5 +77,30 @@
       MathJax.typesetPromise();
     });
   </script>
+    <!-- Script xử lý MathJax -->
+    <script>
+      // Khi thay đổi textarea thì MathJax render lại công thức
+      const questionInput = document.getElementById('question');
+      questionInput.addEventListener('input', () => {
+        MathJax.typesetPromise();
+      });
+    </script>
+  
+    <!-- Script kiểm tra dữ liệu trước khi submit -->
+    <script>
+      const form = document.getElementById('questionForm');
+      form.addEventListener('submit', function (e) {
+        const correct = document.getElementById('correct_answer').value;
+        const ans3 = form.answer3.value.trim();
+        const ans4 = form.answer4.value.trim();
+  
+        if ((correct === 'answer3' && !ans3) || (correct === 'answer4' && !ans4)) {
+          alert("Bạn đã chọn đáp án đúng là 3 hoặc 4 nhưng chưa nhập nội dung cho đáp án đó.");
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+  
 </body>
 </html>
