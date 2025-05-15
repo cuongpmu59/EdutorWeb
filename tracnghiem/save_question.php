@@ -50,6 +50,12 @@ foreach ($answers as $key => $text) {
     }
 }
 
+file_put_contents('questions.txt', json_encode($data, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+    echo "✅ Câu hỏi đã được lưu thành công!";
+} else {
+    echo "❌ Không nhận được dữ liệu từ form.";
+}
+
 $conn->close();
 echo "Đã lưu câu hỏi thành công.";
 ?>
