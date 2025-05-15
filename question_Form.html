@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nhập câu hỏi trắc nghiệm</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      max-width: 700px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+      display: block;
+    }
+    textarea, input[type="text"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input[type="file"] {
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nhập câu hỏi trắc nghiệm</h1>
+  <form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
+    <label for="question">Câu hỏi (hỗ trợ LaTeX, ví dụ: $$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$$):</label>
+    <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
+
+    <label for="image">Ảnh minh họa (nếu có):</label>
+    <input type="file" id="image" name="image" accept="image/*" />
+
+    <label>Đáp án:</label>
+    <input type="text" name="answer1" placeholder="Đáp án 1" required />
+    <input type="text" name="answer2" placeholder="Đáp án 2" required />
+    <input type="text" name="answer3" placeholder="Đáp án 3" />
+    <input type="text" name="answer4" placeholder="Đáp án 4" />
+
+    <label for="correct_answer">Chọn đáp án đúng:</label>
+    <select id="correct_answer" name="correct_answer" required>
+      <option value="">--Chọn đáp án đúng--</option>
+      <option value="answer1">Đáp án 1</option>
+      <option value="answer2">Đáp án 2</option>
+      <option value="answer3">Đáp án 3</option>
+      <option value="answer4">Đáp án 4</option>
+    </select>
+
+    <button type="submit">Lưu câu hỏi</button>
+  </form>
+
+  <script>
+    // Khi thay đổi textarea thì MathJax render lại công thức
+    const questionInput = document.getElementById('question');
+    questionInput.addEventListener('input', () => {
+      MathJax.typesetPromise();
+    });
+  </script>
+</body>
+</html>
