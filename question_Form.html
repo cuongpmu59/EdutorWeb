@@ -123,8 +123,15 @@
     MathJax.typesetPromise([preview]);
   }
 </script>
+<script>
+  const questionInput = document.getElementById('question');
+  const preview = document.getElementById('preview');
 
-
+  questionInput.addEventListener('input', () => {
+    preview.innerHTML = questionInput.value;
+    MathJax.typesetPromise([preview]);
+  });
+</script>
 
   </body>
   
