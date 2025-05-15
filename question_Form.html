@@ -52,18 +52,23 @@
       <em>Xem trước công thức sẽ hiển thị ở đây</em>
     </div>
     
-
-
-
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
 
     <label>Đáp án:</label>
-    <input type="text" name="answer1" placeholder="Đáp án 1" required />
-    <input type="text" name="answer2" placeholder="Đáp án 2" required />
-    <input type="text" name="answer3" placeholder="Đáp án 3" />
-    <input type="text" name="answer4" placeholder="Đáp án 4" />
-
+   
+    <label for="answer1">Đáp án 1:</label>
+    <input type="text" id="answer1" name="answer1" placeholder="Đáp án 1" required />
+    
+    <label for="answer2">Đáp án 2:</label>
+    <input type="text" id="answer2" name="answer2" placeholder="Đáp án 2" required />
+    
+    <label for="answer3">Đáp án 3:</label>
+    <input type="text" id="answer3" name="answer3" placeholder="Đáp án 3" />
+    
+    <label for="answer4">Đáp án 4:</label>
+    <input type="text" id="answer4" name="answer4" placeholder="Đáp án 4" />
+    
     <label for="correct_answer">Chọn đáp án đúng:</label>
     <select id="correct_answer" name="correct_answer" required>
       <option value="">--Chọn đáp án đúng--</option>
