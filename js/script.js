@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const totalQuestions = 30; // ← Thay số lượng câu hỏi tại đây nếu có thêm
+  const totalQuestions = 31; // ← Thay số lượng câu hỏi tại đây nếu có thêm
 
   for (let i = 1; i <= totalQuestions; i++) {
     const quizRadios = document.querySelectorAll(`input[name="q${i}"]`);
