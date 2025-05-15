@@ -1,65 +1,122 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trang Thi Trắc Nghiệm</title>
-  <link rel="stylesheet" href="css/styles_Exam.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tài liệu giảng dạy - Học cùng Thầy Cường</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+    }
+
+    nav {
+      background-color: #2c3e50;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .section h2 {
+      color: #34495e;
+      margin-top: 40px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .document {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .document a {
+      text-decoration: none;
+      color: #2980b9;
+      font-weight: bold;
+    }
+
+    .document a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Cột bên trái: Bài thi trắc nghiệm -->
-    <div class="left-column">
-      <h2>Bài Thi Trắc Nghiệm</h2>
-      <form id="quizForm">
-        <div class="question">
-          <p>Câu 1: 2 + 2 = ?</p>
-          <label><input type="radio" name="q1" value="A"> A. 3</label><br>
-          <label><input type="radio" name="q1" value="B"> B. 4</label><br>
-          <label><input type="radio" name="q1" value="C"> C. 5</label><br>
-          <label><input type="radio" name="q1" value="D"> D. 6</label><br>
-        </div>
 
-        <div class="question">
-          <p>Câu 2: 3 + 5 = ?</p>
-          <label><input type="radio" name="q2" value="A"> A. 7</label><br>
-          <label><input type="radio" name="q2" value="B"> B. 8</label><br>
-          <label><input type="radio" name="q2" value="C"> C. 9</label><br>
-          <label><input type="radio" name="q2" value="D"> D. 10</label><br>
-        </div>
+  <!-- Menu điều hướng -->
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="dichvu.html">Dịch vụ học tập</a>
+    <a href="registerForm.html">Đăng ký học</a>
+    <a href="tailieu.html">Tài liệu</a>
+  </nav>
 
-        <!-- Thêm các câu hỏi khác tại đây -->
-        <button type="submit">Nộp bài</button>
-      </form>
+  <h1>Tài liệu giảng dạy</h1>
+
+  <div class="section">
+    <h2>📘 Môn Toán</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-1" target="_blank">Chuyên đề Hàm số và Ứng dụng</a><br/>
+      <small>Cập nhật: 10/05/2025</small>
     </div>
-
-    <!-- Cột bên phải: Phiếu trả lời trắc nghiệm -->
-    <div class="right-column">
-      <h2>Phiếu Trả Lời</h2>
-      <div id="answerSheet">
-         <div class="answer">
-          <p>Câu 1:</p>
-          <label><input type="radio" name="q1-answer" value="A"> A</label>
-          <label><input type="radio" name="q1-answer" value="B"> B</label>
-          <label><input type="radio" name="q1-answer" value="C"> C</label>
-          <label><input type="radio" name="q1-answer" value="D"> D</label>
-        </div>
-        
-        <div class="answer">
-          <p>Câu 2:</p>
-          <label><input type="radio" name="q2-answer" value="A"> A</label>
-          <label><input type="radio" name="q2-answer" value="B"> B</label>
-          <label><input type="radio" name="q2-answer" value="C"> C</label>
-          <label><input type="radio" name="q2-answer" value="D"> D</label>
-        </div>
-        
-        <!-- Các câu hỏi khác sẽ được hiển thị tại đây -->
-      </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-2" target="_blank">Đề thi thử THPT Quốc Gia Toán</a><br/>
+      <small>Cập nhật: 01/05/2025</small>
     </div>
   </div>
 
-  <script src="js/script.js"></script>
+  <div class="section">
+    <h2>📗 Môn Vật lý</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-ly1" target="_blank">Lý thuyết Dao động cơ</a><br/>
+      <small>Cập nhật: 03/05/2025</small>
+    </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-ly2" target="_blank">Đề thi thử Vật lý THPT</a><br/>
+      <small>Cập nhật: 22/04/2025</small>
+    </div>
+  </div>
 
-  
+  <div class="section">
+    <h2>📙 Môn Hóa học</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-hoa1" target="_blank">Tổng hợp lý thuyết Hóa 12</a><br/>
+      <small>Cập nhật: 15/04/2025</small>
+    </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-hoa2" target="_blank">Bài tập Hóa học vô cơ</a><br/>
+      <small>Cập nhật: 05/04/2025</small>
+    </div>
+  </div>
+
 </body>
 </html>
