@@ -154,6 +154,10 @@ button[type="submit"]:hover {
   align-items: flex-start;
 }
 
+.quiz-container {
+  scroll-behavior: smooth;
+}
+
 /* Cột bên trái (Bài thi): rộng hơn */
 .left-column {
   flex: 3;
@@ -167,6 +171,9 @@ button[type="submit"]:hover {
   padding: 10px;
   background-color: #f0f0f0; /* tuỳ chọn */
 }
+
+
+
 
 
 
