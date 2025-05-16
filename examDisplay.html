@@ -44,369 +44,374 @@
     <div class="left-column">
       <h2>Bài Thi Trắc Nghiệm</h2>
       <div id="timer">Thời gian còn lại: 30:00</div>
-      <form id="quizForm">
+      <div class="quiz-wrapper">
+        <form id="quizForm">
 
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 1: Tính đạo hàm của hàm số \( f(x) = \sin(x) + \cos(x) \).</p>
-            <label><input type="radio" name="q1" value="A"> A. \( \cos(x) - \sin(x) \)</label><br>
-            <label><input type="radio" name="q1" value="B"> B. \( \sin(x) - \cos(x) \)</label><br>
-            <label><input type="radio" name="q1" value="C"> C. \( \cos(x) + \sin(x) \)</label><br>
-            <label><input type="radio" name="q1" value="D"> D. \( -\cos(x) - \sin(x) \)</label><br>
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 1: Tính đạo hàm của hàm số \( f(x) = \sin(x) + \cos(x) \).</p>
+              <label><input type="radio" name="q1" value="A"> A. \( \cos(x) - \sin(x) \)</label><br>
+              <label><input type="radio" name="q1" value="B"> B. \( \sin(x) - \cos(x) \)</label><br>
+              <label><input type="radio" name="q1" value="C"> C. \( \cos(x) + \sin(x) \)</label><br>
+              <label><input type="radio" name="q1" value="D"> D. \( -\cos(x) - \sin(x) \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Tích phân -->
+          <fieldset>
+            <legend>Tích phân</legend>
+            <div class="question">
+              <p>Câu 2: Tính tích phân \( \int (x^2 + 3x) dx \).</p>
+              <label><input type="radio" name="q2" value="A"> A. \( \frac{x^3}{3} + \frac{3x^2}{2} + C \)</label><br>
+              <label><input type="radio" name="q2" value="B"> B. \( \frac{x^3}{3} + \frac{x^2}{2} + C \)</label><br>
+              <label><input type="radio" name="q2" value="C"> C. \( \frac{x^2}{2} + 3x + C \)</label><br>
+              <label><input type="radio" name="q2" value="D"> D. \( x^3 + 3x^2 + C \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Xác suất -->
+          <fieldset>
+            <legend>Xác suất</legend>
+            <div class="question">
+              <p>Câu 3: Một thùng chứa 4 quả bóng đỏ và 6 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được
+                quả bóng xanh là:</p>
+              <label><input type="radio" name="q3" value="A"> A. \( \frac{4}{10} \)</label><br>
+              <label><input type="radio" name="q3" value="B"> B. \( \frac{6}{10} \)</label><br>
+              <label><input type="radio" name="q3" value="C"> C. \( \frac{2}{5} \)</label><br>
+              <label><input type="radio" name="q3" value="D"> D. \( \frac{6}{4} \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
+          <fieldset>
+            <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
+            <div class="question">
+              <p>Câu 4: Phương trình của mặt phẳng đi qua điểm \( P(1, 1, 1) \) và có phương vector pháp tuyến \(
+                \vec{n}
+                = (1, 2, 3) \) là:</p>
+              <label><input type="radio" name="q4" value="A"> A. \( x + 2y + 3z = 6 \)</label><br>
+              <label><input type="radio" name="q4" value="B"> B. \( x + 2y + 3z = 3 \)</label><br>
+              <label><input type="radio" name="q4" value="C"> C. \( x - 2y + 3z = 3 \)</label><br>
+              <label><input type="radio" name="q4" value="D"> D. \( x + y + z = 6 \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Hình học không gian -->
+          <fieldset>
+            <legend>Hình học không gian</legend>
+            <div class="question">
+              <p>Câu 5: Tính thể tích hình cầu có bán kính 4.</p>
+              <label><input type="radio" name="q5" value="A"> A. \( \frac{4\pi}{3} \)</label><br>
+              <label><input type="radio" name="q5" value="B"> B. \( \frac{16\pi}{3} \)</label><br>
+              <label><input type="radio" name="q5" value="C"> C. \( \frac{64\pi}{3} \)</label><br>
+              <label><input type="radio" name="q5" value="D"> D. \( \frac{128\pi}{3} \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Hàm số -->
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 6: Tính đạo hàm của hàm số \( f(x) = e^x + \ln(x) \).</p>
+              <label><input type="radio" name="q6" value="A"> A. \( e^x + \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q6" value="B"> B. \( e^x - \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q6" value="C"> C. \( e^x + x \)</label><br>
+              <label><input type="radio" name="q6" value="D"> D. \( e^x + \frac{1}{2x} \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Tích phân -->
+          <fieldset>
+            <legend>Tích phân</legend>
+            <div class="question">
+              <p>Câu 7: Tính tích phân \( \int_0^1 (2x + 3) dx \).</p>
+              <label><input type="radio" name="q7" value="A"> A. \( \frac{7}{3} \)</label><br>
+              <label><input type="radio" name="q7" value="B"> B. \( \frac{5}{3} \)</label><br>
+              <label><input type="radio" name="q7" value="C"> C. \( \frac{8}{3} \)</label><br>
+              <label><input type="radio" name="q7" value="D"> D. \( \frac{10}{3} \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Xác suất -->
+          <fieldset>
+            <legend>Xác suất</legend>
+            <div class="question">
+              <p>Câu 8: Một hộp chứa 5 quả bóng đỏ và 3 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được
+                quả
+                bóng đỏ là:</p>
+              <label><input type="radio" name="q8" value="A"> A. \( \frac{5}{8} \)</label><br>
+              <label><input type="radio" name="q8" value="B"> B. \( \frac{3}{8} \)</label><br>
+              <label><input type="radio" name="q8" value="C"> C. \( \frac{5}{3} \)</label><br>
+              <label><input type="radio" name="q8" value="D"> D. \( \frac{2}{5} \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
+          <fieldset>
+            <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
+            <div class="question">
+              <p>Câu 9: Phương trình của mặt phẳng chứa điểm \( P(2, 3, 4) \) và có vector pháp tuyến \( \vec{n} = (1,
+                -1,
+                2) \) là:</p>
+              <label><input type="radio" name="q9" value="A"> A. \( x - y + 2z = 12 \)</label><br>
+              <label><input type="radio" name="q9" value="B"> B. \( x - y + 2z = 10 \)</label><br>
+              <label><input type="radio" name="q9" value="C"> C. \( 2x - y + z = 10 \)</label><br>
+              <label><input type="radio" name="q9" value="D"> D. \( x + y + z = 12 \)</label><br>
+            </div>
+          </fieldset>
+
+          <!-- Câu hỏi về Hình học không gian -->
+          <fieldset>
+            <legend>Hình học không gian</legend>
+            <div class="question">
+              <p>Câu 10: Tính thể tích hình chóp có đáy là hình vuông cạnh 4 và chiều cao 6.</p>
+              <label><input type="radio" name="q10" value="A"> A. \( 96 \)</label><br>
+              <label><input type="radio" name="q10" value="B"> B. \( 72 \)</label><br>
+              <label><input type="radio" name="q10" value="C"> C. \( 48 \)</label><br>
+              <label><input type="radio" name="q10" value="D"> D. \( 60 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 11: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
+              <label><input type="radio" name="q11" value="A"> A. \( \sec^2(x) + \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q11" value="B"> B. \( \sec^2(x) - \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q11" value="C"> C. \( \tan(x) + \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q11" value="D"> D. \( \sec(x) + \frac{1}{x} \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tích phân</legend>
+            <div class="question">
+              <p>Câu 12: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
+              <label><input type="radio" name="q12" value="A"> A. \( 4 \)</label><br>
+              <label><input type="radio" name="q12" value="B"> B. \( 3 \)</label><br>
+              <label><input type="radio" name="q12" value="C"> C. \( 2 \)</label><br>
+              <label><input type="radio" name="q12" value="D"> D. \( 1 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Xác suất</legend>
+            <div class="question">
+              <p>Câu 13: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không
+                thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
+              <label><input type="radio" name="q13" value="A"> A. \( \frac{6}{10} \)</label><br>
+              <label><input type="radio" name="q13" value="B"> B. \( \frac{5}{9} \)</label><br>
+              <label><input type="radio" name="q13" value="C"> C. \( \frac{6}{9} \)</label><br>
+              <label><input type="radio" name="q13" value="D"> D. \( \frac{5}{10} \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hình học không gian</legend>
+            <div class="question">
+              <p>Câu 14: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
+              <label><input type="radio" name="q14" value="A"> A. \( \frac{250\pi}{3} \)</label><br>
+              <label><input type="radio" name="q14" value="B"> B. \( \frac{500\pi}{3} \)</label><br>
+              <label><input type="radio" name="q14" value="C"> C. \( \frac{200\pi}{3} \)</label><br>
+              <label><input type="radio" name="q14" value="D"> D. \( \frac{300\pi}{3} \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hình học phẳng</legend>
+            <div class="question">
+              <p>Câu 15: Tính diện tích hình vuông có cạnh dài 8.</p>
+              <label><input type="radio" name="q15" value="A"> A. \( 64 \)</label><br>
+              <label><input type="radio" name="q15" value="B"> B. \( 32 \)</label><br>
+              <label><input type="radio" name="q15" value="C"> C. \( 16 \)</label><br>
+              <label><input type="radio" name="q15" value="D"> D. \( 8 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 16: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
+              <label><input type="radio" name="q16" value="A"> A. 0</label><br>
+              <label><input type="radio" name="q16" value="B"> B. 1</label><br>
+              <label><input type="radio" name="q16" value="C"> C. Không xác định</label><br>
+              <label><input type="radio" name="q16" value="D"> D. \( \infty \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tích phân</legend>
+            <div class="question">
+              <p>Câu 17: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
+              <label><input type="radio" name="q17" value="A"> A. \( 2 \)</label><br>
+              <label><input type="radio" name="q17" value="B"> B. \( 1 \)</label><br>
+              <label><input type="radio" name="q17" value="C"> C. \( 3 \)</label><br>
+              <label><input type="radio" name="q17" value="D"> D. \( 4 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 18: Tính đạo hàm của \( f(x) = x^3 + 2x \)</p>
+              <label><input type="radio" name="q18" value="A"> A. \( 3x^2 + 2 \)</label><br>
+              <label><input type="radio" name="q18" value="B"> B. \( 3x + 2 \)</label><br>
+              <label><input type="radio" name="q18" value="C"> C. \( x^2 + 2x \)</label><br>
+              <label><input type="radio" name="q18" value="D"> D. \( x^3 + 2 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tích phân</legend>
+            <div class="question">
+              <p>Câu 19: Tính \( \int_1^2 x^2 dx \)</p>
+              <label><input type="radio" name="q19" value="A"> A. \( \frac{7}{3} \)</label><br>
+              <label><input type="radio" name="q19" value="B"> B. \( \frac{9}{3} \)</label><br>
+              <label><input type="radio" name="q19" value="C"> C. \( \frac{5}{3} \)</label><br>
+              <label><input type="radio" name="q19" value="D"> D. \( \frac{6}{3} \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hàm số</legend>
+            <div class="question">
+              <p>Câu 20: Hàm số nào sau đây đồng biến trên ℝ?</p>
+              <label><input type="radio" name="q20" value="A"> A. \( y = -x^3 \)</label><br>
+              <label><input type="radio" name="q20" value="B"> B. \( y = x^2 \)</label><br>
+              <label><input type="radio" name="q20" value="C"> C. \( y = x^3 \)</label><br>
+              <label><input type="radio" name="q20" value="D"> D. \( y = -x^2 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Mũ - Logarit</legend>
+            <div class="question">
+              <p>Câu 21: Giá trị của \( \log_2 8 \) là:</p>
+              <label><input type="radio" name="q21" value="A"> A. 2</label><br>
+              <label><input type="radio" name="q21" value="B"> B. 3</label><br>
+              <label><input type="radio" name="q21" value="C"> C. 4</label><br>
+              <label><input type="radio" name="q21" value="D"> D. 1</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hình học không gian</legend>
+            <div class="question">
+              <p>Câu 22: Thể tích hình lập phương cạnh \( a \) là:</p>
+              <label><input type="radio" name="q22" value="A"> A. \( a^2 \)</label><br>
+              <label><input type="radio" name="q22" value="B"> B. \( 2a^3 \)</label><br>
+              <label><input type="radio" name="q22" value="C"> C. \( a^3 \)</label><br>
+              <label><input type="radio" name="q22" value="D"> D. \( 4a^2 \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Số phức</legend>
+            <div class="question">
+              <p>Câu 23: Số phức liên hợp của \( z = 3 + 4i \) là:</p>
+              <label><input type="radio" name="q23" value="A"> A. \( 3 - 4i \)</label><br>
+              <label><input type="radio" name="q23" value="B"> B. \( -3 + 4i \)</label><br>
+              <label><input type="radio" name="q23" value="C"> C. \( -3 - 4i \)</label><br>
+              <label><input type="radio" name="q23" value="D"> D. \( 3 + 4i \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Thống kê</legend>
+            <div class="question">
+              <p>Câu 24: Trung bình cộng của dãy số 2, 4, 6, 8 là:</p>
+              <label><input type="radio" name="q24" value="A"> A. 5</label><br>
+              <label><input type="radio" name="q24" value="B"> B. 6</label><br>
+              <label><input type="radio" name="q24" value="C"> C. 4</label><br>
+              <label><input type="radio" name="q24" value="D"> D. 7</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tổ hợp - Xác suất</legend>
+            <div class="question">
+              <p>Câu 25: Số cách chọn 2 người từ 5 người là:</p>
+              <label><input type="radio" name="q25" value="A"> A. 10</label><br>
+              <label><input type="radio" name="q25" value="B"> B. 15</label><br>
+              <label><input type="radio" name="q25" value="C"> C. 20</label><br>
+              <label><input type="radio" name="q25" value="D"> D. 25</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Phương trình lượng giác</legend>
+            <div class="question">
+              <p>Câu 26: Nghiệm của phương trình \( \cos x = 0 \) là:</p>
+              <label><input type="radio" name="q26" value="A"> A. \( x = \frac{\pi}{2} + k2\pi \)</label><br>
+              <label><input type="radio" name="q26" value="B"> B. \( x = k\pi \)</label><br>
+              <label><input type="radio" name="q26" value="C"> C. \( x = \pi + k2\pi \)</label><br>
+              <label><input type="radio" name="q26" value="D"> D. \( x = \frac{\pi}{4} + k\pi \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Giải tích</legend>
+            <div class="question">
+              <p>Câu 27: Tìm giới hạn: \( \lim_{x \to 0} \frac{\sin x}{x} \)</p>
+              <label><input type="radio" name="q27" value="A"> A. 0</label><br>
+              <label><input type="radio" name="q27" value="B"> B. 1</label><br>
+              <label><input type="radio" name="q27" value="C"> C. Vô cực</label><br>
+              <label><input type="radio" name="q27" value="D"> D. Không tồn tại</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Đạo hàm</legend>
+            <div class="question">
+              <p>Câu 28: Đạo hàm của \( \ln x \) là:</p>
+              <label><input type="radio" name="q28" value="A"> A. \( \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q28" value="B"> B. \( x \ln x \)</label><br>
+              <label><input type="radio" name="q28" value="C"> C. \( \ln x + 1 \)</label><br>
+              <label><input type="radio" name="q28" value="D"> D. \( \ln x \cdot x \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Giải phương trình</legend>
+            <div class="question">
+              <p>Câu 29: Nghiệm của phương trình \( x^2 - 4 = 0 \) là:</p>
+              <label><input type="radio" name="q29" value="A"> A. \( x = 2 \)</label><br>
+              <label><input type="radio" name="q29" value="B"> B. \( x = \pm 2 \)</label><br>
+              <label><input type="radio" name="q29" value="C"> C. \( x = -2 \)</label><br>
+              <label><input type="radio" name="q29" value="D"> D. Không có nghiệm</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Định nghĩa hàm số</legend>
+            <div class="question">
+              <p>Câu 30: Hàm số nào sau đây là hàm số chẵn?</p>
+              <label><input type="radio" name="q30" value="A"> A. \( f(x) = x^3 \)</label><br>
+              <label><input type="radio" name="q30" value="B"> B. \( f(x) = x \)</label><br>
+              <label><input type="radio" name="q30" value="C"> C. \( f(x) = x^2 \)</label><br>
+              <label><input type="radio" name="q30" value="D"> D. \( f(x) = \frac{1}{x} \)</label><br>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Đồ thị hàm số</legend>
+            <div class="question">
+              <p>Câu 31: Hình dưới đây biểu diễn đồ thị của hàm số nào?</p>
+              <img src="images/graph_parabol.png" alt="Đồ thị hàm số"
+                style="max-width: 100%; height: auto; margin: 10px 0;">
+              <label><input type="radio" name="q3" value="A"> A. \( y = x^2 \)</label><br>
+              <label><input type="radio" name="q3" value="B"> B. \( y = \sqrt{x} \)</label><br>
+              <label><input type="radio" name="q3" value="C"> C. \( y = \frac{1}{x} \)</label><br>
+              <label><input type="radio" name="q3" value="D"> D. \( y = |x| \)</label><br>
+            </div>
+          </fieldset>
+
+          <div>
+            <button type="submit" class="submit-btn">Nộp bài</button>
           </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Tích phân -->
-        <fieldset>
-          <legend>Tích phân</legend>
-          <div class="question">
-            <p>Câu 2: Tính tích phân \( \int (x^2 + 3x) dx \).</p>
-            <label><input type="radio" name="q2" value="A"> A. \( \frac{x^3}{3} + \frac{3x^2}{2} + C \)</label><br>
-            <label><input type="radio" name="q2" value="B"> B. \( \frac{x^3}{3} + \frac{x^2}{2} + C \)</label><br>
-            <label><input type="radio" name="q2" value="C"> C. \( \frac{x^2}{2} + 3x + C \)</label><br>
-            <label><input type="radio" name="q2" value="D"> D. \( x^3 + 3x^2 + C \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Xác suất -->
-        <fieldset>
-          <legend>Xác suất</legend>
-          <div class="question">
-            <p>Câu 3: Một thùng chứa 4 quả bóng đỏ và 6 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được
-              quả bóng xanh là:</p>
-            <label><input type="radio" name="q3" value="A"> A. \( \frac{4}{10} \)</label><br>
-            <label><input type="radio" name="q3" value="B"> B. \( \frac{6}{10} \)</label><br>
-            <label><input type="radio" name="q3" value="C"> C. \( \frac{2}{5} \)</label><br>
-            <label><input type="radio" name="q3" value="D"> D. \( \frac{6}{4} \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
-        <fieldset>
-          <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
-          <div class="question">
-            <p>Câu 4: Phương trình của mặt phẳng đi qua điểm \( P(1, 1, 1) \) và có phương vector pháp tuyến \( \vec{n}
-              = (1, 2, 3) \) là:</p>
-            <label><input type="radio" name="q4" value="A"> A. \( x + 2y + 3z = 6 \)</label><br>
-            <label><input type="radio" name="q4" value="B"> B. \( x + 2y + 3z = 3 \)</label><br>
-            <label><input type="radio" name="q4" value="C"> C. \( x - 2y + 3z = 3 \)</label><br>
-            <label><input type="radio" name="q4" value="D"> D. \( x + y + z = 6 \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Hình học không gian -->
-        <fieldset>
-          <legend>Hình học không gian</legend>
-          <div class="question">
-            <p>Câu 5: Tính thể tích hình cầu có bán kính 4.</p>
-            <label><input type="radio" name="q5" value="A"> A. \( \frac{4\pi}{3} \)</label><br>
-            <label><input type="radio" name="q5" value="B"> B. \( \frac{16\pi}{3} \)</label><br>
-            <label><input type="radio" name="q5" value="C"> C. \( \frac{64\pi}{3} \)</label><br>
-            <label><input type="radio" name="q5" value="D"> D. \( \frac{128\pi}{3} \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Hàm số -->
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 6: Tính đạo hàm của hàm số \( f(x) = e^x + \ln(x) \).</p>
-            <label><input type="radio" name="q6" value="A"> A. \( e^x + \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q6" value="B"> B. \( e^x - \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q6" value="C"> C. \( e^x + x \)</label><br>
-            <label><input type="radio" name="q6" value="D"> D. \( e^x + \frac{1}{2x} \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Tích phân -->
-        <fieldset>
-          <legend>Tích phân</legend>
-          <div class="question">
-            <p>Câu 7: Tính tích phân \( \int_0^1 (2x + 3) dx \).</p>
-            <label><input type="radio" name="q7" value="A"> A. \( \frac{7}{3} \)</label><br>
-            <label><input type="radio" name="q7" value="B"> B. \( \frac{5}{3} \)</label><br>
-            <label><input type="radio" name="q7" value="C"> C. \( \frac{8}{3} \)</label><br>
-            <label><input type="radio" name="q7" value="D"> D. \( \frac{10}{3} \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Xác suất -->
-        <fieldset>
-          <legend>Xác suất</legend>
-          <div class="question">
-            <p>Câu 8: Một hộp chứa 5 quả bóng đỏ và 3 quả bóng xanh. Rút ngẫu nhiên một quả bóng, xác suất rút được quả
-              bóng đỏ là:</p>
-            <label><input type="radio" name="q8" value="A"> A. \( \frac{5}{8} \)</label><br>
-            <label><input type="radio" name="q8" value="B"> B. \( \frac{3}{8} \)</label><br>
-            <label><input type="radio" name="q8" value="C"> C. \( \frac{5}{3} \)</label><br>
-            <label><input type="radio" name="q8" value="D"> D. \( \frac{2}{5} \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Đường thẳng, Mặt phẳng, Mặt cầu -->
-        <fieldset>
-          <legend>Đường thẳng, Mặt phẳng, Mặt cầu</legend>
-          <div class="question">
-            <p>Câu 9: Phương trình của mặt phẳng chứa điểm \( P(2, 3, 4) \) và có vector pháp tuyến \( \vec{n} = (1, -1,
-              2) \) là:</p>
-            <label><input type="radio" name="q9" value="A"> A. \( x - y + 2z = 12 \)</label><br>
-            <label><input type="radio" name="q9" value="B"> B. \( x - y + 2z = 10 \)</label><br>
-            <label><input type="radio" name="q9" value="C"> C. \( 2x - y + z = 10 \)</label><br>
-            <label><input type="radio" name="q9" value="D"> D. \( x + y + z = 12 \)</label><br>
-          </div>
-        </fieldset>
-
-        <!-- Câu hỏi về Hình học không gian -->
-        <fieldset>
-          <legend>Hình học không gian</legend>
-          <div class="question">
-            <p>Câu 10: Tính thể tích hình chóp có đáy là hình vuông cạnh 4 và chiều cao 6.</p>
-            <label><input type="radio" name="q10" value="A"> A. \( 96 \)</label><br>
-            <label><input type="radio" name="q10" value="B"> B. \( 72 \)</label><br>
-            <label><input type="radio" name="q10" value="C"> C. \( 48 \)</label><br>
-            <label><input type="radio" name="q10" value="D"> D. \( 60 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 11: Tính đạo hàm của hàm số \( f(x) = \tan(x) + \ln(x) \).</p>
-            <label><input type="radio" name="q11" value="A"> A. \( \sec^2(x) + \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q11" value="B"> B. \( \sec^2(x) - \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q11" value="C"> C. \( \tan(x) + \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q11" value="D"> D. \( \sec(x) + \frac{1}{x} \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Tích phân</legend>
-          <div class="question">
-            <p>Câu 12: Tính tích phân \( \int_0^2 (x^3 - 2x) dx \).</p>
-            <label><input type="radio" name="q12" value="A"> A. \( 4 \)</label><br>
-            <label><input type="radio" name="q12" value="B"> B. \( 3 \)</label><br>
-            <label><input type="radio" name="q12" value="C"> C. \( 2 \)</label><br>
-            <label><input type="radio" name="q12" value="D"> D. \( 1 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Xác suất</legend>
-          <div class="question">
-            <p>Câu 13: Một hộp chứa 6 quả bóng đỏ và 4 quả bóng xanh. Nếu rút ngẫu nhiên một quả bóng và sau đó không
-              thay thế, xác suất rút được quả bóng đỏ lần thứ hai là:</p>
-            <label><input type="radio" name="q13" value="A"> A. \( \frac{6}{10} \)</label><br>
-            <label><input type="radio" name="q13" value="B"> B. \( \frac{5}{9} \)</label><br>
-            <label><input type="radio" name="q13" value="C"> C. \( \frac{6}{9} \)</label><br>
-            <label><input type="radio" name="q13" value="D"> D. \( \frac{5}{10} \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hình học không gian</legend>
-          <div class="question">
-            <p>Câu 14: Tính thể tích hình nón có bán kính đáy là 5 và chiều cao là 12.</p>
-            <label><input type="radio" name="q14" value="A"> A. \( \frac{250\pi}{3} \)</label><br>
-            <label><input type="radio" name="q14" value="B"> B. \( \frac{500\pi}{3} \)</label><br>
-            <label><input type="radio" name="q14" value="C"> C. \( \frac{200\pi}{3} \)</label><br>
-            <label><input type="radio" name="q14" value="D"> D. \( \frac{300\pi}{3} \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hình học phẳng</legend>
-          <div class="question">
-            <p>Câu 15: Tính diện tích hình vuông có cạnh dài 8.</p>
-            <label><input type="radio" name="q15" value="A"> A. \( 64 \)</label><br>
-            <label><input type="radio" name="q15" value="B"> B. \( 32 \)</label><br>
-            <label><input type="radio" name="q15" value="C"> C. \( 16 \)</label><br>
-            <label><input type="radio" name="q15" value="D"> D. \( 8 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 16: Tính giới hạn \( \lim_{x \to 0} \frac{\sin(x)}{x} \).</p>
-            <label><input type="radio" name="q16" value="A"> A. 0</label><br>
-            <label><input type="radio" name="q16" value="B"> B. 1</label><br>
-            <label><input type="radio" name="q16" value="C"> C. Không xác định</label><br>
-            <label><input type="radio" name="q16" value="D"> D. \( \infty \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Tích phân</legend>
-          <div class="question">
-            <p>Câu 17: Tính tích phân \( \int_0^1 (3x^2 + 2x) dx \).</p>
-            <label><input type="radio" name="q17" value="A"> A. \( 2 \)</label><br>
-            <label><input type="radio" name="q17" value="B"> B. \( 1 \)</label><br>
-            <label><input type="radio" name="q17" value="C"> C. \( 3 \)</label><br>
-            <label><input type="radio" name="q17" value="D"> D. \( 4 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 18: Tính đạo hàm của \( f(x) = x^3 + 2x \)</p>
-            <label><input type="radio" name="q18" value="A"> A. \( 3x^2 + 2 \)</label><br>
-            <label><input type="radio" name="q18" value="B"> B. \( 3x + 2 \)</label><br>
-            <label><input type="radio" name="q18" value="C"> C. \( x^2 + 2x \)</label><br>
-            <label><input type="radio" name="q18" value="D"> D. \( x^3 + 2 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Tích phân</legend>
-          <div class="question">
-            <p>Câu 19: Tính \( \int_1^2 x^2 dx \)</p>
-            <label><input type="radio" name="q19" value="A"> A. \( \frac{7}{3} \)</label><br>
-            <label><input type="radio" name="q19" value="B"> B. \( \frac{9}{3} \)</label><br>
-            <label><input type="radio" name="q19" value="C"> C. \( \frac{5}{3} \)</label><br>
-            <label><input type="radio" name="q19" value="D"> D. \( \frac{6}{3} \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hàm số</legend>
-          <div class="question">
-            <p>Câu 20: Hàm số nào sau đây đồng biến trên ℝ?</p>
-            <label><input type="radio" name="q20" value="A"> A. \( y = -x^3 \)</label><br>
-            <label><input type="radio" name="q20" value="B"> B. \( y = x^2 \)</label><br>
-            <label><input type="radio" name="q20" value="C"> C. \( y = x^3 \)</label><br>
-            <label><input type="radio" name="q20" value="D"> D. \( y = -x^2 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Mũ - Logarit</legend>
-          <div class="question">
-            <p>Câu 21: Giá trị của \( \log_2 8 \) là:</p>
-            <label><input type="radio" name="q21" value="A"> A. 2</label><br>
-            <label><input type="radio" name="q21" value="B"> B. 3</label><br>
-            <label><input type="radio" name="q21" value="C"> C. 4</label><br>
-            <label><input type="radio" name="q21" value="D"> D. 1</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Hình học không gian</legend>
-          <div class="question">
-            <p>Câu 22: Thể tích hình lập phương cạnh \( a \) là:</p>
-            <label><input type="radio" name="q22" value="A"> A. \( a^2 \)</label><br>
-            <label><input type="radio" name="q22" value="B"> B. \( 2a^3 \)</label><br>
-            <label><input type="radio" name="q22" value="C"> C. \( a^3 \)</label><br>
-            <label><input type="radio" name="q22" value="D"> D. \( 4a^2 \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Số phức</legend>
-          <div class="question">
-            <p>Câu 23: Số phức liên hợp của \( z = 3 + 4i \) là:</p>
-            <label><input type="radio" name="q23" value="A"> A. \( 3 - 4i \)</label><br>
-            <label><input type="radio" name="q23" value="B"> B. \( -3 + 4i \)</label><br>
-            <label><input type="radio" name="q23" value="C"> C. \( -3 - 4i \)</label><br>
-            <label><input type="radio" name="q23" value="D"> D. \( 3 + 4i \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Thống kê</legend>
-          <div class="question">
-            <p>Câu 24: Trung bình cộng của dãy số 2, 4, 6, 8 là:</p>
-            <label><input type="radio" name="q24" value="A"> A. 5</label><br>
-            <label><input type="radio" name="q24" value="B"> B. 6</label><br>
-            <label><input type="radio" name="q24" value="C"> C. 4</label><br>
-            <label><input type="radio" name="q24" value="D"> D. 7</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Tổ hợp - Xác suất</legend>
-          <div class="question">
-            <p>Câu 25: Số cách chọn 2 người từ 5 người là:</p>
-            <label><input type="radio" name="q25" value="A"> A. 10</label><br>
-            <label><input type="radio" name="q25" value="B"> B. 15</label><br>
-            <label><input type="radio" name="q25" value="C"> C. 20</label><br>
-            <label><input type="radio" name="q25" value="D"> D. 25</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Phương trình lượng giác</legend>
-          <div class="question">
-            <p>Câu 26: Nghiệm của phương trình \( \cos x = 0 \) là:</p>
-            <label><input type="radio" name="q26" value="A"> A. \( x = \frac{\pi}{2} + k2\pi \)</label><br>
-            <label><input type="radio" name="q26" value="B"> B. \( x = k\pi \)</label><br>
-            <label><input type="radio" name="q26" value="C"> C. \( x = \pi + k2\pi \)</label><br>
-            <label><input type="radio" name="q26" value="D"> D. \( x = \frac{\pi}{4} + k\pi \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Giải tích</legend>
-          <div class="question">
-            <p>Câu 27: Tìm giới hạn: \( \lim_{x \to 0} \frac{\sin x}{x} \)</p>
-            <label><input type="radio" name="q27" value="A"> A. 0</label><br>
-            <label><input type="radio" name="q27" value="B"> B. 1</label><br>
-            <label><input type="radio" name="q27" value="C"> C. Vô cực</label><br>
-            <label><input type="radio" name="q27" value="D"> D. Không tồn tại</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Đạo hàm</legend>
-          <div class="question">
-            <p>Câu 28: Đạo hàm của \( \ln x \) là:</p>
-            <label><input type="radio" name="q28" value="A"> A. \( \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q28" value="B"> B. \( x \ln x \)</label><br>
-            <label><input type="radio" name="q28" value="C"> C. \( \ln x + 1 \)</label><br>
-            <label><input type="radio" name="q28" value="D"> D. \( \ln x \cdot x \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Giải phương trình</legend>
-          <div class="question">
-            <p>Câu 29: Nghiệm của phương trình \( x^2 - 4 = 0 \) là:</p>
-            <label><input type="radio" name="q29" value="A"> A. \( x = 2 \)</label><br>
-            <label><input type="radio" name="q29" value="B"> B. \( x = \pm 2 \)</label><br>
-            <label><input type="radio" name="q29" value="C"> C. \( x = -2 \)</label><br>
-            <label><input type="radio" name="q29" value="D"> D. Không có nghiệm</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Định nghĩa hàm số</legend>
-          <div class="question">
-            <p>Câu 30: Hàm số nào sau đây là hàm số chẵn?</p>
-            <label><input type="radio" name="q30" value="A"> A. \( f(x) = x^3 \)</label><br>
-            <label><input type="radio" name="q30" value="B"> B. \( f(x) = x \)</label><br>
-            <label><input type="radio" name="q30" value="C"> C. \( f(x) = x^2 \)</label><br>
-            <label><input type="radio" name="q30" value="D"> D. \( f(x) = \frac{1}{x} \)</label><br>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Đồ thị hàm số</legend>
-          <div class="question">
-            <p>Câu 31: Hình dưới đây biểu diễn đồ thị của hàm số nào?</p>
-            <img src="images/graph_parabol.png" alt="Đồ thị hàm số"
-              style="max-width: 100%; height: auto; margin: 10px 0;">
-            <label><input type="radio" name="q3" value="A"> A. \( y = x^2 \)</label><br>
-            <label><input type="radio" name="q3" value="B"> B. \( y = \sqrt{x} \)</label><br>
-            <label><input type="radio" name="q3" value="C"> C. \( y = \frac{1}{x} \)</label><br>
-            <label><input type="radio" name="q3" value="D"> D. \( y = |x| \)</label><br>
-          </div>
-        </fieldset>
-
-        <div>
-          <button type="submit" class="submit-btn">Nộp bài</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
 
     <!-- Cột bên phải: Phiếu trả lời trắc nghiệm -->
