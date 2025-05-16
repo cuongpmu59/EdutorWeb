@@ -135,3 +135,28 @@ button[type="submit"]:hover {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+.main-container {
+  display: flex;
+  height: 80vh; /* Hoặc dùng 100vh nếu muốn full màn hình */
+  gap: 20px;
+}
+
+/* Mỗi cột có chiều rộng riêng */
+.left-column {
+  flex: 3;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.right-column {
+  flex: 1;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+/* Nội dung trong cột có scroll riêng */
+.scroll-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+}
