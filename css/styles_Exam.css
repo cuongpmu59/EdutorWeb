@@ -125,6 +125,13 @@ button[type="submit"]:hover {
     flex-direction: column;
   }
 
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
   body {
     font-size: 16px;
   }
@@ -147,12 +154,7 @@ button[type="submit"]:hover {
   padding: 10px;
 }
 
-.container {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: flex-start;
-}
+
 
 .quiz-container {
   scroll-behavior: smooth;
@@ -170,6 +172,27 @@ button[type="submit"]:hover {
   flex: 1;
   padding: 10px;
   background-color: #f0f0f0; /* tuỳ chọn */
+}
+#timer {
+  font-size: 20px;
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.quiz-container {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 
