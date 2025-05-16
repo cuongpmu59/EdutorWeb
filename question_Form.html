@@ -30,6 +30,22 @@
         border-radius: 6px;
         border: 1px solid #ccc;
       }
+
+      button[type="reset"] {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+button[type="reset"]:hover {
+  background-color: #c62828;
+}
+
   
       input[type="file"] {
         margin-top: 5px;
@@ -62,7 +78,9 @@
   <h1>Nhập câu hỏi trắc nghiệm</h1>
   <form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
     <label for="question">Câu hỏi:</label>
+    <small>Hỗ trợ công thức toán học với LaTeX, ví dụ: \\( a^2 + b^2 = c^2 \\)</small>
     <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
+    <div id="preview" style="margin-top: 20px; padding: 10px; border: 1px dashed #ccc; background-color: #fafafa;"></div>
     
     
     <label for="image">Ảnh minh họa (nếu có):</label>
@@ -90,6 +108,8 @@
     </select>
 
     <button type="submit">Lưu câu hỏi</button>
+    <button type="reset">Xóa dữ liệu</button>
+
   </form>
 
     <!-- Script xử lý MathJax -->
@@ -123,6 +143,9 @@
     MathJax.typesetPromise([preview]);
   }
 </script>
+
+<div id="preview" style="margin-top: 20px; padding: 10px; border: 1px dashed #ccc;"></div>
+
 <script>
   const questionInput = document.getElementById('question');
   const preview = document.getElementById('preview');
