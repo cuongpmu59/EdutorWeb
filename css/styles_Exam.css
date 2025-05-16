@@ -20,48 +20,32 @@ body {
   display: flex;
   flex-wrap: wrap;
 }
-.left-column, .right-column {
+
+.left-column,
+.right-column {
   flex: 1 1 100%;
   padding: 1rem;
 }
 
 @media (min-width: 768px) {
-  .left-column, .right-column {
+
+  .left-column,
+  .right-column {
     flex: 1;
   }
 }
 
-
-
-
-/* Cột trái và phải */
-.left-column, .right-column {
-  flex: 1;
-  min-width: 300px;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-}
-
-.left-column {
-  background-color: #f9f9f9;
-  border-right: 2px solid #ccc;
-}
-
-.right-column {
-  background-color: #eef;
-}
-
 /* Tiêu đề */
-.left-column h2, .right-column h2 {
+.left-column h2,
+.right-column h2 {
   margin-bottom: 15px;
   font-size: 24px;
   color: #0077cc;
 }
 
 /* Câu hỏi và câu trả lời */
-.question, .answer {
+.question,
+.answer {
   margin-bottom: 20px;
 }
 
@@ -86,12 +70,14 @@ body {
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
-  flex-wrap: wrap; /* Đảm bảo không tràn trên thiết bị nhỏ */
+  flex-wrap: wrap;
+  /* Đảm bảo không tràn trên thiết bị nhỏ */
 }
 
 .answer p {
   margin: 0;
-  min-width: 60px; /* giữ cố định phần "Câu X:" */
+  min-width: 60px;
+  /* giữ cố định phần "Câu X:" */
   font-weight: bold;
 }
 
@@ -120,22 +106,19 @@ button[type="submit"]:hover {
 }
 
 /* Responsive cho thiết bị nhỏ */
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: row;
     gap: 20px;
     align-items: flex-start;
   }
-
-  body {
-    font-size: 16px;
-  }
 }
+
+body {
+  font-size: 16px;
+}
+
 
 /* file style.css */
 .main-container {
@@ -154,8 +137,6 @@ button[type="submit"]:hover {
   padding: 10px;
 }
 
-
-
 .quiz-container {
   scroll-behavior: smooth;
 }
@@ -164,15 +145,18 @@ button[type="submit"]:hover {
 .left-column {
   flex: 3;
   padding: 10px;
-  background-color: #f9f9f9; /* tuỳ chọn */
+  background-color: #f9f9f9;
+  /* tuỳ chọn */
 }
 
 /* Cột bên phải (Phiếu trả lời): hẹp hơn */
 .right-column {
   flex: 1;
   padding: 10px;
-  background-color: #f0f0f0; /* tuỳ chọn */
+  background-color: #f0f0f0;
+  /* tuỳ chọn */
 }
+
 #timer {
   font-size: 20px;
   font-weight: bold;
@@ -194,12 +178,3 @@ button[type="submit"]:hover {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
-
-
-
-
-
-
-
-
-
