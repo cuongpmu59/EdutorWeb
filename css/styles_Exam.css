@@ -11,31 +11,47 @@ body {
   background-color: #f7f9fc;
   color: #333;
   padding: 20px;
+  padding-bottom: 40px;
   line-height: 1.6;
+  font-size: 16px;
 }
 
-/* Bố cục 2 cột linh hoạt */
-
-.container {
+/* Bố cục chính */
+.main-container {
   display: flex;
   flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 20px;
 }
 
+/* Cột trái và phải */
 .left-column,
 .right-column {
-  flex: 1 1 100%;
-  padding: 1rem;
+  padding: 10px;
 }
 
-@media (min-width: 768px) {
+/* Cột trái: nội dung bài thi */
+.left-column {
+  flex: 3;
+  background-color: #f9f9f9;
+}
 
-  .left-column,
-  .right-column {
-    flex: 1;
+/* Cột phải: phiếu trả lời */
+.right-column {
+  flex: 1;
+  background-color: #f0f0f0;
+}
+
+/* Responsive: chuyển sang layout dọc trên thiết bị nhỏ */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
-/* Tiêu đề */
+/* Tiêu đề mỗi cột */
 .left-column h2,
 .right-column h2 {
   margin-bottom: 15px;
@@ -43,51 +59,42 @@ body {
   color: #0077cc;
 }
 
-/* Câu hỏi và câu trả lời */
-.question,
-.answer {
+/* Câu hỏi */
+.question {
   margin-bottom: 20px;
 }
-
 .question p {
   font-weight: bold;
   margin-bottom: 8px;
 }
-
 .question label {
   display: block;
   margin-left: 10px;
   margin-bottom: 5px;
 }
 
-.answer span {
-  font-weight: bold;
-  color: #ff6600;
-}
-
+/* Trả lời */
 .answer {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
   flex-wrap: wrap;
-  /* Đảm bảo không tràn trên thiết bị nhỏ */
 }
-
+.answer span {
+  font-weight: bold;
+  color: #ff6600;
+}
 .answer p {
   margin: 0;
   min-width: 60px;
-  /* giữ cố định phần "Câu X:" */
   font-weight: bold;
 }
-
 .answer label {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-
-
 
 /* Nút nộp bài */
 button[type="submit"] {
@@ -100,63 +107,11 @@ button[type="submit"] {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 button[type="submit"]:hover {
   background-color: #005fa3;
 }
 
-/* Responsive cho thiết bị nhỏ */
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-start;
-  }
-}
-
-body {
-  font-size: 16px;
-}
-
-
-/* file style.css */
-.main-container {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-
-.quiz-column {
-  flex: 3;
-  padding: 10px;
-}
-
-.answer-sheet-column {
-  flex: 1;
-  padding: 10px;
-}
-
-.quiz-container {
-  scroll-behavior: smooth;
-}
-
-/* Cột bên trái (Bài thi): rộng hơn */
-.left-column {
-  flex: 3;
-  padding: 10px;
-  background-color: #f9f9f9;
-  /* tuỳ chọn */
-}
-
-/* Cột bên phải (Phiếu trả lời): hẹp hơn */
-.right-column {
-  flex: 1;
-  padding: 10px;
-  background-color: #f0f0f0;
-  /* tuỳ chọn */
-}
-
+/* Bộ đếm thời gian */
 #timer {
   font-size: 20px;
   font-weight: bold;
@@ -171,9 +126,11 @@ body {
   z-index: 100;
 }
 
+/* Vùng chứa bài thi có scroll */
 .quiz-container {
   max-height: 600px;
   overflow-y: auto;
+  scroll-behavior: smooth;
   padding-right: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
