@@ -1,4 +1,7 @@
 <?php
+print_r($_POST);
+print_r($_FILES);
+
 // Hiển thị lỗi nếu có
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
