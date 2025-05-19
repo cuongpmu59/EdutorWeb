@@ -1,9 +1,9 @@
 <?php
 // Kết nối MySQL
-$host = 'localhost';
-$db = 'tracnghiem_db';
-$user = 'root'; // thay bằng user thực tế
-$pass = '';     // thay bằng mật khẩu nếu có
+$host = sql103.infinityfree.com;
+$db = if0_39011369_questionBank;
+$user = if0_39011369; // thay bằng user thực tế
+$pass = Kimdung61;     // thay bằng mật khẩu nếu có
 $conn = new mysqli($host, $user, $pass, $db);
 $conn->set_charset("utf8mb4");
 
@@ -25,7 +25,7 @@ $answers = [
 // Xử lý upload ảnh
 $image_path = null;
 if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = 'uploads/';
+    $upload_dir = 'images/images_questionBank';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
     $filename = time() . '_' . basename($_FILES['image']['name']);
     $target_path = $upload_dir . $filename;
