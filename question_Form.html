@@ -92,6 +92,7 @@
     <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
+    <img id="imagePreview" style="max-width: 100%; margin-top: 10px; display: none;" />
 
     <label for="answer1">Đáp án 1:</label>
     <input type="text" id="answer1" name="answer1" placeholder="Đáp án 1" required />
@@ -141,21 +142,29 @@
       MathJax.typesetPromise([preview]);
     }
   </script>
-
   <div id="preview" style="margin-top: 20px; padding: 10px; border: 1px dashed #ccc;"></div>
-
   <script>
     const questionInput = document.getElementById('question');
     const preview = document.getElementById('preview');
-
     questionInput.addEventListener('input', () => {
       preview.innerHTML = questionInput.value;
       MathJax.typesetPromise([preview]);
     });
   </script>
+  <script>
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
 
-
-</body>
+    imageInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.style.display = "block";
+      } else {
+        imagePreview.style.display = "none";
+      }
+    });
+  </script>
 
 </body>
 
