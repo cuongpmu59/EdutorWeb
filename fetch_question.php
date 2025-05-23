@@ -1,8 +1,8 @@
 <?php
-$host = "sqlXXX.epizy.com"; // Thay bằng thông tin của bạn
-$dbname = "epiz_XXXX_questionbank";
-$username = "epiz_XXXX";
-$password = "your_password";
+$host = "sql210.infinityfree.com"; 
+$username = "if0_39047715";
+$password = "Kimdung16091961";
+$dbname = "if0_39047715_questionbank";
 
 $conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
