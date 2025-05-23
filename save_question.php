@@ -1,47 +1,48 @@
 <?php
-// Thay bằng thông tin thật của bạn
-$servername = "sql210.infinityfree.com"; 
-$username = "if0_39047715";
-$password = "Kimdung16091961";
-$dbname = "if0_39047715_questionbank";
+// Cấu hình kết nối MySQL - thay thông tin tương ứng trên InfinityFree
+$host = 'sql210.infinityfree.com'; // ví dụ: sql304.epizy.com
+$dbname = 'if0_39047715_questionbank';
+$username = 'if0_39047715';
+$password = 'Kimdung16091961';
 
 // Kết nối
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Kết nối thất bại: " . $conn->connect_error);
 }
 
-// Lấy dữ liệu từ form
+// Nhận dữ liệu từ form
 $question = $_POST['question'];
 $answer1 = $_POST['answer1'];
 $answer2 = $_POST['answer2'];
-$answer3 = $_POST['answer3'];
-$answer4 = $_POST['answer4'];
-$correct_answer = $_POST['correct_answer'];
+$answer3 = $_POST['answer3'] ?? null;
+$answer4 = $_POST['answer4'] ?? null;
+$correct = $_POST['correct_answer'];
 
-// Xử lý ảnh
-$image_path = null;
+// Xử lý ảnh nếu có
+$imagePath = null;
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = 'uploads/';
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+    $targetDir = "uploads/";
+    if (!file_exists($targetDir)) {
+        mkdir($targetDir, 0755, true);
     }
-    $file_name = time() . "_" . basename($_FILES['image']['name']);
-    $target_file = $upload_dir . $file_name;
+    $imageName = uniqid() . '_' . basename($_FILES['image']['name']);
+    $targetFile = $targetDir . $imageName;
 
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-        $image_path = $target_file;
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+        $imagePath = $targetFile;
     }
 }
 
-// Thêm dữ liệu vào bảng
-$stmt = $conn->prepare("INSERT INTO questionbank (question, image, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssssss", $question, $image_path, $answer1, $answer2, $answer3, $answer4, $correct_answer);
+// Chuẩn bị truy vấn SQL
+$stmt = $conn->prepare("INSERT INTO questions (question, image, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssssss", $question, $imagePath, $answer1, $answer2, $answer3, $answer4, $correct);
 
+// Thực thi và phản hồi
 if ($stmt->execute()) {
-    echo "✅ Câu hỏi đã được lưu thành công!";
+    echo "Lưu câu hỏi thành công!";
 } else {
-    echo "❌ Lỗi: " . $stmt->error;
+    echo "Lỗi khi lưu: " . $stmt->error;
 }
 
 $stmt->close();
