@@ -1,9 +1,9 @@
 <?php
 // Kết nối CSDL
-$host = "sqlXXX.epizy.com"; // ← Thay bằng hostname thật
-$dbname = "epiz_XXXX_questionbank"; // ← Thay bằng tên CSDL thật
-$username = "epiz_XXXX"; // ← Thay bằng username thật
-$password = "your_password"; // ← Thay bằng mật khẩu thật
+$host = "sql210.infinityfree.com"; 
+$username = "if0_39047715";
+$password = "Kimdung16091961";
+$dbname = "if0_39047715_questionbank";
 
 $conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
