@@ -1,9 +1,9 @@
 <?php
 // Cấu hình kết nối MySQL - thay thông tin tương ứng trên InfinityFree
-$host = 'sql210.infinityfree.com'; // ví dụ: sql304.epizy.com
-$dbname = 'if0_39047715_questionbank';
-$username = 'if0_39047715';
-$password = 'Kimdung16091961';
+$host = "sql210.infinityfree.com"; // ví dụ: sql304.epizy.com
+$dbname = "if0_39047715_questionbank";
+$username = "if0_39047715";
+$password = "Kimdung16091961";
 
 // Kết nối
 $conn = new mysqli($host, $username, $password, $dbname);
@@ -22,7 +22,7 @@ $correct = $_POST['correct_answer'];
 // Xử lý ảnh nếu có
 $imagePath = null;
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $targetDir = "uploads/";
+    $targetDir = "images/";
     if (!file_exists($targetDir)) {
         mkdir($targetDir, 0755, true);
     }
