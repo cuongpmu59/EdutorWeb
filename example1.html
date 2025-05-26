@@ -721,7 +721,23 @@
       });
     });
   </script>
-
+  <script>
+    // Đồng hồ đếm ngược 10 phút
+    var countdownTime = 10 * 60;
+    function updateTimer() {
+      var minutes = Math.floor(countdownTime / 60);
+      var seconds = countdownTime % 60;
+      document.getElementById('timer').textContent =
+        'Thời gian còn lại: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+      if (countdownTime <= 0) {
+        clearInterval(timerInterval);
+        alert('Hết giờ! Bài làm sẽ được nộp.');
+        document.getElementById("quizForm").submit(); // Tự động nộp bài
+      }
+      countdownTime--;
+    }
+    var timerInterval = setInterval(updateTimer, 1000);
+  </script>
 </body>
 
 </html>
