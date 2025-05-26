@@ -5,9 +5,6 @@
   <meta charset="UTF-8">
   <title>Bài thi trắc nghiệm</title>
 
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -140,6 +137,55 @@
       <!-- Thêm nhiều dòng nếu cần -->
     </div>
   </div>
+
+
+  <!-- MathJax để hiển thị công thức -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- JavaScript để đồng bộ lựa chọn -->
+  <script>
+    const radios = document.querySelectorAll('input[type="radio"]');
+    const answerRows = document.querySelectorAll('.answer-row');
+
+    // Khi người dùng chọn bên bài thi
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const question = radio.name.substring(1); // q1 → 1
+        const value = radio.value;
+
+        const row = document.querySelector(`.answer-row[data-question="${question}"]`);
+        const labels = row.querySelectorAll('label');
+
+        labels.forEach(label => {
+          if (label.dataset.value === value) {
+            label.classList.add('selected');
+          } else {
+            label.classList.remove('selected');
+          }
+        });
+      });
+    });
+
+    // Khi người dùng bấm chọn bên phiếu trả lời
+    answerRows.forEach(row => {
+      const question = row.dataset.question;
+      const labels = row.querySelectorAll('label');
+
+      labels.forEach(label => {
+        label.addEventListener('click', () => {
+          // Tô màu lựa chọn
+          labels.forEach(l => l.classList.remove('selected'));
+          label.classList.add('selected');
+
+          // Đồng bộ sang bài thi
+          const radio = document.querySelector(`input[name="q${question}"][value="${label.dataset.value}"]`);
+          if (radio) radio.checked = true;
+        });
+      });
+    });
+  </script>
+
 </body>
 
 </html>
