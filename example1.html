@@ -21,20 +21,17 @@
     .container {
       display: flex;
       height: 100vh;
-      /* Chiều cao toàn màn hình */
     }
 
     .column {
       flex: 1;
       padding: 15px;
       overflow-y: auto;
-      /* Tạo thanh cuộn đứng riêng từng cột */
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #ccc;
     }
 
     .column:last-child {
       border-right: none;
-      /* Không có viền bên phải cho cột cuối */
     }
 
     h2 {
@@ -45,14 +42,28 @@
       margin-bottom: 20px;
     }
 
-    .answer-sheet {
-      background-color: #f9f9f9;
-    }
-
-    .answer {
+    .answer-row {
       margin-bottom: 10px;
     }
+
+    .answer-row span {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .answer-options label {
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .selected {
+      background-color: #4CAF50;
+      color: white;
+    }
   </style>
+
 </head>
 
 <body>
