@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <title>Bài thi trắc nghiệm</title>
+
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     * {
       box-sizing: border-box;
     }
 
-    body, html {
+    body,
+    html {
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -17,18 +23,21 @@
 
     .container {
       display: flex;
-      height: 100vh; /* Chiều cao toàn màn hình */
+      height: 100vh;
+      /* Chiều cao toàn màn hình */
     }
 
     .column {
       flex: 1;
       padding: 15px;
-      overflow-y: auto; /* Tạo thanh cuộn đứng riêng từng cột */
+      overflow-y: auto;
+      /* Tạo thanh cuộn đứng riêng từng cột */
       border-right: 1px solid #ddd;
     }
 
     .column:last-child {
-      border-right: none; /* Không có viền bên phải cho cột cuối */
+      border-right: none;
+      /* Không có viền bên phải cho cột cuối */
     }
 
     h2 {
@@ -48,93 +57,89 @@
     }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <!-- Cột trái: Form bài thi trắc nghiệm -->
+    <div class="column">
+      <h2>Bài thi trắc nghiệm</h2>
+      <div class="question">
+        <p><strong>Câu 1:</strong> 2 + 2 bằng mấy?</p>
+        <label><input type="radio" name="q1"> A. 3</label><br>
+        <label><input type="radio" name="q1"> B. 4</label><br>
+        <label><input type="radio" name="q1"> C. 5</label><br>
+        <label><input type="radio" name="q1"> D. 6</label>
+      </div>
 
-<div class="container">
-  <!-- Cột trái: Form bài thi trắc nghiệm -->
-  <div class="column">
-    <h2>Bài thi trắc nghiệm</h2>
-    <div class="question">
-      <p><strong>Câu 1:</strong> 2 + 2 bằng mấy?</p>
-      <label><input type="radio" name="q1"> A. 3</label><br>
-      <label><input type="radio" name="q1"> B. 4</label><br>
-      <label><input type="radio" name="q1"> C. 5</label><br>
-      <label><input type="radio" name="q1"> D. 6</label>
+      <div class="question">
+        <p><strong>Câu 2:</strong> Hình nào có 3 cạnh?</p>
+        <label><input type="radio" name="q2"> A. Hình vuông</label><br>
+        <label><input type="radio" name="q2"> B. Hình tròn</label><br>
+        <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
+        <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
+      </div>
+      <div class="question">
+        <p><strong>Câu 2:</strong> Hình nào có 3 cạnh?</p>
+        <label><input type="radio" name="q2"> A. Hình vuông</label><br>
+        <label><input type="radio" name="q2"> B. Hình tròn</label><br>
+        <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
+        <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
+      </div>
+      <div class="question">
+        <p><strong>Câu 3:</strong> Hình nào có 3 cạnh?</p>
+        <label><input type="radio" name="q2"> A. Hình vuông</label><br>
+        <label><input type="radio" name="q2"> B. Hình tròn</label><br>
+        <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
+        <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
+      </div>
+      <div class="question">
+        <p><strong>Câu 4:</strong>
+        <p>Nghiệm của phương trình là: \[x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\]</p>
+        <label><input type="radio" name="q2"> A. Hình vuông</label><br>
+        <label><input type="radio" name="q2"> B. Hình tròn</label><br>
+        <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
+        <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
+      </div>
+      <div class="question">
+        <p><strong>Câu 5:</strong> Phương trình bậc hai tổng quát là: \( ax^2 + bx + c = 0 \)</p>
+        <label><input type="radio" name="q2"> A. Hình vuông</label><br>
+        <label><input type="radio" name="q2"> B. Hình tròn</label><br>
+        <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
+        <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
+      </div>
+
+      <!-- Thêm nhiều câu hỏi khác tại đây -->
     </div>
 
-    <div class="question">
-      <p><strong>Câu 2:</strong> Hình nào có 3 cạnh?</p>
-      <label><input type="radio" name="q2"> A. Hình vuông</label><br>
-      <label><input type="radio" name="q2"> B. Hình tròn</label><br>
-      <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
-      <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
-    </div>
-    <div class="question">
-      <p><strong>Câu 2:</strong> Hình nào có 3 cạnh?</p>
-      <label><input type="radio" name="q2"> A. Hình vuông</label><br>
-      <label><input type="radio" name="q2"> B. Hình tròn</label><br>
-      <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
-      <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
-    </div>
-    <div class="question">
-      <p><strong>Câu 3:</strong> Hình nào có 3 cạnh?</p>
-      <label><input type="radio" name="q2"> A. Hình vuông</label><br>
-      <label><input type="radio" name="q2"> B. Hình tròn</label><br>
-      <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
-      <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
-    </div>
-    <div class="question">
-      <p><strong>Câu 4:</strong> Hình nào có 3 cạnh?</p>
-      <label><input type="radio" name="q2"> A. Hình vuông</label><br>
-      <label><input type="radio" name="q2"> B. Hình tròn</label><br>
-      <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
-      <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
-    </div>
-    <div class="question">
-      <p><strong>Câu 5:</strong> Hình nào có 3 cạnh?</p>
-      <label><input type="radio" name="q2"> A. Hình vuông</label><br>
-      <label><input type="radio" name="q2"> B. Hình tròn</label><br>
-      <label><input type="radio" name="q2"> C. Hình tam giác</label><br>
-      <label><input type="radio" name="q2"> D. Hình chữ nhật</label>
-    </div>
+    <!-- Cột phải: Phiếu trả lời -->
+    <div class="column answer-sheet">
+      <h2>Phiếu trả lời</h2>
+      <div class="answer">Câu 1: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 2: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 3: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 4: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 5: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 6: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 7: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 8: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 9: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 10: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 11: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 12: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 13: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 14: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 15: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 16: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 17: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 18: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 19: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 20: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 21: <input type="text" maxlength="1" size="1"></div>
+      <div class="answer">Câu 22: <input type="text" maxlength="1" size="1"></div>
 
-    <!-- Thêm nhiều câu hỏi khác tại đây -->
+      <!-- Thêm nhiều dòng nếu cần -->
+    </div>
   </div>
-
-  <!-- Cột phải: Phiếu trả lời -->
-  <div class="column answer-sheet">
-    <h2>Phiếu trả lời</h2>
-    <div class="answer">Câu 1: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 2: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 3: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 4: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 5: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 6: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 7: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 8: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 9: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 10: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 11: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 12: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 13: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 14: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 15: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 16: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 17: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 18: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 19: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 20: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 21: <input type="text" maxlength="1" size="1"></div>
-    <div class="answer">Câu 22: <input type="text" maxlength="1" size="1"></div>
-    
-    
-
-
-    
-
-    <!-- Thêm nhiều dòng nếu cần -->
-  </div>
-</div>
-
 </body>
+
 </html>
