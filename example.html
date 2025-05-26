@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .scroll-wrapper {
+      width: 400px;      /* hoặc 100% tùy theo thiết kế */
+      height: 300px;     /* chiều cao cố định */
+      overflow-y: auto;  /* bật thanh cuộn dọc khi cần */
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    form {
+      display: block;
+    }
+
+    input, textarea {
+      display: block;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="scroll-wrapper">
+  <form>
+    <h3>Form đăng ký</h3>
+    <label>Họ và tên:</label>
+    <input type="text" name="fullname">
+    
+    <label>Email:</label>
+    <input type="email" name="email">
+    
+    <label>Ghi chú:</label>
+    <textarea rows="5"></textarea>
+
+    <!-- Lặp lại nội dung để form dài hơn container -->
+    <label>Môn học:</label>
+    <input type="text">
+    <label>Lớp:</label>
+    <input type="text">
+    <label>Thời gian:</label>
+    <input type="text">
+    <label>Hình thức học:</label>
+    <input type="text">
+    <label>Địa chỉ:</label>
+    <input type="text">
+    <label>Số điện thoại:</label>
+    <input type="text">
+
+    <button type="submit">Gửi</button>
+  </form>
+</div>
+
+</body>
+</html>
