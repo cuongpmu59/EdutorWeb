@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thi Trắc Nghiệm</title>
   <style>
     body {
@@ -44,10 +45,12 @@
 
     .right-column {
       flex: 1;
-      background: #f9f9f9;
+      max-height: 400px;
+      overflow-y: auto;
       padding: 15px;
-      border-radius: 10px;
       border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #f9f9f9;
     }
 
     .question {
@@ -113,9 +116,15 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Đề thi trắc nghiệm Toán</h1>
+    <div id="examInfo" style="text-align: center; margin-top: 10px;">
+      <p>Họ tên: <span id="studentName"></span></p>
+      <p>Thời gian bắt đầu: <span id="startTime"></span></p>
+      <p>Thời gian còn lại: <span id="countdown" style="font-weight: bold; color: red;"></span></p>
+    </div>
     <div class="grid">
       <!-- CỘT TRÁI: Câu hỏi -->
       <form id="quizForm" class="left-column">
@@ -169,4 +178,5 @@
   <!-- Tệp JS riêng -->
   <script src="script.js"></script>
 </body>
+
 </html>
