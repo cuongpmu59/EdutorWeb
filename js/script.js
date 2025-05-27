@@ -1,9 +1,29 @@
+let totalTime = 600; // 10 phút (600 giây)
+let timer;
+
+function startTimer() {
+  const countdownEl = document.getElementById("countdown");
+  timer = setInterval(() => {
+    if (totalTime <= 0) {
+      clearInterval(timer);
+      submitQuiz();
+      countdownEl.textContent = "Hết giờ!";
+    } else {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      countdownEl.textContent = `${minutes} phút ${seconds < 10 ? '0' : ''}${seconds} giây`;
+      totalTime--;
+    }
+  }, 1000);
+}
+
 function submitQuiz() {
   const answers = {
     q1: "b",
     q2: "b",
     q3: "a",
-    q4: "b"
+    q4: "b",
+    q5: "c"  // đáp án đúng là: (1/3) * (sqrt(3)/4 * a^2) * a = (sqrt(3)/12)a^3
   };
 
   let score = 0;
@@ -27,9 +47,17 @@ function submitQuiz() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const student = prompt("Nhập họ tên học sinh:");
+  document.getElementById("studentName").textContent = student || "Chưa nhập";
+
+  const now = new Date();
+  const startTimeStr = now.toLocaleTimeString('vi-VN');
+  document.getElementById("startTime").textContent = startTimeStr;
+  startTimer();
+
   // Tạo các dòng phiếu trả lời
   const answerSheet = document.querySelector('.answer-sheet');
-  const questionCount = 4; // chỉnh theo số câu thật
+  const questionCount = 50; // chỉnh theo số câu thật
   for (let i = 1; i <= questionCount; i++) {
     const qId = `q${i}`;
     const row = document.createElement('div');
