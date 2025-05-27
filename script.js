@@ -1,20 +1,60 @@
 function submitQuiz() {
-    const answers = {
-      q1: "b",
-      q2: "b",
-      q3: "a"
-    };
-  
-    let score = 0;
-    for (let key in answers) {
-      const selected = document.querySelector(`input[name="${key}"]:checked`);
-      if (selected && selected.value === answers[key]) score++;
+  const answers = {
+    q1: "b",
+    q2: "b",
+    q3: "a",
+    q4: "b"
+  };
+
+  let score = 0;
+  for (let key in answers) {
+    const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
+    const selected = document.querySelector(`input[name="${key}"]:checked`);
+
+    questionDiv.classList.remove("correct", "incorrect");
+
+    if (selected) {
+      if (selected.value === answers[key]) {
+        score++;
+        questionDiv.classList.add("correct");
+      } else {
+        questionDiv.classList.add("incorrect");
+      }
     }
-  
-    document.getElementById("result").innerText = `Bạn đúng ${score}/3 câu.`;
   }
-  
-  // Đồng bộ phiếu trả lời với câu hỏi
+
+  document.getElementById("result").innerText = `Bạn đúng ${score}/${Object.keys(answers).length} câu.`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Tạo các dòng phiếu trả lời
+  const answerSheet = document.querySelector('.answer-sheet');
+  const questionCount = 4; // chỉnh theo số câu thật
+  for (let i = 1; i <= questionCount; i++) {
+    const qId = `q${i}`;
+    const row = document.createElement('div');
+    row.className = 'answer-row';
+    row.dataset.q = qId;
+
+    const span = document.createElement('span');
+    span.textContent = `Câu ${i}:`;
+    row.appendChild(span);
+
+    ['a', 'b', 'c', 'd'].forEach(opt => {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = `as_${qId}`;
+      input.value = opt;
+      label.appendChild(input);
+      label.append(` ${opt.toUpperCase()}`);
+      row.appendChild(label);
+    });
+
+    answerSheet.appendChild(row);
+  }
+
+  // Đồng bộ 2 chiều
   document.querySelectorAll('.question input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const q = radio.name;
@@ -23,7 +63,7 @@ function submitQuiz() {
       if (sheetRadio) sheetRadio.checked = true;
     });
   });
-  
+
   document.querySelectorAll('.answer-sheet input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const q = radio.name.replace('as_', '');
@@ -32,4 +72,4 @@ function submitQuiz() {
       if (quizRadio) quizRadio.checked = true;
     });
   });
-  
+});
