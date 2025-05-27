@@ -22,7 +22,8 @@ function submitQuiz() {
     q1: "b",
     q2: "b",
     q3: "a",
-    q4: "b"
+    q4: "b",
+    q5: "c"  // đáp án đúng là: (1/3) * (sqrt(3)/4 * a^2) * a = (sqrt(3)/12)a^3
   };
 
   let score = 0;
