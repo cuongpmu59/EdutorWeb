@@ -1,3 +1,22 @@
+let totalTime = 600; // 10 phút (600 giây)
+let timer;
+
+function startTimer() {
+  const countdownEl = document.getElementById("countdown");
+  timer = setInterval(() => {
+    if (totalTime <= 0) {
+      clearInterval(timer);
+      submitQuiz();
+      countdownEl.textContent = "Hết giờ!";
+    } else {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      countdownEl.textContent = `${minutes} phút ${seconds < 10 ? '0' : ''}${seconds} giây`;
+      totalTime--;
+    }
+  }, 1000);
+}
+
 function submitQuiz() {
   const answers = {
     q1: "b",
