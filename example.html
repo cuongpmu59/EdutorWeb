@@ -103,6 +103,14 @@
       font-weight: bold;
       color: green;
     }
+
+    .correct {
+      color: green;
+    }
+
+    .incorrect {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -196,8 +204,20 @@
 
       let score = 0;
       for (let key in answers) {
+        const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
         const selected = document.querySelector(`input[name="${key}"]:checked`);
-        if (selected && selected.value === answers[key]) score++;
+
+        // Remove previous styles
+        questionDiv.classList.remove("correct", "incorrect");
+
+        if (selected) {
+          if (selected.value === answers[key]) {
+            score++;
+            questionDiv.classList.add("correct");
+          } else {
+            questionDiv.classList.add("incorrect");
+          }
+        }
       }
 
       document.getElementById("result").innerText = `Bạn đúng ${score}/4 câu.`;
