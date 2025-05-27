@@ -57,6 +57,12 @@
       font-weight: bold;
     }
 
+    .question img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
+    }
+
     .answer-sheet {
       display: flex;
       flex-direction: column;
@@ -122,6 +128,14 @@
           <label><input type="radio" name="q3" value="c"> \( \ln x \)</label><br>
           <label><input type="radio" name="q3" value="d"> 1</label>
         </div>
+        <div class="question" data-q="q4">
+          <p>Câu 4: Trong hình chóp S.ABCD có đáy là hình vuông cạnh a, SA vuông góc mặt đáy và SA = a. Thể tích khối chóp là:</p>
+          <img src="https://i.imgur.com/bJX5s6f.png" alt="Hình chóp S.ABCD">
+          <label><input type="radio" name="q4" value="a"> \( a^3 \)</label><br>
+          <label><input type="radio" name="q4" value="b"> \( \frac{1}{3}a^3 \)</label><br>
+          <label><input type="radio" name="q4" value="c"> \( \frac{1}{2}a^3 \)</label><br>
+          <label><input type="radio" name="q4" value="d"> \( \frac{2}{3}a^3 \)</label>
+        </div>
         <button type="button" onclick="submitQuiz()">Nộp bài</button>
         <div id="result"></div>
       </form>
@@ -151,6 +165,13 @@
             <label><input type="radio" name="as_q3" value="c" /> C</label>
             <label><input type="radio" name="as_q3" value="d" /> D</label>
           </div>
+          <div class="answer-row" data-q="q4">
+            <span>Câu 4:</span>
+            <label><input type="radio" name="as_q4" value="a" /> A</label>
+            <label><input type="radio" name="as_q4" value="b" /> B</label>
+            <label><input type="radio" name="as_q4" value="c" /> C</label>
+            <label><input type="radio" name="as_q4" value="d" /> D</label>
+          </div>
         </div>
       </div>
     </div>
@@ -165,7 +186,8 @@
       const answers = {
         q1: "b",
         q2: "b",
-        q3: "a"
+        q3: "a",
+        q4: "b"
       };
 
       let score = 0;
@@ -174,7 +196,7 @@
         if (selected && selected.value === answers[key]) score++;
       }
 
-      document.getElementById("result").innerText = `Bạn đúng ${score}/3 câu.`;
+      document.getElementById("result").innerText = `Bạn đúng ${score}/4 câu.`;
     }
 
     // Đồng bộ phiếu trả lời với câu hỏi
