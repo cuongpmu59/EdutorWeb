@@ -1,20 +1,27 @@
-function submitQuiz() {
-    const answers = {
-      q1: "b",
-      q2: "b",
-      q3: "a"
-    };
-  
-    let score = 0;
-    let total = Object.keys(answers).length;
-  
-    for (let key in answers) {
-      const selected = document.querySelector(`input[name="${key}"]:checked`);
-      if (selected && selected.value === answers[key]) {
-        score++;
-      }
-    }
-  
-    document.getElementById("result").innerText = `Bạn đúng ${score}/${total} câu.`;
-  }
-  
+.grid {
+  display: flex;
+  gap: 30px;
+}
+
+.left-column {
+  flex: 2;
+}
+
+.right-column {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.answer-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.answer-row span {
+  display: inline-block;
+  width: 60px;
+  font-weight: bold;
+}
