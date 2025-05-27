@@ -46,7 +46,6 @@ function submitQuiz() {
   document.getElementById("result").innerText = `Bạn đúng ${score}/${Object.keys(answers).length} câu.`;
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
   const student = prompt("Nhập họ tên học sinh:");
   document.getElementById("studentName").textContent = student || "Chưa nhập";
@@ -54,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   const startTimeStr = now.toLocaleTimeString('vi-VN');
   document.getElementById("startTime").textContent = startTimeStr;
-
   startTimer();
 
   // Tạo các dòng phiếu trả lời
