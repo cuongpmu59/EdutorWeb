@@ -111,13 +111,26 @@
     .incorrect {
       color: red;
     }
+
+    .review-section {
+      margin-top: 30px;
+      padding: 20px;
+      border-top: 2px dashed #ccc;
+    }
+
+    .review-section h2 {
+      color: #333;
+    }
+
+    .review-item {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Đề thi trắc nghiệm Toán</h1>
     <div class="grid">
-      <!-- CỘT TRÁI: Câu hỏi -->
       <form id="quizForm" class="left-column">
         <div class="question" data-q="q1">
           <p>Câu 1: \( \int x \, dx = ? \)</p>
@@ -150,9 +163,12 @@
         </div>
         <button type="button" onclick="submitQuiz()">Nộp bài</button>
         <div id="result"></div>
+        <div class="review-section" id="reviewSection" style="display:none">
+          <h2>Phân tích kết quả:</h2>
+          <div id="reviewContent"></div>
+        </div>
       </form>
 
-      <!-- CỘT PHẢI: Phiếu trả lời -->
       <div class="right-column">
         <h2>Phiếu trả lời</h2>
         <div class="answer-sheet">
@@ -189,7 +205,6 @@
     </div>
   </div>
 
-  <!-- MathJax + Script -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -203,27 +218,31 @@
       };
 
       let score = 0;
+      let reviewHtml = "";
       for (let key in answers) {
         const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
         const selected = document.querySelector(`input[name="${key}"]:checked`);
-
-        // Remove previous styles
         questionDiv.classList.remove("correct", "incorrect");
 
         if (selected) {
-          if (selected.value === answers[key]) {
+          const correct = selected.value === answers[key];
+          if (correct) {
             score++;
             questionDiv.classList.add("correct");
           } else {
             questionDiv.classList.add("incorrect");
           }
+          reviewHtml += `<div class='review-item'>Câu ${key.replace('q', '')}: Bạn chọn <strong>${selected.value.toUpperCase()}</strong> — ${correct ? '<span class="correct">Đúng</span>' : '<span class="incorrect">Sai</span>'}, đáp án đúng là <strong>${answers[key].toUpperCase()}</strong>.</div>`;
+        } else {
+          reviewHtml += `<div class='review-item'>Câu ${key.replace('q', '')}: Bạn chưa chọn đáp án — <span class="incorrect">Sai</span>, đáp án đúng là <strong>${answers[key].toUpperCase()}</strong>.</div>`;
         }
       }
 
       document.getElementById("result").innerText = `Bạn đúng ${score}/4 câu.`;
+      document.getElementById("reviewContent").innerHTML = reviewHtml;
+      document.getElementById("reviewSection").style.display = "block";
     }
 
-    // Đồng bộ phiếu trả lời với câu hỏi
     document.querySelectorAll('.question input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const q = radio.name;
