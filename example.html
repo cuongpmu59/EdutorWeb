@@ -1,42 +1,68 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thi Trắc Nghiệm</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
 <body>
   <div class="container">
     <h1>Đề thi trắc nghiệm Toán</h1>
-    <form id="quizForm">
-      <div class="question">
-        <p>Câu 1: \( \int x \, dx = ? \)</p>
-        <label><input type="radio" name="q1" value="a"> \( x^2 + C \)</label><br>
-        <label><input type="radio" name="q1" value="b"> \( \frac{1}{2}x^2 + C \)</label><br>
-        <label><input type="radio" name="q1" value="c"> \( \ln x + C \)</label>
+    <div class="grid">
+      <!-- CỘT TRÁI: Câu hỏi -->
+      <form id="quizForm" class="left-column">
+        <div class="question" data-q="q1">
+          <p>Câu 1: \( \int x \, dx = ? \)</p>
+          <label><input type="radio" name="q1" value="a"> \( x^2 + C \)</label><br>
+          <label><input type="radio" name="q1" value="b"> \( \frac{1}{2}x^2 + C \)</label><br>
+          <label><input type="radio" name="q1" value="c"> \( \ln x + C \)</label><br>
+          <label><input type="radio" name="q1" value="d"> Không xác định</label>
+        </div>
+        <div class="question" data-q="q2">
+          <p>Câu 2: \( \lim_{x \to 0} \frac{\sin x}{x} = ? \)</p>
+          <label><input type="radio" name="q2" value="a"> 0</label><br>
+          <label><input type="radio" name="q2" value="b"> 1</label><br>
+          <label><input type="radio" name="q2" value="c"> Vô hạn</label><br>
+          <label><input type="radio" name="q2" value="d"> Không xác định</label>
+        </div>
+        <div class="question" data-q="q3">
+          <p>Câu 3: Đạo hàm của \( e^x \) là gì?</p>
+          <label><input type="radio" name="q3" value="a"> \( e^x \)</label><br>
+          <label><input type="radio" name="q3" value="b"> \( x \cdot e^x \)</label><br>
+          <label><input type="radio" name="q3" value="c"> \( \ln x \)</label><br>
+          <label><input type="radio" name="q3" value="d"> 1</label>
+        </div>
+        <button type="button" onclick="submitQuiz()">Nộp bài</button>
+        <div id="result"></div>
+      </form>
+
+      <!-- CỘT PHẢI: Phiếu trả lời -->
+      <div class="right-column">
+        <h2>Phiếu trả lời</h2>
+        <div class="answer-sheet">
+          <div class="answer-row" data-q="q1">
+            <span>Câu 1:</span>
+            <label><input type="radio" name="as_q1" value="a" /> A</label>
+            <label><input type="radio" name="as_q1" value="b" /> B</label>
+            <label><input type="radio" name="as_q1" value="c" /> C</label>
+            <label><input type="radio" name="as_q1" value="d" /> D</label>
+          </div>
+          <div class="answer-row" data-q="q2">
+            <span>Câu 2:</span>
+            <label><input type="radio" name="as_q2" value="a" /> A</label>
+            <label><input type="radio" name="as_q2" value="b" /> B</label>
+            <label><input type="radio" name="as_q2" value="c" /> C</label>
+            <label><input type="radio" name="as_q2" value="d" /> D</label>
+          </div>
+          <div class="answer-row" data-q="q3">
+            <span>Câu 3:</span>
+            <label><input type="radio" name="as_q3" value="a" /> A</label>
+            <label><input type="radio" name="as_q3" value="b" /> B</label>
+            <label><input type="radio" name="as_q3" value="c" /> C</label>
+            <label><input type="radio" name="as_q3" value="d" /> D</label>
+          </div>
+        </div>
       </div>
-      <div class="question">
-        <p>Câu 2: \( \lim_{x \to 0} \frac{\sin x}{x} = ? \)</p>
-        <label><input type="radio" name="q2" value="a"> 0</label><br>
-        <label><input type="radio" name="q2" value="b"> 1</label><br>
-        <label><input type="radio" name="q2" value="c"> Vô hạn</label>
-      </div>
-      <div class="question">
-        <p>Câu 3: Đạo hàm của \( e^x \) là gì?</p>
-        <label><input type="radio" name="q3" value="a"> \( e^x \)</label><br>
-        <label><input type="radio" name="q3" value="b"> \( x \cdot e^x \)</label><br>
-        <label><input type="radio" name="q3" value="c"> \( \ln x \)</label>
-      </div>
-      <button type="button" onclick="submitQuiz()">Nộp bài</button>
-    </form>
-    <div id="result"></div>
+    </div>
   </div>
 
+  <!-- MathJax + script -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
   <script src="script.js"></script>
 </body>
-</html>
