@@ -48,6 +48,8 @@
       padding: 15px;
       border-radius: 10px;
       border: 1px solid #ddd;
+      max-height: 600px;
+      overflow-y: auto;
     }
 
     .question {
@@ -105,25 +107,16 @@
     }
 
     .correct {
-      color: green;
+      background-color: #d4edda;
     }
 
     .incorrect {
-      color: red;
+      background-color: #f8d7da;
     }
 
-    .review-section {
-      margin-top: 30px;
-      padding: 20px;
-      border-top: 2px dashed #ccc;
-    }
-
-    .review-section h2 {
-      color: #333;
-    }
-
-    .review-item {
-      margin-bottom: 15px;
+    .feedback {
+      margin-top: 10px;
+      font-style: italic;
     }
   </style>
 </head>
@@ -131,6 +124,7 @@
   <div class="container">
     <h1>Đề thi trắc nghiệm Toán</h1>
     <div class="grid">
+      <!-- CỘT TRÁI: Câu hỏi -->
       <form id="quizForm" class="left-column">
         <div class="question" data-q="q1">
           <p>Câu 1: \( \int x \, dx = ? \)</p>
@@ -138,6 +132,7 @@
           <label><input type="radio" name="q1" value="b"> \( \frac{1}{2}x^2 + C \)</label><br>
           <label><input type="radio" name="q1" value="c"> \( \ln x + C \)</label><br>
           <label><input type="radio" name="q1" value="d"> Không xác định</label>
+          <div class="feedback"></div>
         </div>
         <div class="question" data-q="q2">
           <p>Câu 2: \( \lim_{x \to 0} \frac{\sin x}{x} = ? \)</p>
@@ -145,6 +140,7 @@
           <label><input type="radio" name="q2" value="b"> 1</label><br>
           <label><input type="radio" name="q2" value="c"> Vô hạn</label><br>
           <label><input type="radio" name="q2" value="d"> Không xác định</label>
+          <div class="feedback"></div>
         </div>
         <div class="question" data-q="q3">
           <p>Câu 3: Đạo hàm của \( e^x \) là gì?</p>
@@ -152,6 +148,7 @@
           <label><input type="radio" name="q3" value="b"> \( x \cdot e^x \)</label><br>
           <label><input type="radio" name="q3" value="c"> \( \ln x \)</label><br>
           <label><input type="radio" name="q3" value="d"> 1</label>
+          <div class="feedback"></div>
         </div>
         <div class="question" data-q="q4">
           <p>Câu 4: Trong hình chóp S.ABCD có đáy là hình vuông cạnh \( a \), SA vuông góc mặt đáy và SA = \( a \). Thể tích khối chóp là:</p>
@@ -160,51 +157,23 @@
           <label><input type="radio" name="q4" value="b"> \( \frac{1}{3}a^3 \)</label><br>
           <label><input type="radio" name="q4" value="c"> \( \frac{1}{2}a^3 \)</label><br>
           <label><input type="radio" name="q4" value="d"> \( \frac{2}{3}a^3 \)</label>
+          <div class="feedback"></div>
         </div>
         <button type="button" onclick="submitQuiz()">Nộp bài</button>
         <div id="result"></div>
-        <div class="review-section" id="reviewSection" style="display:none">
-          <h2>Phân tích kết quả:</h2>
-          <div id="reviewContent"></div>
-        </div>
       </form>
 
+      <!-- CỘT PHẢI: Phiếu trả lời -->
       <div class="right-column">
         <h2>Phiếu trả lời</h2>
         <div class="answer-sheet">
-          <div class="answer-row" data-q="q1">
-            <span>Câu 1:</span>
-            <label><input type="radio" name="as_q1" value="a" /> A</label>
-            <label><input type="radio" name="as_q1" value="b" /> B</label>
-            <label><input type="radio" name="as_q1" value="c" /> C</label>
-            <label><input type="radio" name="as_q1" value="d" /> D</label>
-          </div>
-          <div class="answer-row" data-q="q2">
-            <span>Câu 2:</span>
-            <label><input type="radio" name="as_q2" value="a" /> A</label>
-            <label><input type="radio" name="as_q2" value="b" /> B</label>
-            <label><input type="radio" name="as_q2" value="c" /> C</label>
-            <label><input type="radio" name="as_q2" value="d" /> D</label>
-          </div>
-          <div class="answer-row" data-q="q3">
-            <span>Câu 3:</span>
-            <label><input type="radio" name="as_q3" value="a" /> A</label>
-            <label><input type="radio" name="as_q3" value="b" /> B</label>
-            <label><input type="radio" name="as_q3" value="c" /> C</label>
-            <label><input type="radio" name="as_q3" value="d" /> D</label>
-          </div>
-          <div class="answer-row" data-q="q4">
-            <span>Câu 4:</span>
-            <label><input type="radio" name="as_q4" value="a" /> A</label>
-            <label><input type="radio" name="as_q4" value="b" /> B</label>
-            <label><input type="radio" name="as_q4" value="c" /> C</label>
-            <label><input type="radio" name="as_q4" value="d" /> D</label>
-          </div>
+          <!-- Các dòng câu trả lời được tạo bằng JavaScript hoặc thêm thủ công -->
         </div>
       </div>
     </div>
   </div>
 
+  <!-- MathJax + Script -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -218,31 +187,33 @@
       };
 
       let score = 0;
-      let reviewHtml = "";
       for (let key in answers) {
         const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
         const selected = document.querySelector(`input[name="${key}"]:checked`);
+        const feedback = questionDiv.querySelector(".feedback");
+
+        // Reset styles and feedback
         questionDiv.classList.remove("correct", "incorrect");
+        feedback.innerText = "";
 
         if (selected) {
-          const correct = selected.value === answers[key];
-          if (correct) {
+          if (selected.value === answers[key]) {
             score++;
             questionDiv.classList.add("correct");
+            feedback.innerText = "✅ Đáp án đúng.";
           } else {
             questionDiv.classList.add("incorrect");
+            feedback.innerText = `❌ Đáp án đúng là: ${answers[key].toUpperCase()}`;
           }
-          reviewHtml += `<div class='review-item'>Câu ${key.replace('q', '')}: Bạn chọn <strong>${selected.value.toUpperCase()}</strong> — ${correct ? '<span class="correct">Đúng</span>' : '<span class="incorrect">Sai</span>'}, đáp án đúng là <strong>${answers[key].toUpperCase()}</strong>.</div>`;
         } else {
-          reviewHtml += `<div class='review-item'>Câu ${key.replace('q', '')}: Bạn chưa chọn đáp án — <span class="incorrect">Sai</span>, đáp án đúng là <strong>${answers[key].toUpperCase()}</strong>.</div>`;
+          feedback.innerText = `❗ Bạn chưa chọn đáp án.`;
         }
       }
 
       document.getElementById("result").innerText = `Bạn đúng ${score}/4 câu.`;
-      document.getElementById("reviewContent").innerHTML = reviewHtml;
-      document.getElementById("reviewSection").style.display = "block";
     }
 
+    // Đồng bộ phiếu trả lời với câu hỏi
     document.querySelectorAll('.question input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const q = radio.name;
