@@ -1,3 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thi Trắc Nghiệm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .grid {
+      display: flex;
+      gap: 40px;
+      margin-top: 20px;
+    }
+
+    .left-column {
+      flex: 2;
+    }
+
+    .right-column {
+      flex: 1;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .question {
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .question p {
+      font-weight: bold;
+    }
+
+    .answer-sheet {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .answer-row span {
+      display: inline-block;
+      width: 70px;
+      font-weight: bold;
+    }
+
+    .answer-row label {
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
 <body>
   <div class="container">
     <h1>Đề thi trắc nghiệm Toán</h1>
@@ -59,10 +153,45 @@
     </div>
   </div>
 
-  <!-- MathJax + script -->
+  <!-- MathJax + Script -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    function submitQuiz() {
+      const answers = {
+        q1: "b",
+        q2: "b",
+        q3: "a"
+      };
+
+      let score = 0;
+      for (let key in answers) {
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (selected && selected.value === answers[key]) score++;
+      }
+
+      document.getElementById("result").innerText = `Bạn đúng ${score}/3 câu.`;
+    }
+
+    // Đồng bộ phiếu trả lời với câu hỏi
+    document.querySelectorAll('.question input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const q = radio.name;
+        const val = radio.value;
+        const sheetRadio = document.querySelector(`input[name="as_${q}"][value="${val}"]`);
+        if (sheetRadio) sheetRadio.checked = true;
+      });
+    });
+
+    document.querySelectorAll('.answer-sheet input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const q = radio.name.replace('as_', '');
+        const val = radio.value;
+        const quizRadio = document.querySelector(`input[name="${q}"][value="${val}"]`);
+        if (quizRadio) quizRadio.checked = true;
+      });
+    });
   </script>
-  <script src="script.js"></script>
 </body>
+</html>
