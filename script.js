@@ -45,7 +45,17 @@ function submitQuiz() {
   document.getElementById("result").innerText = `Bạn đúng ${score}/${Object.keys(answers).length} câu.`;
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
+  const student = prompt("Nhập họ tên học sinh:");
+  document.getElementById("studentName").textContent = student || "Chưa nhập";
+
+  const now = new Date();
+  const startTimeStr = now.toLocaleTimeString('vi-VN');
+  document.getElementById("startTime").textContent = startTimeStr;
+
+  startTimer();
+
   // Tạo các dòng phiếu trả lời
   const answerSheet = document.querySelector('.answer-sheet');
   const questionCount = 50; // chỉnh theo số câu thật
