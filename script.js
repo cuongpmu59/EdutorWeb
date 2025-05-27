@@ -29,7 +29,7 @@ function submitQuiz() {
 document.addEventListener('DOMContentLoaded', () => {
   // Tạo các dòng phiếu trả lời
   const answerSheet = document.querySelector('.answer-sheet');
-  const questionCount = 4; // chỉnh theo số câu thật
+  const questionCount = 50; // chỉnh theo số câu thật
   for (let i = 1; i <= questionCount; i++) {
     const qId = `q${i}`;
     const row = document.createElement('div');
