@@ -121,20 +121,6 @@
 
   </form>
 
-  <!-- Script kiểm tra dữ liệu trước khi submit -->
-  <script>
-    const form = document.getElementById('questionForm');
-    form.addEventListener('submit', function (e) {
-      const correct = document.getElementById('correct_answer').value;
-      const ans3 = form.answer3.value.trim();
-      const ans4 = form.answer4.value.trim();
-
-      if ((correct === 'answer3' && !ans3) || (correct === 'answer4' && !ans4)) {
-        alert("Bạn đã chọn đáp án đúng là 3 hoặc 4 nhưng chưa nhập nội dung cho đáp án đó.");
-        e.preventDefault();
-      }
-    });
-  </script>
   <script>
     function previewMath() {
       const input = document.getElementById('question').value;
