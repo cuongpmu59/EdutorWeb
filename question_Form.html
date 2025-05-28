@@ -92,7 +92,8 @@
     <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
-    <img id="imagePreview" style="width: 150px; height: auto; margin-top: 10px; display: none; border: 1px solid #ccc; border-radius: 6px;" />
+    <img id="imagePreview"
+      style="width: 150px; height: auto; margin-top: 10px; display: none; border: 1px solid #ccc; border-radius: 6px;" />
 
     <label for="answer1">Đáp án 1:</label>
     <input type="text" id="answer1" name="answer1" placeholder="Đáp án 1" required />
@@ -164,6 +165,65 @@
         imagePreview.style.display = "none";
       }
     });
+  </script>
+
+  <h2 style="margin-top: 40px;">Danh sách câu hỏi đã nhập</h2>
+  <table id="questionTable" border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Câu hỏi</th>
+        <th>Đáp án 1</th>
+        <th>Đáp án 2</th>
+        <th>Đáp án 3</th>
+        <th>Đáp án 4</th>
+        <th>Đáp án đúng</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tableBody = document.querySelector("#questionTable tbody");
+
+    function loadTable() {
+      tableBody.innerHTML = "";
+      const questions = JSON.parse(localStorage.getItem("questions") || "[]");
+      questions.forEach(q => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${q.question}</td>
+          <td>${q.answer1}</td>
+          <td>${q.answer2}</td>
+          <td>${q.answer3}</td>
+          <td>${q.answer4}</td>
+          <td>${q.correct}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const data = {
+        question: form.question.value.trim(),
+        answer1: form.answer1.value.trim(),
+        answer2: form.answer2.value.trim(),
+        answer3: form.answer3.value.trim(),
+        answer4: form.answer4.value.trim(),
+        correct: document.querySelector(`#correct_answer option:checked`).textContent
+      };
+
+      const questions = JSON.parse(localStorage.getItem("questions") || "[]");
+      questions.push(data);
+      localStorage.setItem("questions", JSON.stringify(questions));
+
+      loadTable();
+      form.reset();
+      imagePreview.style.display = "none";
+    });
+
+    window.addEventListener("DOMContentLoaded", loadTable);
   </script>
 
 </body>
