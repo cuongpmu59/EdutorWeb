@@ -10,19 +10,28 @@
 
 <body>
   <header>
-    <div class="container">
-      <h1>Đề thi trắc nghiệm Toán</h1>
-      <div class="exam-info-bar">
-        <div class="info-left">
-          <p>Họ tên: <span id="studentName"></span></p>
-          <p>Thời gian bắt đầu: <span id="startTime"></span></p>
-        </div>
-        <div class="info-right">
-          <p>Thời gian còn lại: <span id="countdown" style="font-weight: bold; color: red;"></span></p>
-        </div>
+    <div class="container header-grid">
+      <!-- Bên trái: thông tin học sinh -->
+      <div class="header-left">
+        <p>Mã HS: <span id="studentID"></span></p>
+        <p>Họ tên: <span id="studentName"></span></p>
+        <p>Lớp: <span id="studentClass"></span></p>
+      </div>
+  
+      <!-- Ở giữa: tiêu đề đề thi -->
+      <div class="header-center">
+        <h1>Đề thi kiểm tra thử</h1>
+        <p>Môn: Toán</p>
+      </div>
+  
+      <!-- Bên phải: thời gian -->
+      <div class="header-right">
+        <p>Bắt đầu: <span id="startTime"></span></p>
+        <p>Còn lại: <span id="countdown"></span></p>
       </div>
     </div>
   </header>
+  
   
   <main>
     <div class="container">
