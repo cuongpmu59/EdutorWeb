@@ -132,3 +132,28 @@ button:hover {
   font-weight: bold;
   color: red;
 }
+
+.header-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.header-left, .header-center, .header-right {
+  flex: 1;
+  min-width: 200px;
+}
+
+.header-center {
+  text-align: center;
+}
+
+.header-right {
+  text-align: right;
+  font-weight: bold;
+  color: red;
+}
