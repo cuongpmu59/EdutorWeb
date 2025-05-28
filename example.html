@@ -1,104 +1,105 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thi Trắc Nghiệm</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Câu Hỏi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 300px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .buttons button {
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .bottom-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .bottom-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
 </head>
-
 <body>
-  <header>
-    <div class="container">
-      <h1>Đề thi trắc nghiệm Toán</h1>
-      <div class="exam-info-bar">
-        <div class="info-left">
-          <p>Họ tên: <span id="studentName"></span></p>
-          <p>Thời gian bắt đầu: <span id="startTime"></span></p>
-        </div>
-        <div class="info-right">
-          <p>Thời gian còn lại: <span id="countdown" style="font-weight: bold; color: red;"></span></p>
-        </div>
+  <h2>Form Câu Hỏi Trắc Nghiệm</h2>
+
+  <!-- Phần 1 + Phần 2 (cùng hàng) -->
+  <div class="row">
+    <!-- Phần 1: Nhập câu hỏi và các lựa chọn -->
+    <div class="column">
+      <label for="question">Câu hỏi:</label>
+      <textarea id="question" rows="3"></textarea>
+
+      <label for="optionA">Lựa chọn A:</label>
+      <input type="text" id="optionA">
+
+      <label for="optionB">Lựa chọn B:</label>
+      <input type="text" id="optionB">
+
+      <label for="optionC">Lựa chọn C:</label>
+      <input type="text" id="optionC">
+
+      <label for="optionD">Lựa chọn D:</label>
+      <input type="text" id="optionD">
+    </div>
+
+    <!-- Phần 2: Các nút Thêm, Xoá, Sửa -->
+    <div class="column">
+      <label>Thao tác câu hỏi:</label>
+      <div class="buttons">
+        <button type="button">Thêm</button>
+        <button type="button">Xoá</button>
+        <button type="button">Sửa</button>
       </div>
     </div>
-  </header>
-  
-  <main>
-    <div class="container">
-      <div class="grid">
-        <!-- CỘT TRÁI: Câu hỏi -->
-        <form id="quizForm" class="left-column">
-          <div class="question" data-q="q1">
-            <p>Câu 1: \( \int x \, dx = ? \)</p>
-            <label><input type="radio" name="q1" value="a"> \( x^2 + C \)</label><br>
-            <label><input type="radio" name="q1" value="b"> \( \frac{1}{2}x^2 + C \)</label><br>
-            <label><input type="radio" name="q1" value="c"> \( \ln x + C \)</label><br>
-            <label><input type="radio" name="q1" value="d"> Không xác định</label>
-          </div>
-          <div class="question" data-q="q2">
-            <p>Câu 2: \( \lim_{x \to 0} \frac{\sin x}{x} = ? \)</p>
-            <label><input type="radio" name="q2" value="a"> 0</label><br>
-            <label><input type="radio" name="q2" value="b"> 1</label><br>
-            <label><input type="radio" name="q2" value="c"> Vô hạn</label><br>
-            <label><input type="radio" name="q2" value="d"> Không xác định</label>
-          </div>
-          <div class="question" data-q="q3">
-            <p>Câu 3: Đạo hàm của \( e^x \) là gì?</p>
-            <label><input type="radio" name="q3" value="a"> \( e^x \)</label><br>
-            <label><input type="radio" name="q3" value="b"> \( x \cdot e^x \)</label><br>
-            <label><input type="radio" name="q3" value="c"> \( \ln x \)</label><br>
-            <label><input type="radio" name="q3" value="d"> 1</label>
-          </div>
-          <div class="question" data-q="q4">
-            <p>Câu 4: Thể tích hình chóp S.ABCD có đáy là hình vuông cạnh \( a \), SA vuông góc đáy và SA = \( a \):</p>
-            <label><input type="radio" name="q4" value="a"> \( a^3 \)</label><br>
-            <label><input type="radio" name="q4" value="b"> \( \frac{1}{3}a^3 \)</label><br>
-            <label><input type="radio" name="q4" value="c"> \( \frac{1}{2}a^3 \)</label><br>
-            <label><input type="radio" name="q4" value="d"> \( \frac{2}{3}a^3 \)</label>
-          </div>
+  </div>
 
-          <div class="question" data-q="q5">
-            <p>Câu 5: Cho hình chóp \( S.ABC \) có đáy là tam giác đều cạnh \( a \), đỉnh \( S \) vuông góc với mặt
-              phẳng
-              đáy và \( SA = a \). Thể tích khối chóp là:</p>
-            <img src="images/hinhchop.png" alt="Hình chóp tam giác"
-              style="display: block; margin: 10px auto; width: 250px; height: auto;">
-            <label><input type="radio" name="q5" value="a"> \( \frac{1}{3}a^3 \)</label><br>
-            <label><input type="radio" name="q5" value="b"> \( \frac{\sqrt{3}}{4}a^3 \)</label><br>
-            <label><input type="radio" name="q5" value="c"> \( \frac{\sqrt{3}}{12}a^3 \)</label><br>
-            <label><input type="radio" name="q5" value="d"> \( \frac{\sqrt{3}}{6}a^3 \)</label>
-          </div>
-
-
-          <button type="button" onclick="submitQuiz()">Nộp bài</button>
-          <div id="result"></div>
-        </form>
-
-        <!-- CỘT PHẢI: Phiếu trả lời -->
-        <aside class="right-column">
-          <h2>Phiếu trả lời</h2>
-          <div class="answer-sheet">
-
-            <!-- Các dòng sẽ được sinh bởi JavaScript -->
-          </div>
-        </aside>
-      </div>
-    </div>
-  </main>
-  <footer>
-    <div class="container" style="text-align: center; margin-top: 30px; font-size: 14px;">
-      © 2025 Hệ thống thi trắc nghiệm Toán học
-    </div>
-  </footer>
-
-  <!-- MathJax -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <!-- Tệp JS riêng -->
-  <script src="script.js"></script>
+  <!-- Phần 3: Hàng dưới gồm các nút Tìm, Hiển thị, Lưu -->
+  <div class="bottom-buttons">
+    <button type="button">Tìm</button>
+    <button type="button">Hiển thị</button>
+    <button type="button">Lưu</button>
+  </div>
 </body>
-
 </html>
