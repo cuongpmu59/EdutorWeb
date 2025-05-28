@@ -50,6 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const student = prompt("Nhập họ tên học sinh:");
   document.getElementById("studentName").textContent = student || "Chưa nhập";
 
+  document.getElementById("studentID").textContent = "HS12345";
+  document.getElementById("studentName").textContent = "Nguyễn Văn A";
+  document.getElementById("studentClass").textContent = "12A1";
+  document.getElementById("startTime").textContent = new Date().toLocaleTimeString();
+  
+
+
   const now = new Date();
   const startTimeStr = now.toLocaleTimeString('vi-VN');
   document.getElementById("startTime").textContent = startTimeStr;
@@ -99,5 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const quizRadio = document.querySelector(`input[name="${q}"][value="${val}"]`);
       if (quizRadio) quizRadio.checked = true;
     });
+
+
   });
 });
+
+
