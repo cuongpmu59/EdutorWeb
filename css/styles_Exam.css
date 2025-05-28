@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   background: #f0f2f5;
   margin: 0;
-  padding: 20px;
+  padding: 10px 20px; /* Giảm padding top/bottom */
 }
 
 .container {
@@ -14,6 +14,9 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+header {
+  margin-bottom: 10px; /* Giảm khoảng cách dưới header */
+}
 h1 {
   text-align: center;
   color: #333;
@@ -22,7 +25,7 @@ h1 {
 .grid {
   display: flex;
   gap: 40px;
-  margin-top: 20px;
+  margin-top: 10px; /* Giảm khoảng cách so với header nếu cần */
 }
 
 .left-column {
