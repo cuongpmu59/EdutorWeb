@@ -2,215 +2,211 @@
 <html lang="vi">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nhập câu hỏi trắc nghiệm</title>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 30px;
-      max-width: 700px;
-      padding: 10px;
-    }
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nhập câu hỏi trắc nghiệm</title>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6">
 
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
+	</script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 
-    textarea,
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      font-size: 16px;
-      box-sizing: border-box;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+	</script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 30px auto;
+			max-width: 800px;
+			padding: 20px;
+		}
 
-    button[type="reset"] {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #e53935;
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
+		h1 {
+			text-align: center;
+		}
 
-    button[type="reset"]:hover {
-      background-color: #c62828;
-    }
+		label {
+			font-weight: bold;
+			margin-top: 15px;
+			display: block;
+		}
 
-    small {
-      display: block;
-      margin-top: 4px;
-      margin-bottom: 8px;
-      color: #666;
-      font-size: 14px;
-    }
+		textarea,
+		input[type="text"],
+		select {
+			width: 100%;
+			padding: 8px;
+			margin-top: 5px;
+			font-size: 16px;
+			box-sizing: border-box;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+		}
 
-    input[type="file"] {
-      margin-top: 5px;
-    }
+		button {
+			margin-top: 20px;
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+			border: none;
+			border-radius: 6px;
+		}
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
+		button[type="submit"] {
+			background-color: #1976d2;
+			color: white;
+		}
 
-    button:hover {
-      background-color: #155a9e;
-    }
+		button[type="submit"]:hover {
+			background-color: #155a9e;
+		}
 
-    button[type="button"] {
-      margin-top: 10px;
-      background-color: #f0f0f0;
-      border: 1px solid #ccc;
-      color: black;
-    }
-  </style>
+		button[type="reset"] {
+			background-color: #e53935;
+			color: white;
+		}
+
+		button[type="reset"]:hover {
+			background-color: #c62828;
+		}
+
+		small {
+			display: block;
+			margin-top: 4px;
+			margin-bottom: 8px;
+			color: #666;
+			font-size: 14px;
+		}
+
+		input[type="file"] {
+			margin-top: 5px;
+		}
+
+		#imagePreview {
+			width: 150px;
+			height: auto;
+			margin-top: 10px;
+			display: none;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+		}
+
+		#preview {
+			margin-top: 20px;
+			padding: 10px;
+			border: 1px dashed #ccc;
+			min-height: 40px;
+			background-color: #fafafa;
+		}
+
+		iframe {
+			margin-top: 40px;
+			border: none;
+			width: 100%;
+			height: 400px;
+		}
+	</style>
 </head>
 
 <body>
-  <h1>Nhập câu hỏi trắc nghiệm</h1>
-  <form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
-    <label for="question">Câu hỏi:</label>
-    <small>Hỗ trợ công thức toán học với LaTeX, ví dụ: \\( a^2 + b^2 = c^2 \\)</small>
-    <textarea id="question" name="question" rows="6" placeholder="Nhập câu hỏi ở đây..." required></textarea>
+	<h1>Nhập câu hỏi trắc nghiệm</h1>
+	<form id="questionForm" action="save_question.php" method="POST" enctype="multipart/form-data">
+		<label for="question">Câu hỏi:</label>
+    <small>Hỗ trợ công thức toán học với LaTeX. Ví dụ: \\( a^2 + b^2 = c^2 \\)</small>
+    <textarea id="question" name="question" rows="5" placeholder="Nhập câu hỏi tại đây..." required></textarea>
+
     <label for="image">Ảnh minh họa (nếu có):</label>
     <input type="file" id="image" name="image" accept="image/*" />
-    <img id="imagePreview"
-      style="width: 150px; height: auto; margin-top: 10px; display: none; border: 1px solid #ccc; border-radius: 6px;" />
+    <img id="imagePreview" />
 
-    <label for="answer1">Đáp án 1:</label>
-    <input type="text" id="answer1" name="answer1" placeholder="Đáp án 1" required />
+    <label for="answer1">Đáp án 1 (A):</label>
+    <input type="text" id="answer1" name="answer1" required />
 
-    <label for="answer2">Đáp án 2:</label>
-    <input type="text" id="answer2" name="answer2" placeholder="Đáp án 2" required />
+    <label for="answer2">Đáp án 2 (B):</label>
+    <input type="text" id="answer2" name="answer2" required />
 
-    <label for="answer3">Đáp án 3:</label>
-    <input type="text" id="answer3" name="answer3" placeholder="Đáp án 3" />
+    <label for="answer3">Đáp án 3 (C):</label>
+    <input type="text" id="answer3" name="answer3" />
 
-    <label for="answer4">Đáp án 4:</label>
-    <input type="text" id="answer4" name="answer4" placeholder="Đáp án 4" />
+    <label for="answer4">Đáp án 4 (D):</label>
+    <input type="text" id="answer4" name="answer4" />
 
     <label for="correct_answer">Chọn đáp án đúng:</label>
     <select id="correct_answer" name="correct_answer" required>
       <option value="">--Chọn đáp án đúng--</option>
-      <option value="answer1">Đáp án 1</option>
-      <option value="answer2">Đáp án 2</option>
-      <option value="answer3">Đáp án 3</option>
-      <option value="answer4">Đáp án 4</option>
+      <option value="answer1">Đáp án 1 (A)</option>
+      <option value="answer2">Đáp án 2 (B)</option>
+      <option value="answer3">Đáp án 3 (C)</option>
+      <option value="answer4">Đáp án 4 (D)</option>
     </select>
 
     <button type="submit">Lưu câu hỏi</button>
     <button type="reset">Xóa dữ liệu</button>
-
   </form>
 
-  <script>
-    function previewMath() {
-      const input = document.getElementById('question').value;
-      const preview = document.getElementById('preview');
-      preview.innerHTML = input;
-      MathJax.typesetPromise([preview]);
-    }
-  </script>
-  <div id="preview" style="margin-top: 20px; padding: 10px; border: 1px dashed #ccc;"></div>
+  <h2>Xem trước công thức toán học</h2>
+  <div id="preview"></div>
+
+  <h2>Các câu hỏi đã lưu</h2>
+  <iframe id="questionTable" src="get_question.php"></iframe>
+
+  <!-- Script xử lý MathJax & Xem ảnh -->
   <script>
     const questionInput = document.getElementById('question');
     const preview = document.getElementById('preview');
+
     questionInput.addEventListener('input', () => {
       preview.innerHTML = questionInput.value;
       MathJax.typesetPromise([preview]);
     });
-  </script>
-  <script>
+
     const imageInput = document.getElementById('image');
     const imagePreview = document.getElementById('imagePreview');
 
     imageInput.addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        imagePreview.src = URL.createObjectURL(file);
-        imagePreview.style.display = "block";
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
       } else {
-        imagePreview.style.display = "none";
+        imagePreview.style.display = 'none';
+        imagePreview.src = '';
       }
     });
   </script>
+    <script>
+  const form = document.getElementById('questionForm');
+  const iframe = document.getElementById('questionTable');
 
-  <h2 style="margin-top: 40px;">Danh sách câu hỏi đã nhập</h2>
-  <table id="questionTable" border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th>Câu hỏi</th>
-        <th>Đáp án 1</th>
-        <th>Đáp án 2</th>
-        <th>Đáp án 3</th>
-        <th>Đáp án 4</th>
-        <th>Đáp án đúng</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // Ngăn submit truyền thống
 
-  <script>
-    const tableBody = document.querySelector("#questionTable tbody");
+    const formData = new FormData(form);
 
-    function loadTable() {
-      tableBody.innerHTML = "";
-      const questions = JSON.parse(localStorage.getItem("questions") || "[]");
-      questions.forEach(q => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${q.question}</td>
-          <td>${q.answer1}</td>
-          <td>${q.answer2}</td>
-          <td>${q.answer3}</td>
-          <td>${q.answer4}</td>
-          <td>${q.correct}</td>
-        `;
-        tableBody.appendChild(row);
+    fetch('save_question.php', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => response.text())
+      .then(result => {
+        alert(result); // Hiển thị kết quả
+
+        // Reset form
+        form.reset();
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('preview').innerHTML = '';
+
+        // Làm mới bảng
+        iframe.contentWindow.location.reload();
+      })
+      .catch(error => {
+        alert('Lỗi khi gửi dữ liệu!');
+        console.error('Error:', error);
       });
-    }
+  });
+</script>
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const data = {
-        question: form.question.value.trim(),
-        answer1: form.answer1.value.trim(),
-        answer2: form.answer2.value.trim(),
-        answer3: form.answer3.value.trim(),
-        answer4: form.answer4.value.trim(),
-        correct: document.querySelector(`#correct_answer option:checked`).textContent
-      };
-
-      const questions = JSON.parse(localStorage.getItem("questions") || "[]");
-      questions.push(data);
-      localStorage.setItem("questions", JSON.stringify(questions));
-
-      loadTable();
-      form.reset();
-      imagePreview.style.display = "none";
-    });
-
-    window.addEventListener("DOMContentLoaded", loadTable);
-  </script>
 
 </body>
 
