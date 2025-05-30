@@ -36,6 +36,18 @@
 			justify-content: flex-start;
 		}
 
+		.answer-row {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.answer-row label {
+			width: 100px;
+			/* Hoặc 80px tuỳ theo độ dài */
+			margin-right: 10px;
+		}
+
 		input[type="text"],
 		textarea,
 		select {
@@ -236,17 +248,35 @@
 			iframe.scrollIntoView({ behavior: 'smooth' });  // Đưa con trỏ lên đầu
 		}
 	</script>
-	.answer-row {
-		display: flex;
-		align-items: center;
-		margin-bottom: 10px;
-	  }
-	  
-	  .answer-row label {
-		width: 100px; /* Hoặc 80px tuỳ theo độ dài */
-		margin-right: 10px;
-	  }
-	  
+
+	<script>
+		window.addEventListener('message', function (event) {
+			const data = event.data;
+
+			if (data && typeof data === 'object') {
+				document.getElementById('question').value = data.question || '';
+				document.querySelector('[name="answer1"]').value = data.answer1 || '';
+				document.querySelector('[name="answer2"]').value = data.answer2 || '';
+				document.querySelector('[name="answer3"]').value = data.answer3 || '';
+				document.querySelector('[name="answer4"]').value = data.answer4 || '';
+				document.querySelector('[name="correct_answer"]').value = data.correct_answer || '';
+
+				// Hiển thị ảnh nếu có
+				const imgPreview = document.getElementById('imagePreview');
+				if (data.image) {
+					imgPreview.src = data.image;
+					imgPreview.style.display = 'block';
+				} else {
+					imgPreview.style.display = 'none';
+				}
+
+				// Hiển thị công thức nếu có
+				document.getElementById('preview').innerHTML = data.question || '';
+				MathJax.typesetPromise([document.getElementById('preview')]);
+			}
+		});
+	</script>
+
 
 </body>
 
