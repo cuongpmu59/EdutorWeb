@@ -3,210 +3,239 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Nhập câu hỏi trắc nghiệm</title>
+	<title>Quản lý câu hỏi trắc nghiệm</title>
+
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		.container {
+			display: flex;
+			gap: 20px;
+		}
+
+		.left-column,
+		.right-column {
+			padding: 15px;
+			border: 1px solid #ccc;
+			border-radius: 8px;
+			background-color: #f9f9f9;
+		}
+
+		.left-column {
+			flex: 2;
+		}
+
+		.right-column {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			justify-content: flex-start;
+		}
+
+		input[type="text"],
+		textarea,
+		select {
+			width: 100%;
+			padding: 8px;
+			margin-top: 5px;
+			margin-bottom: 15px;
+			border-radius: 4px;
+			border: 1px solid #ccc;
+		}
+
+		button {
+			padding: 10px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+
+		#imagePreview {
+			max-width: 200px;
+			margin-top: 10px;
+			display: none;
+			border: 1px dashed #999;
+		}
+
+		#preview {
+			padding: 10px;
+			border: 1px dashed #ccc;
+			margin-top: 10px;
+			background-color: #fff;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 30px;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid #ccc;
+		}
+
+		th,
+		td {
+			padding: 10px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #eaeaea;
+		}
+
+		iframe {
+			width: 100vw;
+			height: 400px;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			margin-top: 20px;
+			margin-left: -20px;
+			/* bù lại margin của body */
+		}
+	</style>
+
 	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6">
 
 	</script>
 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 
 	</script>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			margin: 30px auto;
-			max-width: 800px;
-			padding: 20px;
-		}
-
-		h1 {
-			text-align: center;
-		}
-
-		label {
-			font-weight: bold;
-			margin-top: 15px;
-			display: block;
-		}
-
-		textarea,
-		input[type="text"],
-		select {
-			width: 100%;
-			padding: 8px;
-			margin-top: 5px;
-			font-size: 16px;
-			box-sizing: border-box;
-			border-radius: 6px;
-			border: 1px solid #ccc;
-		}
-
-		button {
-			margin-top: 20px;
-			padding: 10px 20px;
-			font-size: 16px;
-			cursor: pointer;
-			border: none;
-			border-radius: 6px;
-		}
-
-		button[type="submit"] {
-			background-color: #1976d2;
-			color: white;
-		}
-
-		button[type="submit"]:hover {
-			background-color: #155a9e;
-		}
-
-		button[type="reset"] {
-			background-color: #e53935;
-			color: white;
-		}
-
-		button[type="reset"]:hover {
-			background-color: #c62828;
-		}
-
-		small {
-			display: block;
-			margin-top: 4px;
-			margin-bottom: 8px;
-			color: #666;
-			font-size: 14px;
-		}
-
-		input[type="file"] {
-			margin-top: 5px;
-		}
-
-		#imagePreview {
-			width: 150px;
-			height: auto;
-			margin-top: 10px;
-			display: none;
-			border: 1px solid #ccc;
-			border-radius: 6px;
-		}
-
-		#preview {
-			margin-top: 20px;
-			padding: 10px;
-			border: 1px dashed #ccc;
-			min-height: 40px;
-			background-color: #fafafa;
-		}
-
-		iframe {
-			margin-top: 40px;
-			border: none;
-			width: 100%;
-			height: 400px;
-		}
-	</style>
 </head>
 
 <body>
 	<h1>Nhập câu hỏi trắc nghiệm</h1>
-	<form id="questionForm" action="save_question.php" method="POST" enctype="multipart/form-data">
-		<label for="question">Câu hỏi:</label>
-    <small>Hỗ trợ công thức toán học với LaTeX. Ví dụ: \\( a^2 + b^2 = c^2 \\)</small>
-    <textarea id="question" name="question" rows="5" placeholder="Nhập câu hỏi tại đây..." required></textarea>
 
-    <label for="image">Ảnh minh họa (nếu có):</label>
-    <input type="file" id="image" name="image" accept="image/*" />
-    <img id="imagePreview" />
+	<form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
+		<div class="container">
+			<div class="left-column">
+				<label for="question">Câu hỏi:</label>
+				<textarea id="question" name="question" rows="3" oninput="previewMath()"></textarea>
 
-    <label for="answer1">Đáp án 1 (A):</label>
-    <input type="text" id="answer1" name="answer1" required />
+				<label for="answer1">Đáp án A:</label>
+				<input type="text" name="answer1" required />
 
-    <label for="answer2">Đáp án 2 (B):</label>
-    <input type="text" id="answer2" name="answer2" required />
+				<label for="answer2">Đáp án B:</label>
+				<input type="text" name="answer2" required />
 
-    <label for="answer3">Đáp án 3 (C):</label>
-    <input type="text" id="answer3" name="answer3" />
+				<label for="answer3">Đáp án C:</label>
+				<input type="text" name="answer3" />
 
-    <label for="answer4">Đáp án 4 (D):</label>
-    <input type="text" id="answer4" name="answer4" />
+				<label for="answer4">Đáp án D:</label>
+				<input type="text" name="answer4" />
 
-    <label for="correct_answer">Chọn đáp án đúng:</label>
-    <select id="correct_answer" name="correct_answer" required>
-      <option value="">--Chọn đáp án đúng--</option>
-      <option value="answer1">Đáp án 1 (A)</option>
-      <option value="answer2">Đáp án 2 (B)</option>
-      <option value="answer3">Đáp án 3 (C)</option>
-      <option value="answer4">Đáp án 4 (D)</option>
-    </select>
+				<label for="correct_answer">Đáp án đúng:</label>
+				<select name="correct_answer" id="correct_answer" required>
+					<option value="">-- Chọn đáp án đúng --</option>
+					<option value="answer1">A</option>
+					<option value="answer2">B</option>
+					<option value="answer3">C</option>
+					<option value="answer4">D</option>
+				</select>
 
-    <button type="submit">Lưu câu hỏi</button>
-    <button type="reset">Xóa dữ liệu</button>
-  </form>
+				<label for="image">Ảnh minh họa (nếu có):</label>
+				<input type="file" name="image" id="image" accept="image/*" />
+				<img id="imagePreview" src="#" alt="Xem trước ảnh" />
+			</div>
 
-  <h2>Xem trước công thức toán học</h2>
-  <div id="preview"></div>
 
-  <h2>Các câu hỏi đã lưu</h2>
-  <iframe id="questionTable" src="get_question.php"></iframe>
+			<div class="right-column">
+				<button type="submit">💾 Lưu</button>
+				<button type="button">➕ Thêm mới</button>
+				<button type="button">🗑️ Xoá</button>
+				<button type="button">✏️ Sửa</button>
+				<button type="button">🔍 Tìm kiếm</button>
+				<button type="button" onclick="syncTable()">🔄 Hiển thị</button>
+			</div>
+		</div>
+	</form>
 
-  <!-- Script xử lý MathJax & Xem ảnh -->
-  <script>
-    const questionInput = document.getElementById('question');
-    const preview = document.getElementById('preview');
+	<div id="preview"></div>
 
-    questionInput.addEventListener('input', () => {
-      preview.innerHTML = questionInput.value;
-      MathJax.typesetPromise([preview]);
-    });
+	<!-- Danh sách câu hỏi -->
+	<h2>Các câu hỏi đã lưu</h2>
+	<div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
+		<iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
+	</div>
 
-    const imageInput = document.getElementById('image');
-    const imagePreview = document.getElementById('imagePreview');
+	<!-- Script xử lý MathJax & Xem ảnh -->
+	<script>
+		const questionInput = document.getElementById('question');
+		const preview = document.getElementById('preview');
 
-    imageInput.addEventListener('change', function () {
-      if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(this.files[0]);
-      } else {
-        imagePreview.style.display = 'none';
-        imagePreview.src = '';
-      }
-    });
-  </script>
-    <script>
-  const form = document.getElementById('questionForm');
-  const iframe = document.getElementById('questionTable');
+		questionInput.addEventListener('input', () => {
+			preview.innerHTML = questionInput.value;
+			MathJax.typesetPromise([preview]);
+		});
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault(); // Ngăn submit truyền thống
+		const imageInput = document.getElementById('image');
+		const imagePreview = document.getElementById('imagePreview');
 
-    const formData = new FormData(form);
+		imageInput.addEventListener('change', function () {
+			if (this.files && this.files[0]) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					imagePreview.src = e.target.result;
+					imagePreview.style.display = 'block';
+				};
+				reader.readAsDataURL(this.files[0]);
+			} else {
+				imagePreview.style.display = 'none';
+				imagePreview.src = '';
+			}
+		});
+	</script>
+	<script>
+		const form = document.getElementById('questionForm');
+		const iframe = document.getElementById('questionTable');
 
-    fetch('save_question.php', {
-      method: 'POST',
-      body: formData
-    })
-      .then(response => response.text())
-      .then(result => {
-        alert(result); // Hiển thị kết quả
+		form.addEventListener('submit', function (e) {
+			e.preventDefault(); // Ngăn submit truyền thống
 
-        // Reset form
-        form.reset();
-        document.getElementById('imagePreview').style.display = 'none';
-        document.getElementById('preview').innerHTML = '';
+			const formData = new FormData(form);
 
-        // Làm mới bảng
-        iframe.contentWindow.location.reload();
-      })
-      .catch(error => {
-        alert('Lỗi khi gửi dữ liệu!');
-        console.error('Error:', error);
-      });
-  });
-</script>
+			fetch('save_question.php', {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.text())
+				.then(result => {
+					alert(result); // Hiển thị kết quả
 
+					// Reset form
+					form.reset();
+					document.getElementById('imagePreview').style.display = 'none';
+					document.getElementById('preview').innerHTML = '';
+
+					// Làm mới bảng
+					iframe.contentWindow.location.reload();
+				})
+				.catch(error => {
+					alert('Lỗi khi gửi dữ liệu!');
+					console.error('Error:', error);
+				});
+		});
+
+	</script>
+	<script>
+		function syncTable() {
+			const iframe = document.getElementById('questionTable');
+			iframe.contentWindow.location.reload();         // Reload iframe
+			iframe.scrollIntoView({ behavior: 'smooth' });  // Đưa con trỏ lên đầu
+		}
+	</script>
 
 </body>
 
