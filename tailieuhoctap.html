@@ -1,68 +1,122 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-	<meta charset="UTF-8" />
-	<title>Quản lý câu hỏi trắc nghiệm</title>
-	<link rel="stylesheet" href="css/styles_question.css" />
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-	<script src="js/question_script.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tài liệu giảng dạy - Học cùng Thầy Cường</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+    }
+
+    nav {
+      background-color: #2c3e50;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .section h2 {
+      color: #34495e;
+      margin-top: 40px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .document {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .document a {
+      text-decoration: none;
+      color: #2980b9;
+      font-weight: bold;
+    }
+
+    .document a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
-
 <body>
-	<h1>Nhập câu hỏi trắc nghiệm</h1>
-	<form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
-		<div class="container">
-			<div class="left-column">
-				<label for="question">Câu hỏi:</label>
-				<textarea id="question" name="question" rows="3" oninput="previewMath()"></textarea>
 
-				<label for="answer1">Đáp án A:</label>
-				<input type="text" name="answer1" required />
+  <!-- Menu điều hướng -->
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="dichvu.html">Dịch vụ học tập</a>
+    <a href="registerForm.html">Đăng ký học</a>
+    <a href="tailieu.html">Tài liệu</a>
+  </nav>
 
-				<label for="answer2">Đáp án B:</label>
-				<input type="text" name="answer2" required />
+  <h1>Tài liệu giảng dạy</h1>
 
-				<label for="answer3">Đáp án C:</label>
-				<input type="text" name="answer3" />
+  <div class="section">
+    <h2>📘 Môn Toán</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-1" target="_blank">Chuyên đề Hàm số và Ứng dụng</a><br/>
+      <small>Cập nhật: 10/05/2025</small>
+    </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-2" target="_blank">Đề thi thử THPT Quốc Gia Toán</a><br/>
+      <small>Cập nhật: 01/05/2025</small>
+    </div>
+  </div>
 
-				<label for="answer4">Đáp án D:</label>
-				<input type="text" name="answer4" />
+  <div class="section">
+    <h2>📗 Môn Vật lý</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-ly1" target="_blank">Lý thuyết Dao động cơ</a><br/>
+      <small>Cập nhật: 03/05/2025</small>
+    </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-ly2" target="_blank">Đề thi thử Vật lý THPT</a><br/>
+      <small>Cập nhật: 22/04/2025</small>
+    </div>
+  </div>
 
-				<label for="correct_answer">Đáp án đúng:</label>
-				<select name="correct_answer" id="correct_answer" required>
-					<option value="">-- Chọn đáp án đúng --</option>
-					<option value="answer1">A</option>
-					<option value="answer2">B</option>
-					<option value="answer3">C</option>
-					<option value="answer4">D</option>
-				</select>
-
-				<label for="image">Ảnh minh họa (nếu có):</label>
-				<input type="file" name="image" id="image" accept="image/*" />
-				<img id="imagePreview" src="#" alt="Xem trước ảnh" />
-			</div>
-
-			<div class="right-column">
-				<button type="submit">💾 Lưu</button>
-				<button type="button">➕ Thêm mới</button>
-				<button type="button" onclick="deleteSelected()">🗑️ Xoá</button>
-				<button type="button" id="updateBtn">✏️ Sửa</button>
-				<button type="button">🔍 Tìm kiếm</button>
-				<button type="button" onclick="syncTable()">🔄 Hiển thị</button>
-			</div>
-		</div>
-	</form>
-
-	<div id="preview"></div>
-
-	<!-- Danh sách câu hỏi -->
-	<h2>Các câu hỏi đã lưu</h2>
-	<div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
-		<iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
-	</div>
+  <div class="section">
+    <h2>📙 Môn Hóa học</h2>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-hoa1" target="_blank">Tổng hợp lý thuyết Hóa 12</a><br/>
+      <small>Cập nhật: 15/04/2025</small>
+    </div>
+    <div class="document">
+      <a href="https://drive.google.com/your-link-hoa2" target="_blank">Bài tập Hóa học vô cơ</a><br/>
+      <small>Cập nhật: 05/04/2025</small>
+    </div>
+  </div>
 
 </body>
-
 </html>
