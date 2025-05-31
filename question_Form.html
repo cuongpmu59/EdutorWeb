@@ -13,7 +13,6 @@
 
 <body>
 	<h1>Nhập câu hỏi trắc nghiệm</h1>
-
 	<form action="save_question.php" method="POST" enctype="multipart/form-data" id="questionForm">
 		<div class="container">
 			<div class="left-column">
@@ -50,7 +49,7 @@
 			<div class="right-column">
 				<button type="submit">💾 Lưu</button>
 				<button type="button">➕ Thêm mới</button>
-				<button type="button">🗑️ Xoá</button>
+				<button type="button" onclick="deleteSelected()">🗑️ Xoá</button>
 				<button type="button">✏️ Sửa</button>
 				<button type="button">🔍 Tìm kiếm</button>
 				<button type="button" onclick="syncTable()">🔄 Hiển thị</button>
@@ -123,8 +122,8 @@
 					console.error('Error:', error);
 				});
 		});
-
 	</script>
+	
 	<script>
 		function syncTable() {
 			const iframe = document.getElementById('questionTable');
@@ -161,6 +160,68 @@
 		});
 	</script>
 
+	<script>
+		function deleteSelected() {
+			if (!selectedQuestionId) {
+				alert("Vui lòng chọn một dòng để xoá.");
+				return;
+			}
+
+			if (!confirm("Bạn có chắc chắn muốn xoá câu hỏi này?")) return;
+
+			fetch(`delete_question.php?id=${selectedQuestionId}`, {
+				method: 'GET'
+			})
+				.then(response => response.text())
+				.then(result => {
+					alert(result);
+					selectedQuestionId = null;
+					document.getElementById('questionForm').reset();
+					document.getElementById('preview').innerHTML = '';
+					document.getElementById('imagePreview').style.display = 'none';
+					document.getElementById('questionTable').contentWindow.location.reload();
+				})
+				.catch(err => {
+					alert("Xoá thất bại!");
+					console.error(err);
+				});
+		}
+
+	</script>
+
+	<script>
+		function updateQuestion() {
+			if (!selectedQuestionId) {
+				alert("Vui lòng chọn câu hỏi để sửa.");
+				return;
+			}
+
+			const form = document.getElementById('questionForm');
+			const formData = new FormData(form);
+			formData.append('id', selectedQuestionId); // Gửi ID để cập nhật
+
+			fetch('update_question.php', {
+				method: 'POST',
+				body: formData
+			})
+				.then(response => response.text())
+				.then(result => {
+					alert(result);
+					document.getElementById('questionForm').reset();
+					document.getElementById('imagePreview').style.display = 'none';
+					document.getElementById('preview').innerHTML = '';
+					document.getElementById('questionTable').contentWindow.location.reload();
+					selectedQuestionId = null;
+				})
+				.catch(error => {
+					alert('Lỗi khi cập nhật!');
+					console.error(error);
+				});
+		}
+
+		// Gắn sự kiện cho nút Sửa
+		document.querySelector('button:contains("✏️ Sửa")')?.addEventListener('click', updateQuestion);
+	</script>
 
 </body>
 
