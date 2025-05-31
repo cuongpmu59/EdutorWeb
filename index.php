@@ -51,7 +51,7 @@
         <li><a href="examdisplay.html" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Thi thử trắc nghiệm</button>
           </a></li>
-        <li><a href="tailieu.html" style="text-decoration: none;">
+        <li><a href="tailieuhoctap.html" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
           </a></li>
         <li><a href="question_form.html" style="text-decoration: none;">
