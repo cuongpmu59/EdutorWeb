@@ -5,10 +5,9 @@
 	<meta charset="UTF-8" />
 	<title>Quản lý câu hỏi trắc nghiệm</title>
 	<link rel="stylesheet" href="css/styles_question.css" />
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6">
-	</script>
-	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-	</script>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<script src="js/question_script.js"></script>
 </head>
 
 <body>
@@ -45,7 +44,6 @@
 				<img id="imagePreview" src="#" alt="Xem trước ảnh" />
 			</div>
 
-
 			<div class="right-column">
 				<button type="submit">💾 Lưu</button>
 				<button type="button">➕ Thêm mới</button>
@@ -64,164 +62,6 @@
 	<div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
 		<iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
 	</div>
-
-	<!-- Script xử lý MathJax & Xem ảnh -->
-	<script>
-		const questionInput = document.getElementById('question');
-		const preview = document.getElementById('preview');
-
-		questionInput.addEventListener('input', () => {
-			preview.innerHTML = questionInput.value;
-			MathJax.typesetPromise([preview]);
-		});
-
-		const imageInput = document.getElementById('image');
-		const imagePreview = document.getElementById('imagePreview');
-
-		imageInput.addEventListener('change', function () {
-			if (this.files && this.files[0]) {
-				const reader = new FileReader();
-				reader.onload = function (e) {
-					imagePreview.src = e.target.result;
-					imagePreview.style.display = 'block';
-				};
-				reader.readAsDataURL(this.files[0]);
-			} else {
-				imagePreview.style.display = 'none';
-				imagePreview.src = '';
-			}
-		});
-	</script>
-	<script>
-		const form = document.getElementById('questionForm');
-		const iframe = document.getElementById('questionTable');
-
-		form.addEventListener('submit', function (e) {
-			e.preventDefault(); // Ngăn submit truyền thống
-
-			const formData = new FormData(form);
-
-			fetch('save_question.php', {
-				method: 'POST',
-				body: formData
-			})
-				.then(response => response.text())
-				.then(result => {
-					alert(result); // Hiển thị kết quả
-
-					// Reset form
-					form.reset();
-					document.getElementById('imagePreview').style.display = 'none';
-					document.getElementById('preview').innerHTML = '';
-
-					// Làm mới bảng
-					iframe.contentWindow.location.reload();
-				})
-				.catch(error => {
-					alert('Lỗi khi gửi dữ liệu!');
-					console.error('Error:', error);
-				});
-		});
-	</script>
-	
-	<script>
-		function syncTable() {
-			const iframe = document.getElementById('questionTable');
-			iframe.contentWindow.location.reload();         // Reload iframe
-			iframe.scrollIntoView({ behavior: 'smooth' });  // Đưa con trỏ lên đầu
-		}
-	</script>
-
-	<script>
-		window.addEventListener('message', function (event) {
-			const data = event.data;
-
-			if (data && typeof data === 'object') {
-				document.getElementById('question').value = data.question || '';
-				document.querySelector('[name="answer1"]').value = data.answer1 || '';
-				document.querySelector('[name="answer2"]').value = data.answer2 || '';
-				document.querySelector('[name="answer3"]').value = data.answer3 || '';
-				document.querySelector('[name="answer4"]').value = data.answer4 || '';
-				document.querySelector('[name="correct_answer"]').value = data.correct_answer || '';
-
-				// Hiển thị ảnh nếu có
-				const imgPreview = document.getElementById('imagePreview');
-				if (data.image) {
-					imgPreview.src = data.image;
-					imgPreview.style.display = 'block';
-				} else {
-					imgPreview.style.display = 'none';
-				}
-
-				// Hiển thị công thức nếu có
-				document.getElementById('preview').innerHTML = data.question || '';
-				MathJax.typesetPromise([document.getElementById('preview')]);
-			}
-		});
-	</script>
-
-	<script>
-		function deleteSelected() {
-			if (!selectedQuestionId) {
-				alert("Vui lòng chọn một dòng để xoá.");
-				return;
-			}
-
-			if (!confirm("Bạn có chắc chắn muốn xoá câu hỏi này?")) return;
-
-			fetch(`delete_question.php?id=${selectedQuestionId}`, {
-				method: 'GET'
-			})
-				.then(response => response.text())
-				.then(result => {
-					alert(result);
-					selectedQuestionId = null;
-					document.getElementById('questionForm').reset();
-					document.getElementById('preview').innerHTML = '';
-					document.getElementById('imagePreview').style.display = 'none';
-					document.getElementById('questionTable').contentWindow.location.reload();
-				})
-				.catch(err => {
-					alert("Xoá thất bại!");
-					console.error(err);
-				});
-		}
-
-	</script>
-
-	<script>
-		function updateQuestion() {
-			if (!selectedQuestionId) {
-				alert("Vui lòng chọn câu hỏi để sửa.");
-				return;
-			}
-
-			const form = document.getElementById('questionForm');
-			const formData = new FormData(form);
-			formData.append('id', selectedQuestionId); // Gửi ID để cập nhật
-
-			fetch('update_question.php', {
-				method: 'POST',
-				body: formData
-			})
-				.then(response => response.text())
-				.then(result => {
-					alert(result);
-					document.getElementById('questionForm').reset();
-					document.getElementById('imagePreview').style.display = 'none';
-					document.getElementById('preview').innerHTML = '';
-					document.getElementById('questionTable').contentWindow.location.reload();
-					selectedQuestionId = null;
-				})
-				.catch(error => {
-					alert('Lỗi khi cập nhật!');
-					console.error(error);
-				});
-		}
-
-		// Gắn sự kiện cho nút Sửa
-		document.querySelector('button:contains("✏️ Sửa")')?.addEventListener('click', updateQuestion);
-	</script>
 
 </body>
 
