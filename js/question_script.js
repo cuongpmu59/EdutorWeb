@@ -67,26 +67,27 @@ let selectedQuestionId = null;
 
 window.addEventListener('message', function (event) {
     const data = event.data;
-
     if (data && typeof data === 'object') {
-        selectedQuestionId = data.id || null;
+        selectedQuestionId = data.id;
 
-        document.getElementById('question').value = data.question || '';
+        document.getElementById('question').value = data.question_text || '';
         document.querySelector('[name="answer1"]').value = data.answer1 || '';
         document.querySelector('[name="answer2"]').value = data.answer2 || '';
         document.querySelector('[name="answer3"]').value = data.answer3 || '';
         document.querySelector('[name="answer4"]').value = data.answer4 || '';
         document.querySelector('[name="correct_answer"]').value = data.correct_answer || '';
 
+        const preview = document.getElementById('preview');
+        preview.innerHTML = data.question_text || '';
+        MathJax.typesetPromise([preview]);
+
+        const imagePreview = document.getElementById('imagePreview');
         if (data.image) {
             imagePreview.src = data.image;
             imagePreview.style.display = 'block';
         } else {
             imagePreview.style.display = 'none';
         }
-
-        preview.innerHTML = data.question || '';
-        MathJax.typesetPromise([preview]);
     }
 });
 
