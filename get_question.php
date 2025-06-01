@@ -23,22 +23,23 @@ if ($result->num_rows > 0) {
             <th>A</th><th>B</th><th>C</th><th>D</th><th>Đúng</th>
           </tr>";
 
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
+        // Đường dẫn ảnh (nếu có)
         $imagePath = !empty($row['image']) ? "images/" . $row['image'] : "";
         $imgTag = $imagePath ? "<img src='$imagePath' width='100' onerror=\"this.onerror=null;this.alt='Không tìm thấy ảnh';\">" : "Không có ảnh";
-        
-        // Encode toàn bộ dòng dữ liệu thành JSON rồi escape để nhúng vào HTML
+
+        // Chuẩn hóa dữ liệu JSON để nhúng vào attribute data-row
         $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
 
         echo "<tr onclick='selectQuestion(JSON.parse(this.dataset.row))' data-row='$rowJson' style='cursor: pointer;'>";
-        echo "<td>{$row['id']}</td>";
+        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
         echo "<td>" . htmlspecialchars($row['question']) . "</td>";
         echo "<td>$imgTag</td>";
         echo "<td>" . htmlspecialchars($row['answer1']) . "</td>";
         echo "<td>" . htmlspecialchars($row['answer2']) . "</td>";
         echo "<td>" . htmlspecialchars($row['answer3']) . "</td>";
         echo "<td>" . htmlspecialchars($row['answer4']) . "</td>";
-        echo "<td>" . strtoupper(str_replace('answer', '', $row["correct_answer"])) . "</td>";
+        echo "<td>" . strtoupper(str_replace('answer', '', $row['correct_answer'])) . "</td>";
         echo "</tr>";
     }
 
@@ -50,12 +51,13 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-<!-- JavaScript để gửi dữ liệu về parent window -->
 <script>
+// Gửi dữ liệu câu hỏi được chọn về parent (question_form.php)
 function selectQuestion(data) {
     if (data.image) {
-        data.image = "images/" + data.image; // Nếu ảnh nằm trong thư mục images
+        data.image = "images/" + data.image; // Đường dẫn đúng thư mục ảnh
     }
-    window.parent.postMessage(data, "*");
+    // Gửi về origin hiện tại, tăng bảo mật
+    window.parent.postMessage(data, window.location.origin);
 }
 </script>
