@@ -26,8 +26,11 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $imagePath = !empty($row['image']) ? "images/" . $row['image'] : "";
         $imgTag = $imagePath ? "<img src='$imagePath' width='100' onerror=\"this.onerror=null;this.alt='Không tìm thấy ảnh';\">" : "Không có ảnh";
+        
+        // Encode toàn bộ dòng dữ liệu thành JSON rồi escape để nhúng vào HTML
+        $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
 
-        echo "<tr>";
+        echo "<tr onclick='selectQuestion(JSON.parse(this.dataset.row))' data-row='$rowJson' style='cursor: pointer;'>";
         echo "<td>{$row['id']}</td>";
         echo "<td>" . htmlspecialchars($row['question']) . "</td>";
         echo "<td>$imgTag</td>";
@@ -47,12 +50,11 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-
+<!-- JavaScript để gửi dữ liệu về parent window -->
 <script>
-// Gửi dữ liệu về parent window (question_form.html)
 function selectQuestion(data) {
     if (data.image) {
-        data.image = "images/" + data.image; // điều chỉnh nếu ảnh nằm trong thư mục 'images'
+        data.image = "images/" + data.image; // Nếu ảnh nằm trong thư mục images
     }
     window.parent.postMessage(data, "*");
 }
