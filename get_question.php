@@ -47,6 +47,7 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
+
 <script>
 // Gửi dữ liệu về parent window (question_form.html)
 function selectQuestion(data) {
