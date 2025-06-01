@@ -70,7 +70,7 @@ window.addEventListener('message', function (event) {
     if (data && typeof data === 'object') {
         selectedQuestionId = data.id;
 
-        document.getElementById('question').value = data.question_text || '';
+        document.getElementById('question').value = data.question || '';
         document.querySelector('[name="answer1"]').value = data.answer1 || '';
         document.querySelector('[name="answer2"]').value = data.answer2 || '';
         document.querySelector('[name="answer3"]').value = data.answer3 || '';
@@ -78,7 +78,7 @@ window.addEventListener('message', function (event) {
         document.querySelector('[name="correct_answer"]').value = data.correct_answer || '';
 
         const preview = document.getElementById('preview');
-        preview.innerHTML = data.question_text || '';
+        preview.innerHTML = data.question || '';
         MathJax.typesetPromise([preview]);
 
         const imagePreview = document.getElementById('imagePreview');
