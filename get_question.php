@@ -45,7 +45,7 @@ $conn->close();
 // Gửi dữ liệu về parent window (question_form.html)
 function selectQuestion(data) {
     if (data.image) {
-        data.image = "uploads/" + data.image; // điều chỉnh theo thư mục ảnh của bạn
+        data.image = "images/" + data.image; // điều chỉnh theo thư mục ảnh của bạn
     }
     window.parent.postMessage(data, "*");
 }
