@@ -62,7 +62,7 @@
 	<div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
 		<iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
 	</div>
-
+	<script src="js/question_script.js"></script>
 </body>
 
 </html>
