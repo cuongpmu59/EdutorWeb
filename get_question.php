@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
 
     while($row = $result->fetch_assoc()) {
         $imagePath = !empty($row['image']) ? "images/" . $row['image'] : "";
-        $imgTag = $imagePath ? "<img src='$imagePath' width='100'>" : "Không có ảnh";
+        $imgTag = $imagePath ? "<img src='$imagePath' width='100' onerror=\"this.onerror=null;this.alt='Không tìm thấy ảnh';\">" : "Không có ảnh";
 
         echo "<tr>";
         echo "<td>{$row['id']}</td>";
