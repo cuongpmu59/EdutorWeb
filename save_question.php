@@ -1,50 +1,80 @@
 <?php
-// Cấu hình kết nối MySQL - thay thông tin tương ứng trên InfinityFree
-$host = "sql210.infinityfree.com"; // ví dụ: sql304.epizy.com
-$dbname = "if0_39047715_questionbank";
-$username = "if0_39047715";
-$password = "Kimdung16091961";
+require 'db_connection.php'; // Kết nối CSDL
 
-// Kết nối
-$conn = new mysqli($host, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
-
-// Nhận dữ liệu từ form
-$question = $_POST['question'];
-$answer1 = $_POST['answer1'];
-$answer2 = $_POST['answer2'];
-$answer3 = $_POST['answer3'] ?? null;
-$answer4 = $_POST['answer4'] ?? null;
-$correct = $_POST['correct_answer'];
-
-// Xử lý ảnh nếu có
-$imagePath = null;
-if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $targetDir = "images/";
-    if (!file_exists($targetDir)) {
-        mkdir($targetDir, 0755, true);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Hàm làm sạch chuỗi nhập vào
+    function cleanInput($data) {
+        return htmlspecialchars(trim($data));
     }
-    $imageName = uniqid() . '_' . basename($_FILES['image']['name']);
-    $targetFile = $targetDir . $imageName;
 
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
-        $imagePath = $targetFile;
+    // Nhận và làm sạch dữ liệu từ form
+    $question = cleanInput($_POST['question'] ?? '');
+    $answer1 = cleanInput($_POST['answer1'] ?? '');
+    $answer2 = cleanInput($_POST['answer2'] ?? '');
+    $answer3 = cleanInput($_POST['answer3'] ?? '');
+    $answer4 = cleanInput($_POST['answer4'] ?? '');
+    $correct_answer = $_POST['correct_answer'] ?? '';
+    $image_path = '';
+
+    // Kiểm tra bắt buộc
+    if (empty($question) || empty($answer1) || empty($answer2) || empty($correct_answer)) {
+        die("Vui lòng nhập đầy đủ các trường bắt buộc (câu hỏi, đáp án A, B và đáp án đúng).");
     }
-}
 
-// Chuẩn bị truy vấn SQL
-$stmt = $conn->prepare("INSERT INTO questions (question, image, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssssss", $question, $imagePath, $answer1, $answer2, $answer3, $answer4, $correct);
+    // Kiểm tra giá trị hợp lệ cho correct_answer
+    $valid_answers = ['answer1', 'answer2', 'answer3', 'answer4'];
+    if (!in_array($correct_answer, $valid_answers)) {
+        die("Đáp án đúng không hợp lệ.");
+    }
 
-// Thực thi và phản hồi
-if ($stmt->execute()) {
-    echo "Lưu câu hỏi thành công!";
+    // Xử lý ảnh nếu có
+    if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
+        $uploadDir = "images/";
+        $fileTmpPath = $_FILES["image"]["tmp_name"];
+        $originalName = basename($_FILES["image"]["name"]);
+        $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // Kiểm tra định dạng ảnh
+        if (!in_array($fileExt, $allowedExts)) {
+            die("Chỉ cho phép ảnh có định dạng jpg, jpeg, png, gif.");
+        }
+
+        // Giới hạn kích thước (ví dụ 2MB)
+        if ($_FILES["image"]["size"] > 2 * 1024 * 1024) {
+            die("Ảnh vượt quá dung lượng cho phép (2MB).");
+        }
+
+        // Tạo tên mới tránh trùng
+        $newFileName = uniqid('img_', true) . '.' . $fileExt;
+        $targetPath = $uploadDir . $newFileName;
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        if (!move_uploaded_file($fileTmpPath, $targetPath)) {
+            die("Lỗi khi lưu ảnh lên máy chủ.");
+        }
+
+        $image_path = $newFileName;
+    }
+
+    // Chuẩn bị và thực hiện câu lệnh SQL
+    $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, image)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssss", $question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $image_path);
+
+    if ($stmt->execute()) {
+        header("Location: question_form.php");
+        exit;
+    } else {
+        echo "Lỗi khi lưu câu hỏi: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
 } else {
-    echo "Lỗi khi lưu: " . $stmt->error;
+    echo "Phương thức gửi không hợp lệ.";
 }
-
-$stmt->close();
-$conn->close();
-?>
