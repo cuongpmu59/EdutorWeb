@@ -1,60 +1,115 @@
 <?php
-// Cấu hình kết nối cơ sở dữ liệu
-$host = "sql210.infinityfree.com";
-$dbname = "if0_39047715_questionbank";
-$username = "if0_39047715";
-$password = "Kimdung16091961";
+require 'db_connection.php';
 
-// Kết nối MySQL
-$conn = new mysqli($host, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
-
-// Lấy dữ liệu từ bảng
-$sql = "SELECT id, question, image, answer1, answer2, answer3, answer4, correct_answer FROM questions";
+$sql = "SELECT * FROM questions ORDER BY id ASC";
 $result = $conn->query($sql);
-
-// Hiển thị bảng
-if ($result->num_rows > 0) {
-    echo "<table border='1' style='border-collapse: collapse; width: 100%; text-align: center;'>";
-    echo "<tr style='background-color: #f2f2f2;'>
-            <th>ID</th><th>Câu hỏi</th><th>Hình ảnh</th>
-            <th>A</th><th>B</th><th>C</th><th>D</th><th>Đúng</th>
-          </tr>";
-
-    while ($row = $result->fetch_assoc()) {
-        // Dùng ảnh từ đường dẫn tuyệt đối trên host
-        $imagePath = !empty($row['image']) ? "https://cuongedutor.infy.uk/images/" . $row['image'] : "";
-        $imgTag = $imagePath ? "<img src='$imagePath' width='100' onerror=\"this.onerror=null;this.alt='Không tìm thấy ảnh';\">" : "Không có ảnh";
-
-        // Thêm đường dẫn ảnh vào JSON gửi đi
-        $row['image'] = $imagePath;
-        $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-
-        echo "<tr onclick='selectQuestion(JSON.parse(this.dataset.row))' data-row='$rowJson' style='cursor: pointer;'>";
-        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['question']) . "</td>";
-        echo "<td>$imgTag</td>";
-        echo "<td>" . htmlspecialchars($row['answer1']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['answer2']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['answer3']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['answer4']) . "</td>";
-        echo "<td>" . strtoupper(str_replace('answer', '', $row['correct_answer'])) . "</td>";
-        echo "</tr>";
-    }
-
-    echo "</table>";
-} else {
-    echo "Không có câu hỏi nào.";
-}
-
-$conn->close();
 ?>
 
-<script>
-// Gửi dữ liệu câu hỏi được chọn về form cha
-function selectQuestion(data) {
-    window.parent.postMessage(data, window.location.origin);
-}
-</script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .selected-row {
+            background-color: #d0f0ff !important;
+        }
+    </style>
+    <script>
+        let currentRow = null;
+
+        function selectRow(row, data) {
+            if (currentRow) {
+                currentRow.classList.remove("selected-row");
+            }
+            currentRow = row;
+            row.classList.add("selected-row");
+
+            parent.postMessage(data, window.location.origin);
+        }
+
+        function rowKeyNavigation(event) {
+            const rows = document.querySelectorAll("tbody tr");
+            if (rows.length === 0) return;
+
+            if (!currentRow) {
+                currentRow = rows[0];
+                currentRow.classList.add("selected-row");
+                currentRow.click();
+                return;
+            }
+
+            let index = Array.from(rows).indexOf(currentRow);
+
+            if (event.key === "ArrowDown" && index < rows.length - 1) {
+                rows[index].classList.remove("selected-row");
+                currentRow = rows[index + 1];
+            } else if (event.key === "ArrowUp" && index > 0) {
+                rows[index].classList.remove("selected-row");
+                currentRow = rows[index - 1];
+            } else {
+                return;
+            }
+
+            currentRow.classList.add("selected-row");
+            currentRow.click();
+        }
+
+        window.addEventListener("keydown", rowKeyNavigation);
+    </script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Câu hỏi</th>
+                <th>Đáp án A</th>
+                <th>Đáp án B</th>
+                <th>Đáp án C</th>
+                <th>Đáp án D</th>
+                <th>Đúng</th>
+                <th>Ảnh</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()): ?>
+                <tr onclick='selectRow(this, <?php echo json_encode([
+                    "id" => $row["id"],
+                    "question" => $row["question"],
+                    "answer1" => $row["answer1"],
+                    "answer2" => $row["answer2"],
+                    "answer3" => $row["answer3"],
+                    "answer4" => $row["answer4"],
+                    "correct_answer" => $row["correct_answer"],
+                    "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/" . $row["image"] : ""
+                ]); ?>)'>
+                    <td><?= $row["id"] ?></td>
+                    <td><?= htmlspecialchars($row["question"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer1"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer2"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer3"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer4"]) ?></td>
+                    <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
+                    <td><?= $row["image"] ? '<img src="https://cuongedutor.infy.uk/images/' . $row["image"] . '" width="40" />' : '' ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</body>
+</html>
