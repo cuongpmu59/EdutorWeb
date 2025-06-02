@@ -10,7 +10,7 @@
 </head>
 <body>
     <h1>Nhập câu hỏi trắc nghiệm</h1>
-    <form id="questionForm" action="save_question.php" method="POST" enctype="multipart/form-data">
+    <form id="questionForm" action="cuongedutor.infy.uk/save_question.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id" id="questionId" />
 
         <div class="container">
@@ -58,7 +58,7 @@
 
     <h2>Các câu hỏi đã lưu</h2>
     <div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
-        <iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe id="questionTable" src="https://www.cuongedutor.infy.uk/get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <script>
@@ -69,7 +69,7 @@
                 alert("Hãy chọn một câu hỏi để sửa.");
                 return;
             }
-            form.action = "update_question.php";
+            form.action = "cuongedutor.infy.uk/update_question.php";
             form.submit();
         }
 
@@ -81,7 +81,7 @@
                 return;
             }
             if (!confirm("Bạn có chắc chắn muốn xoá câu hỏi này không?")) return;
-            fetch("delete_question.php", {
+            fetch("cuongedutor.infy.uk/delete_question.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: "id=" + encodeURIComponent(id)
