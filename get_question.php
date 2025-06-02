@@ -24,11 +24,12 @@ if ($result->num_rows > 0) {
           </tr>";
 
     while ($row = $result->fetch_assoc()) {
-        // Đường dẫn ảnh (nếu có)
-        $imagePath = !empty($row['image']) ? "images/" . $row['image'] : "";
+        // Dùng ảnh từ đường dẫn tuyệt đối trên host
+        $imagePath = !empty($row['image']) ? "https://cuongedutor.infy.uk/images/" . $row['image'] : "";
         $imgTag = $imagePath ? "<img src='$imagePath' width='100' onerror=\"this.onerror=null;this.alt='Không tìm thấy ảnh';\">" : "Không có ảnh";
 
-        // Chuẩn hóa dữ liệu JSON để nhúng vào attribute data-row
+        // Thêm đường dẫn ảnh vào JSON gửi đi
+        $row['image'] = $imagePath;
         $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
 
         echo "<tr onclick='selectQuestion(JSON.parse(this.dataset.row))' data-row='$rowJson' style='cursor: pointer;'>";
@@ -52,12 +53,8 @@ $conn->close();
 ?>
 
 <script>
-// Gửi dữ liệu câu hỏi được chọn về parent (question_form.php)
+// Gửi dữ liệu câu hỏi được chọn về form cha
 function selectQuestion(data) {
-    if (data.image) {
-        data.image = "images/" + data.image; // Đường dẫn đúng thư mục ảnh
-    }
-    // Gửi về origin hiện tại, tăng bảo mật
     window.parent.postMessage(data, window.location.origin);
 }
 </script>
