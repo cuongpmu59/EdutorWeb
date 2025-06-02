@@ -1,36 +1,21 @@
 <?php
-// Cấu hình kết nối CSDL
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "ten_csdl"; // 👉 đổi tên cơ sở dữ liệu cho đúng
+require 'db_connection.php'; // Sử dụng file kết nối mới
 
-// Kiểm tra ID
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    echo "ID không hợp lệ!";
-    exit;
-}
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
 
-$id = intval($_GET['id']);
+    $sql = "DELETE FROM questions WHERE id=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
 
-// Kết nối CSDL
-$conn = new mysqli($servername, $username, $password, $database);
+    if ($stmt->execute()) {
+        echo "Đã xoá thành công.";
+    } else {
+        echo "Lỗi khi xoá: " . $stmt->error;
+    }
 
-// Kiểm tra kết nối
-if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-}
-
-// Chuẩn bị câu lệnh DELETE
-$stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
-$stmt->bind_param("i", $id);
-
-if ($stmt->execute()) {
-    echo "Đã xoá câu hỏi thành công!";
+    $stmt->close();
+    $conn->close();
 } else {
-    echo "Xoá thất bại: " . $stmt->error;
+    echo "Không có ID hợp lệ để xoá.";
 }
-
-$stmt->close();
-$conn->close();
-?>
