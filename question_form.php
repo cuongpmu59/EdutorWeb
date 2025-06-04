@@ -58,7 +58,7 @@
 
     <h2>Các câu hỏi đã lưu</h2>
     <div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
-        <iframe id="questionTable" src="https://www.cuongedutor.infy.uk/get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe id="questionTable" src="insert_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <script>
