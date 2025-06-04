@@ -1,103 +1,133 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <title>Quản lý câu hỏi trắc nghiệm</title>
-    <link rel="stylesheet" href="css/styles_question.css" />
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="js/question_script.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Quản lý câu hỏi</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      vertical-align: top;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 6px;
+    }
+    img {
+      max-width: 120px;
+      max-height: 120px;
+    }
+  </style>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-    <h1>Nhập câu hỏi trắc nghiệm</h1>
-    <form id="questionForm" action="cuongedutor.infy.uk/save_question.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id" id="questionId" />
 
-        <div class="container">
-            <div class="left-column">
-                <label for="question">Câu hỏi:</label>
-                <textarea id="question" name="question" rows="3" required></textarea>
+<h2>Thêm / Sửa Câu Hỏi</h2>
+<form action="insert_question.php" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="id" id="id">
 
-                <label for="answer1">Đáp án A:</label>
-                <input type="text" name="answer1" required />
+  <label>Câu hỏi (Latex hỗ trợ):</label>
+  <textarea name="question" id="question" required></textarea>
 
-                <label for="answer2">Đáp án B:</label>
-                <input type="text" name="answer2" required />
+  <label>Ảnh minh họa:</label>
+  <input type="file" name="image" accept="image/*"><br>
+  <img id="previewImage" style="display:none;"><br>
 
-                <label for="answer3">Đáp án C:</label>
-                <input type="text" name="answer3" />
+  <label>Đáp án 1:</label>
+  <input type="text" name="answer1" id="answer1" required>
 
-                <label for="answer4">Đáp án D:</label>
-                <input type="text" name="answer4" />
+  <label>Đáp án 2:</label>
+  <input type="text" name="answer2" id="answer2" required>
 
-                <label for="correct_answer">Đáp án đúng:</label>
-                <select name="correct_answer" id="correct_answer" required>
-                    <option value="">-- Chọn đáp án đúng --</option>
-                    <option value="answer1">A</option>
-                    <option value="answer2">B</option>
-                    <option value="answer3">C</option>
-                    <option value="answer4">D</option>
-                </select>
+  <label>Đáp án 3:</label>
+  <input type="text" name="answer3" id="answer3" required>
 
-                <label for="image">Ảnh minh họa (nếu có):</label>
-                <input type="file" name="image" id="image" accept="image/*" />
-                <img id="imagePreview" src="#" alt="Xem trước ảnh" style="display: none; max-width: 200px; margin-top: 10px;" />
-            </div>
+  <label>Đáp án 4:</label>
+  <input type="text" name="answer4" id="answer4" required>
 
-            <div class="right-column">
-                <button type="submit">💾 Lưu</button>
-                <button type="reset">➕ Thêm mới</button>
-                <button type="button" onclick="deleteSelected()">🗑️ Xoá</button>
-                <button type="button" onclick="editSelected()">✏️ Sửa</button>
-                <button type="button" onclick="syncTable()">🔄 Hiển thị</button>
-            </div>
-        </div>
-    </form>
+  <label>Đáp án đúng (1-4):</label>
+  <input type="text" name="correct_answer" id="correct_answer" required>
 
-    <div id="preview" style="margin: 10px 0;"></div>
+  <button type="submit">Lưu câu hỏi</button>
+</form>
 
-    <h2>Các câu hỏi đã lưu</h2>
-    <div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
-        <iframe id="questionTable" src="https://www.cuongedutor.infy.uk/get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
-    </div>
+<hr>
 
-    <script>
-        // Sửa: đưa id vào form và gửi form đi sửa
-        function editSelected() {
-            const form = document.getElementById('questionForm');
-            if (!document.getElementById('questionId').value) {
-                alert("Hãy chọn một câu hỏi để sửa.");
-                return;
-            }
-            form.action = "cuongedutor.infy.uk/update_question.php";
-            form.submit();
-        }
+<h3>Danh sách câu hỏi</h3>
 
-        // Xoá: gửi ID đến file delete
-        function deleteSelected() {
-            const id = document.getElementById('questionId').value;
-            if (!id) {
-                alert("Hãy chọn một câu hỏi để xoá.");
-                return;
-            }
-            if (!confirm("Bạn có chắc chắn muốn xoá câu hỏi này không?")) return;
-            fetch("cuongedutor.infy.uk/delete_question.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "id=" + encodeURIComponent(id)
-            })
-            .then(res => res.text())
-            .then(msg => {
-                alert(msg);
-                syncTable();
-                document.getElementById("questionForm").reset();
-                document.getElementById("imagePreview").style.display = 'none';
-            });
-        }
+<?php
+include 'db_connection.php';
+$sql = "SELECT * FROM questions ORDER BY id DESC";
+$result = $conn->query($sql);
 
-        function syncTable() {
-            document.getElementById("questionTable").contentWindow.location.reload();
-        }
-    </script>
+if ($result->num_rows > 0) {
+  echo "<table><tr>
+    <th>ID</th><th>Câu hỏi</th><th>Ảnh</th>
+    <th>Đáp án 1</th><th>Đáp án 2</th><th>Đáp án 3</th><th>Đáp án 4</th><th>Đúng</th>
+  </tr>";
+  while ($row = $result->fetch_assoc()) {
+    $img = $row["image"] ? "<img src='{$row["image"]}'>" : "";
+    echo "<tr onclick='fillForm(this)' 
+      data-id='{$row["id"]}' 
+      data-question=\"" . htmlspecialchars($row["question"], ENT_QUOTES) . "\"
+      data-image='{$row["image"]}' 
+      data-answer1=\"" . htmlspecialchars($row["answer1"], ENT_QUOTES) . "\"
+      data-answer2=\"" . htmlspecialchars($row["answer2"], ENT_QUOTES) . "\"
+      data-answer3=\"" . htmlspecialchars($row["answer3"], ENT_QUOTES) . "\"
+      data-answer4=\"" . htmlspecialchars($row["answer4"], ENT_QUOTES) . "\"
+      data-correct='{$row["correct_answer"]}'>
+      <td>{$row["id"]}</td>
+      <td class='math'>{$row["question"]}</td>
+      <td>$img</td>
+      <td class='math'>{$row["answer1"]}</td>
+      <td class='math'>{$row["answer2"]}</td>
+      <td class='math'>{$row["answer3"]}</td>
+      <td class='math'>{$row["answer4"]}</td>
+      <td>{$row["correct_answer"]}</td>
+    </tr>";
+  }
+  echo "</table>";
+} else {
+  echo "Chưa có câu hỏi nào.";
+}
+$conn->close();
+?>
+
+<script>
+function fillForm(row) {
+  document.getElementById('id').value = row.dataset.id;
+  document.getElementById('question').value = row.dataset.question;
+  document.getElementById('answer1').value = row.dataset.answer1;
+  document.getElementById('answer2').value = row.dataset.answer2;
+  document.getElementById('answer3').value = row.dataset.answer3;
+  document.getElementById('answer4').value = row.dataset.answer4;
+  document.getElementById('correct_answer').value = row.dataset.correct;
+
+  const img = document.getElementById('previewImage');
+  if (row.dataset.image) {
+    img.src = row.dataset.image;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  if (window.MathJax) MathJax.typeset();
+}
+</script>
+
 </body>
 </html>
