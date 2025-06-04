@@ -57,8 +57,12 @@
     <div id="preview" style="margin: 10px 0;"></div>
 
     <h2>Các câu hỏi đã lưu</h2>
+        <div id="question-table">
+            <?php include 'get_question.php'; ?>
+        </div>
+
     <div style="max-width: 1000px; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
-        <iframe id="questionTable" src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe src="get_question.php" style="width: 100%; height: 100%; border: none;"></iframe>
      </div>
 
     <script>
@@ -99,5 +103,30 @@
             document.getElementById("questionTable").contentWindow.location.reload();
         }
     </script>
+
+<script>
+window.addEventListener("message", function(event) {
+    if (event.origin !== window.location.origin) return;
+
+    const data = event.data;
+
+    // Gán dữ liệu vào form
+    document.getElementById("id").value = data.id;
+    document.getElementById("question").value = data.question;
+    document.getElementById("answer1").value = data.answer1;
+    document.getElementById("answer2").value = data.answer2;
+    document.getElementById("answer3").value = data.answer3;
+    document.getElementById("answer4").value = data.answer4;
+    document.getElementById("correct_answer").value = data.correct_answer;
+
+    if (data.image) {
+        document.getElementById("previewImage").src = data.image;
+        document.getElementById("previewImage").style.display = "block";
+    } else {
+        document.getElementById("previewImage").style.display = "none";
+    }
+});
+</script>
+
 </body>
 </html>
