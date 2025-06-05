@@ -8,7 +8,8 @@ $result = $conn->query($sql);
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <title>Danh sách câu hỏi</title>
     <style>
         table {
             width: 100%;
@@ -40,6 +41,7 @@ $result = $conn->query($sql);
             currentRow = row;
             row.classList.add("selected-row");
 
+            // Gửi dữ liệu câu hỏi về window cha (form)
             parent.postMessage(data, window.location.origin);
         }
 
@@ -83,7 +85,7 @@ $result = $conn->query($sql);
                 <th>Đáp án B</th>
                 <th>Đáp án C</th>
                 <th>Đáp án D</th>
-                <th>Đúng</th>
+                <th>Đáp án đúng</th>
                 <th>Ảnh</th>
             </tr>
         </thead>
@@ -106,7 +108,11 @@ $result = $conn->query($sql);
                     <td><?= htmlspecialchars($row["answer3"]) ?></td>
                     <td><?= htmlspecialchars($row["answer4"]) ?></td>
                     <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
-                    <td><?= $row["image"] ? '<img src="https://cuongedutor.infy.uk/images/' . $row["image"] . '" width="40" />' : '' ?></td>
+                    <td>
+                        <?php if ($row["image"]): ?>
+                            <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" alt="Image" />
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endwhile; ?>
         </tbody>
