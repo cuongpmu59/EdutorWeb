@@ -64,11 +64,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, image)
             VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
+    }
     $stmt->bind_param("sssssss", $question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $image_path);
 
     if ($stmt->execute()) {
-        header("Location: question_form.php");
-        exit;
+        // Trả về thông báo thành công nếu gửi bằng fetch AJAX hoặc redirect
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            echo "Thêm câu hỏi thành công!";
+        } else {
+            header("Location: question_form.php");
+            exit;
+        }
     } else {
         echo "Lỗi khi lưu câu hỏi: " . $stmt->error;
     }
