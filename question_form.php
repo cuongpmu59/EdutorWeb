@@ -50,10 +50,16 @@
             </form>
         </div>
 
+      
         <!-- Cột phải: Bảng câu hỏi -->
         <div class="right-column">
-            <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border: 1px solid #ccc;"></iframe>
+            <button type="button" id="toggleTableBtn" style="margin-bottom: 10px;">Ẩn bảng câu hỏi</button>
+        <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border: 1px solid #ccc;"></iframe>
         </div>
+
+
+
+
     </div>
 
 </body>
