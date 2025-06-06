@@ -104,7 +104,7 @@
         <input type="file" id="image" name="image" accept="image/*"><br>
         <img id="image_preview" src="" style="max-height: 100px; margin-top: 5px; display: none;"><br><br>
 
-        <button type="button" id="saveBtn">Lưu</button>
+        button type="button" id="saveBtn">Lưu</button>
         <button type="button" id="updateBtn">Cập nhật</button>
         <button type="button" id="deleteBtn">Xóa</button>
         <button type="reset">Làm mới</button>
@@ -115,6 +115,7 @@
     <h2>Danh sách câu hỏi</h2>
     <iframe id="questionIframe" src="get_question.php" width="100%" height="400" style="border: 1px solid #ccc;"></iframe>
 
+    
     <script src="js/question_script.js"></script>
 
     <script>
