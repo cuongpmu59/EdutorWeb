@@ -25,8 +25,6 @@
                 <input type="file" id="image" name="image" accept="image/*">
                 <img id="imagePreview" style="max-height: 100px; margin-top: 5px; display: none;" alt="Ảnh xem trước" />
 
-
-
                 <div class="answer-row"><label>A:</label><input type="text" id="answer1" name="answer1"></div>
                 <div class="answer-row"><label>B:</label><input type="text" id="answer2" name="answer2"></div>
                 <div class="answer-row"><label>C:</label><input type="text" id="answer3" name="answer3"></div>
