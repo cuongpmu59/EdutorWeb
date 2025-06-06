@@ -1,5 +1,5 @@
 // Các phần tử DOM
-const questionIdInput = document.getElementById('id'); // Bạn cần thêm <input type="hidden" id="questionId" name="id" /> vào form
+const questionIdInput = document.getElementById('question_id'); // Bạn cần thêm <input type="hidden" id="questionId" name="id" /> vào form
 const questionInput = document.getElementById('question');
 const answerInputs = [
   document.querySelector('[name="answer1"]'),
