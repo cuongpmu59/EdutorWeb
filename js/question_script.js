@@ -223,4 +223,21 @@ window.addEventListener('message', function(event) {
   if (data && data.action === 'sendQuestions' && Array.isArray(data.questions)) {
     questions = data.questions;
   }
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleBtn = document.getElementById('toggleTableBtn');
+  const iframe = document.getElementById('questionIframe');
+
+  toggleBtn.addEventListener('click', () => {
+      if (iframe.style.display !== 'none') {
+          iframe.style.display = 'none';
+          toggleBtn.textContent = 'Hiện bảng câu hỏi';
+      } else {
+          iframe.style.display = 'block';
+          toggleBtn.textContent = 'Ẩn bảng câu hỏi';
+      }
+  });
 });
+
+;
