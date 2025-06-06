@@ -25,6 +25,8 @@
                 <input type="file" id="image" name="image" accept="image/*">
                 <img id="imagePreview" style="max-height: 100px; margin-top: 5px; display: none;" alt="Ảnh xem trước" />
 
+
+                
                 <div class="answer-row"><label>Đáp án A:</label><input type="text" id="answer1" name="answer1"></div>
                 <div class="answer-row"><label>Đáp án B:</label><input type="text" id="answer2" name="answer2"></div>
                 <div class="answer-row"><label>Đáp án C:</label><input type="text" id="answer3" name="answer3"></div>
@@ -54,20 +56,5 @@
         </div>
     </div>
 
-    <!-- JS xem trước hình ảnh -->
-    <script>
-        document.getElementById("image").addEventListener("change", function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = document.getElementById("imagePreview");
-                    img.src = e.target.result;
-                    img.style.display = "inline";
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
 </body>
 </html>
