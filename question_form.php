@@ -26,11 +26,11 @@
                 <img id="imagePreview" style="max-height: 100px; margin-top: 5px; display: none;" alt="Ảnh xem trước" />
 
 
-                
-                <div class="answer-row"><label>Đáp án A:</label><input type="text" id="answer1" name="answer1"></div>
-                <div class="answer-row"><label>Đáp án B:</label><input type="text" id="answer2" name="answer2"></div>
-                <div class="answer-row"><label>Đáp án C:</label><input type="text" id="answer3" name="answer3"></div>
-                <div class="answer-row"><label>Đáp án D:</label><input type="text" id="answer4" name="answer4"></div>
+
+                <div class="answer-row"><label>A:</label><input type="text" id="answer1" name="answer1"></div>
+                <div class="answer-row"><label>B:</label><input type="text" id="answer2" name="answer2"></div>
+                <div class="answer-row"><label>C:</label><input type="text" id="answer3" name="answer3"></div>
+                <div class="answer-row"><label>D:</label><input type="text" id="answer4" name="answer4"></div>
 
                 <label>Đáp án đúng:</label>
                 <select id="correct_answer" name="correct_answer">
