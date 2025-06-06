@@ -16,7 +16,7 @@ const addNewBtn = document.querySelector('button[type="button"]:contains("Thêm 
 const deleteBtn = document.querySelector('button[onclick="deleteSelected()"]');
 const updateBtn = document.getElementById('updateBtn');
 const form = document.getElementById('questionForm');
-const iframe = document.getElementById('questionTable');
+const iframe = document.getElementById('questionIframe');
 
 let questions = [];  // Danh sách câu hỏi từ iframe (bạn có thể cập nhật khi load bảng)
 let selectedIndex = -1;  // Dòng đang chọn trong bảng
