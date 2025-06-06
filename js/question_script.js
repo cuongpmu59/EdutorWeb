@@ -1,5 +1,5 @@
 // Các phần tử DOM
-const questionIdInput = document.getElementById('questionId'); // Bạn cần thêm <input type="hidden" id="questionId" name="id" /> vào form
+const questionIdInput = document.getElementById('question_Id'); // Bạn cần thêm <input type="hidden" id="questionId" name="id" /> vào form
 const questionInput = document.getElementById('question');
 const answerInputs = [
   document.querySelector('[name="answer1"]'),
@@ -87,6 +87,7 @@ function selectQuestion(data) {
 questionInput.addEventListener('input', updatePreview);
 
 // Xem trước ảnh khi chọn file mới
+
 imageInput.addEventListener('change', function() {
   const file = this.files[0];
   if (file) {
