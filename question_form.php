@@ -1,66 +1,80 @@
-<?php require 'db_connection.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý câu hỏi trắc nghiệm</title>
-    <link rel="stylesheet" href="css/styles_question.css">
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
-    <script src="js/question_script.js" defer></script>
+    <link rel="stylesheet" href="css/question_style.css"> <!-- Nếu có -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
 </head>
 <body>
-    <h1>Quản lý câu hỏi trắc nghiệm</h1>
+    <h2>Form nhập câu hỏi</h2>
+    <form id="questionForm" enctype="multipart/form-data">
+        <input type="hidden" id="question_id" name="id">
 
-    <div class="container">
-        <!-- Cột trái: Form nhập liệu -->
-        <div class="left-column">
-            <form id="questionForm" enctype="multipart/form-data">
-                <input type="hidden" id="question_id" name="id">
+        <label for="question">Câu hỏi:</label><br>
+        <textarea id="question" name="question" rows="3" required></textarea><br>
 
-                <label for="question">Câu hỏi (hỗ trợ MathJax):</label>
-                <textarea id="question" name="question" rows="4" placeholder="Nhập câu hỏi..."></textarea>
-                <div id="preview"></div>
+        <label for="answer1">Đáp án A:</label><br>
+        <input type="text" id="answer1" name="answer1" required><br>
 
-                <label for="image">Ảnh minh hoạ (nếu có):</label>
-                <input type="file" id="image" name="image" accept="image/*">
-                <img id="imagePreview" style="max-height: 100px; margin-top: 5px; display: none;" alt="Ảnh xem trước" />
+        <label for="answer2">Đáp án B:</label><br>
+        <input type="text" id="answer2" name="answer2" required><br>
 
-                <div class="answer-row"><label>A:</label><input type="text" id="answer1" name="answer1"></div>
-                <div class="answer-row"><label>B:</label><input type="text" id="answer2" name="answer2"></div>
-                <div class="answer-row"><label>C:</label><input type="text" id="answer3" name="answer3"></div>
-                <div class="answer-row"><label>D:</label><input type="text" id="answer4" name="answer4"></div>
+        <label for="answer3">Đáp án C:</label><br>
+        <input type="text" id="answer3" name="answer3" required><br>
 
-                <label>Đáp án đúng:</label>
-                <select id="correct_answer" name="correct_answer">
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                </select>
+        <label for="answer4">Đáp án D:</label><br>
+        <input type="text" id="answer4" name="answer4" required><br>
 
-                <!-- Các nút thao tác -->
-                <div class="form-buttons" style="margin-top: 20px;">
-                    <button type="button" id="saveBtn">Lưu</button>
-                    <button type="button" id="updateBtn">Cập nhật</button>
-                    <button type="button" id="deleteBtn">Xóa</button>
-                    <button type="reset">Làm mới</button>
-                </div>
-            </form>
-        </div>
+        <label for="correct_answer">Đáp án đúng:</label><br>
+        <select id="correct_answer" name="correct_answer" required>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </select><br>
 
-      
-        <!-- Cột phải: Bảng câu hỏi -->
-        <div class="right-column">
-            <button type="button" id="toggleTableBtn" style="margin-bottom: 10px;">Ẩn bảng câu hỏi</button>
-        <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border: 1px solid #ccc;"></iframe>
-        </div>
+        <label for="image">Ảnh minh họa (nếu có):</label><br>
+        <input type="file" id="image" name="image" accept="image/*"><br>
+        <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; display: none;"><br><br>
 
-        
+        <button type="button" onclick="saveQuestion()">Lưu</button>
+        <button type="button" onclick="deleteQuestion()">Xoá</button>
+        <button type="reset">Xóa trắng</button>
+        <button type="button" onclick="searchQuestion()">Tìm kiếm</button>
+    </form>
 
+    <h3>Xem trước công thức (MathJax):</h3>
+    <div id="preview" style="border: 1px solid #ccc; padding: 10px;"></div>
 
+    <hr>
+    <h3>Danh sách câu hỏi</h3>
+    <iframe id="questionIframe" src="get_question.php" width="100%" height="300" style="border:1px solid #ccc;"></iframe>
 
+    <script src="js/question_script.js"></script>
+    <script>
+        // Xử lý MathJax preview mỗi khi nhập liệu
+        document.getElementById("question").addEventListener("input", function () {
+            const content = this.value;
+            const preview = document.getElementById("preview");
+            preview.innerHTML = content;
+            if (window.MathJax) MathJax.typesetPromise([preview]);
+        });
 
-    </div>
+        // Hiển thị ảnh xem trước
+        document.getElementById("image").addEventListener("change", function () {
+            const file = this.files[0];
+            const preview = document.getElementById("imagePreview");
 
-</body>
-</html>
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
