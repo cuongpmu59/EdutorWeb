@@ -41,7 +41,7 @@ $result = $conn->query($sql);
             currentRow = row;
             row.classList.add("selected-row");
 
-            // Gửi dữ liệu câu hỏi về window cha (form)
+            // Gửi dữ liệu câu hỏi về cửa sổ cha (question_form.php)
             parent.postMessage(data, window.location.origin);
         }
 
@@ -110,56 +110,12 @@ $result = $conn->query($sql);
                     <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
                     <td>
                         <?php if ($row["image"]): ?>
-                            <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" alt="Image" />
+                            <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" alt="Ảnh" />
                         <?php endif; ?>
                     </td>
                 </tr>
             <?php endwhile; ?>
         </tbody>
     </table>
-
-    <script>
-    window.addEventListener("message", function(event) {
-        const data = event.data;
-        if (!data || typeof data !== "object") return;
-
-        // Gán dữ liệu vào form
-        document.getElementById("question_id").value = data.id || "";
-        document.getElementById("question").value = data.question || "";
-        document.getElementById("answer1").value = data.answer1 || "";
-        document.getElementById("answer2").value = data.answer2 || "";
-        document.getElementById("answer3").value = data.answer3 || "";
-        document.getElementById("answer4").value = data.answer4 || "";
-        document.getElementById("correct_answer").value = data.correct_answer || "A";
-
-        // Cập nhật MathJax preview
-        const previewDiv = document.getElementById("preview");
-        previewDiv.innerHTML = data.question || "";
-        if (window.MathJax) MathJax.typesetPromise([previewDiv]);
-
-        // Hiển thị ảnh nếu có
-        const imagePreview = document.getElementById("imagePreview");
-        if (data.image) {
-            imagePreview.src = data.image;
-            imagePreview.style.display = "block";
-        } else {
-            imagePreview.src = "";
-            imagePreview.style.display = "none";
-        }
-    });
-
-    // Ẩn/hiện bảng câu hỏi
-    document.getElementById("toggleTableBtn").addEventListener("click", function () {
-        const iframe = document.getElementById("questionIframe");
-        if (iframe.style.display === "none") {
-            iframe.style.display = "block";
-            this.textContent = "Ẩn bảng câu hỏi";
-        } else {
-            iframe.style.display = "none";
-            this.textContent = "Hiện bảng câu hỏi";
-        }
-    });
-</script>
-
 </body>
 </html>
