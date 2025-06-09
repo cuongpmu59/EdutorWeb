@@ -1,8 +1,13 @@
 <?php
 require 'db_connection.php';
 
+// Cho phép hiển thị trong iframe nếu bị chặn
+header("X-Frame-Options: SAMEORIGIN");
+
 $sql = "SELECT * FROM questions ORDER BY id ASC";
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -40,8 +45,6 @@ $result = $conn->query($sql);
             }
             currentRow = row;
             row.classList.add("selected-row");
-
-            // Gửi dữ liệu câu hỏi về cửa sổ cha (question_form.php)
             parent.postMessage(data, window.location.origin);
         }
 
@@ -90,31 +93,35 @@ $result = $conn->query($sql);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <tr onclick='selectRow(this, <?php echo json_encode([
-                    "id" => $row["id"],
-                    "question" => $row["question"],
-                    "answer1" => $row["answer1"],
-                    "answer2" => $row["answer2"],
-                    "answer3" => $row["answer3"],
-                    "answer4" => $row["answer4"],
-                    "correct_answer" => $row["correct_answer"],
-                    "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/" . $row["image"] : ""
-                ]); ?>)'>
-                    <td><?= $row["id"] ?></td>
-                    <td><?= htmlspecialchars($row["question"]) ?></td>
-                    <td><?= htmlspecialchars($row["answer1"]) ?></td>
-                    <td><?= htmlspecialchars($row["answer2"]) ?></td>
-                    <td><?= htmlspecialchars($row["answer3"]) ?></td>
-                    <td><?= htmlspecialchars($row["answer4"]) ?></td>
-                    <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
-                    <td>
-                        <?php if ($row["image"]): ?>
-                            <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" alt="Ảnh" />
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+            <?php if (count($rows) > 0): ?>
+                <?php foreach ($rows as $row): ?>
+                    <tr onclick='selectRow(this, <?php echo json_encode([
+                        "id" => $row["id"],
+                        "question" => $row["question"],
+                        "answer1" => $row["answer1"],
+                        "answer2" => $row["answer2"],
+                        "answer3" => $row["answer3"],
+                        "answer4" => $row["answer4"],
+                        "correct_answer" => $row["correct_answer"],
+                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/" . $row["image"] : ""
+                    ]); ?>)'>
+                        <td><?= $row["id"] ?></td>
+                        <td><?= htmlspecialchars($row["question"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer1"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer2"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer3"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer4"]) ?></td>
+                        <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
+                        <td>
+                            <?php if ($row["image"]): ?>
+                                <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" />
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="8">Không có dữ liệu</td></tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </body>
