@@ -1,46 +1,6 @@
 <?php
+// question_form.php
 require 'db_connection.php';
-
-// Xử lý AJAX request (thêm, sửa, xóa) trả về JSON
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    header('Content-Type: application/json; charset=utf-8');
-    $action = $_POST['action'];
-    $id = $_POST['id'] ?? null;
-    $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct_answer = $_POST['correct_answer'] ?? '';
-
-    try {
-        if ($action === 'add') {
-            $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$question, $answer1, $answer2, $answer3, $answer4, $correct_answer]);
-            echo json_encode(['status' => 'success', 'message' => 'Thêm mới thành công', 'id' => $conn->lastInsertId()]);
-            exit;
-        } elseif ($action === 'update' && $id) {
-            $sql = "UPDATE questions SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=? WHERE id=?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $id]);
-            echo json_encode(['status' => 'success', 'message' => 'Cập nhật thành công']);
-            exit;
-        } elseif ($action === 'delete' && $id) {
-            $sql = "DELETE FROM questions WHERE id=?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$id]);
-            echo json_encode(['status' => 'success', 'message' => 'Xóa thành công']);
-            exit;
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Yêu cầu không hợp lệ']);
-            exit;
-        }
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        exit;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -48,219 +8,266 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <head>
     <meta charset="UTF-8" />
     <title>Quản lý câu hỏi trắc nghiệm</title>
-
-    <!-- MathJax để hiển thị công thức LaTeX -->
+    <!-- MathJax cho LaTeX -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 10px;
         }
         label {
             display: block;
-            margin-top: 12px;
+            margin-top: 10px;
             font-weight: bold;
         }
-        textarea, select, input[type="text"] {
+        input[type="text"], textarea, select {
             width: 100%;
             padding: 6px;
-            font-size: 14px;
+            margin-top: 3px;
             box-sizing: border-box;
-            font-family: monospace;
         }
         textarea {
             height: 80px;
         }
+        .form-row {
+            margin-bottom: 10px;
+        }
         button {
-            margin-top: 12px;
-            margin-right: 8px;
             padding: 8px 16px;
-            font-weight: bold;
+            margin-right: 8px;
             cursor: pointer;
         }
-        #message {
-            margin-top: 12px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        #message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        #message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .latex-help {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #555;
-        }
-        iframe {
-            width: 100%;
-            height: 350px;
+        #preview-image {
+            margin-top: 10px;
+            max-width: 150px;
+            max-height: 150px;
+            display: none;
             border: 1px solid #ccc;
-            margin-top: 30px;
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+        /* Giao diện responsive */
+        @media (min-width: 700px) {
+            .container {
+                display: flex;
+                gap: 20px;
+            }
+            .form-container, .table-container {
+                flex: 1;
+                overflow: auto;
+                max-height: 600px;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>Quản lý câu hỏi trắc nghiệm (hỗ trợ LaTeX)</h2>
+    <h2>Quản lý câu hỏi trắc nghiệm</h2>
 
-    <form id="questionForm" onsubmit="return false;">
-        <input type="hidden" id="id" name="id" value="">
+    <div class="container">
+        <div class="form-container">
+            <form id="questionForm" enctype="multipart/form-data">
+                <input type="hidden" id="question_id" name="id" value="" />
 
-        <label for="question">Câu hỏi (hỗ trợ LaTeX):</label>
-        <textarea id="question" name="question" oninput="renderMath()"></textarea>
+                <div class="form-row">
+                    <label for="question">Câu hỏi (có thể dùng LaTeX, ví dụ: \\(x^2 + y^2 = z^2\\))</label>
+                    <textarea id="question" name="question" required></textarea>
+                </div>
 
-        <label for="answer1">Đáp án A (hỗ trợ LaTeX):</label>
-        <textarea id="answer1" name="answer1" oninput="renderMath()"></textarea>
+                <div class="form-row">
+                    <label for="answer1">Đáp án A</label>
+                    <input type="text" id="answer1" name="answer1" required />
+                </div>
 
-        <label for="answer2">Đáp án B (hỗ trợ LaTeX):</label>
-        <textarea id="answer2" name="answer2" oninput="renderMath()"></textarea>
+                <div class="form-row">
+                    <label for="answer2">Đáp án B</label>
+                    <input type="text" id="answer2" name="answer2" required />
+                </div>
 
-        <label for="answer3">Đáp án C (hỗ trợ LaTeX):</label>
-        <textarea id="answer3" name="answer3" oninput="renderMath()"></textarea>
+                <div class="form-row">
+                    <label for="answer3">Đáp án C</label>
+                    <input type="text" id="answer3" name="answer3" required />
+                </div>
 
-        <label for="answer4">Đáp án D (hỗ trợ LaTeX):</label>
-        <textarea id="answer4" name="answer4" oninput="renderMath()"></textarea>
+                <div class="form-row">
+                    <label for="answer4">Đáp án D</label>
+                    <input type="text" id="answer4" name="answer4" required />
+                </div>
 
-        <label for="correct_answer">Đáp án đúng:</label>
-        <select id="correct_answer" name="correct_answer">
-            <option value="">-- Chọn đáp án đúng --</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-        </select>
+                <div class="form-row">
+                    <label for="correct_answer">Đáp án đúng</label>
+                    <select id="correct_answer" name="correct_answer" required>
+                        <option value="">-- Chọn đáp án đúng --</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
 
-        <div>
-            <button type="button" onclick="submitForm('add')">Thêm mới</button>
-            <button type="button" onclick="submitForm('update')">Cập nhật</button>
-            <button type="button" onclick="submitForm('delete')" style="background-color:#e74c3c;color:white;">Xóa</button>
-            <button type="button" onclick="resetForm()">Làm lại</button>
+                <div class="form-row">
+                    <label for="image">Ảnh minh họa (tùy chọn)</label>
+                    <input type="file" id="image" name="image" accept="image/*" />
+                    <img id="preview-image" src="" alt="Preview" />
+                </div>
+
+                <div class="form-row">
+                    <button type="button" id="btnAdd">Thêm</button>
+                    <button type="button" id="btnUpdate" disabled>Sửa</button>
+                    <button type="button" id="btnDelete" disabled>Xóa</button>
+                    <button type="button" id="btnClear">Xóa trắng</button>
+                </div>
+
+                <div id="message"></div>
+            </form>
         </div>
-    </form>
 
-    <div id="message"></div>
-
-    <div class="latex-help">
-        <h3>Hướng dẫn gõ LaTeX:</h3>
-        <ul>
-            <li>Dùng \( ... \) cho công thức inline, ví dụ: \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</li>
-            <li>Dùng \[ ... \] cho công thức block, ví dụ: \[E=mc^2\]</li>
-            <li>Công thức sẽ được hiển thị ngay khi bạn nhập</li>
-        </ul>
+        <div class="table-container">
+            <iframe id="questionsFrame" src="get_question.php" style="width:100%; height:600px; border:1px solid #ccc;"></iframe>
+        </div>
     </div>
 
-    <h3>Danh sách câu hỏi</h3>
-    <iframe src="get_question.php" id="questionListIframe"></iframe>
+<script>
+    // MathJax render trong form
+    function renderMath() {
+        MathJax.typesetPromise();
+    }
 
-    <script>
-        const form = document.getElementById('questionForm');
-        const messageBox = document.getElementById('message');
-
-        // Hàm gửi dữ liệu form qua AJAX (fetch API)
-        async function submitForm(action) {
-            clearMessage();
-            if (action === 'delete' && !confirm('Bạn có chắc chắn muốn xóa câu hỏi này?')) {
-                return;
+    // Xử lý preview ảnh khi chọn file
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('preview-image');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                preview.src = ev.target.result;
+                preview.style.display = 'block';
             }
-
-            const data = {
-                action,
-                id: document.getElementById('id').value,
-                question: document.getElementById('question').value.trim(),
-                answer1: document.getElementById('answer1').value.trim(),
-                answer2: document.getElementById('answer2').value.trim(),
-                answer3: document.getElementById('answer3').value.trim(),
-                answer4: document.getElementById('answer4').value.trim(),
-                correct_answer: document.getElementById('correct_answer').value
-            };
-
-            if ((action === 'update' || action === 'delete') && !data.id) {
-                showMessage('Vui lòng chọn câu hỏi để ' + (action === 'delete' ? 'xóa' : 'cập nhật'), 'error');
-                return;
-            }
-            if ((action === 'add' || action === 'update') && (!data.question || !data.answer1 || !data.answer2 || !data.answer3 || !data.answer4 || !data.correct_answer)) {
-                showMessage('Vui lòng điền đầy đủ thông tin và chọn đáp án đúng.', 'error');
-                return;
-            }
-
-            try {
-                const formData = new FormData();
-                for (const key in data) {
-                    formData.append(key, data[key]);
-                }
-
-                const response = await fetch('question_form.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    showMessage(result.message, 'success');
-                    resetForm();
-                    // Reload iframe để cập nhật bảng câu hỏi
-                    document.getElementById('questionListIframe').contentWindow.location.reload();
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('Lỗi khi gửi dữ liệu: ' + error.message, 'error');
-            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
         }
+    });
 
-        // Nhận dữ liệu câu hỏi khi người dùng click trên bảng câu hỏi iframe
-        window.addEventListener('message', function(event) {
-            if (event.origin !== window.location.origin) return;
+    // Nhận dữ liệu câu hỏi từ iframe qua postMessage
+    window.addEventListener('message', event => {
+        if (event.origin !== window.location.origin) return; // bảo mật
 
-            const data = event.data;
-            if (!data || typeof data !== 'object') return;
+        const data = event.data;
 
-            document.getElementById('id').value = data.id || '';
+        if (typeof data === 'object' && data !== null) {
+            // Điền dữ liệu vào form
+            document.getElementById('question_id').value = data.id || '';
             document.getElementById('question').value = data.question || '';
             document.getElementById('answer1').value = data.answer1 || '';
             document.getElementById('answer2').value = data.answer2 || '';
             document.getElementById('answer3').value = data.answer3 || '';
             document.getElementById('answer4').value = data.answer4 || '';
-            document.getElementById('correct_answer').value = data.correct_answer || '';
+            document.getElementById('correct_answer').value = (data.correct_answer || '').toUpperCase();
+
+            // Xóa preview ảnh cũ
+            const preview = document.getElementById('preview-image');
+            if(data.image) {
+                preview.src = data.image;
+                preview.style.display = 'block';
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+
+            // Enable nút sửa, xóa, disable thêm
+            document.getElementById('btnAdd').disabled = true;
+            document.getElementById('btnUpdate').disabled = false;
+            document.getElementById('btnDelete').disabled = false;
 
             renderMath();
+        }
+    });
+
+    // Clear form
+    function clearForm() {
+        document.getElementById('questionForm').reset();
+        document.getElementById('question_id').value = '';
+        document.getElementById('preview-image').src = '';
+        document.getElementById('preview-image').style.display = 'none';
+        document.getElementById('btnAdd').disabled = false;
+        document.getElementById('btnUpdate').disabled = true;
+        document.getElementById('btnDelete').disabled = true;
+        document.getElementById('message').textContent = '';
+    }
+
+    document.getElementById('btnClear').addEventListener('click', clearForm);
+
+    // Hàm gửi AJAX để thêm, sửa, xóa
+    function ajaxSubmit(action) {
+        const form = document.getElementById('questionForm');
+        const formData = new FormData(form);
+        formData.append('action', action);
+
+        fetch('question_action.php', {  // Bạn cần tạo file question_action.php để xử lý database tương ứng
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById('message').style.color = 'green';
+                clearForm();
+                // Reload iframe để cập nhật bảng câu hỏi
+                document.getElementById('questionsFrame').contentWindow.location.reload();
+            } else {
+                document.getElementById('message').style.color = 'red';
+            }
+            document.getElementById('message').textContent = data.message || 'Có lỗi xảy ra!';
+        })
+        .catch(() => {
+            document.getElementById('message').style.color = 'red';
+            document.getElementById('message').textContent = 'Lỗi kết nối server!';
         });
+    }
 
-        // Render công thức LaTeX realtime khi nhập liệu
-        function renderMath() {
-            MathJax.typesetPromise();
+    // Bắt sự kiện nút thêm
+    document.getElementById('btnAdd').addEventListener('click', () => {
+        if(confirm("Bạn có chắc muốn thêm câu hỏi này?")) {
+            ajaxSubmit('add');
         }
+    });
 
-        // Xóa dữ liệu form
-        function resetForm() {
-            form.reset();
-            document.getElementById('id').value = '';
-            clearMessage();
-            renderMath();
+    // Bắt sự kiện nút sửa
+    document.getElementById('btnUpdate').addEventListener('click', () => {
+        if(!document.getElementById('question_id').value) {
+            alert('Vui lòng chọn câu hỏi để sửa.');
+            return;
         }
+        if(confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
+            ajaxSubmit('update');
+        }
+    });
 
-        // Hiển thị message
-        function showMessage(msg, type) {
-            messageBox.textContent = msg;
-            messageBox.className = '';
-            messageBox.classList.add(type);
+    // Bắt sự kiện nút xóa
+    document.getElementById('btnDelete').addEventListener('click', () => {
+        if(!document.getElementById('question_id').value) {
+            alert('Vui lòng chọn câu hỏi để xóa.');
+            return;
         }
+        if(confirm("Bạn có chắc muốn xóa câu hỏi này?")) {
+            ajaxSubmit('delete');
+        }
+    });
 
-        function clearMessage() {
-            messageBox.textContent = '';
-            messageBox.className = '';
-        }
+    // Render lại MathJax khi nhập liệu (có độ trễ tránh gọi nhiều)
+    let typingTimer;
+    const doneTypingInterval = 700;
+    document.getElementById('question').addEventListener('input', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(renderMath, doneTypingInterval);
+    });
 
-        window.onload = () => {
-            renderMath();
-        }
-    </script>
+</script>
+
 </body>
 </html>
