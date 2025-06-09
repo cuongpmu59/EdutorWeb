@@ -1,6 +1,6 @@
 <?php
 require 'db_connection.php';
-
+echo "Kết nối thành công!";
 // Cho phép phản hồi JSON
 header('Content-Type: application/json');
 
