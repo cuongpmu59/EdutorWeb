@@ -1,100 +1,59 @@
 <?php
 require 'db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Làm sạch dữ liệu đầu vào
-    function cleanInput($data) {
-        return htmlspecialchars(trim($data));
-    }
-
-    $id = intval($_POST['id'] ?? 0);
-    $question = cleanInput($_POST['question'] ?? '');
-    $answer1 = cleanInput($_POST['answer1'] ?? '');
-    $answer2 = cleanInput($_POST['answer2'] ?? '');
-    $answer3 = cleanInput($_POST['answer3'] ?? '');
-    $answer4 = cleanInput($_POST['answer4'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
+    $question = $_POST['question'] ?? '';
+    $answer1 = $_POST['answer1'] ?? '';
+    $answer2 = $_POST['answer2'] ?? '';
+    $answer3 = $_POST['answer3'] ?? '';
+    $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $image_path = '';
 
-    // Kiểm tra dữ liệu
-    if ($id <= 0 || empty($question) || empty($answer1) || empty($answer2) || empty($correct_answer)) {
-        die("Thiếu thông tin bắt buộc.");
-    }
+    // Lấy ảnh hiện tại nếu không upload ảnh mới
+    $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
+    $stmtGet->bindParam(':id', $id);
+    $stmtGet->execute();
+    $currentImage = $stmtGet->fetchColumn();
 
-    $valid_answers = ['answer1', 'answer2', 'answer3', 'answer4'];
-    if (!in_array($correct_answer, $valid_answers)) {
-        die("Đáp án đúng không hợp lệ.");
-    }
+    $imageName = $currentImage;
 
-    // Lấy ảnh cũ từ DB để có thể xóa nếu có ảnh mới
-    $old_image = '';
-    $checkStmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
-    $checkStmt->bind_param("i", $id);
-    $checkStmt->execute();
-    $checkStmt->bind_result($old_image);
-    $checkStmt->fetch();
-    $checkStmt->close();
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        $uploadDir = 'images/';
+        $imageName = time() . '_' . basename($_FILES['image']['name']);
+        $uploadFile = $uploadDir . $imageName;
+        move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile);
 
-    // Xử lý ảnh mới (nếu có)
-    if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-        $uploadDir = "images/";
-        $fileTmpPath = $_FILES["image"]["tmp_name"];
-        $originalName = basename($_FILES["image"]["name"]);
-        $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
-
-        if (!in_array($fileExt, $allowedExts)) {
-            die("Chỉ hỗ trợ định dạng ảnh jpg, jpeg, png, gif.");
-        }
-
-        if ($_FILES["image"]["size"] > 2 * 1024 * 1024) {
-            die("Ảnh vượt quá kích thước 2MB.");
-        }
-
-        $newFileName = uniqid('img_', true) . '.' . $fileExt;
-        $targetPath = $uploadDir . $newFileName;
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        if (!move_uploaded_file($fileTmpPath, $targetPath)) {
-            die("Lỗi khi tải ảnh lên.");
-        }
-
-        $image_path = $newFileName;
-
-        // Xóa ảnh cũ nếu tồn tại
-        if (!empty($old_image)) {
-            $oldImagePath = $uploadDir . $old_image;
-            if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
-            }
+        // Xoá ảnh cũ nếu có
+        if ($currentImage && file_exists($uploadDir . $currentImage)) {
+            unlink($uploadDir . $currentImage);
         }
     }
 
-    // Thực hiện câu lệnh UPDATE
-    if (empty($image_path)) {
-        $stmt = $conn->prepare("UPDATE questions 
-            SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=? 
-            WHERE id=?");
-        $stmt->bind_param("ssssssi", $question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $id);
-    } else {
-        $stmt = $conn->prepare("UPDATE questions 
-            SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=?, image=? 
-            WHERE id=?");
-        $stmt->bind_param("sssssssi", $question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $image_path, $id);
-    }
+    $sql = "UPDATE questions SET
+            question = :question,
+            answer1 = :answer1,
+            answer2 = :answer2,
+            answer3 = :answer3,
+            answer4 = :answer4,
+            correct_answer = :correct_answer,
+            image = :image
+            WHERE id = :id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':question', $question);
+    $stmt->bindParam(':answer1', $answer1);
+    $stmt->bindParam(':answer2', $answer2);
+    $stmt->bindParam(':answer3', $answer3);
+    $stmt->bindParam(':answer4', $answer4);
+    $stmt->bindParam(':correct_answer', $correct_answer);
+    $stmt->bindParam(':image', $imageName);
+    $stmt->bindParam(':id', $id);
 
     if ($stmt->execute()) {
-        header("Location: question_form.php");
-        exit;
+        echo "Cập nhật câu hỏi thành công.";
     } else {
-        echo "Lỗi khi cập nhật câu hỏi: " . $stmt->error;
+        echo "Lỗi khi cập nhật câu hỏi.";
     }
-
-    $stmt->close();
-    $conn->close();
-} else {
-    echo "Phương thức gửi không hợp lệ.";
 }
+?>
