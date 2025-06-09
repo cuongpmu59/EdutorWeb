@@ -1,13 +1,18 @@
 <?php
 require 'db_connection.php';
 
-// Cho phép hiển thị trong iframe nếu bị chặn
+// Cho phép hiển thị trong iframe cùng origin
 header("X-Frame-Options: SAMEORIGIN");
 
-$sql = "SELECT * FROM questions ORDER BY id ASC";
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Lấy tất cả câu hỏi
+try {
+    $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $rows = [];
+    // Bạn có thể log lỗi ở đây
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,32 +20,44 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8" />
     <title>Danh sách câu hỏi</title>
-    
+
     <!-- MathJax để hiển thị công thức LaTeX -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 5px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 14px;
         }
-
         th, td {
             border: 1px solid #ccc;
-            padding: 6px 10px;
+            padding: 6px 8px;
             text-align: left;
+            vertical-align: top;
         }
-
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f1f9ff;
             cursor: pointer;
         }
-
         .selected-row {
-            background-color: #d0f0ff !important;
+            background-color: #cceeff !important;
+        }
+        img.thumb {
+            max-width: 40px;
+            max-height: 40px;
+            display: block;
+            margin: auto;
+            border: 1px solid #aaa;
+            border-radius: 3px;
         }
     </style>
-    
+
     <script>
         let currentRow = null;
 
@@ -50,6 +67,8 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
             currentRow = row;
             row.classList.add("selected-row");
+
+            // Gửi dữ liệu sang parent (question_form.php)
             parent.postMessage(data, window.location.origin);
         }
 
@@ -82,7 +101,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         window.addEventListener("keydown", rowKeyNavigation);
 
-        // Gọi MathJax render lại khi load trang
+        // Render MathJax sau khi trang load xong
         window.onload = () => {
             MathJax.typesetPromise();
         };
@@ -92,14 +111,14 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th style="width: 40px;">ID</th>
                 <th>Câu hỏi</th>
                 <th>Đáp án A</th>
                 <th>Đáp án B</th>
                 <th>Đáp án C</th>
                 <th>Đáp án D</th>
-                <th>Đáp án đúng</th>
-                <th>Ảnh</th>
+                <th style="width: 80px;">Đáp án đúng</th>
+                <th style="width: 50px;">Ảnh</th>
             </tr>
         </thead>
         <tbody>
@@ -112,25 +131,25 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         "answer2" => $row["answer2"],
                         "answer3" => $row["answer3"],
                         "answer4" => $row["answer4"],
-                        "correct_answer" => $row["correct_answer"],
+                        "correct_answer" => strtoupper(trim($row["correct_answer"])),
                         "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/" . $row["image"] : ""
                     ]); ?>)'>
-                        <td><?= $row["id"] ?></td>
+                        <td><?= htmlspecialchars($row["id"]) ?></td>
                         <td><?= htmlspecialchars($row["question"]) ?></td>
                         <td><?= htmlspecialchars($row["answer1"]) ?></td>
                         <td><?= htmlspecialchars($row["answer2"]) ?></td>
                         <td><?= htmlspecialchars($row["answer3"]) ?></td>
                         <td><?= htmlspecialchars($row["answer4"]) ?></td>
-                        <td><?= strtoupper(substr($row["correct_answer"], -1)) ?></td>
-                        <td>
+                        <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
+                        <td style="text-align:center;">
                             <?php if ($row["image"]): ?>
-                                <img src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" width="40" />
+                                <img class="thumb" src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" alt="Ảnh minh họa" />
                             <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
-                <tr><td colspan="8">Không có dữ liệu</td></tr>
+                <tr><td colspan="8" style="text-align:center;">Không có dữ liệu</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
