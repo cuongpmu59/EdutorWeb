@@ -19,7 +19,7 @@ echo '<html><head><meta charset="UTF-8"><title>Hiển thị tiếng Việt</titl
 $stmt = $conn->query("SELECT * FROM questions");
 echo "<table border='1'>";
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    echo "<tr><td>" . htmlspecialchars($row['question_text'], ENT_QUOTES, 'UTF-8') . "</td></tr>";
+    echo "<tr><td>" . htmlspecialchars($row['question'], ENT_QUOTES, 'UTF-8') . "</td></tr>";
 }
 echo "</table>";
 
