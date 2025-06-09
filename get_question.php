@@ -15,6 +15,10 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8" />
     <title>Danh sách câu hỏi</title>
+    
+    <!-- MathJax để hiển thị công thức LaTeX -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         table {
             width: 100%;
@@ -36,6 +40,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background-color: #d0f0ff !important;
         }
     </style>
+    
     <script>
         let currentRow = null;
 
@@ -76,6 +81,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         window.addEventListener("keydown", rowKeyNavigation);
+
+        // Gọi MathJax render lại khi load trang
+        window.onload = () => {
+            MathJax.typesetPromise();
+        };
     </script>
 </head>
 <body>
