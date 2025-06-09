@@ -6,9 +6,9 @@ $username = "if0_39047715";
 $password = "Kimdung16091961";
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    echo "Kết nối thành công!";
 } catch (PDOException $e) {
-    die("Kết nối thất bại: " . $e->getMessage());
+    echo "Lỗi kết nối server! " . $e->getMessage();
 }
 ?>
