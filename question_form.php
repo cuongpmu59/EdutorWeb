@@ -2,79 +2,139 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý câu hỏi trắc nghiệm</title>
-    <link rel="stylesheet" href="css/question_style.css"> <!-- Nếu có -->
+    <title>Quản lý câu hỏi</title>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .left-column {
+            width: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 1px solid #ccc;
+        }
+
+        .right-column {
+            width: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 6px;
+            margin-top: 4px;
+        }
+
+        button {
+            margin: 6px 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        #imagePreview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 150px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
+
+    <!-- MathJax for rendering LaTeX -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
 </head>
 <body>
-    <h2>Form nhập câu hỏi</h2>
-    <form id="questionForm" enctype="multipart/form-data">
-        <input type="hidden" id="question_id" name="id">
+    <div class="left-column">
+        <form id="questionForm">
+            <input type="hidden" id="id" name="id">
 
-        <label for="question">Câu hỏi:</label><br>
-        <textarea id="question" name="question" rows="3" required></textarea><br>
+            <label for="question">Câu hỏi:</label>
+            <input type="text" id="question" name="question" required>
 
-        <label for="answer1">Đáp án A:</label><br>
-        <input type="text" id="answer1" name="answer1" required><br>
+            <label for="answer1">Đáp án A:</label>
+            <input type="text" id="answer1" name="answer1" required>
 
-        <label for="answer2">Đáp án B:</label><br>
-        <input type="text" id="answer2" name="answer2" required><br>
+            <label for="answer2">Đáp án B:</label>
+            <input type="text" id="answer2" name="answer2" required>
 
-        <label for="answer3">Đáp án C:</label><br>
-        <input type="text" id="answer3" name="answer3" required><br>
+            <label for="answer3">Đáp án C:</label>
+            <input type="text" id="answer3" name="answer3" required>
 
-        <label for="answer4">Đáp án D:</label><br>
-        <input type="text" id="answer4" name="answer4" required><br>
+            <label for="answer4">Đáp án D:</label>
+            <input type="text" id="answer4" name="answer4" required>
 
-        <label for="correct_answer">Đáp án đúng:</label><br>
-        <select id="correct_answer" name="correct_answer" required>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-        </select><br>
+            <label for="correct_answer">Đáp án đúng:</label>
+            <select id="correct_answer" name="correct_answer">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
 
-        <label for="image">Ảnh minh họa (nếu có):</label><br>
-        <input type="file" id="image" name="image" accept="image/*"><br>
-        <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; display: none;"><br><br>
+            <label for="image">Ảnh minh họa (nếu có):</label>
+            <input type="file" id="image" name="image" accept="image/*">
+            <img id="imagePreview" src="#" alt="Xem trước ảnh" style="display:none;"/>
 
-        <button type="button" onclick="saveQuestion()">Lưu</button>
-        <button type="button" onclick="deleteQuestion()">Xoá</button>
-        <button type="reset">Xóa trắng</button>
-        <button type="button" onclick="searchQuestion()">Tìm kiếm</button>
-    </form>
+            <div class="button-group">
+                <button type="button" onclick="saveQuestion()">Lưu</button>
+                <button type="button" onclick="updateQuestion()">Sửa</button>
+                <button type="button" onclick="deleteQuestion()">Xoá</button>
+                <button type="reset">Làm mới</button>
+            </div>
+        </form>
+    </div>
 
-    <h3>Xem trước công thức (MathJax):</h3>
-    <div id="preview" style="border: 1px solid #ccc; padding: 10px;"></div>
+    <div class="right-column">
+        <iframe src="get_question.php" id="questionTable"></iframe>
+    </div>
 
-    <hr>
-    <h3>Danh sách câu hỏi</h3>
-    <iframe id="questionIframe" src="get_question.php" width="100%" height="300" style="border:1px solid #ccc;"></iframe>
-
-    <script src="js/question_script.js"></script>
     <script>
-        // Xử lý MathJax preview mỗi khi nhập liệu
-        document.getElementById("question").addEventListener("input", function () {
-            const content = this.value;
-            const preview = document.getElementById("preview");
-            preview.innerHTML = content;
-            if (window.MathJax) MathJax.typesetPromise([preview]);
-        });
-
-        // Hiển thị ảnh xem trước
-        document.getElementById("image").addEventListener("change", function () {
-            const file = this.files[0];
-            const preview = document.getElementById("imagePreview");
+        // Xem trước ảnh
+        document.getElementById('image').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
 
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     preview.src = e.target.result;
-                    preview.style.display = "block";
+                    preview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             } else {
-                preview.src = "";
+                preview.style.display = 'none';
+            }
+        });
+
+        // Nhận dữ liệu từ iframe
+        window.addEventListener('message', function (event) {
+            const data = event.data;
+            if (typeof data !== 'object' || !data.id) return;
+
+            document.getElementById('id').value = data.id;
+            document.getElementById('question').value = data.question;
+            document.getElementById('answer1
