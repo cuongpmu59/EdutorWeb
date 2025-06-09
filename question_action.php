@@ -12,7 +12,7 @@ function sanitize($conn, $value) {
 
 function handleImageUpload() {
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $uploadDir = 'uploads/';
+        $uploadDir = 'images/uploads/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
