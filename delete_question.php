@@ -1,24 +1,26 @@
 <?php
-require 'db_connection.php'; // Đảm bảo bạn đã dùng PDO trong file này
+require 'db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
-    $id = intval($_POST['id']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
 
-    try {
-        // Chuẩn bị và thực thi truy vấn DELETE
-        $sql = "DELETE FROM questions WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$id]);
+    // Xoá ảnh trước nếu có
+    $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
+    $stmtGet->bindParam(':id', $id);
+    $stmtGet->execute();
+    $image = $stmtGet->fetchColumn();
 
-        // Kiểm tra số dòng bị ảnh hưởng để xác nhận xoá thành công
-        if ($stmt->rowCount() > 0) {
-            echo "Đã xoá thành công.";
-        } else {
-            echo "Không tìm thấy câu hỏi để xoá.";
-        }
-    } catch (PDOException $e) {
-        echo "Lỗi khi xoá: " . $e->getMessage();
+    if ($image && file_exists('images/' . $image)) {
+        unlink('images/' . $image);
     }
-} else {
-    echo "Không có ID hợp lệ để xoá.";
+
+    $stmt = $conn->prepare("DELETE FROM questions WHERE id = :id");
+    $stmt->bindParam(':id', $id);
+
+    if ($stmt->execute()) {
+        echo "Xoá câu hỏi thành công.";
+    } else {
+        echo "Lỗi khi xoá câu hỏi.";
+    }
 }
+?>
