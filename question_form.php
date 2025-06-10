@@ -226,7 +226,7 @@ require 'db_connection.php';
         })
         .catch(() => {
             document.getElementById('message').style.color = 'red';
-            document.getElementById('message').textContent = 'Lỗi kết nối server!';
+            document.getElementById('message').textContent = 'Lỗi kết nối server tiêu rồi!';
         });
     }
 
