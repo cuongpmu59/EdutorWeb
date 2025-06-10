@@ -27,7 +27,7 @@ if ($question === '' || $answer1 === '' || $answer2 === '' || $answer3 === '' ||
 // Xử lý upload ảnh (nếu có)
 $imageName = null;
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = __DIR__ . '/images/';
+    $uploadDir = __DIR__ . '/images/uploads/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true); // tạo thư mục nếu chưa có
     }
