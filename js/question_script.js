@@ -72,6 +72,30 @@ function searchQuestion() {
   });
 }
 
+function importFile(file) {
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  fetch('import_questions.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.text())
+  .then(response => {
+    alert(response);
+    refreshIframe();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Lỗi khi nhập file.");
+  });
+}
+
+function exportToCSV() {
+  window.open('export_questions.php', '_blank');
+}
+
 function refreshIframe() {
   const iframe = document.getElementById("questionIframe");
   if (iframe) {
@@ -131,3 +155,4 @@ window.addEventListener("message", function (event) {
     if (window.MathJax) MathJax.typesetPromise();
   }
 });
+
