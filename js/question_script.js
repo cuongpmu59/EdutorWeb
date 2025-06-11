@@ -6,23 +6,38 @@ function getFormData() {
 function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
   const formData = getFormData();
+
+  // ✅ Kiểm tra dữ liệu trước khi gửi
+  if (
+    !formData.get("question") ||
+    !formData.get("answer1") ||
+    !formData.get("answer2") ||
+    !formData.get("answer3") ||
+    !formData.get("answer4") ||
+    !formData.get("correct_answer")
+  ) {
+    alert("Vui lòng điền đầy đủ nội dung câu hỏi, các đáp án và đáp án đúng.");
+    return;
+  }
+
   const url = id ? "update_question.php" : "insert_question.php";
 
   fetch(url, {
     method: "POST",
     body: formData
   })
-  .then(res => res.text())
-  .then(response => {
-    alert(response);
-    refreshIframe();
-    if (!id) document.getElementById("questionForm").reset();
-    document.getElementById("imagePreview").style.display = "none";
-  })
-  .catch(error => {
-    console.error("Lỗi:", error);
-    alert("Đã xảy ra lỗi khi lưu câu hỏi.");
-  });
+    .then(res => res.text())
+    .then(response => {
+      alert(response);
+      refreshIframe();
+      if (!id) document.getElementById("questionForm").reset();
+      document.getElementById("imagePreview").style.display = "none";
+      document.getElementById("imagePreview").src = "";
+    })
+    .catch(error => {
+      console.error("Lỗi:", error);
+      alert("Đã xảy ra lỗi khi lưu câu hỏi.");
+    });
 }
 
 function deleteQuestion() {
