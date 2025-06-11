@@ -166,12 +166,15 @@ window.addEventListener("message", function (event) {
     document.getElementById("correct_answer").value = q.correct_answer;
 
     const imgPreview = document.getElementById("imagePreview");
-    if (q.image && q.image.trim() !== "") {
-      imgPreview.src = q.image;
-      imgPreview.style.display = "block";
-    } else {
-      imgPreview.style.display = "none";
-    }
+
+if (q.image && typeof q.image === "string" && q.image.trim() !== "") {
+  imgPreview.src = q.image;
+  imgPreview.style.display = "block";
+} else {
+  imgPreview.src = "";
+  imgPreview.style.display = "none";
+}
+
 
     if (window.MathJax) MathJax.typesetPromise();
   }
