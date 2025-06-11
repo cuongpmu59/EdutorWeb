@@ -54,7 +54,12 @@ function deleteQuestion() {
   .then(response => {
     alert(response);
     document.getElementById("questionForm").reset();
-    document.getElementById("imagePreview").style.display = "none";
+
+    // 🧼 Xóa và ẩn ảnh xem trước
+    const imgPreview = document.getElementById("imagePreview");
+    imgPreview.src = "";
+    imgPreview.style.display = "none";
+
     refreshIframe();
   })
   .catch(error => {
@@ -62,6 +67,7 @@ function deleteQuestion() {
     alert("Không thể xoá câu hỏi.");
   });
 }
+
 
 function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
