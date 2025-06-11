@@ -38,7 +38,7 @@
 
     <label>Ảnh minh họa:</label>
     <input type="file" name="image" id="image"><br>
-    <img id="imagePreview" style="display:none; max-height:100px; margin:10px 0;" />
+    <img id="imagePreview" alt="Ảnh minh họa" onerror="this.style.display='none'" style="display:none; max-height:100px; margin:10px 0;" />
 
     <div class="button-group">
       <button type="button" onclick="saveQuestion()">Lưu</button>
@@ -78,7 +78,8 @@
           imgPreview.style.display = "none";
         }
 
-        renderMathInPage();
+        MathJax.typesetPromise();
+
       }
     });
   </script>
