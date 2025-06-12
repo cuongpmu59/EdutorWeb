@@ -1,7 +1,6 @@
 <?php
 // question_action.php
 require 'db_connection.php';
-
 header('Content-Type: application/json');
 
 $action = $_POST['action'] ?? '';
@@ -27,6 +26,7 @@ function handleImageUpload() {
     return '';
 }
 
+// Xử lý thêm mới
 if ($action === 'add') {
     $question = sanitize($conn, $_POST['question']);
     $a = sanitize($conn, $_POST['answer1']);
@@ -45,6 +45,7 @@ if ($action === 'add') {
         echo json_encode(['success' => false, 'message' => 'Lỗi khi thêm: ' . mysqli_error($conn)]);
     }
 
+// Xử lý cập nhật
 } elseif ($action === 'update') {
     $id = (int)($_POST['id'] ?? 0);
     $question = sanitize($conn, $_POST['question']);
@@ -54,8 +55,18 @@ if ($action === 'add') {
     $d = sanitize($conn, $_POST['answer4']);
     $correct = sanitize($conn, $_POST['correct_answer']);
 
-    // Kiểm tra và xử lý ảnh mới nếu có
+    // Nếu có ảnh mới, xóa ảnh cũ
     $imagePath = handleImageUpload();
+    if ($imagePath) {
+        $res = mysqli_query($conn, "SELECT image FROM questions WHERE id = $id");
+        if ($res && mysqli_num_rows($res) > 0) {
+            $row = mysqli_fetch_assoc($res);
+            if (!empty($row['image']) && file_exists($row['image'])) {
+                unlink($row['image']);
+            }
+        }
+    }
+
     $imageSQL = $imagePath ? ", image = '$imagePath'" : "";
 
     $sql = "UPDATE questions SET
@@ -74,10 +85,11 @@ if ($action === 'add') {
         echo json_encode(['success' => false, 'message' => 'Lỗi khi cập nhật: ' . mysqli_error($conn)]);
     }
 
+// Xử lý xoá
 } elseif ($action === 'delete') {
     $id = (int)($_POST['id'] ?? 0);
 
-    // Xóa ảnh cũ nếu có
+    // Xoá ảnh nếu có
     $res = mysqli_query($conn, "SELECT image FROM questions WHERE id = $id");
     if ($res && mysqli_num_rows($res) > 0) {
         $row = mysqli_fetch_assoc($res);
@@ -88,45 +100,13 @@ if ($action === 'add') {
 
     $sql = "DELETE FROM questions WHERE id = $id";
     if (mysqli_query($conn, $sql)) {
-        echo json_encode(['success' => true, 'message' => 'Đã xóa câu hỏi!']);
+        echo json_encode(['success' => true, 'message' => 'Đã xoá câu hỏi!']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Lỗi khi xóa: ' . mysqli_error($conn)]);
+        echo json_encode(['success' => false, 'message' => 'Lỗi khi xoá: ' . mysqli_error($conn)]);
     }
 
 } else {
     echo json_encode(['success' => false, 'message' => 'Hành động không hợp lệ!']);
 }
-
-$response = ['success' => false];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delete') {
-    $id = intval($_POST['id']);
-
-    // Tìm ảnh cần xoá nếu có
-    $stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->bind_result($image);
-    $stmt->fetch();
-    $stmt->close();
-
-    // Xoá bản ghi
-    $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    if ($stmt->execute()) {
-        $response['success'] = true;
-
-        // Xoá ảnh vật lý nếu tồn tại
-        if ($image && file_exists($image)) {
-            unlink($image);
-        }
-    } else {
-        $response['message'] = 'Không thể xoá câu hỏi.';
-    }
-    $stmt->close();
-}
-
-echo json_encode($response);
-
 
 mysqli_close($conn);
