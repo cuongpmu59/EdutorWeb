@@ -14,7 +14,7 @@
 
     <label>Câu hỏi:</label>
     <textarea name="question" id="question" rows="3" required></textarea><br>
-
+    
     <label>Đáp án A:</label>
     <input type="text" name="answer1" id="answer1" required><br>
 
@@ -41,7 +41,7 @@
     <img id="imagePreview" alt="Ảnh minh họa" onerror="this.style.display='none'" style="display:none; max-height:100px; margin:10px 0;" />
 
     <div class="button-group">
-      <button type="button" onclick="saveQuestion()">Lưu</button>
+      <button type="button" onclick="saveQuestion()" id="saveButton">Lưu</button>
       <button type="button" onclick="deleteQuestion()">Xoá</button>
       <button type="button" onclick="searchQuestion()">Tìm kiếm</button>
       <button type="reset">Làm mới</button>
