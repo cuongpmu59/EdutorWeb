@@ -97,4 +97,36 @@ if ($action === 'add') {
     echo json_encode(['success' => false, 'message' => 'Hành động không hợp lệ!']);
 }
 
+$response = ['success' => false];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delete') {
+    $id = intval($_POST['id']);
+
+    // Tìm ảnh cần xoá nếu có
+    $stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->bind_result($image);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Xoá bản ghi
+    $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        $response['success'] = true;
+
+        // Xoá ảnh vật lý nếu tồn tại
+        if ($image && file_exists($image)) {
+            unlink($image);
+        }
+    } else {
+        $response['message'] = 'Không thể xoá câu hỏi.';
+    }
+    $stmt->close();
+}
+
+echo json_encode($response);
+
+
 mysqli_close($conn);
