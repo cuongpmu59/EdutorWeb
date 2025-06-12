@@ -50,53 +50,80 @@ $result = mysqli_query($conn, $sql);
 <body>
   <h3>Danh sách câu hỏi</h3>
   <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Câu hỏi</th>
-        <th>Đáp án A</th>
-        <th>Đáp án B</th>
-        <th>Đáp án C</th>
-        <th>Đáp án D</th>
-        <th>Đáp án đúng</th>
-        <th>Ảnh</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php while ($row = mysqli_fetch_assoc($result)): ?>
-        <tr onclick="selectRow(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)">
-          <td><?= $row['id'] ?></td>
-          <td><?= htmlspecialchars($row['question']) ?></td>
-          <td><?= htmlspecialchars($row['answer1']) ?></td>
-          <td><?= htmlspecialchars($row['answer2']) ?></td>
-          <td><?= htmlspecialchars($row['answer3']) ?></td>
-          <td><?= htmlspecialchars($row['answer4']) ?></td>
-          <td><?= htmlspecialchars($row['correct_answer']) ?></td>
-          <td>
-            <?php if (!empty($row['image']) && file_exists($row['image'])): ?>
-              <img class="thumb" src="<?= $row['image'] ?>" alt="Ảnh">
-            <?php else: ?>
-              -
-            <?php endif; ?>
-          </td>
-        </tr>
-      <?php endwhile; ?>
-    </tbody>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Câu hỏi</th>
+    <th>Đáp án A</th>
+    <th>Đáp án B</th>
+    <th>Đáp án C</th>
+    <th>Đáp án D</th>
+    <th>Đáp án đúng</th>
+    <th>Ảnh</th>
+    <th>Xoá</th> <!-- Cột mới -->
+  </tr>
+</thead>
+<tbody>
+  <?php while ($row = mysqli_fetch_assoc($result)): ?>
+    <tr onclick="selectRow(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)">
+      <td><?= $row['id'] ?></td>
+      <td><?= htmlspecialchars($row['question']) ?></td>
+      <td><?= htmlspecialchars($row['answer1']) ?></td>
+      <td><?= htmlspecialchars($row['answer2']) ?></td>
+      <td><?= htmlspecialchars($row['answer3']) ?></td>
+      <td><?= htmlspecialchars($row['answer4']) ?></td>
+      <td><?= htmlspecialchars($row['correct_answer']) ?></td>
+      <td>
+        <?php if (!empty($row['image']) && file_exists($row['image'])): ?>
+          <img class="thumb" src="<?= $row['image'] ?>" alt="Ảnh">
+        <?php else: ?>
+          -
+        <?php endif; ?>
+      </td>
+      <td>
+        <button onclick="deleteRow(event, <?= $row['id'] ?>)">Xoá</button>
+      </td>
+    </tr>
+  <?php endwhile; ?>
+</tbody>
+
   </table>
 
   <script>
-    function selectRow(data) {
-      // Gửi dữ liệu về cửa sổ cha (form chính)
-      window.parent.postMessage({ type: 'selectQuestion', data }, '*');
-    }
+  function selectRow(data) {
+    // Gửi dữ liệu về cửa sổ cha (form chính)
+    window.parent.postMessage({ type: 'selectQuestion', data }, '*');
+  }
 
-    // Render lại MathJax sau khi tải
-    window.onload = () => {
-      if (window.MathJax) {
-        MathJax.typesetPromise();
+  function deleteRow(event, id) {
+    event.stopPropagation(); // Ngăn không gọi selectRow khi bấm nút
+
+    if (!confirm("Bạn có chắc muốn xoá câu hỏi ID " + id + " không?")) return;
+
+    fetch('question_action.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `action=delete&id=${id}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("Đã xoá thành công.");
+        location.reload(); // Tải lại trang để cập nhật bảng
+      } else {
+        alert("Xoá thất bại: " + (data.message || "Lỗi không rõ."));
       }
-    };
-  </script>
+    })
+    .catch(() => alert("Lỗi kết nối máy chủ."));
+  }
+
+  // Render lại MathJax sau khi tải
+  window.onload = () => {
+    if (window.MathJax) {
+      MathJax.typesetPromise();
+    }
+  };
+</script>
 </body>
 </html>
 
