@@ -7,7 +7,6 @@ function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
   const formData = getFormData();
 
-  // ✅ Kiểm tra dữ liệu trước khi gửi
   if (
     !formData.get("question") ||
     !formData.get("answer1") ||
@@ -21,6 +20,10 @@ function saveQuestion() {
   }
 
   const url = id ? "update_question.php" : "insert_question.php";
+
+  const saveBtn = document.getElementById("saveButton"); // Lấy nút
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Đang lưu...";
 
   fetch(url, {
     method: "POST",
@@ -37,8 +40,13 @@ function saveQuestion() {
     .catch(error => {
       console.error("Lỗi:", error);
       alert("Đã xảy ra lỗi khi lưu câu hỏi.");
+    })
+    .finally(() => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Lưu";
     });
 }
+
 
 function deleteQuestion() {
   const id = document.getElementById("question_id").value.trim();
