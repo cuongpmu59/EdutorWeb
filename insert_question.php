@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $uploadDir = 'images/';
+        $uploadDir = 'images/uploads';
         $imageName = time() . '_' . basename($_FILES['image']['name']);
         $uploadFile = $uploadDir . $imageName;
 
