@@ -53,6 +53,12 @@ function deleteQuestion() {
   });
 }
 
+function resetPreview() {
+  const imgPreview = document.getElementById("imagePreview");
+  imgPreview.src = "";
+  imgPreview.style.display = "none";
+}
+
 function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
@@ -102,4 +108,28 @@ function renderMathInPage() {
 // Nếu bạn có bảng trực tiếp trong trang chính, gọi renderMathInPage() sau khi tải dữ liệu bảng.
 
 // Ví dụ gọi refreshIframe() hoặc renderMathInPage() sau khi cập nhật xong để hiển thị công thức LaTeX.
+
+document.getElementById("image").addEventListener("change", function() {
+  const file = this.files[0];
+  if (file) {
+    if (!file.type.startsWith("image/")) {
+      alert("Chỉ chấp nhận file ảnh!");
+      this.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) { // 2MB
+      alert("Ảnh quá lớn. Vui lòng chọn ảnh dưới 2MB.");
+      this.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const preview = document.getElementById("imagePreview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
