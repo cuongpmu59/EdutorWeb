@@ -130,6 +130,45 @@ function togglePreview() {
   });
 }
 
+function updateFullPreview() {
+  const question = document.getElementById("question").value;
+  const a = document.getElementById("answer1").value;
+  const b = document.getElementById("answer2").value;
+  const c = document.getElementById("answer3").value;
+  const d = document.getElementById("answer4").value;
+  const correct = document.getElementById("correct_answer").value;
+
+  const html = `
+    <p><strong>Câu hỏi:</strong> ${question}</p>
+    <ul>
+      <li><strong>A.</strong> ${a}</li>
+      <li><strong>B.</strong> ${b}</li>
+      <li><strong>C.</strong> ${c}</li>
+      <li><strong>D.</strong> ${d}</li>
+    </ul>
+    <p><strong>Đáp án đúng:</strong> ${correct}</p>
+  `;
+
+  const preview = document.getElementById("fullPreview");
+  preview.innerHTML = html;
+  if (window.MathJax) {
+    MathJax.typesetPromise([preview]);
+  }
+}
+
+function renderPreview(fieldId) {
+  const value = document.getElementById(fieldId).value;
+  const previewDiv = document.getElementById("preview_" + fieldId);
+  previewDiv.innerHTML = value;
+
+  if (window.MathJax) {
+    MathJax.typesetPromise([previewDiv]);
+  }
+
+  // Cập nhật xem trước toàn bộ
+  updateFullPreview();
+}
+
 function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
@@ -203,5 +242,6 @@ document.getElementById("image").addEventListener("change", function() {
     reader.readAsDataURL(file);
   }
 });
+
 
 
