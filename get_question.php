@@ -69,7 +69,8 @@ try {
             row.classList.add("selected-row");
 
             // Gửi dữ liệu sang parent (question_form.php)
-            parent.postMessage(data, window.location.origin);
+            parent.postMessage({ type: "fillForm", data: data }, window.location.origin);
+
         }
 
         function rowKeyNavigation(event) {
