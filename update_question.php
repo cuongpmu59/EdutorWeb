@@ -10,23 +10,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
 
-    // Lấy ảnh hiện tại nếu không upload ảnh mới
+    if (!is_numeric($id)) {
+        echo "ID không hợp lệ.";
+        exit;
+    }
+
+    // Lấy ảnh hiện tại
     $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
-    $stmtGet->bindParam(':id', $id);
+    $stmtGet->bindParam(':id', $id, PDO::PARAM_INT);
     $stmtGet->execute();
     $currentImage = $stmtGet->fetchColumn();
 
     $imageName = $currentImage;
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $uploadDir = 'images/';
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($_FILES['image']['type'], $allowedTypes)) {
+            echo "Chỉ cho phép ảnh JPG, PNG hoặc GIF.";
+            exit;
+        }
+
+        $uploadDir = 'images/uploads';
         $imageName = time() . '_' . basename($_FILES['image']['name']);
         $uploadFile = $uploadDir . $imageName;
-        move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile);
 
-        // Xoá ảnh cũ nếu có
-        if ($currentImage && file_exists($uploadDir . $currentImage)) {
-            unlink($uploadDir . $currentImage);
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+            // Xoá ảnh cũ nếu tồn tại
+            if ($currentImage && file_exists($uploadDir . $currentImage)) {
+                unlink($uploadDir . $currentImage);
+            }
+        } else {
+            echo "Tải ảnh thất bại.";
+            exit;
         }
     }
 
@@ -48,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':answer4', $answer4);
     $stmt->bindParam(':correct_answer', $correct_answer);
     $stmt->bindParam(':image', $imageName);
-    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
         echo "Cập nhật câu hỏi thành công.";
