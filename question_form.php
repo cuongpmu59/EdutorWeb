@@ -18,16 +18,20 @@
       <div id="preview_question" class="latex-preview"></div><br>
 
     <label>Đáp án A:</label>
-    <input type="text" name="answer1" id="answer1" required><br>
+    <input type="text" name="answer1" id="answer1" required oninput="renderPreview('answer1')">
+    <div id="preview_answer1" class="latex-preview"></div><br>
 
     <label>Đáp án B:</label>
-    <input type="text" name="answer2" id="answer2" required><br>
+    <input type="text" name="answer2" id="answer2" required oninput="renderPreview('answer2')">
+    <div id="preview_answer2" class="latex-preview"></div><br>
 
     <label>Đáp án C:</label>
-    <input type="text" name="answer3" id="answer3" required><br>
+    <input type="text" name="answer3" id="answer3" required oninput="renderPreview('answer3')">
+    <div id="preview_answer3" class="latex-preview"></div><br>
 
     <label>Đáp án D:</label>
-    <input type="text" name="answer4" id="answer4" required><br>
+    <input type="text" name="answer4" id="answer4" required oninput="renderPreview('answer4')">
+    <div id="preview_answer4" class="latex-preview"></div><br>
 
     <label>Đáp án đúng:</label>
     <select name="correct_answer" id="correct_answer" required>
