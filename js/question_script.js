@@ -6,7 +6,60 @@ function getFormData() {
 
 function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
-  const formData = getFormData();
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
+
+  const question = formData.get("question")?.trim();
+  const answer1 = formData.get("answer1")?.trim();
+  const answer2 = formData.get("answer2")?.trim();
+  const answer3 = formData.get("answer3")?.trim();
+  const answer4 = formData.get("answer4")?.trim();
+  const correctAnswer = formData.get("correct_answer")?.trim();
+
+  if (!question || !answer1 || !answer2 || !answer3 || !answer4 || !correctAnswer) {
+    alert("Vui lòng điền đầy đủ thông tin câu hỏi và đáp án.");
+    return;
+  }
+
+  const imageFile = formData.get("image");
+  if (imageFile && imageFile.size > 0) {
+    if (!imageFile.type.startsWith("image/")) {
+      alert("Chỉ chấp nhận file ảnh!");
+      return;
+    }
+    if (imageFile.size > 2 * 1024 * 1024) {
+      alert("Ảnh quá lớn. Vui lòng chọn ảnh dưới 2MB.");
+      return;
+    }
+  }
+
+  // ✅ Nếu là thêm mới (không có ID), kiểm tra trùng lặp
+  if (!id) {
+    fetch("check_duplicate.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "question=" + encodeURIComponent(question)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.exists) {
+        alert("Câu hỏi này đã tồn tại trong hệ thống.");
+        return;
+      } else {
+        submitQuestion(formData, form, id);
+      }
+    })
+    .catch(err => {
+      console.error("Lỗi kiểm tra trùng lặp:", err);
+      alert("Không thể kiểm tra trùng lặp.");
+    });
+  } else {
+    // ✅ Nếu là cập nhật, bỏ qua kiểm tra trùng
+    submitQuestion(formData, form, id);
+  }
+}
+
+function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
 
   fetch(url, {
@@ -18,6 +71,7 @@ function saveQuestion() {
     alert(response);
     refreshIframe();
     if (!id) form.reset();
+    resetPreview();
   })
   .catch(error => {
     console.error("Lỗi:", error);
