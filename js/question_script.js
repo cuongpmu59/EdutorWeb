@@ -122,6 +122,14 @@ function resetPreview() {
   imgPreview.style.display = "none";
 }
 
+function togglePreview() {
+  const isChecked = document.getElementById("togglePreview").checked;
+  const previews = document.querySelectorAll(".latex-preview");
+  previews.forEach(div => {
+    div.style.display = isChecked ? "block" : "none";
+  });
+}
+
 function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
