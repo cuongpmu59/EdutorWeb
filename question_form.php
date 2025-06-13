@@ -13,8 +13,10 @@
     <input type="hidden" name="id" id="question_id">
 
     <label>Câu hỏi:</label>
-    <textarea name="question" id="question" rows="3" required></textarea><br>
-    
+    <textarea name="question" id="question" rows="3" required
+      oninput="renderPreview('question')"></textarea>
+      <div id="preview_question" class="latex-preview"></div><br>
+
     <label>Đáp án A:</label>
     <input type="text" name="answer1" id="answer1" required><br>
 
