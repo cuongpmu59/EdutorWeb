@@ -9,6 +9,8 @@
 </head>
 <body>
   <h2>Nhập câu hỏi</h2>
+  <label><input type="checkbox" id="togglePreview" checked onchange="togglePreview()"> Hiện xem trước công thức</label><br>
+
   <form id="questionForm" enctype="multipart/form-data">
     <input type="hidden" name="id" id="question_id">
 
@@ -55,6 +57,10 @@
         <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
         <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
     </div>
+
+    <h3>Xem trước toàn bộ câu hỏi</h3>
+    <div id="fullPreview" class="latex-preview" style="border:1px solid #ccc; padding:10px; margin-bottom:20px;"></div>
+
   </form>
 
   <div id="message"></div>
