@@ -121,3 +121,14 @@ iframe {
 #toggleTableBtn:hover {
     background-color: #0056b3;
 }
+
+/* Xem trước LaTeX trực tiếp khi nhập */
+.latex-preview {
+	margin: 5px 0;
+	padding: 5px;
+	background: #f9f9f9;
+	border-left: 3px solid #aaa;
+	font-style: italic;
+	min-height: 24px;
+  }
+  
