@@ -44,7 +44,7 @@
       <button type="button" onclick="saveQuestion()" id="saveButton">Lưu</button>
       <button type="button" onclick="deleteQuestion()">Xoá</button>
       <button type="button" onclick="searchQuestion()">Tìm kiếm</button>
-      <button type="reset">Làm mới</button>
+      <button type="reset" onclick="resetPreview()">Làm mới</button>
       <button type="button" onclick="document.getElementById('importFile').click()">📥 Nhập file</button>
         <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
         <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
@@ -61,6 +61,8 @@
   <script>
     window.addEventListener("message", function (event) {
       if (event.data.type === "fillForm") {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         const data = event.data.data;
         document.getElementById("question_id").value = data.id;
         document.getElementById("question").value = data.question;
