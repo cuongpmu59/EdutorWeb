@@ -1,134 +1,159 @@
-/* styles_question.css */
+/* ---------- Cấu hình cơ bản ---------- */
 body {
-	font-family: Arial, sans-serif;
-	margin: 20px;
-}
-
-.container {
+	font-family: 'Segoe UI', sans-serif;
+	background-color: #f8f9fa;
+	padding: 20px;
+	color: #333;
+	line-height: 1.5;
+  }
+  
+  .question-container {
 	display: flex;
+	flex-direction: row;
 	gap: 20px;
-}
-
-.left-column,
-.right-column {
-	padding: 15px;
-	border: 1px solid #ccc;
-	border-radius: 8px;
-	background-color: #f9f9f9;
-}
-
-.left-column {
-	flex: 2;
-}
-
-.right-column {
+	align-items: flex-start;
+	background: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+	flex-wrap: wrap;
+  }
+  
+  form {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	gap: 20px;
+	flex-wrap: wrap;
+  }
+  
+  /* ---------- Cột trái (Form nhập liệu) ---------- */
+  .form-left {
 	flex: 1;
+	min-width: 300px;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
-	justify-content: flex-start;
-}
-
-.answer-row {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-}
-
-.answer-row label {
-	width: 100px;
-	margin-right: 10px;
-}
-
-input[type="text"],
-textarea,
-select {
+	gap: 15px;
+  }
+  
+  label {
+	font-weight: bold;
+	margin-bottom: 5px;
+  }
+  
+  textarea,
+  input[type="text"],
+  select {
 	width: 100%;
-	padding: 8px;
-	margin-top: 5px;
-	margin-bottom: 15px;
-	border-radius: 4px;
+	padding: 8px 10px;
 	border: 1px solid #ccc;
-}
-
-button {
+	border-radius: 6px;
+	font-size: 15px;
+	box-sizing: border-box;
+	background-color: #fff;
+	transition: border-color 0.2s;
+  }
+  
+  textarea {
+	min-height: 80px;
+	resize: vertical;
+  }
+  
+  textarea:focus,
+  input:focus,
+  select:focus {
+	border-color: #007bff;
+	outline: none;
+  }
+  
+  /* ---------- Xem trước công thức LaTeX ---------- */
+  .latex-preview {
+	background: #f0f0f0;
 	padding: 10px;
-	background-color: #4CAF50;
-	color: white;
+	border-radius: 6px;
+	font-size: 16px;
+	display: none;
+	border: 1px dashed #ccc;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+  }
+  
+  /* ---------- Ảnh minh hoạ ---------- */
+  img#imagePreview {
+	max-width: 100%;
+	max-height: 200px;
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	margin-top: 5px;
+	display: none;
+  }
+  
+  /* ---------- Cột phải (Nút & preview) ---------- */
+  .form-right {
+	width: 250px;
+	min-width: 250px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+  }
+  
+  .form-right button {
+	padding: 10px;
 	border: none;
+	background-color: #007bff;
+	color: white;
+	font-weight: bold;
 	border-radius: 6px;
 	cursor: pointer;
-}
-
-button:hover {
-	background-color: #45a049;
-}
-
-#imagePreview {
-	max-width: 200px;
-	margin-top: 10px;
-	display: none;
-	border: 1px dashed #999;
-}
-
-#preview {
-	padding: 10px;
-	border: 1px dashed #ccc;
-	margin-top: 10px;
-	background-color: #fff;
-}
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 30px;
-}
-
-table,
-th,
-td {
-	border: 1px solid #ccc;
-}
-
-th,
-td {
-	padding: 10px;
-	text-align: left;
-}
-
-th {
-	background-color: #eaeaea;
-}
-
-iframe {
-	width: 100vw;
-	height: 400px;
-	border: 1px solid #ccc;
+	transition: background-color 0.2s;
+  }
+  
+  .form-right button:hover {
+	background-color: #0056b3;
+  }
+  
+  .form-right label {
+	font-weight: normal;
+  }
+  
+  .full-preview {
+	background: #e9ecef;
+	padding: 15px;
 	border-radius: 6px;
-	margin-top: 20px;
-	margin-left: -20px;
-}
-
-#toggleTableBtn {
-    padding: 6px 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#toggleTableBtn:hover {
-    background-color: #0056b3;
-}
-
-/* Xem trước LaTeX trực tiếp khi nhập */
-.latex-preview {
-	margin: 5px 0;
-	padding: 5px;
-	background: #f9f9f9;
-	border-left: 3px solid #aaa;
-	font-style: italic;
-	min-height: 24px;
+	border: 1px dashed #aaa;
+	font-size: 15px;
+	word-wrap: break-word;
+  }
+  
+  /* ---------- Responsive cho điện thoại ---------- */
+  @media (max-width: 768px) {
+	.question-container {
+	  flex-direction: column;
+	}
+  
+	form {
+	  flex-direction: column;
+	}
+  
+	.form-left,
+	.form-right {
+	  width: 100%;
+	}
+  
+	.form-right {
+	  flex-direction: row;
+	  flex-wrap: wrap;
+	  justify-content: space-between;
+	}
+  
+	.form-right button {
+	  flex: 1 1 48%;
+	  margin-bottom: 10px;
+	}
+  
+	.full-preview {
+	  order: 10;
+	  width: 100%;
+	}
   }
   
