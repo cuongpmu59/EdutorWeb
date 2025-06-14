@@ -107,15 +107,6 @@ function deleteQuestion() {
   });
 }
 
-function renderPreview(fieldId) {
-  const value = document.getElementById(fieldId).value;
-  const previewDiv = document.getElementById("preview_" + fieldId);
-  previewDiv.innerHTML = value;
-  if (window.MathJax) {
-    MathJax.typesetPromise([previewDiv]);
-  }
-}
-
 function resetPreview() {
   const imgPreview = document.getElementById("imagePreview");
   imgPreview.src = "";
@@ -164,8 +155,7 @@ function renderPreview(fieldId) {
   if (window.MathJax) {
     MathJax.typesetPromise([previewDiv]);
   }
-
-  // Cập nhật xem trước toàn bộ
+    // Cập nhật xem trước toàn bộ
   updateFullPreview();
 }
 
