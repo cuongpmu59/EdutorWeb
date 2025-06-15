@@ -39,7 +39,7 @@
         
         <!-- CỘT TRÁI: Câu hỏi -->
         <form id="quizForm" class="left-column">
-            <?php include 'load_questions.php'; ?>
+            <?php include 'load_question.php'; ?>
             <button type="button" onclick="submitQuiz()">Nộp bài</button>
             <div id="result"></div>
         </form>
