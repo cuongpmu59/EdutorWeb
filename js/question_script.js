@@ -214,13 +214,17 @@ function renderMathInPage() {
 
 document.getElementById("image").addEventListener("change", function() {
   const file = this.files[0];
+  const preview = document.getElementById("imagePreview");
+  const deleteCheckbox = document.getElementById("delete_image");
+  const deleteLabel = document.getElementById("deleteImageLabel");
+
   if (file) {
     if (!file.type.startsWith("image/")) {
       alert("Chỉ chấp nhận file ảnh!");
       this.value = "";
       return;
     }
-    if (file.size > 2 * 1024 * 1024) { // 2MB
+    if (file.size > 2 * 1024 * 1024) {
       alert("Ảnh quá lớn. Vui lòng chọn ảnh dưới 2MB.");
       this.value = "";
       return;
@@ -228,13 +232,26 @@ document.getElementById("image").addEventListener("change", function() {
 
     const reader = new FileReader();
     reader.onload = function (e) {
-      const preview = document.getElementById("imagePreview");
       preview.src = e.target.result;
       preview.style.display = "block";
+
+      // ✅ Tự bỏ chọn checkbox khi chọn ảnh mới
+      deleteCheckbox.checked = false;
+
+      // ✅ Hiện checkbox khi có ảnh mới
+      deleteLabel.style.display = "inline-block";
     };
     reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+    preview.style.display = "none";
+
+    // ✅ Ẩn checkbox nếu không có ảnh
+    deleteCheckbox.checked = false;
+    deleteLabel.style.display = "none";
   }
 });
+
 
 
 
