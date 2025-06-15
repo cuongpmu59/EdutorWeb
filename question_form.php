@@ -106,5 +106,14 @@
   });
 </script>
 
+<script>
+  // Khi toàn bộ nội dung HTML đã tải xong
+  window.addEventListener("DOMContentLoaded", function () {
+    if (window.MathJax) {
+      MathJax.typesetPromise();
+    }
+  });
+</script>
+
 </body>
 </html>
