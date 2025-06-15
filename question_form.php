@@ -71,31 +71,37 @@
   <script src="js/question_script.js"></script>
 
   <script>
-    window.addEventListener("message", function (event) {
-      if (event.data.type === "fillForm") {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.addEventListener("message", function (event) {
+    if (event.data.type === "fillForm") {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        const data = event.data.data;
-        document.getElementById("question_id").value = data.id;
-        document.getElementById("question").value = data.question;
-        document.getElementById("answer1").value = data.answer1;
-        document.getElementById("answer2").value = data.answer2;
-        document.getElementById("answer3").value = data.answer3;
-        document.getElementById("answer4").value = data.answer4;
-        document.getElementById("correct_answer").value = data.correct_answer;
+      const data = event.data.data;
+      document.getElementById("question_id").value = data.id;
+      document.getElementById("question").value = data.question;
+      document.getElementById("answer1").value = data.answer1;
+      document.getElementById("answer2").value = data.answer2;
+      document.getElementById("answer3").value = data.answer3;
+      document.getElementById("answer4").value = data.answer4;
+      document.getElementById("correct_answer").value = data.correct_answer;
 
-        const imgPreview = document.getElementById("imagePreview");
-        if (data.image) {
-          imgPreview.src = data.image;
-          imgPreview.style.display = "block";
-        } else {
-          imgPreview.style.display = "none";
-        }
-
-      MathJax.typesetPromise();
-
+      const imgPreview = document.getElementById("imagePreview");
+      if (data.image) {
+        imgPreview.src = data.image;
+        imgPreview.style.display = "block";
+      } else {
+        imgPreview.src = "";
+        imgPreview.style.display = "none";
       }
-    });
-  </script>
+
+      // Cập nhật xem trước công thức LaTeX
+      ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => {
+        renderPreview(id);
+      });
+
+      updateFullPreview();
+    }
+  });
+</script>
+
 </body>
 </html>
