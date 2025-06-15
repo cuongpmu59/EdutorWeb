@@ -8,7 +8,9 @@ function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
   const form = document.getElementById("questionForm");
   const formData = new FormData(form);
-
+  const deleteImage = document.getElementById("delete_image").checked;
+  formData.set("delete_image", deleteImage ? "1" : "0");
+  
   const question = formData.get("question")?.trim();
   const answer1 = formData.get("answer1")?.trim();
   const answer2 = formData.get("answer2")?.trim();
