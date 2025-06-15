@@ -66,8 +66,19 @@
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+
   <!-- Tệp JS riêng -->
   <script src="js/script.js"></script>
+
+  <script>
+  // Đảm bảo MathJax render toàn bộ sau khi DOM load
+  window.addEventListener("DOMContentLoaded", function () {
+    if (window.MathJax) {
+      MathJax.typeset();
+    }
+  });
+</script>
+
 </body>
 
 </html>
