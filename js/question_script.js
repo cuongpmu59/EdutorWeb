@@ -11,21 +11,6 @@ function saveQuestion() {
   const deleteImage = document.getElementById("delete_image").checked;
   formData.set("delete_image", deleteImage ? "1" : "0");
 
-  fetch("update_question.php", {
-    method: "POST",
-    body: formData
-  })
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("message").innerText = data;
-      document.getElementById("questionIframe").contentWindow.location.reload();
-    })
-    .catch(error => {
-      document.getElementById("message").innerText = "Lỗi: " + error;
-    });
-}
-
-
   const question = formData.get("question")?.trim();
   const answer1 = formData.get("answer1")?.trim();
   const answer2 = formData.get("answer2")?.trim();
