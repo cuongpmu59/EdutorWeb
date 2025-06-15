@@ -46,9 +46,11 @@
 
     <label>Ảnh minh họa:</label>
     <input type="file" name="image" id="image"><br>
-    <img id="imagePreview" alt="Ảnh minh họa" onerror="this.style.display='none'" style="display:none; max-height:100px; margin:10px 0;" />
-    <label><input type="checkbox" id="delete_image"> Xóa ảnh minh họa</label><br>
-
+    <img id="imagePreview" style="max-width: 200px; display:none;" />
+    <label id="deleteImageLabel" style="display:none;">
+      <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
+    </label><br>
+    
     <div class="button-group">
       <button type="button" onclick="saveQuestion()" id="saveButton">Lưu</button>
       <button type="button" onclick="deleteQuestion()">Xoá</button>
