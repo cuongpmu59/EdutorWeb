@@ -133,7 +133,7 @@ try {
                         "answer3" => $row["answer3"],
                         "answer4" => $row["answer4"],
                         "correct_answer" => strtoupper(trim($row["correct_answer"])),
-                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/" . $row["image"] : ""
+                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/uploads" . $row["image"] : ""
                     ]); ?>)'>
                         <td><?= htmlspecialchars($row["id"]) ?></td>
                         <td><?= htmlspecialchars($row["question"]) ?></td>
@@ -144,7 +144,7 @@ try {
                         <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
                         <td style="text-align:center;">
                             <?php if ($row["image"]): ?>
-                                <img class="thumb" src="https://cuongedutor.infy.uk/images/<?= htmlspecialchars($row["image"]) ?>" alt="Ảnh minh họa" />
+                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads<?= htmlspecialchars($row["image"]) ?>" alt="Ảnh minh họa" />
                             <?php endif; ?>
                         </td>
                     </tr>
