@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
+    $deleteImage = $_POST['delete_image'] ?? '0';
 
     if (!is_numeric($id)) {
         echo "ID không hợp lệ.";
@@ -21,8 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtGet->execute();
     $currentImage = $stmtGet->fetchColumn();
 
+    $uploadDir = 'images/uploads/';
     $imageName = $currentImage;
 
+    // Nếu người dùng chọn xoá ảnh
+    if ($deleteImage === '1') {
+        if (!empty($currentImage) && file_exists($uploadDir . $currentImage)) {
+            unlink($uploadDir . $currentImage);
+        }
+        $imageName = '';
+    }
+
+    // Nếu có ảnh mới được tải lên thì xử lý
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!in_array($_FILES['image']['type'], $allowedTypes)) {
@@ -30,13 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $uploadDir = 'images/uploads';
         $imageName = time() . '_' . basename($_FILES['image']['name']);
         $uploadFile = $uploadDir . $imageName;
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-            // Xoá ảnh cũ nếu tồn tại
-            if ($currentImage && file_exists($uploadDir . $currentImage)) {
+            // Xoá ảnh cũ nếu tồn tại và không phải do người dùng đã xoá trước đó
+            if (!empty($currentImage) && file_exists($uploadDir . $currentImage)) {
                 unlink($uploadDir . $currentImage);
             }
         } else {
@@ -45,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Cập nhật dữ liệu
     $sql = "UPDATE questions SET
             question = :question,
             answer1 = :answer1,
