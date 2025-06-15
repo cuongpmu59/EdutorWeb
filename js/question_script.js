@@ -133,7 +133,7 @@ function updateFullPreview() {
   const correct = document.getElementById("correct_answer").value;
 
   const html = `
-    <p><strong>Câu hỏi:</strong> ${question}</p>
+    <p><strong>Câu hỏi:</strong> \\(${question}\\)</p>
     <ul>
       <li><strong>A.</strong> ${a}</li>
       <li><strong>B.</strong> ${b}</li>
