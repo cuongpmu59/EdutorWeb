@@ -7,6 +7,7 @@ body {
 	line-height: 1.5;
   }
   
+  /* ---------- Container chính ---------- */
   .question-container {
 	display: flex;
 	flex-direction: row;
@@ -51,7 +52,7 @@ body {
 	font-size: 15px;
 	box-sizing: border-box;
 	background-color: #fff;
-	transition: border-color 0.2s;
+	transition: border-color 0.2s, box-shadow 0.2s;
   }
   
   textarea {
@@ -63,6 +64,7 @@ body {
   input:focus,
   select:focus {
 	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
 	outline: none;
   }
   
@@ -76,6 +78,8 @@ body {
 	border: 1px dashed #ccc;
 	white-space: pre-wrap;
 	word-wrap: break-word;
+	overflow-x: auto;
+	transition: all 0.3s ease;
   }
   
   /* ---------- Ảnh minh hoạ ---------- */
@@ -86,6 +90,7 @@ body {
 	border: 1px solid #ddd;
 	margin-top: 5px;
 	display: none;
+	transition: all 0.3s ease;
   }
   
   /* ---------- Cột phải (Nút & preview) ---------- */
@@ -112,10 +117,19 @@ body {
 	background-color: #0056b3;
   }
   
+  .form-right button.delete-btn {
+	background-color: #dc3545;
+  }
+  
+  .form-right button.delete-btn:hover {
+	background-color: #c82333;
+  }
+  
   .form-right label {
 	font-weight: normal;
   }
   
+  /* ---------- Xem trước tổng thể ---------- */
   .full-preview {
 	background: #e9ecef;
 	padding: 15px;
@@ -123,6 +137,7 @@ body {
 	border: 1px dashed #aaa;
 	font-size: 15px;
 	word-wrap: break-word;
+	overflow-x: auto;
   }
   
   /* ---------- Responsive cho điện thoại ---------- */
