@@ -49,8 +49,12 @@ function saveQuestion() {
         alert("Câu hỏi này đã tồn tại trong hệ thống.");
         return;
       } else {
-        submitQuestion(formData, form, id);
+        // ✅ Nếu là cập nhật, xác nhận trước khi sửa
+        if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
+          submitQuestion(formData, form, id);
+        }
       }
+      
     })
     .catch(err => {
       console.error("Lỗi kiểm tra trùng lặp:", err);
@@ -114,6 +118,10 @@ function resetPreview() {
   const imgPreview = document.getElementById("imagePreview");
   imgPreview.src = "";
   imgPreview.style.display = "none";
+  const deleteLabel = document.getElementById("deleteImageLabel");
+  if (deleteLabel) deleteLabel.style.display = "none";
+  const deleteCheckbox = document.getElementById("delete_image");
+  if (deleteCheckbox) deleteCheckbox.checked = false;
 }
 
 function togglePreview() {
