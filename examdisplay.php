@@ -9,19 +9,22 @@
   
   <!-- CẤU HÌNH MATHJAX -->
   <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['\\[', '\\]'], ['$$', '$$']],
-        processEscapes: true
-      },
-      options: {
-        renderActions: {
-          addMenu: []
-        }
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      processEscapes: true
+    },
+    options: {
+      renderActions: {
+        addMenu: [] // Ẩn menu chuột phải
       }
-    };
-  </script>
+    },
+    loader: {
+      load: ['input/tex', 'output/chtml']
+    }
+  };
+</script>
 
   <!-- TẢI THƯ VIỆN MATHJAX -->
   <script id="MathJax-script" async
@@ -94,14 +97,7 @@
   });
 </script>
 
-<script>
-  // Khi toàn bộ nội dung HTML đã tải xong
-  window.addEventListener("DOMContentLoaded", function () {
-    if (window.MathJax) {
-      MathJax.typesetPromise();
-    }
-  });
-</script>
+
 
 </body>
 
