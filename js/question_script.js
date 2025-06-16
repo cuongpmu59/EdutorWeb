@@ -49,12 +49,11 @@ function saveQuestion() {
         alert("Câu hỏi này đã tồn tại trong hệ thống.");
         return;
       } else {
-        // ✅ Nếu là cập nhật, xác nhận trước khi sửa
-        if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
-          submitQuestion(formData, form, id);
+      // ✅ Nếu là cập nhật, xác nhận trước khi sửa
+      if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
+        submitQuestion(formData, form, id);
         }
       }
-      
     })
     .catch(err => {
       console.error("Lỗi kiểm tra trùng lặp:", err);
