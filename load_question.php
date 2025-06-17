@@ -16,7 +16,9 @@ try {
         $a3 = htmlspecialchars($q['answer3']);
         $a4 = htmlspecialchars($q['answer4']);
 
-        echo "<div class='question' data-q='q$qnum'>";
+        //echo "<div class='question' data-q='q$qnum'>";
+        echo "<div class='question'>{$row['question_text']}</div>";
+
 
         echo "<p>Câu $qnum: \\($question\\)</p>";
 
