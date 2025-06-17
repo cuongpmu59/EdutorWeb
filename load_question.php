@@ -1,6 +1,18 @@
 <?php
 require 'db_connection.php'; // Kết nối CSDL
 
+// Hàm tự động bọc \(...\) nếu trong nội dung chưa có LaTeX
+function latexWrap($str) {
+    if (
+        strpos($str, '\(') === false &&
+        strpos($str, '\[') === false &&
+        strpos($str, '$') === false
+    ) {
+        return '\(' . $str . '\)';
+    }
+    return $str;
+}
+
 try {
     $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id ASC");
     $stmt->execute();
@@ -9,9 +21,8 @@ try {
     foreach ($questions as $index => $q) {
         $qnum = $index + 1;
 
-        // Giữ nguyên nội dung LaTeX, không mã hóa
-        $id = (int)$q['id']; // ID là số nên ép kiểu
-        $image = htmlspecialchars($q['image']); // Chỉ encode phần tên file ảnh
+        $id = (int)$q['id'];
+        $image = htmlspecialchars($q['image']);
 
         $question = $q['question'];
         $a1 = $q['answer1'];
@@ -21,19 +32,17 @@ try {
 
         echo "<div class='question' data-q='q$qnum'>";
 
-        // Hiển thị câu hỏi với LaTeX: dùng nháy đơn để giữ nguyên dấu \
-        echo '<p>Câu ' . $qnum . ': \(' . $question . '\)</p>';
+        // Hiển thị câu hỏi và đáp án: chỉ bọc \(...\) nếu chưa có LaTeX
+        echo '<p>Câu ' . $qnum . ': ' . latexWrap($question) . '</p>';
 
-        // Hình minh họa nếu có
         if (!empty($image)) {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        // Hiển thị đáp án, cũng dùng LaTeX inline \(...\)
-        echo '<label><input type="radio" name="q' . $qnum . '" value="a"> \(' . $a1 . '\)</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="b"> \(' . $a2 . '\)</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="c"> \(' . $a3 . '\)</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="d"> \(' . $a4 . '\)</label>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="a"> ' . latexWrap($a1) . '</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="b"> ' . latexWrap($a2) . '</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="c"> ' . latexWrap($a3) . '</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="d"> ' . latexWrap($a4) . '</label>';
 
         echo "</div>";
     }
