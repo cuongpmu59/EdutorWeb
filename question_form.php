@@ -19,7 +19,7 @@
       oninput="renderPreview('question')"></textarea>
       <div id="preview_question" class="latex-preview"></div><br>
 
-    <label>Đáp án A:</label>
+    <label>Đáp án A:</label><br>
     <input type="text" name="answer1" id="answer1" required oninput="renderPreview('answer1')">
     <div id="preview_answer1" class="latex-preview"></div><br>
 
