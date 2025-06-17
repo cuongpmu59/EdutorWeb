@@ -9,11 +9,10 @@ try {
     foreach ($questions as $index => $q) {
         $qnum = $index + 1;
 
-        // Bảo vệ các trường không liên quan đến LaTeX
-        $id = htmlspecialchars($q['id']);
-        $image = htmlspecialchars($q['image']);
+        // Giữ nguyên nội dung LaTeX, không mã hóa
+        $id = (int)$q['id']; // ID là số nên ép kiểu
+        $image = htmlspecialchars($q['image']); // Chỉ encode phần tên file ảnh
 
-        // KHÔNG dùng htmlspecialchars với nội dung LaTeX
         $question = $q['question'];
         $a1 = $q['answer1'];
         $a2 = $q['answer2'];
@@ -22,19 +21,19 @@ try {
 
         echo "<div class='question' data-q='q$qnum'>";
 
-        // Câu hỏi
-        echo "<p>Câu $qnum: \\($question\\)</p>";
+        // Hiển thị câu hỏi với LaTeX: dùng nháy đơn để giữ nguyên dấu \
+        echo '<p>Câu ' . $qnum . ': \(' . $question . '\)</p>';
 
         // Hình minh họa nếu có
         if (!empty($image)) {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        // Các phương án
-        echo "<label><input type='radio' name='q$qnum' value='a'> \\($a1\\)</label><br>";
-        echo "<label><input type='radio' name='q$qnum' value='b'> \\($a2\\)</label><br>";
-        echo "<label><input type='radio' name='q$qnum' value='c'> \\($a3\\)</label><br>";
-        echo "<label><input type='radio' name='q$qnum' value='d'> \\($a4\\)</label>";
+        // Hiển thị đáp án, cũng dùng LaTeX inline \(...\)
+        echo '<label><input type="radio" name="q' . $qnum . '" value="a"> \(' . $a1 . '\)</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="b"> \(' . $a2 . '\)</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="c"> \(' . $a3 . '\)</label><br>';
+        echo '<label><input type="radio" name="q' . $qnum . '" value="d"> \(' . $a4 . '\)</label>';
 
         echo "</div>";
     }
