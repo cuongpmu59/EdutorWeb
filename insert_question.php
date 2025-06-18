@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $uploadDir = 'images/uploads';
         $imageName = time() . '_' . basename($_FILES['image']['name']);
-        $uploadFile = $uploadDir . $imageName;
+        $uploadFile = $uploadDir . '/' . $imageName;
 
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
             echo "Lỗi khi tải ảnh lên.";
