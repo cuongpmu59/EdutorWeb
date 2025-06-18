@@ -37,22 +37,19 @@ function saveQuestion() {
 
   // ✅ Nếu là thêm mới (không có ID), kiểm tra trùng lặp
   if (!id) {
+    // THÊM MỚI
     fetch("check_duplicate.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "question=" + encodeURIComponent(question)
     })
-
     .then(res => res.json())
     .then(data => {
       if (data.exists) {
         alert("Câu hỏi này đã tồn tại trong hệ thống.");
         return;
       } else {
-      // ✅ Nếu là cập nhật, xác nhận trước khi sửa
-      if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
-        submitQuestion(formData, form, id);
-        }
+        submitQuestion(formData, form, id); // thêm luôn, không cần confirm
       }
     })
     .catch(err => {
@@ -60,10 +57,12 @@ function saveQuestion() {
       alert("Không thể kiểm tra trùng lặp.");
     });
   } else {
-    // ✅ Nếu là cập nhật, bỏ qua kiểm tra trùng
-    submitQuestion(formData, form, id);
+    // CẬP NHẬT
+    if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
+      submitQuestion(formData, form, id);
+    }
   }
-}
+  
 
 function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
