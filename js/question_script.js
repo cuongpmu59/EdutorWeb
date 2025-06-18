@@ -78,12 +78,16 @@ function submitQuestion(formData, form, id) {
     refreshIframe();
     if (!id) form.reset();
     resetPreview();
+
+    // ✅ Đã lưu, không cần cảnh báo nữa
+    formChanged = false;
   })
   .catch(error => {
     console.error("Lỗi:", error);
     alert("Đã xảy ra lỗi khi lưu câu hỏi.");
   });
 }
+
 
 function deleteQuestion() {
   const id = document.getElementById("question_id").value.trim();
