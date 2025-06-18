@@ -62,7 +62,7 @@ function saveQuestion() {
       submitQuestion(formData, form, id);
     }
   }
-  
+}
 
 function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
@@ -128,10 +128,18 @@ function resetPreview() {
 
 function togglePreview() {
   const isChecked = document.getElementById("togglePreview").checked;
+  
+  // Ẩn/hiện các ô xem trước từng dòng
   const previews = document.querySelectorAll(".latex-preview");
   previews.forEach(div => {
     div.style.display = isChecked ? "block" : "none";
   });
+
+  // Ẩn/hiện xem trước tổng thể
+  const fullPreview = document.getElementById("fullPreview");
+  if (fullPreview) {
+    fullPreview.style.display = isChecked ? "block" : "none";
+  }
 }
 
 function updateFullPreview() {
@@ -262,6 +270,19 @@ document.getElementById("image").addEventListener("change", function() {
   }
 });
 
+// --- CẢNH BÁO RỜI TRANG KHI CHƯA LƯU ---
+let formChanged = false;
 
+// Đánh dấu form đã thay đổi khi người dùng nhập liệu
+document.getElementById("questionForm").addEventListener("input", () => {
+  formChanged = true;
+});
 
+// Gỡ bỏ cảnh báo nếu form đã được lưu thành công (có trong submitQuestion)
+window.addEventListener("beforeunload", (e) => {
+  if (formChanged) {
+    e.preventDefault();
+    e.returnValue = ""; // Chrome và các trình duyệt hiện thông báo mặc định
+  }
+});
 
