@@ -3,14 +3,23 @@ require 'db_connection.php'; // Kết nối CSDL
 
 // Hàm tự động bọc \(...\) nếu trong nội dung chưa có LaTeX
 function latexWrap($str) {
-    $str = str_replace('\\\\', '\\', $str); // Khôi phục lại dấu \
+    $str = str_replace('\\\\', '\\', $str); // Khôi phục dấu \
+
+    // Nếu đã có LaTeX hoặc dấu $, không làm gì
     if (
-        strpos($str, '\(') === false &&
-        strpos($str, '\[') === false &&
-        strpos($str, '$') === false
+        strpos($str, '\(') !== false ||
+        strpos($str, '\[') !== false ||
+        strpos($str, '$') !== false
     ) {
+        return $str;
+    }
+
+    // Chỉ bọc nếu có dấu hiệu là công thức toán
+    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^])/', $str)) {
         return '\(' . $str . '\)';
     }
+
+    // Không bọc gì nếu chỉ là văn bản thường
     return $str;
 }
 
