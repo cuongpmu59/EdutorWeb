@@ -3,25 +3,26 @@ require 'db_connection.php'; // Kết nối CSDL
 
 // Hàm tự động bọc \(...\) nếu trong nội dung chưa có LaTeX
 function latexWrap($str) {
-    $str = str_replace('\\\\', '\\', $str); // Khôi phục dấu \
+    $str = str_replace('\\\\', '\\', $str); // Khôi phục dấu \ bị thoát
 
-    // Nếu đã có LaTeX hoặc dấu $, không làm gì
+    // Nếu đã có cú pháp LaTeX hoặc ký hiệu đặc trưng, giữ nguyên hoặc bọc lại
     if (
         strpos($str, '\(') !== false ||
         strpos($str, '\[') !== false ||
         strpos($str, '$') !== false
     ) {
-        return $str;
+        return $str; // đã có LaTeX
     }
 
-    // Chỉ bọc nếu có dấu hiệu là công thức toán
-    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^])/', $str)) {
+    // Nếu chứa các biểu thức toán thường gặp, ta bọc
+    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end)/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    // Không bọc gì nếu chỉ là văn bản thường
-    return $str;
+    // Ngược lại, là văn bản thuần túy → giữ nguyên
+    return htmlspecialchars($str); // Tránh lỗi HTML nếu có ký tự đặc biệt
 }
+
 
 // Bắt đầu HTML
 echo '<!DOCTYPE html>
