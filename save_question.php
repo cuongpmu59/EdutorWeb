@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Xử lý ảnh nếu có
     if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-        $uploadDir = "images/";
+        $uploadDir = "images/uploads";
         $fileTmpPath = $_FILES["image"]["tmp_name"];
         $originalName = basename($_FILES["image"]["name"]);
         $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
