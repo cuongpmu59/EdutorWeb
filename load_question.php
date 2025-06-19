@@ -3,6 +3,7 @@ require 'db_connection.php'; // Kết nối CSDL
 
 // Hàm tự động bọc \(...\) nếu trong nội dung chưa có LaTeX
 function latexWrap($str) {
+    $str = str_replace('\\\\', '\\', $str); // Khôi phục lại dấu \
     if (
         strpos($str, '\(') === false &&
         strpos($str, '\[') === false &&
