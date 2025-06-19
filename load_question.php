@@ -31,22 +31,25 @@ echo '<!DOCTYPE html>
   <meta charset="UTF-8">
   <title>Danh sách câu hỏi</title>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  
+
+  <!-- ⚙️ Cấu hình MathJax -->
   <script>
     window.MathJax = {
-    tex: {
+      tex: {
         inlineMath: [['\\(', '\\)']],
         displayMath: [['\\[', '\\]']],
         processEscapes: true
-    },
-    svg: {
-    fontCache: 'global'
-        }
+      },
+      svg: {
+        fontCache: 'global'
+      }
     };
-</script>
+  </script>
 
+  <!-- 📦 Nạp MathJax -->
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <style>
     body {
         font-family: Arial, sans-serif;
@@ -75,6 +78,7 @@ echo '<!DOCTYPE html>
     }
   </style>
 </head>
+
 <body>
 <h2>Danh sách câu hỏi</h2>
 ';
