@@ -14,7 +14,7 @@ function startTimer() {
       const seconds = totalTime % 60;
 
       // Hiển thị dạng 2 chữ số: 09:05
-      countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      countdownEl.textContent = `⏰ ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
       // Đổi màu đỏ khi còn dưới 1 phút
       if (totalTime <= 60) {
