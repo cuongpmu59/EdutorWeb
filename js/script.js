@@ -16,13 +16,16 @@ function startTimer() {
     }
   }, 1000);
 }
-
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    let quizSubmitted = false;
 function submitQuiz() {
-  let score = 0;
-  let total = 0;
+    if (quizSubmitted) return;
+    quizSubmitted = true;
+    let score = 0;
+    let total = 0;
 
   const questions = document.querySelectorAll('.question');
-
   questions.forEach((questionDiv) => {
     const qname = questionDiv.dataset.q;
     const correct = questionDiv.dataset.correct;
