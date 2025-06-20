@@ -14,15 +14,14 @@ function latexWrap($str) {
         return $str; // đã có LaTeX
     }
 
-    // Nếu chứa các biểu thức toán thường gặp, ta bọc
+    // Nếu chứa các biểu thức toán học thường gặp, ta bọc
     if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end)/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    // Ngược lại, là văn bản thuần túy → giữ nguyên
-    return htmlspecialchars($str); // Tránh lỗi HTML nếu có ký tự đặc biệt
+    // Ngược lại, là văn bản thuần túy → giữ nguyên và escape HTML
+    return htmlspecialchars($str);
 }
-
 
 try {
     $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id ASC");
@@ -40,11 +39,12 @@ try {
         $a2 = $q['answer2'];
         $a3 = $q['answer3'];
         $a4 = $q['answer4'];
+        $correct = htmlspecialchars(trim($q['correct_answer'])); // "a", "b", "c", or "d"
 
-        echo "<div class='question' data-q='q$qnum'>";
+        // Hiển thị từng khối câu hỏi với data-q và data-correct
+        echo "<div class='question' data-q='q$qnum' data-correct='$correct'>";
 
-        // Hiển thị câu hỏi và đáp án: chỉ bọc \(...\) nếu chưa có LaTeX
-        echo '<p>Câu ' . $qnum . ': ' . latexWrap($question) . '</p>';
+        echo '<p><strong>Câu ' . $qnum . ':</strong> ' . latexWrap($question) . '</p>';
 
         if (!empty($image)) {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
