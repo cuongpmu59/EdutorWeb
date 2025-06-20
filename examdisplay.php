@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thi Trắc Nghiệm</title>
   <link rel="stylesheet" href="css/styles_Exam.css">
-  
+
   <!-- CẤU HÌNH MATHJAX -->
   <script>
   window.MathJax = {
