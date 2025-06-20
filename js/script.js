@@ -115,9 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const quizRadio = document.querySelector(`input[name="${q}"][value="${val}"]`);
       if (quizRadio) quizRadio.checked = true;
     });
-
-
   });
+  
+  if (window.MathJax) {
+    MathJax.typeset();
+  }
 });
 
 
