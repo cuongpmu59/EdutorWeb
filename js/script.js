@@ -8,63 +8,90 @@ function startTimer() {
       clearInterval(timer);
       submitQuiz();
       countdownEl.textContent = "Hết giờ!";
+      countdownEl.style.color = "red";
     } else {
       const minutes = Math.floor(totalTime / 60);
       const seconds = totalTime % 60;
-      countdownEl.textContent = `${minutes} phút ${seconds < 10 ? '0' : ''}${seconds} giây`;
+
+      // Hiển thị dạng 2 chữ số: 09:05
+      countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      // Đổi màu đỏ khi còn dưới 1 phút
+      if (totalTime <= 60) {
+        countdownEl.style.color = 'red';
+      } else {
+        countdownEl.style.color = ''; // Reset về mặc định
+      }
+
       totalTime--;
     }
   }, 1000);
 }
+
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
     let quizSubmitted = false;
-function submitQuiz() {
-    if (quizSubmitted) return;
-    quizSubmitted = true;
-    let score = 0;
-    let total = 0;
 
-  const questions = document.querySelectorAll('.question');
-  questions.forEach((questionDiv) => {
-    const qname = questionDiv.dataset.q;
-    const correct = questionDiv.dataset.correct;
-    const selected = document.querySelector(`input[name="${qname}"]:checked`);
-
-    questionDiv.classList.remove("correct", "incorrect");
-
-    if (correct) {
-      total++;
-
-      if (selected) {
-        if (selected.value === correct) {
-          score++;
-          questionDiv.classList.add("correct");
-        } else {
-          questionDiv.classList.add("incorrect");
-
-          // Tô màu đáp án đúng
-          const correctRadio = questionDiv.querySelector(`input[value="${correct}"]`);
-          if (correctRadio) {
-            correctRadio.parentElement.style.backgroundColor = '#d4edda';
-            correctRadio.parentElement.style.border = '1px solid #28a745';
-            correctRadio.parentElement.style.borderRadius = '4px';
-            correctRadio.parentElement.style.padding = '2px 4px';
+    function submitQuiz() {
+      if (quizSubmitted) return;
+      quizSubmitted = true;
+    
+      // Khóa nút "Nộp bài"
+      document.querySelector('button[onclick*="submitQuiz"]').disabled = true;
+    
+      let score = 0;
+      let total = 0;
+    
+      const questions = document.querySelectorAll('.question');
+      questions.forEach((questionDiv) => {
+        const qname = questionDiv.dataset.q;
+        const correct = questionDiv.dataset.correct;
+        const selected = document.querySelector(`input[name="${qname}"]:checked`);
+    
+        questionDiv.classList.remove("correct", "incorrect");
+    
+        if (correct) {
+          total++;
+    
+          if (selected) {
+            if (selected.value === correct) {
+              score++;
+              questionDiv.classList.add("correct");
+            } else {
+              questionDiv.classList.add("incorrect");
+    
+              // Tô màu đáp án đúng
+              const correctRadio = questionDiv.querySelector(`input[value="${correct}"]`);
+              if (correctRadio) {
+                correctRadio.parentElement.style.backgroundColor = '#d4edda';
+                correctRadio.parentElement.style.border = '1px solid #28a745';
+                correctRadio.parentElement.style.borderRadius = '4px';
+                correctRadio.parentElement.style.padding = '2px 4px';
+              }
+            }
+          } else {
+            // Nếu không chọn đáp án nào, vẫn tô đáp án đúng
+            const correctRadio = questionDiv.querySelector(`input[value="${correct}"]`);
+            if (correctRadio) {
+              correctRadio.parentElement.style.backgroundColor = '#d4edda';
+              correctRadio.parentElement.style.border = '1px solid #28a745';
+              correctRadio.parentElement.style.borderRadius = '4px';
+              correctRadio.parentElement.style.padding = '2px 4px';
+            }
+            questionDiv.classList.add("incorrect");
           }
         }
-      }
+      });
+    
+      const resultBox = document.getElementById("result");
+      resultBox.innerText = `Bạn đúng ${score}/${total} câu.`;
+      resultBox.style.padding = "10px";
+      resultBox.style.backgroundColor = "#dff0d8";
+      resultBox.style.border = "1px solid #3c763d";
+      resultBox.style.color = "#3c763d";
+      resultBox.style.marginTop = "10px";
     }
-  });
-
-  const resultBox = document.getElementById("result");
-  resultBox.innerText = `Bạn đúng ${score}/${total} câu.`;
-  resultBox.style.padding = "10px";
-  resultBox.style.backgroundColor = "#dff0d8";
-  resultBox.style.border = "1px solid #3c763d";
-  resultBox.style.color = "#3c763d";
-  resultBox.style.marginTop = "10px";
-}
-
+    
 document.addEventListener('DOMContentLoaded', () => {
   // Lấy tên học sinh từ prompt
   const student = prompt("Nhập họ tên học sinh:");
