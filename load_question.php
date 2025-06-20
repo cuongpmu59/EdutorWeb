@@ -15,12 +15,14 @@ function latexWrap($str) {
     }
 
     // Nếu chứa các biểu thức toán học thường gặp, ta bọc
-    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end)/', $str)) {
+    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
+    }
+
     // Ngược lại, là văn bản thuần túy → giữ nguyên và escape HTML
-    return htmlspecialchars($str);
+    return '\(' . htmlspecialchars($str) . '\)';
 }
 
 try {
@@ -42,7 +44,7 @@ try {
         $correct = htmlspecialchars(trim($q['correct_answer'])); // "a", "b", "c", or "d"
 
         // Hiển thị từng khối câu hỏi với data-q và data-correct
-        echo "<div class='question' data-q='q$qnum' data-correct='$correct'>";
+        echo "<div class='question' id='q$qnum' data-q='q$qnum' data-correct='$correct'>";
 
         echo '<p><strong>Câu ' . $qnum . ':</strong> ' . latexWrap($question) . '</p>';
 
