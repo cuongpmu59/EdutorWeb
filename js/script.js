@@ -1,4 +1,4 @@
-let totalTime = 600; // 10 phút (600 giây)
+let totalTime = 600; // 10 phút = 600 giây
 let timer;
 
 function startTimer() {
@@ -18,70 +18,75 @@ function startTimer() {
 }
 
 function submitQuiz() {
-  const answers = {
-    q1: "b",
-    q2: "b",
-    q3: "a",
-    q4: "b",
-    q5: "c"
-  };
-
   let score = 0;
-  for (let key in answers) {
-    const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
-    const selected = document.querySelector(`input[name="${key}"]:checked`);
+  let total = 0;
 
-    // Xóa màu cũ nếu có
+  const questions = document.querySelectorAll('.question');
+
+  questions.forEach((questionDiv) => {
+    const qname = questionDiv.dataset.q;
+    const correct = questionDiv.dataset.correct;
+    const selected = document.querySelector(`input[name="${qname}"]:checked`);
+
     questionDiv.classList.remove("correct", "incorrect");
 
-    if (selected) {
-      if (selected.value === answers[key]) {
-        score++;
-        questionDiv.classList.add("correct");
-      } else {
-        questionDiv.classList.add("incorrect");
+    if (correct) {
+      total++;
 
-        // 👉 THÊM đoạn này để làm nổi bật đáp án đúng:
-        const correctAnswer = answers[key];
-        const correctRadio = questionDiv.querySelector(`input[name="${key}"][value="${correctAnswer}"]`);
-        if (correctRadio) {
-          correctRadio.parentElement.style.backgroundColor = '#d4edda'; // nền xanh nhạt
-          correctRadio.parentElement.style.border = '1px solid #28a745';
-          correctRadio.parentElement.style.borderRadius = '4px';
-          correctRadio.parentElement.style.padding = '2px 4px';
+      if (selected) {
+        if (selected.value === correct) {
+          score++;
+          questionDiv.classList.add("correct");
+        } else {
+          questionDiv.classList.add("incorrect");
+
+          // Tô màu đáp án đúng
+          const correctRadio = questionDiv.querySelector(`input[value="${correct}"]`);
+          if (correctRadio) {
+            correctRadio.parentElement.style.backgroundColor = '#d4edda';
+            correctRadio.parentElement.style.border = '1px solid #28a745';
+            correctRadio.parentElement.style.borderRadius = '4px';
+            correctRadio.parentElement.style.padding = '2px 4px';
+          }
         }
       }
     }
-  }
+  });
 
-  document.getElementById("result").innerText = `Bạn đúng ${score}/${Object.keys(answers).length} câu.`;
+  const resultBox = document.getElementById("result");
+  resultBox.innerText = `Bạn đúng ${score}/${total} câu.`;
+  resultBox.style.padding = "10px";
+  resultBox.style.backgroundColor = "#dff0d8";
+  resultBox.style.border = "1px solid #3c763d";
+  resultBox.style.color = "#3c763d";
+  resultBox.style.marginTop = "10px";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Lấy tên học sinh từ prompt
   const student = prompt("Nhập họ tên học sinh:");
+  document.getElementById("studentName").textContent = student || "Chưa nhập";
+
+  // Gán các thông tin mặc định
   document.getElementById("studentID").textContent = "HS12345";
-  document.getElementById("studentName").textContent = student || "Nguyễn Văn A";
   document.getElementById("studentClass").textContent = "12A1";
+  document.getElementById("startTime").textContent = new Date().toLocaleTimeString('vi-VN');
 
-
-  document.getElementById("startTime").textContent = new Date().toLocaleTimeString();
-
-  const now = new Date();
-  const startTimeStr = now.toLocaleTimeString('vi-VN');
-  document.getElementById("startTime").textContent = startTimeStr;
+  // Bắt đầu đếm giờ
   startTimer();
 
-  // Tạo các dòng phiếu trả lời
+  // Tạo phiếu trả lời
   const answerSheet = document.querySelector('.answer-sheet');
-  const questionCount = 50; // chỉnh theo số câu thật
-  for (let i = 1; i <= questionCount; i++) {
-    const qId = `q${i}`;
+  const questions = document.querySelectorAll('.question');
+
+  questions.forEach((questionDiv, index) => {
+    const qId = questionDiv.dataset.q;
     const row = document.createElement('div');
     row.className = 'answer-row';
     row.dataset.q = qId;
 
     const span = document.createElement('span');
-    span.textContent = `Câu ${i}:`;
+    span.textContent = `Câu ${index + 1}:`;
     row.appendChild(span);
 
     ['a', 'b', 'c', 'd'].forEach(opt => {
@@ -96,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     answerSheet.appendChild(row);
-  }
+  });
 
-  // Đồng bộ 2 chiều
+  // Đồng bộ: từ form → phiếu
   document.querySelectorAll('.question input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const q = radio.name;
@@ -108,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Đồng bộ: từ phiếu → form
   document.querySelectorAll('.answer-sheet input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const q = radio.name.replace('as_', '');
@@ -116,10 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (quizRadio) quizRadio.checked = true;
     });
   });
-  
+
+  // Gọi lại MathJax để hiển thị công thức toán
   if (window.MathJax) {
     MathJax.typeset();
   }
 });
-
-
