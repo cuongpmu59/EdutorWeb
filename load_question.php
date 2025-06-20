@@ -50,7 +50,7 @@ try {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        echo '<label><input type="radio" name="q' . $qnum . '" value="a"> ' . latexWrap($a1) . '</label><br>';
+        echo '<label class="option"><input type="radio" name="q' . $qnum . '" value="a"> ' . latexWrap($a1) . '</label><br>';
         echo '<label><input type="radio" name="q' . $qnum . '" value="b"> ' . latexWrap($a2) . '</label><br>';
         echo '<label><input type="radio" name="q' . $qnum . '" value="c"> ' . latexWrap($a3) . '</label><br>';
         echo '<label><input type="radio" name="q' . $qnum . '" value="d"> ' . latexWrap($a4) . '</label>';
