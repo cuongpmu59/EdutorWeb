@@ -93,9 +93,7 @@
     if (window.MathJax) {
       MathJax.typeset();
     }
-    document.getElementById("submitBtn").addEventListener("click", () => {
-    clearInterval(timer);
-    submitQuiz();
+ 
 
   });
 </script>
