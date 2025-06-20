@@ -19,9 +19,12 @@ function startTimer() {
       // Đổi màu đỏ khi còn dưới 1 phút
       if (totalTime <= 60) {
         countdownEl.style.color = 'red';
+        countdownEl.style.transition = 'color 0.5s ease'; // 🌟 Thêm dòng này để có hiệu ứng mượt
       } else {
-        countdownEl.style.color = ''; // Reset về mặc định
+        countdownEl.style.color = '';
+        countdownEl.style.transition = ''; // Reset lại nếu muốn
       }
+      
 
       totalTime--;
     }
@@ -37,8 +40,13 @@ function startTimer() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     
       // Khóa nút "Nộp bài"
-      document.querySelector('button[onclick*="submitQuiz"]').disabled = true;
-    
+      const submitBtn = document.querySelector('button[onclick*="submitQuiz"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.5"; // làm mờ
+        submitBtn.style.cursor = "not-allowed";
+      }
+          
       let score = 0;
       let total = 0;
     
