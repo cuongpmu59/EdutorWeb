@@ -31,7 +31,6 @@
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
-
 <body>
   <header>
     <div class="container header-grid">
@@ -64,7 +63,7 @@
         <!-- CỘT TRÁI: Câu hỏi -->
         <form id="quizForm" class="left-column">
             <?php include 'load_question.php'; ?>
-            <button type="button" onclick="submitQuiz()">Nộp bài</button>
+            <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();">Nộp bài</button>
             <div id="result"></div>
         </form>
 
@@ -96,8 +95,6 @@
     }
   });
 </script>
-
-
 
 </body>
 
