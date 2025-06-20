@@ -29,12 +29,12 @@ function startTimer() {
 }
 
     
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     let quizSubmitted = false;
 
     function submitQuiz() {
       if (quizSubmitted) return;
       quizSubmitted = true;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     
       // Khóa nút "Nộp bài"
       document.querySelector('button[onclick*="submitQuiz"]').disabled = true;
