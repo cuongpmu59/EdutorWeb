@@ -23,7 +23,7 @@ function submitQuiz() {
     q2: "b",
     q3: "a",
     q4: "b",
-    q5: "c"  // đáp án đúng là: (1/3) * (sqrt(3)/4 * a^2) * a = (sqrt(3)/12)a^3
+    q5: "c"
   };
 
   let score = 0;
@@ -31,6 +31,7 @@ function submitQuiz() {
     const questionDiv = document.querySelector(`.question[data-q="${key}"]`);
     const selected = document.querySelector(`input[name="${key}"]:checked`);
 
+    // Xóa màu cũ nếu có
     questionDiv.classList.remove("correct", "incorrect");
 
     if (selected) {
@@ -39,6 +40,16 @@ function submitQuiz() {
         questionDiv.classList.add("correct");
       } else {
         questionDiv.classList.add("incorrect");
+
+        // 👉 THÊM đoạn này để làm nổi bật đáp án đúng:
+        const correctAnswer = answers[key];
+        const correctRadio = questionDiv.querySelector(`input[name="${key}"][value="${correctAnswer}"]`);
+        if (correctRadio) {
+          correctRadio.parentElement.style.backgroundColor = '#d4edda'; // nền xanh nhạt
+          correctRadio.parentElement.style.border = '1px solid #28a745';
+          correctRadio.parentElement.style.borderRadius = '4px';
+          correctRadio.parentElement.style.padding = '2px 4px';
+        }
       }
     }
   }
