@@ -5,25 +5,24 @@ require 'db_connection.php'; // Kết nối CSDL
 function latexWrap($str) {
     $str = str_replace('\\\\', '\\', $str); // Khôi phục dấu \ bị thoát
 
-    // Nếu đã có cú pháp LaTeX hoặc ký hiệu đặc trưng, giữ nguyên hoặc bọc lại
+    // Nếu đã có cú pháp LaTeX hoặc ký hiệu đặc trưng, giữ nguyên
     if (
         strpos($str, '\(') !== false ||
         strpos($str, '\[') !== false ||
         strpos($str, '$') !== false
     ) {
-        return $str; // đã có LaTeX
+        return $str;
     }
 
-    // Nếu chứa các biểu thức toán học thường gặp, ta bọc
+    // Nếu chứa các biểu thức toán học thường gặp
     if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    }
-
-    // Ngược lại, là văn bản thuần túy → giữ nguyên và escape HTML
+    // Nếu không có dấu LaTeX và không có công thức → escape như văn bản
     return '\(' . htmlspecialchars($str) . '\)';
 }
+
 
 try {
     $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id ASC");
