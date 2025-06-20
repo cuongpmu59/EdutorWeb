@@ -91,7 +91,7 @@
   // Đảm bảo MathJax render toàn bộ sau khi DOM load
     window.addEventListener("DOMContentLoaded", function () {
     if (window.MathJax) {
-      MathJax.typeset();
+      MathJax.typesetPromise();
     }
  
 
