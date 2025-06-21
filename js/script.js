@@ -91,7 +91,19 @@ function startTimer() {
       });
     
       const resultBox = document.getElementById("result");
-      resultBox.innerText = `Bạn đúng ${score}/${total} câu.`;
+      let percent = (score / total) * 100;
+      resultBox.innerText = `Bạn đúng ${score}/${total} câu (${percent.toFixed(1)}%).`;
+      if (percent >= 90) {
+
+        resultBox.innerText += " 🏆 Xuất sắc!";
+      } else if (percent >= 75) {
+        resultBox.innerText += " 👍 Khá giỏi!";
+      } else if (percent >= 50) {
+        resultBox.innerText += " 🧐 Trung bình.";
+      } else {
+        resultBox.innerText += " ❗Cần cố gắng hơn.";
+      }
+
       resultBox.style.padding = "10px";
       resultBox.style.backgroundColor = "#dff0d8";
       resultBox.style.border = "1px solid #3c763d";
