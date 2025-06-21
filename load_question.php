@@ -15,7 +15,7 @@ function latexWrap($str) {
     }
 
     // Nếu chứa các biểu thức toán học thường gặp
-    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|{.+})/', $str)) {
+    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
@@ -51,10 +51,10 @@ try {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        echo '<label class="option"><input type="radio" name="q' . $qnum . '" value="a"> ' . latexWrap($a1) . '</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="b"> ' . latexWrap($a2) . '</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="c"> ' . latexWrap($a3) . '</label><br>';
-        echo '<label><input type="radio" name="q' . $qnum . '" value="d"> ' . latexWrap($a4) . '</label>';
+        echo "<label class='option' data-opt='a'><input type='radio' name='q$qnum' value='a'> " . latexWrap($a1) . "</label><br>";
+        echo "<label class='option' data-opt='b'><input type='radio' name='q$qnum' value='b'> " . latexWrap($a2) . "</label><br>";
+        echo "<label class='option' data-opt='c'><input type='radio' name='q$qnum' value='c'> " . latexWrap($a3) . "</label><br>";
+        echo "<label class='option' data-opt='d'><input type='radio' name='q$qnum' value='d'> " . latexWrap($a4) . "</label>";
 
         echo "</div>";
     }
