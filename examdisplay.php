@@ -61,8 +61,8 @@
       <div class="grid">
         
         <!-- CỘT TRÁI: Câu hỏi -->
-        <form id="quizForm" class="left-column">
-            <?php include 'load_question.php'; ?>
+        <form id="quizForm" class="left-column" novalidate autocomplete="off">
+        <?php include 'load_question.php'; ?>
             <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();">Nộp bài</button>
             <div id="result"></div>
         </form>
@@ -89,13 +89,14 @@
 
   <script>
   // Đảm bảo MathJax render toàn bộ sau khi DOM load
-    window.addEventListener("DOMContentLoaded", function () {
-    if (window.MathJax) {
+  window.addEventListener("DOMContentLoaded", function () {
+  if (window.MathJax) {
+    MathJax.startup.promise.then(() => {
       MathJax.typesetPromise();
-    }
- 
+    });
+  }
+});
 
-  });
 </script>
 
 </body>
