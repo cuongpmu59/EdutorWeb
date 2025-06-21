@@ -63,7 +63,14 @@
         <!-- CỘT TRÁI: Câu hỏi -->
         <form id="quizForm" class="left-column" novalidate autocomplete="off">
         <?php include 'load_question.php'; ?>
-            <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();">Nộp bài</button>
+        <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();" style="margin-top: 10px;">
+          ✅ Nộp bài
+        </button>
+        <button id="retryBtn" onclick="location.reload()" style="display: none; margin-left: 10px; margin-top: 10px;">
+          🔁 Làm lại
+        </button>
+
+
             <div id="result"></div>
         </form>
 
