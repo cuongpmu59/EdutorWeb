@@ -47,14 +47,14 @@ try {
 
         // Xác định đáp án đúng sau khi xáo trộn
         $newCorrect = '';
-        foreach ($keys as $k) {
-            if ($k === $correct) {
-                $newCorrect = $k;
-                break;
+        foreach ($keys as $newLetter) {
+            if ($answers[$newLetter] === $answers[$correct]) {
+                $newCorrect = $newLetter;
+        break;
             }
         }
 
-        echo "<div class='question' id='q$qnum' data-q='q$qnum' data-correct='$correct'>";
+        echo "<div class='question' id='q$qnum' data-q='q$qnum' data-correct='$newCorrect'>";
         echo '<p><strong>Câu ' . $qnum . ':</strong> ' . latexWrap($question) . '</p>';
 
         if (!empty($image)) {
