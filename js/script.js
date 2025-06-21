@@ -19,12 +19,11 @@ function startTimer() {
       // Đổi màu đỏ khi còn dưới 1 phút
       if (totalTime <= 60) {
         countdownEl.style.color = 'red';
-        countdownEl.style.transition = 'color 0.5s ease'; // 🌟 Thêm dòng này để có hiệu ứng mượt
+        countdownEl.style.transition = 'color 0.5s ease';
+        countdownEl.style.animation = 'blink 1s infinite';
       } else {
-        countdownEl.style.color = '';
-        countdownEl.style.transition = ''; // Reset lại nếu muốn
+        countdownEl.style.animation = ''; // reset nếu quay lại
       }
-      
 
       totalTime--;
     }
@@ -98,6 +97,18 @@ function startTimer() {
       resultBox.style.border = "1px solid #3c763d";
       resultBox.style.color = "#3c763d";
       resultBox.style.marginTop = "10px";
+
+      submitBtn.insertAdjacentHTML('afterend', `
+        <button onclick="location.reload()" style="margin-left: 10px; margin-top: 10px;">Làm lại</button>
+      `);
+
+      document.getElementById("quizForm").style.display = "none";
+
+      const reloadBtn = document.createElement("button");
+      reloadBtn.textContent = "Làm lại";
+      reloadBtn.style.marginTop = "15px";
+      reloadBtn.onclick = () => location.reload();
+      resultBox.appendChild(reloadBtn);
     }
     
 document.addEventListener('DOMContentLoaded', () => {
