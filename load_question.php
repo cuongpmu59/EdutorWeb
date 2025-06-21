@@ -20,7 +20,7 @@ function latexWrap($str) {
     }
 
     // Nếu không có dấu LaTeX và không có công thức → escape như văn bản
-    return '\(' . htmlspecialchars($str) . '\)';
+    return htmlspecialchars($str) ;
 }
 
 
