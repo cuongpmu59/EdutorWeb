@@ -116,11 +116,7 @@ function startTimer() {
 
       document.getElementById("quizForm").style.display = "none";
 
-      const reloadBtn = document.createElement("button");
-      reloadBtn.textContent = "Làm lại";
-      reloadBtn.style.marginTop = "15px";
-      reloadBtn.onclick = () => location.reload();
-      resultBox.appendChild(reloadBtn);
+      
     }
     
 document.addEventListener('DOMContentLoaded', () => {
