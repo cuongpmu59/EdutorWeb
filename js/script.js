@@ -111,6 +111,7 @@ function startTimer() {
       resultBox.style.marginTop = "10px";
 
       // ✅ Hiện nút Làm lại
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
       document.getElementById('retryBtn').style.display = 'inline-block';
 
       // Ẩn form sau khi nộp
