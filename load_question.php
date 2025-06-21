@@ -1,60 +1,72 @@
 <?php
 require 'db_connection.php'; // Kết nối CSDL
 
-// Hàm tự động bọc \(...\) nếu trong nội dung chưa có LaTeX
 function latexWrap($str) {
-    $str = str_replace('\\\\', '\\', $str); // Khôi phục dấu \ bị thoát
-
-    // Nếu đã có cú pháp LaTeX hoặc ký hiệu đặc trưng, giữ nguyên
+    $str = str_replace('\\\\', '\\', $str);
     if (
         strpos($str, '\(') !== false ||
         strpos($str, '\[') !== false ||
         strpos($str, '$') !== false
-    ) {
-        return $str;
-    }
+    ) return $str;
 
-    // Nếu chứa các biểu thức toán học thường gặp
     if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    // Nếu không có dấu LaTeX và không có công thức → escape như văn bản
-    return htmlspecialchars($str) ;
+    return '\(' . htmlspecialchars($str) . '\)';
 }
 
+// Lấy chủ đề từ GET hoặc gán mặc định
+$selectedTopic = $_GET['topic'] ?? 'Toán đại cương';
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id ASC");
+    $stmt = $conn->prepare("SELECT * FROM questions WHERE topic = :topic ORDER BY RAND() LIMIT 20");
+    $stmt->bindParam(':topic', $selectedTopic);
     $stmt->execute();
     $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($questions as $index => $q) {
         $qnum = $index + 1;
-
         $id = (int)$q['id'];
         $image = htmlspecialchars($q['image']);
 
         $question = $q['question'];
-        $a1 = $q['answer1'];
-        $a2 = $q['answer2'];
-        $a3 = $q['answer3'];
-        $a4 = $q['answer4'];
-        $correct = htmlspecialchars(trim($q['correct_answer'])); // "a", "b", "c", or "d"
+        $answers = [
+            'a' => $q['answer1'],
+            'b' => $q['answer2'],
+            'c' => $q['answer3'],
+            'd' => $q['answer4']
+        ];
 
-        // Hiển thị từng khối câu hỏi với data-q và data-correct
+        $correct = trim($q['correct_answer']);
+
+        // Random thứ tự đáp án
+        $shuffled = $answers;
+        $keys = array_keys($shuffled);
+        shuffle($keys);
+
+        // Xác định đáp án đúng sau khi xáo trộn
+        $newCorrect = '';
+        foreach ($keys as $k) {
+            if ($k === $correct) {
+                $newCorrect = $k;
+                break;
+            }
+        }
+
         echo "<div class='question' id='q$qnum' data-q='q$qnum' data-correct='$correct'>";
-
         echo '<p><strong>Câu ' . $qnum . ':</strong> ' . latexWrap($question) . '</p>';
 
         if (!empty($image)) {
             echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        echo "<label class='option' data-opt='a'><input type='radio' name='q$qnum' value='a'> " . latexWrap($a1) . "</label><br>";
-        echo "<label class='option' data-opt='b'><input type='radio' name='q$qnum' value='b'> " . latexWrap($a2) . "</label><br>";
-        echo "<label class='option' data-opt='c'><input type='radio' name='q$qnum' value='c'> " . latexWrap($a3) . "</label><br>";
-        echo "<label class='option' data-opt='d'><input type='radio' name='q$qnum' value='d'> " . latexWrap($a4) . "</label>";
+        // In đáp án theo thứ tự mới
+        foreach ($keys as $letter) {
+            $newValue = $letter;
+            $ansText = $answers[$letter];
+            echo "<label class='option' data-opt='$newValue'><input type='radio' name='q$qnum' value='$newValue'> " . latexWrap($ansText) . "</label><br>";
+        }
 
         echo "</div>";
     }
