@@ -115,13 +115,6 @@ function startTimer() {
 
       // Ẩn form sau khi nộp
       document.getElementById("quizForm").style.display = "none";
-
-   
-      `);
-
-      document.getElementById("quizForm").style.display = "none";
-
-      
     }
     
 document.addEventListener('DOMContentLoaded', () => {
