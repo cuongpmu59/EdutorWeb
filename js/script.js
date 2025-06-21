@@ -110,8 +110,13 @@ function startTimer() {
       resultBox.style.color = "#3c763d";
       resultBox.style.marginTop = "10px";
 
-      submitBtn.insertAdjacentHTML('afterend', `
-        <button onclick="location.reload()" style="margin-left: 10px; margin-top: 10px;">Làm lại</button>
+      // ✅ Hiện nút Làm lại
+      document.getElementById('retryBtn').style.display = 'inline-block';
+
+      // Ẩn form sau khi nộp
+      document.getElementById("quizForm").style.display = "none";
+
+   
       `);
 
       document.getElementById("quizForm").style.display = "none";
