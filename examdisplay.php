@@ -44,7 +44,8 @@
       <!-- Ở giữa: tiêu đề đề thi -->
       <div class="header-center">
         <h1>Đề thi kiểm tra thử</h1>
-        <p>Môn: Toán</p>
+        <p><strong>Môn:</strong> Toán</p>
+
       </div>
   
       <!-- Bên phải: thời gian -->
@@ -61,14 +62,15 @@
       <div class="grid">
         
         <!-- CỘT TRÁI: Câu hỏi -->
-        <form id="quizForm" class="left-column" novalidate autocomplete="off">
+        <form id="quizForm" class="left-column" method="post" novalidate autocomplete="off">
         <?php include 'load_question.php'; ?>
         <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();" style="margin-top: 10px;">
           ✅ Nộp bài
         </button>
-        <button id="retryBtn" onclick="location.reload()" style="display: none; margin-left: 10px; margin-top: 10px;">
+        <button type="button" id="retryBtn" onclick="resetQuiz()" style="display: none;">
           🔁 Làm lại
         </button>
+
 
 
             <div id="result"></div>
