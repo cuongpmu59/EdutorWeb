@@ -30,6 +30,17 @@ function startTimer() {
   }, 1000);
 }
 
+function resetQuiz() {
+  quizSubmitted = false;
+  document.getElementById("quizForm").style.display = "block";
+  document.getElementById("quizForm").style.opacity = "1";
+  document.getElementById("result").innerHTML = '';
+  document.querySelectorAll('input[type="radio"]').forEach(r => {
+    r.checked = false;
+    r.disabled = false;
+  });
+  document.getElementById('retryBtn').style.display = 'none';
+}
     
     let quizSubmitted = false;
 
@@ -115,10 +126,12 @@ function startTimer() {
       document.getElementById('retryBtn').style.display = 'inline-block';
 
       // Ẩn form sau khi nộp
-      document.getElementById("quizForm").style.display = "none";
+      document.getElementById("quizForm").style.opacity = "0.3";
+      document.getElementById("quizForm").style.pointerEvents = "none";
+
     }
     
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   // Lấy tên học sinh từ prompt
   const student = prompt("Nhập họ tên học sinh:");
   document.getElementById("studentName").textContent = student || "Chưa nhập";
