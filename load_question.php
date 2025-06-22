@@ -17,7 +17,7 @@ function latexWrap($str) {
 }
 
 // Lấy chủ đề từ GET hoặc gán mặc định
-$selectedTopic = $_GET['topic'] ?? 'Toán đại cương';
+$selectedTopic = $_GET['topic'] ?? 'Tích phân';
 
 try {
     $stmt = $conn->prepare("SELECT * FROM questions WHERE topic = :topic ORDER BY RAND() LIMIT 20");
