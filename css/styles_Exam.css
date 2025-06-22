@@ -64,6 +64,26 @@ h1 {
   background-color: #f9f9f9;
 }
 
+/* === Thanh tiến trình === */
+#progressContainer {
+  margin-bottom: 10px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 20px;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background-color: #f44336; /* Màu mặc định: đỏ */
+  text-align: center;
+  color: white;
+  line-height: 20px;
+  transition: width 0.3s ease;
+  font-size: 14px;
+}
+
 /* === Bố cục cột trái phải === */
 .grid {
   display: flex;
