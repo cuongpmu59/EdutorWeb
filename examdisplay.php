@@ -65,6 +65,11 @@
         
         <!-- CỘT TRÁI: Câu hỏi -->
         <form id="quizForm" class="left-column" method="post" novalidate autocomplete="off">
+        <!-- 🔵 Thanh tiến trình trả lời -->
+        <div id="progressContainer">
+        <div id="progressBar">0%</div>
+        </div>
+
         <?php include 'load_question.php'; ?>
         <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();" style="margin-top: 10px;">
           ✅ Nộp bài
