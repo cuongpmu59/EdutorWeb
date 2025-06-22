@@ -63,23 +63,31 @@
   <div class="container">
 
     <!-- 🔍 FORM CHỌN CHỦ ĐỀ -->
-    <?php
-    $selectedTopic = $_GET['topic'] ?? 'Tích phân';
-    ?>
     <form method="get" id="topicForm" style="margin-bottom: 20px;">
       <label for="topicSelect"><strong>Chọn chủ đề:</strong></label>
       <select name="topic" id="topicSelect" onchange="document.getElementById('topicForm').submit();">
-        <option value="Tích phân" <?= $selectedTopic == 'Tích phân' ? 'selected' : '' ?>>Tích phân</option>
-        <option value="Hàm số" <?= $selectedTopic == 'Hàm số' ? 'selected' : '' ?>>Hàm số</option>
-        <option value="Lượng giác" <?= $selectedTopic == 'Lượng giác' ? 'selected' : '' ?>>Lượng giác</option>
-        <option value="Xác suất" <?= $selectedTopic == 'Xác suất' ? 'selected' : '' ?>>Xác suất</option>
-        <!-- Thêm các chủ đề khác nếu cần -->
+        <?php
+        require 'db_connection.php';
+        $selectedTopic = $_GET['topic'] ?? '';
+        try {
+            $stmt = $conn->query("SELECT DISTINCT topic FROM questions ORDER BY topic ASC");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $topic = htmlspecialchars($row['topic']);
+                $selected = ($topic == $selectedTopic) ? 'selected' : '';
+                echo "<option value=\"$topic\" $selected>$topic</option>";
+            }
+        } catch (PDOException $e) {
+            echo "<option disabled>Lỗi khi tải chủ đề</option>";
+        }
+        ?>
       </select>
     </form>
 
+    <!-- PHẦN HIỂN THỊ CÂU HỎI + PHIẾU TRẢ LỜI -->
     <div class="grid">
       <!-- CỘT TRÁI: Câu hỏi -->
       <form id="quizForm" class="left-column" method="post" novalidate autocomplete="off">
+
         <!-- 🔵 Thanh tiến trình trả lời -->
         <div id="progressContainer">
           <div id="progressBar">0%</div>
@@ -101,7 +109,7 @@
       <aside class="right-column">
         <h2>Phiếu trả lời</h2>
         <div class="answer-sheet">
-          <!-- Các dòng sẽ được sinh bởi JavaScript -->
+          <!-- Sinh bởi JS -->
         </div>
       </aside>
     </div>
