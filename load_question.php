@@ -2,21 +2,26 @@
 require 'db_connection.php'; // Kết nối CSDL
 
 function latexWrap($str) {
-    $str = str_replace('\\\\', '\\', $str);
+    $str = str_replace('\\\\', '\\', $str); // khôi phục dấu gạch chéo
 
-    // Nếu đã chứa các định dạng LaTeX block thì không bọc lại
+    // Nếu đã chứa \[ hoặc \begin thì giữ nguyên (block math hoặc bảng)
     if (
-        strpos($str, '\(') !== false || strpos($str, '\[') !== false ||
-        strpos($str, '$$') !== false || strpos($str, '\begin') !== false
-    ) return $str;
+        strpos($str, '\[') !== false ||
+        strpos($str, '\begin') !== false ||
+        strpos($str, '$$') !== false
+    ) {
+        return $str;
+    }
 
-    // Nếu có các ký hiệu toán học thì bọc bằng inline \(...\)
+    // Nếu có các biểu thức toán học nhỏ thì bọc lại
     if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    return htmlspecialchars($str); // nếu không có toán học, trả nguyên văn
+    // Không có gì đặc biệt → thoát HTML an toàn
+    return htmlspecialchars($str);
 }
+
 
 
 // Lấy chủ đề từ GET hoặc gán mặc định
