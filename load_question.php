@@ -3,18 +3,21 @@ require 'db_connection.php'; // Kết nối CSDL
 
 function latexWrap($str) {
     $str = str_replace('\\\\', '\\', $str);
+
+    // Nếu đã chứa các định dạng LaTeX block thì không bọc lại
     if (
-        strpos($str, '\(') !== false ||
-        strpos($str, '\[') !== false ||
-        strpos($str, '$') !== false
+        strpos($str, '\(') !== false || strpos($str, '\[') !== false ||
+        strpos($str, '$$') !== false || strpos($str, '\begin') !== false
     ) return $str;
 
-    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\begin|\\\end|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
+    // Nếu có các ký hiệu toán học thì bọc bằng inline \(...\)
+    if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    return '\(' . htmlspecialchars($str) . '\)';
+    return htmlspecialchars($str); // nếu không có toán học, trả nguyên văn
 }
+
 
 // Lấy chủ đề từ GET hoặc gán mặc định
 $selectedTopic = $_GET['topic'] ?? 'Tích phân';
