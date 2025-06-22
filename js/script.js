@@ -32,15 +32,26 @@ function startTimer() {
 
 function resetQuiz() {
   quizSubmitted = false;
-  document.getElementById("quizForm").style.display = "block";
-  document.getElementById("quizForm").style.opacity = "1";
+
+  // ✅ Hiển thị lại form
+  const form = document.getElementById("quizForm");
+  form.style.display = "block";
+  form.style.pointerEvents = "auto";
+  form.style.opacity = "1";
+
+  // ✅ Xóa kết quả cũ
   document.getElementById("result").innerHTML = '';
+
+  // ✅ Bỏ chọn và mở lại các radio
   document.querySelectorAll('input[type="radio"]').forEach(r => {
     r.checked = false;
     r.disabled = false;
   });
+
+  // ✅ Ẩn nút làm lại
   document.getElementById('retryBtn').style.display = 'none';
 }
+
     
     let quizSubmitted = false;
 
