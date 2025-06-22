@@ -205,6 +205,7 @@ function resetQuiz() {
 
   // Gọi lại MathJax để hiển thị công thức toán
   if (window.MathJax) {
-    MathJax.typeset();
+    MathJax.typesetPromise();
   }
+  
 });
