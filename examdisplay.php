@@ -60,17 +60,33 @@
   
   
   <main>
-    <div class="container">
-      <div class="grid">
-        
-        <!-- CỘT TRÁI: Câu hỏi -->
-        <form id="quizForm" class="left-column" method="post" novalidate autocomplete="off">
+  <div class="container">
+
+    <!-- 🔍 FORM CHỌN CHỦ ĐỀ -->
+    <?php
+    $selectedTopic = $_GET['topic'] ?? 'Tích phân';
+    ?>
+    <form method="get" id="topicForm" style="margin-bottom: 20px;">
+      <label for="topicSelect"><strong>Chọn chủ đề:</strong></label>
+      <select name="topic" id="topicSelect" onchange="document.getElementById('topicForm').submit();">
+        <option value="Tích phân" <?= $selectedTopic == 'Tích phân' ? 'selected' : '' ?>>Tích phân</option>
+        <option value="Hàm số" <?= $selectedTopic == 'Hàm số' ? 'selected' : '' ?>>Hàm số</option>
+        <option value="Lượng giác" <?= $selectedTopic == 'Lượng giác' ? 'selected' : '' ?>>Lượng giác</option>
+        <option value="Xác suất" <?= $selectedTopic == 'Xác suất' ? 'selected' : '' ?>>Xác suất</option>
+        <!-- Thêm các chủ đề khác nếu cần -->
+      </select>
+    </form>
+
+    <div class="grid">
+      <!-- CỘT TRÁI: Câu hỏi -->
+      <form id="quizForm" class="left-column" method="post" novalidate autocomplete="off">
         <!-- 🔵 Thanh tiến trình trả lời -->
         <div id="progressContainer">
-        <div id="progressBar">0%</div>
+          <div id="progressBar">0%</div>
         </div>
 
         <?php include 'load_question.php'; ?>
+
         <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();" style="margin-top: 10px;">
           ✅ Nộp bài
         </button>
@@ -78,22 +94,21 @@
           🔁 Làm lại
         </button>
 
+        <div id="result"></div>
+      </form>
 
-
-            <div id="result"></div>
-        </form>
-
-        <!-- CỘT PHẢI: Phiếu trả lời -->
-        <aside class="right-column">
-          <h2>Phiếu trả lời</h2>
-          <div class="answer-sheet">
-
-            <!-- Các dòng sẽ được sinh bởi JavaScript -->
-          </div>
-        </aside>
-      </div>
+      <!-- CỘT PHẢI: Phiếu trả lời -->
+      <aside class="right-column">
+        <h2>Phiếu trả lời</h2>
+        <div class="answer-sheet">
+          <!-- Các dòng sẽ được sinh bởi JavaScript -->
+        </div>
+      </aside>
     </div>
-  </main>
+  </div>
+</main>
+
+
   <footer>
     <div class="container" style="text-align: center; margin-top: 30px; font-size: 14px;">
       © 2025 Hệ thống thi trắc nghiệm Toán học
