@@ -30,6 +30,27 @@ function startTimer() {
   }, 1000);
 }
 
+function updateProgressBar() {
+  const totalQuestions = document.querySelectorAll('.question').length;
+  const answered = document.querySelectorAll('.question input[type="radio"]:checked').length;
+  const percent = Math.round((answered / totalQuestions) * 100);
+
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.width = `${percent}%`;
+  progressBar.textContent = `${percent}%`;
+
+  // Thay đổi màu theo mức độ hoàn thành
+  if (percent < 40) {
+    progressBar.style.backgroundColor = '#f44336';
+  } else if (percent < 80) {
+    progressBar.style.backgroundColor = '#ff9800';
+  } else {
+    progressBar.style.backgroundColor = '#4caf50';
+  }
+}
+
+
+
 function resetQuiz() {
   quizSubmitted = false;
 
@@ -143,6 +164,8 @@ function resetQuiz() {
     }
     
   document.addEventListener('DOMContentLoaded', () => {
+    updateProgressBar(); // gọi lúc đầu để khởi tạo
+
   // Lấy tên học sinh từ prompt
   const student = prompt("Nhập họ tên học sinh:");
   document.getElementById("studentName").textContent = student || "Chưa nhập";
@@ -190,6 +213,7 @@ function resetQuiz() {
       const val = radio.value;
       const sheetRadio = document.querySelector(`input[name="as_${q}"][value="${val}"]`);
       if (sheetRadio) sheetRadio.checked = true;
+      updateProgressBar(); // 👈 THÊM DÒNG NÀY
     });
   });
 
@@ -200,6 +224,7 @@ function resetQuiz() {
       const val = radio.value;
       const quizRadio = document.querySelector(`input[name="${q}"][value="${val}"]`);
       if (quizRadio) quizRadio.checked = true;
+      updateProgressBar(); // 👈 THÊM DÒNG NÀY
     });
   });
 
