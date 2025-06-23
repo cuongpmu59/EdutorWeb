@@ -64,29 +64,51 @@ function saveQuestion() {
   }
 }
 
-function submitQuestion(formData, form, id) {
+async function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
 
+  // ⚡ Upload ảnh lên Cloudinary nếu có
+  const imageFile = formData.get("image");
+  if (imageFile && imageFile.size > 0 && !formData.get("delete_image")) {
+    const cloudForm = new FormData();
+    cloudForm.append("file", imageFile);
+    cloudForm.append("upload_preset", "YOUR_UPLOAD_PRESET"); // Thay tên preset Cloudinary
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
+        method: "POST",
+        body: cloudForm
+      });
+      const data = await res.json();
+      if (data.secure_url) {
+        formData.set("image_url", data.secure_url);
+      }
+    } catch (err) {
+      console.error("Lỗi khi upload ảnh Cloudinary:", err);
+      alert("Không thể tải ảnh lên Cloudinary.");
+      return;
+    }
+  } else {
+    formData.set("image_url", ""); // không có ảnh mới hoặc bị xóa
+  }
+
+  // ⚡ Gửi dữ liệu về server
   fetch(url, {
     method: "POST",
     body: formData
   })
-  .then(res => res.text())
-  .then(response => {
-    alert(response);
-    refreshIframe();
-    if (!id) form.reset();
-    resetPreview();
-
-    // ✅ Đã lưu, không cần cảnh báo nữa
-    formChanged = false;
-  })
-  .catch(error => {
-    console.error("Lỗi:", error);
-    alert("Đã xảy ra lỗi khi lưu câu hỏi.");
-  });
+    .then(res => res.text())
+    .then(response => {
+      alert(response);
+      refreshIframe();
+      if (!id) form.reset();
+      resetPreview();
+      formChanged = false;
+    })
+    .catch(error => {
+      console.error("Lỗi:", error);
+      alert("Đã xảy ra lỗi khi lưu câu hỏi.");
+    });
 }
-
 
 function deleteQuestion() {
   const id = document.getElementById("question_id").value.trim();
