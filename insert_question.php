@@ -29,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':correct_answer', $correct_answer);
         $stmt->bindParam(':image', $image_url); // ✅ Ghi URL Cloudinary
 
-        if ($stmt->execute()) {
-            echo "✅ Thêm câu hỏi thành công.";
-            if (!empty($image_url)) {
-                echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
-                echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:200px; max-height:200px; display:block; margin-top:10px; border:1px solid #999; border-radius:4px;' />";            }
+        if (!empty($image_url)) {
+            echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
+            echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:200px; max-height:200px; display:block; margin-top:10px; border:1px solid #999; border-radius:4px;' />";
+        } else {
+            echo "<br>📭 Không có ảnh minh họa.";
         }
         
     } catch (PDOException $e) {
