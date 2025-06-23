@@ -31,9 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute()) {
             echo "✅ Thêm câu hỏi thành công.";
-        } else {
-            echo "❌ Lỗi khi thêm câu hỏi.";
+            if (!empty($image_url)) {
+                echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
+                echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:150px; margin-top:5px; border:1px solid #ccc;' />";
+            }
         }
+        
     } catch (PDOException $e) {
         echo "❌ PDO Error: " . $e->getMessage();
     }
