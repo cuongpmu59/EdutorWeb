@@ -72,7 +72,7 @@ async function submitQuestion(formData, form, id) {
   if (imageFile && imageFile.size > 0 && !formData.get("delete_image")) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
-    cloudForm.append("upload_preset", "YOUR_UPLOAD_PRESET"); // Thay tên preset Cloudinary
+    cloudForm.append("upload_preset", "quiz_photo"); // Thay tên preset Cloudinary
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
         method: "POST",
