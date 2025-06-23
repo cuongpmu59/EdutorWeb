@@ -15,9 +15,8 @@
     <input type="hidden" name="id" id="question_id">
 
     <label>Câu hỏi:</label>
-    <textarea name="question" id="question" rows="3" required
-      oninput="renderPreview('question')"></textarea>
-      <div id="preview_question" class="latex-preview"></div><br>
+    <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
+    <div id="preview_question" class="latex-preview"></div><br>
 
     <label>Đáp án A:</label><br>
     <input type="text" name="answer1" id="answer1" required oninput="renderPreview('answer1')">
@@ -44,28 +43,34 @@
       <option value="D">D</option>
     </select><br>
 
-    <label>Ảnh minh họa:</label>
-    <input type="file" name="image" id="image"><br>
-    <img id="imagePreview" style="max-width: 200px; display:none;" />
-    <a id="downloadImage" href="#" target="_blank" download style="display:none; margin-top: 5px; color: blue; text-decoration: underline;">📥 Tải ảnh</a>
+    <!-- ✅ Nhóm tải ảnh -->
+    <div style="margin-top: 10px;">
+      <label><strong>Ảnh minh họa:</strong></label><br>
+      <button type="button" onclick="document.getElementById('image').click()" style="margin-bottom: 5px;">
+        📷 Tải ảnh
+      </button>
+      <input type="file" name="image" id="image" accept="image/*" style="display:none;">
+      <div>
+        <img id="imagePreview" src="" alt="Ảnh xem trước" style="display: none; max-width: 200px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <a id="downloadImage" href="#" target="_blank" download style="display:none; margin-top: 5px; color: blue; text-decoration: underline;">📥 Tải ảnh</a><br>
+      <label id="deleteImageLabel" style="display:none; margin-top: 5px;">
+        <input type="checkbox" id="delete_image" name="delete_image" value="1"> Xóa ảnh minh họa
+      </label>
+    </div><br>
 
-    <label id="deleteImageLabel" style="display:none;">
-      <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
-    </label><br>
-    
     <div class="button-group">
       <button type="button" onclick="saveQuestion()" id="saveButton">Lưu</button>
       <button type="button" onclick="deleteQuestion()">Xoá</button>
       <button type="button" onclick="searchQuestion()">Tìm kiếm</button>
       <button type="reset" onclick="resetPreview()">Làm mới</button>
       <button type="button" onclick="document.getElementById('importFile').click()">📥 Nhập file</button>
-        <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
-        <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
+      <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
+      <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
     </div>
 
     <h3>Xem trước toàn bộ câu hỏi</h3>
     <div id="fullPreview" class="latex-preview" style="border:1px solid #ccc; padding:10px; margin-bottom:20px;"></div>
-
   </form>
 
   <div id="message"></div>
@@ -76,37 +81,51 @@
   <script src="js/question_script.js"></script>
 
   <script>
-  window.addEventListener("message", function (event) {
-    if (event.data.type === "fillForm") {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.addEventListener("message", function (event) {
+      if (event.data.type === "fillForm") {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      const data = event.data.data;
-      document.getElementById("question_id").value = data.id;
-      document.getElementById("question").value = data.question;
-      document.getElementById("answer1").value = data.answer1;
-      document.getElementById("answer2").value = data.answer2;
-      document.getElementById("answer3").value = data.answer3;
-      document.getElementById("answer4").value = data.answer4;
-      document.getElementById("correct_answer").value = data.correct_answer;
+        const data = event.data.data;
+        document.getElementById("question_id").value = data.id;
+        document.getElementById("question").value = data.question;
+        document.getElementById("answer1").value = data.answer1;
+        document.getElementById("answer2").value = data.answer2;
+        document.getElementById("answer3").value = data.answer3;
+        document.getElementById("answer4").value = data.answer4;
+        document.getElementById("correct_answer").value = data.correct_answer;
 
-      const imgPreview = document.getElementById("imagePreview");
-      if (data.image) {
-        imgPreview.src = data.image;
-        imgPreview.style.display = "block";
-      } else {
-        imgPreview.src = "";
-        imgPreview.style.display = "none";
+        const imgPreview = document.getElementById("imagePreview");
+        const downloadLink = document.getElementById("downloadImage");
+        const deleteLabel = document.getElementById("deleteImageLabel");
+        const deleteCheckbox = document.getElementById("delete_image");
+
+        if (data.image) {
+          imgPreview.src = data.image;
+          imgPreview.style.display = "block";
+
+          downloadLink.href = data.image;
+          downloadLink.style.display = "inline-block";
+
+          deleteLabel.style.display = "inline-block";
+          deleteCheckbox.checked = false;
+        } else {
+          imgPreview.src = "";
+          imgPreview.style.display = "none";
+
+          downloadLink.href = "#";
+          downloadLink.style.display = "none";
+
+          deleteLabel.style.display = "none";
+          deleteCheckbox.checked = false;
+        }
+
+        ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => {
+          renderPreview(id);
+        });
+
+        updateFullPreview();
       }
-
-      // Cập nhật xem trước công thức LaTeX
-      ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => {
-        renderPreview(id);
-      });
-
-      updateFullPreview();
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
