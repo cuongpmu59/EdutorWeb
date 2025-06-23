@@ -54,8 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         echo "✅ Cập nhật câu hỏi thành công.";
+        if (!empty($image_url)) {
+            echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a>";
+        }
     } else {
         echo "❌ Lỗi khi cập nhật câu hỏi.";
     }
-}
+    
 ?>
