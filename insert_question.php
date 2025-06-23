@@ -8,34 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $imageName = null;
+    $image_url = $_POST['image_url'] ?? ''; // ✅ Đường dẫn ảnh từ JS gửi
 
     // Kiểm tra input cơ bản
     if (empty($question) || empty($answer1) || empty($correct_answer)) {
-        echo "Vui lòng nhập đầy đủ thông tin câu hỏi.";
+        echo "❌ Vui lòng nhập đầy đủ thông tin câu hỏi.";
         exit;
     }
 
-    // Xử lý upload ảnh nếu có
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-            echo "Chỉ cho phép định dạng JPG, PNG hoặc GIF.";
-            exit;
-        }
-
-        $uploadDir = 'images/uploads';
-        $imageName = time() . '_' . basename($_FILES['image']['name']);
-        $uploadFile = $uploadDir . '/' . $imageName;
-
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-            echo "Lỗi khi tải ảnh lên.";
-            exit;
-        }
-    }
-
     try {
-        $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, image)
+        $sql = "INSERT INTO questions 
+                (question, answer1, answer2, answer3, answer4, correct_answer, image)
                 VALUES (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :image)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':question', $question);
@@ -44,15 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':answer3', $answer3);
         $stmt->bindParam(':answer4', $answer4);
         $stmt->bindParam(':correct_answer', $correct_answer);
-        $stmt->bindParam(':image', $imageName);
+        $stmt->bindParam(':image', $image_url); // ✅ Ghi URL Cloudinary
 
         if ($stmt->execute()) {
-            echo "Thêm câu hỏi thành công.";
+            echo "✅ Thêm câu hỏi thành công.";
         } else {
-            echo "Lỗi khi thêm câu hỏi.";
+            echo "❌ Lỗi khi thêm câu hỏi.";
         }
     } catch (PDOException $e) {
-        echo "Lỗi: " . $e->getMessage();
+        echo "❌ PDO Error: " . $e->getMessage();
     }
 }
 ?>
