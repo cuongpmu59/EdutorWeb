@@ -99,6 +99,14 @@ async function submitQuestion(formData, form, id) {
     .then(res => res.text())
     .then(response => {
       alert(response);
+      // Nếu server trả về URL ảnh (VD: qua một <a> hoặc <img> trong response), thì có thể trích xuất nó
+          const imgRegex = /<img.*?src=['"](.*?)['"]/;
+          const match = response.match(imgRegex);
+            if (match && match[1]) {
+              const preview = document.getElementById("imagePreview");
+              preview.src = match[1];
+              preview.style.display = "block";
+            }
       refreshIframe();
       if (!id) form.reset();
       resetPreview();
