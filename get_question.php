@@ -1,8 +1,6 @@
 <?php
 require 'db_connection.php';
-
-// Cho phép hiển thị trong iframe cùng origin
-header("X-Frame-Options: SAMEORIGIN");
+header("X-Frame-Options: SAMEORIGIN"); // Cho phép hiển thị trong iframe cùng origin
 
 // Lấy tất cả câu hỏi
 try {
@@ -11,7 +9,6 @@ try {
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $rows = [];
-    // Bạn có thể log lỗi ở đây
 }
 ?>
 
@@ -20,8 +17,6 @@ try {
 <head>
     <meta charset="UTF-8" />
     <title>Danh sách câu hỏi</title>
-
-    <!-- MathJax để hiển thị công thức LaTeX -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
@@ -68,9 +63,8 @@ try {
             currentRow = row;
             row.classList.add("selected-row");
 
-            // Gửi dữ liệu sang parent (question_form.php)
-            parent.postMessage({ type: "fillForm", data: data }, window.location.origin);
-
+            // Gửi dữ liệu sang form cha
+            parent.postMessage({ type: "fillForm", data: data }, "*");
         }
 
         function rowKeyNavigation(event) {
@@ -102,7 +96,7 @@ try {
 
         window.addEventListener("keydown", rowKeyNavigation);
 
-        // Render MathJax sau khi trang load xong
+        // Render MathJax sau khi trang load
         window.onload = () => {
             MathJax.typesetPromise();
         };
@@ -133,7 +127,7 @@ try {
                         "answer3" => $row["answer3"],
                         "answer4" => $row["answer4"],
                         "correct_answer" => strtoupper(trim($row["correct_answer"])),
-                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/uploads" . $row["image"] : ""
+                        "image" => $row["image"] // URL Cloudinary nếu có
                     ]); ?>)'>
                         <td><?= htmlspecialchars($row["id"]) ?></td>
                         <td><?= htmlspecialchars($row["question"]) ?></td>
@@ -143,8 +137,8 @@ try {
                         <td><?= htmlspecialchars($row["answer4"]) ?></td>
                         <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
                         <td style="text-align:center;">
-                            <?php if ($row["image"]): ?>
-                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads<?= htmlspecialchars($row["image"]) ?>" alt="Ảnh minh họa" />
+                            <?php if (!empty($row["image"])): ?>
+                                <img class="thumb" src="<?= htmlspecialchars($row["image"]) ?>" alt="Ảnh minh họa" />
                             <?php endif; ?>
                         </td>
                     </tr>
