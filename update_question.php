@@ -60,5 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "❌ Lỗi khi cập nhật câu hỏi.";
     }
-    
+}
 ?>
+
