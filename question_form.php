@@ -47,6 +47,8 @@
     <label>Ảnh minh họa:</label>
     <input type="file" name="image" id="image"><br>
     <img id="imagePreview" style="max-width: 200px; display:none;" />
+    <a id="downloadImage" href="#" target="_blank" download style="display:none; margin-top: 5px; color: blue; text-decoration: underline;">📥 Tải ảnh</a>
+
     <label id="deleteImageLabel" style="display:none;">
       <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
     </label><br>
