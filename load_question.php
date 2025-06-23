@@ -13,18 +13,14 @@ function latexWrap($str) {
         return $str;
     }
 
-    // Nếu có các biểu thức toán học nhỏ thì bọc lại
+    // Nếu có biểu thức toán thì bọc inline math
     if (preg_match('/(\\\frac|\\\sqrt|\\\sum|\\\int|[_^]|\\\cdot|\\\leq|\\\geq|\\\neq|\\\pi|{.+})/', $str)) {
         return '\(' . $str . '\)';
     }
 
-    // Không có gì đặc biệt → thoát HTML an toàn
     return htmlspecialchars($str);
 }
 
-
-
-// Lấy chủ đề từ GET hoặc gán mặc định
 $selectedTopic = $_GET['topic'] ?? 'TênChủĐềMặcĐịnh';
 
 try {
@@ -36,7 +32,7 @@ try {
     foreach ($questions as $index => $q) {
         $qnum = $index + 1;
         $id = (int)$q['id'];
-        $image = htmlspecialchars($q['image']);
+        $image = $q['image'];
 
         $question = $q['question'];
         $answers = [
@@ -46,19 +42,16 @@ try {
             'd' => $q['answer4']
         ];
 
-        $correct = trim($q['correct_answer']);
-
-        // Random thứ tự đáp án
+        $correct = strtolower(trim($q['correct_answer']));
         $shuffled = $answers;
         $keys = array_keys($shuffled);
         shuffle($keys);
 
-        // Xác định đáp án đúng sau khi xáo trộn
         $newCorrect = '';
         foreach ($keys as $newLetter) {
             if ($answers[$newLetter] === $answers[$correct]) {
                 $newCorrect = $newLetter;
-        break;
+                break;
             }
         }
 
@@ -66,14 +59,12 @@ try {
         echo '<p><strong>Câu ' . $qnum . ':</strong> ' . latexWrap($question) . '</p>';
 
         if (!empty($image)) {
-            echo "<img src='images/$image' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
+            echo "<img src='" . htmlspecialchars($image) . "' alt='Hình minh họa' style='width: 250px; display:block; margin: 10px auto;'><br>";
         }
 
-        // In đáp án theo thứ tự mới
         foreach ($keys as $letter) {
-            $newValue = $letter;
             $ansText = $answers[$letter];
-            echo "<label class='option' data-opt='$newValue'><input type='radio' name='q$qnum' value='$newValue'> " . latexWrap($ansText) . "</label><br>";
+            echo "<label class='option' data-opt='$letter'><input type='radio' name='q$qnum' value='$letter'> " . latexWrap($ansText) . "</label><br>";
         }
 
         echo "</div>";
