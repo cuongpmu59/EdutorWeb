@@ -1,7 +1,8 @@
 <?php
-require 'db_connection.php';
+require 'db_connection.php'; // Kết nối đến CSDL
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Lấy dữ liệu từ form
     $id = $_POST['id'] ?? '';
     $question = $_POST['question'] ?? '';
     $answer1 = $_POST['answer1'] ?? '';
@@ -9,59 +10,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $deleteImage = $_POST['delete_image'] ?? '0';
-    $image_url = $_POST['image_url'] ?? ''; // ✅ đường dẫn Cloudinary từ JS
+    $deleteImage = $_POST['delete_image'] ?? '0'; // "1" nếu checkbox xóa ảnh được chọn
+    $image_url = $_POST['image_url'] ?? '';        // URL ảnh từ Cloudinary (nếu có)
 
+    // Kiểm tra ID
     if (!is_numeric($id)) {
         echo "❌ ID không hợp lệ.";
         exit;
     }
 
-    // Lấy ảnh hiện tại (lưu dạng URL)
+    // Lấy ảnh hiện tại từ CSDL
     $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
     $stmtGet->bindParam(':id', $id, PDO::PARAM_INT);
     $stmtGet->execute();
     $currentImage = $stmtGet->fetchColumn();
 
-    // Nếu xoá ảnh
+    // Xử lý logic ảnh:
     if ($deleteImage === '1') {
-        $image_url = ''; // ✅ gán lại rỗng
+        $image_url = ''; // Nếu người dùng chọn xoá ảnh => rỗng
     } elseif (empty($image_url)) {
-        // Nếu không gửi ảnh mới, giữ ảnh cũ
-        $image_url = $currentImage;
+        $image_url = $currentImage; // Nếu không gửi ảnh mới => giữ nguyên
     }
 
-    // Cập nhật dữ liệu
-    $sql = "UPDATE questions SET
-            question = :question,
-            answer1 = :answer1,
-            answer2 = :answer2,
-            answer3 = :answer3,
-            answer4 = :answer4,
-            correct_answer = :correct_answer,
-            image = :image
-            WHERE id = :id";
+    try {
+        // Cập nhật câu hỏi
+        $sql = "UPDATE questions SET
+                    question = :question,
+                    answer1 = :answer1,
+                    answer2 = :answer2,
+                    answer3 = :answer3,
+                    answer4 = :answer4,
+                    correct_answer = :correct_answer,
+                    image = :image
+                WHERE id = :id";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':question', $question);
-    $stmt->bindParam(':answer1', $answer1);
-    $stmt->bindParam(':answer2', $answer2);
-    $stmt->bindParam(':answer3', $answer3);
-    $stmt->bindParam(':answer4', $answer4);
-    $stmt->bindParam(':correct_answer', $correct_answer);
-    $stmt->bindParam(':image', $image_url); // ✅ Cloudinary URL
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':question', $question);
+        $stmt->bindParam(':answer1', $answer1);
+        $stmt->bindParam(':answer2', $answer2);
+        $stmt->bindParam(':answer3', $answer3);
+        $stmt->bindParam(':answer4', $answer4);
+        $stmt->bindParam(':correct_answer', $correct_answer);
+        $stmt->bindParam(':image', $image_url);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-    if ($stmt->execute()) {
-        echo "✅ Cập nhật câu hỏi thành công.";
-        if (!empty($image_url)) {
-            echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
-            echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:150px; margin-top:5px; border:1px solid #ccc;' />";
-
+        if ($stmt->execute()) {
+            echo "✅ Cập nhật câu hỏi thành công.";
+            if (!empty($image_url)) {
+                echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
+                echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:200px; max-height:200px; display:block; margin-top:10px; border:1px solid #ccc; border-radius:4px;' />";
+            }
+        } else {
+            echo "❌ Cập nhật thất bại.";
         }
-    } else {
-        echo "❌ Lỗi khi cập nhật câu hỏi.";
+    } catch (PDOException $e) {
+        echo "❌ Lỗi PDO: " . $e->getMessage();
     }
+} else {
+    echo "❌ Phương thức không hợp lệ.";
 }
 ?>
-
