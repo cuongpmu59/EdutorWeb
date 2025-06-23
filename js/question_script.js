@@ -1,7 +1,6 @@
 function getFormData() {
   const form = document.getElementById("questionForm");
-  const formData = new FormData(form);
-  return formData;
+  return new FormData(form);
 }
 
 function saveQuestion() {
@@ -11,16 +10,12 @@ function saveQuestion() {
   const deleteImage = document.getElementById("delete_image").checked;
   formData.set("delete_image", deleteImage ? "1" : "0");
 
-  const question = formData.get("question")?.trim();
-  const answer1 = formData.get("answer1")?.trim();
-  const answer2 = formData.get("answer2")?.trim();
-  const answer3 = formData.get("answer3")?.trim();
-  const answer4 = formData.get("answer4")?.trim();
-  const correctAnswer = formData.get("correct_answer")?.trim();
-
-  if (!question || !answer1 || !answer2 || !answer3 || !answer4 || !correctAnswer) {
-    alert("Vui lòng điền đầy đủ thông tin câu hỏi và đáp án.");
-    return;
+  const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
+  for (const field of requiredFields) {
+    if (!formData.get(field)?.trim()) {
+      alert("Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.");
+      return;
+    }
   }
 
   const imageFile = formData.get("image");
@@ -35,21 +30,19 @@ function saveQuestion() {
     }
   }
 
-  // ✅ Nếu là thêm mới (không có ID), kiểm tra trùng lặp
+  // Nếu là thêm mới → kiểm tra trùng lặp
   if (!id) {
-    // THÊM MỚI
     fetch("check_duplicate.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "question=" + encodeURIComponent(question)
+      body: "question=" + encodeURIComponent(formData.get("question"))
     })
     .then(res => res.json())
     .then(data => {
       if (data.exists) {
-        alert("Câu hỏi này đã tồn tại trong hệ thống.");
-        return;
+        alert("❌ Câu hỏi đã tồn tại.");
       } else {
-        submitQuestion(formData, form, id); // thêm luôn, không cần confirm
+        submitQuestion(formData, form, id);
       }
     })
     .catch(err => {
@@ -57,7 +50,7 @@ function saveQuestion() {
       alert("Không thể kiểm tra trùng lặp.");
     });
   } else {
-    // CẬP NHẬT
+    // Cập nhật
     if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
       submitQuestion(formData, form, id);
     }
@@ -67,12 +60,13 @@ function saveQuestion() {
 async function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
 
-  // ⚡ Upload ảnh lên Cloudinary nếu có
+  // Upload ảnh lên Cloudinary nếu có
   const imageFile = formData.get("image");
-  if (imageFile && imageFile.size > 0 && !formData.get("delete_image")) {
+  if (imageFile && imageFile.size > 0 && formData.get("delete_image") !== "1") {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
-    cloudForm.append("upload_preset", "quiz_photo"); // Thay tên preset Cloudinary
+    cloudForm.append("upload_preset", "quiz_photo"); // Thay bằng preset của bạn
+
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
         method: "POST",
@@ -81,41 +75,36 @@ async function submitQuestion(formData, form, id) {
       const data = await res.json();
       if (data.secure_url) {
         formData.set("image_url", data.secure_url);
+        document.getElementById("downloadImage").href = data.secure_url;
+        document.getElementById("downloadImage").style.display = "inline";
       }
     } catch (err) {
-      console.error("Lỗi khi upload ảnh Cloudinary:", err);
+      console.error("Upload Cloudinary lỗi:", err);
       alert("Không thể tải ảnh lên Cloudinary.");
       return;
     }
   } else {
-    formData.set("image_url", ""); // không có ảnh mới hoặc bị xóa
+    formData.set("image_url", ""); // Nếu không có ảnh hoặc bị xoá
+    document.getElementById("downloadImage").style.display = "none";
   }
 
-  // ⚡ Gửi dữ liệu về server
+  // Gửi dữ liệu lên PHP
   fetch(url, {
     method: "POST",
     body: formData
   })
-    .then(res => res.text())
-    .then(response => {
-      alert(response);
-      // Nếu server trả về URL ảnh (VD: qua một <a> hoặc <img> trong response), thì có thể trích xuất nó
-          const imgRegex = /<img.*?src=['"](.*?)['"]/;
-          const match = response.match(imgRegex);
-            if (match && match[1]) {
-              const preview = document.getElementById("imagePreview");
-              preview.src = match[1];
-              preview.style.display = "block";
-            }
-      refreshIframe();
-      if (!id) form.reset();
-      resetPreview();
-      formChanged = false;
-    })
-    .catch(error => {
-      console.error("Lỗi:", error);
-      alert("Đã xảy ra lỗi khi lưu câu hỏi.");
-    });
+  .then(res => res.text())
+  .then(response => {
+    alert(response);
+    refreshIframe();
+    if (!id) form.reset();
+    resetPreview();
+    formChanged = false;
+  })
+  .catch(err => {
+    console.error("Lỗi lưu:", err);
+    alert("Không thể lưu câu hỏi.");
+  });
 }
 
 function deleteQuestion() {
@@ -136,44 +125,36 @@ function deleteQuestion() {
   .then(response => {
     alert(response);
     document.getElementById("questionForm").reset();
-    const imgPreview = document.getElementById("imagePreview");
-    if(imgPreview) imgPreview.style.display = "none";
+    resetPreview();
     refreshIframe();
   })
-  .catch(error => {
-    console.error("Lỗi:", error);
+  .catch(err => {
+    console.error("Lỗi xóa:", err);
     alert("Không thể xoá câu hỏi.");
   });
 }
 
 function resetPreview() {
-  const imgPreview = document.getElementById("imagePreview");
-  imgPreview.src = "";
-  imgPreview.style.display = "none";
+  const img = document.getElementById("imagePreview");
+  img.src = "";
+  img.style.display = "none";
   const deleteLabel = document.getElementById("deleteImageLabel");
   if (deleteLabel) deleteLabel.style.display = "none";
-  const deleteCheckbox = document.getElementById("delete_image");
-  if (deleteCheckbox) deleteCheckbox.checked = false;
+  document.getElementById("delete_image").checked = false;
+  document.getElementById("downloadImage").style.display = "none";
 }
 
 function togglePreview() {
   const isChecked = document.getElementById("togglePreview").checked;
-  
-  // Ẩn/hiện các ô xem trước từng dòng
   const previews = document.querySelectorAll(".latex-preview");
-  previews.forEach(div => {
-    div.style.display = isChecked ? "block" : "none";
-  });
+  previews.forEach(div => div.style.display = isChecked ? "block" : "none");
 
-  // Ẩn/hiện xem trước tổng thể
-  const fullPreview = document.getElementById("fullPreview");
-  if (fullPreview) {
-    fullPreview.style.display = isChecked ? "block" : "none";
-  }
+  const full = document.getElementById("fullPreview");
+  if (full) full.style.display = isChecked ? "block" : "none";
 }
 
 function updateFullPreview() {
-  const question = document.getElementById("question").value;
+  const q = document.getElementById("question").value;
   const a = document.getElementById("answer1").value;
   const b = document.getElementById("answer2").value;
   const c = document.getElementById("answer3").value;
@@ -181,7 +162,7 @@ function updateFullPreview() {
   const correct = document.getElementById("correct_answer").value;
 
   const html = `
-    <p><strong>Câu hỏi:</strong> \\(${question}\\)</p>
+    <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
     <ul>
       <li><strong>A.</strong> ${a}</li>
       <li><strong>B.</strong> ${b}</li>
@@ -193,20 +174,14 @@ function updateFullPreview() {
 
   const preview = document.getElementById("fullPreview");
   preview.innerHTML = html;
-  if (window.MathJax) {
-    MathJax.typesetPromise([preview]);
-  }
+  if (window.MathJax) MathJax.typesetPromise([preview]);
 }
 
 function renderPreview(fieldId) {
-  const value = document.getElementById(fieldId).value;
-  const previewDiv = document.getElementById("preview_" + fieldId);
-  previewDiv.innerHTML = value;
-
-  if (window.MathJax) {
-    MathJax.typesetPromise([previewDiv]);
-  }
-    // Cập nhật xem trước toàn bộ
+  const val = document.getElementById(fieldId).value;
+  const div = document.getElementById("preview_" + fieldId);
+  div.innerHTML = val;
+  if (window.MathJax) MathJax.typesetPromise([div]);
   updateFullPreview();
 }
 
@@ -225,13 +200,12 @@ function searchQuestion() {
       alert("Không tìm thấy câu hỏi nào.");
     } else {
       alert("Tìm thấy " + data.length + " câu hỏi.");
-      // Bạn có thể hiển thị dữ liệu trong modal hoặc bảng riêng tùy ý
-      console.log(data);
+      console.log(data); // Tuỳ ý xử lý
     }
   })
-  .catch(error => {
-    console.error("Lỗi:", error);
-    alert("Tìm kiếm thất bại.");
+  .catch(err => {
+    console.error("Tìm kiếm lỗi:", err);
+    alert("Không thể tìm kiếm.");
   });
 }
 
@@ -239,9 +213,7 @@ function refreshIframe() {
   const iframe = document.getElementById("questionIframe");
   if (iframe) {
     iframe.contentWindow.location.reload();
-
-    // Sau khi reload xong, gọi MathJax render lại (cần bên iframe có MathJax được tải)
-    iframe.onload = function () {
+    iframe.onload = () => {
       if (iframe.contentWindow.MathJax) {
         iframe.contentWindow.MathJax.typesetPromise();
       }
@@ -249,70 +221,40 @@ function refreshIframe() {
   }
 }
 
-// Hàm tự động gọi MathJax render trong trang chính (nếu bạn dùng bảng không qua iframe)
-function renderMathInPage() {
-  if (window.MathJax) {
-    MathJax.typesetPromise();
-  }
-}
-
-// Nếu bạn có bảng trực tiếp trong trang chính, gọi renderMathInPage() sau khi tải dữ liệu bảng.
-
-// Ví dụ gọi refreshIframe() hoặc renderMathInPage() sau khi cập nhật xong để hiển thị công thức LaTeX.
-
-document.getElementById("image").addEventListener("change", function() {
+document.getElementById("image").addEventListener("change", function () {
   const file = this.files[0];
   const preview = document.getElementById("imagePreview");
-  const deleteCheckbox = document.getElementById("delete_image");
+  const deleteBox = document.getElementById("delete_image");
   const deleteLabel = document.getElementById("deleteImageLabel");
 
   if (file) {
-    if (!file.type.startsWith("image/")) {
-      alert("Chỉ chấp nhận file ảnh!");
+    if (!file.type.startsWith("image/") || file.size > 2 * 1024 * 1024) {
+      alert("Ảnh không hợp lệ.");
       this.value = "";
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Ảnh quá lớn. Vui lòng chọn ảnh dưới 2MB.");
-      this.value = "";
-      return;
-    }
-
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = e => {
       preview.src = e.target.result;
       preview.style.display = "block";
-
-      // ✅ Tự bỏ chọn checkbox khi chọn ảnh mới
-      deleteCheckbox.checked = false;
-
-      // ✅ Hiện checkbox khi có ảnh mới
+      deleteBox.checked = false;
       deleteLabel.style.display = "inline-block";
     };
     reader.readAsDataURL(file);
   } else {
-    preview.src = "";
-    preview.style.display = "none";
-
-    // ✅ Ẩn checkbox nếu không có ảnh
-    deleteCheckbox.checked = false;
-    deleteLabel.style.display = "none";
+    resetPreview();
   }
 });
 
-// --- CẢNH BÁO RỜI TRANG KHI CHƯA LƯU ---
+// --- Cảnh báo rời trang nếu chưa lưu ---
 let formChanged = false;
-
-// Đánh dấu form đã thay đổi khi người dùng nhập liệu
 document.getElementById("questionForm").addEventListener("input", () => {
   formChanged = true;
 });
 
-// Gỡ bỏ cảnh báo nếu form đã được lưu thành công (có trong submitQuestion)
 window.addEventListener("beforeunload", (e) => {
   if (formChanged) {
     e.preventDefault();
-    e.returnValue = ""; // Chrome và các trình duyệt hiện thông báo mặc định
+    e.returnValue = "";
   }
 });
-
