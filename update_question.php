@@ -10,49 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
     $deleteImage = $_POST['delete_image'] ?? '0';
+    $image_url = $_POST['image_url'] ?? ''; // ✅ đường dẫn Cloudinary từ JS
 
     if (!is_numeric($id)) {
-        echo "ID không hợp lệ.";
+        echo "❌ ID không hợp lệ.";
         exit;
     }
 
-    // Lấy ảnh hiện tại
+    // Lấy ảnh hiện tại (lưu dạng URL)
     $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
     $stmtGet->bindParam(':id', $id, PDO::PARAM_INT);
     $stmtGet->execute();
     $currentImage = $stmtGet->fetchColumn();
 
-    $uploadDir = 'images/uploads/';
-    $imageName = $currentImage;
-
-    // Nếu người dùng chọn xoá ảnh
+    // Nếu xoá ảnh
     if ($deleteImage === '1') {
-        if (!empty($currentImage) && file_exists($uploadDir . $currentImage)) {
-            unlink($uploadDir . $currentImage);
-        }
-        $imageName = '';
-    }
-
-    // Nếu có ảnh mới được tải lên thì xử lý
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (!in_array($_FILES['image']['type'], $allowedTypes)) {
-            echo "Chỉ cho phép ảnh JPG, PNG hoặc GIF.";
-            exit;
-        }
-
-        $imageName = time() . '_' . basename($_FILES['image']['name']);
-        $uploadFile = $uploadDir . $imageName;
-
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-            // Xoá ảnh cũ nếu tồn tại và không phải do người dùng đã xoá trước đó
-            if (!empty($currentImage) && file_exists($uploadDir . $currentImage)) {
-                unlink($uploadDir . $currentImage);
-            }
-        } else {
-            echo "Tải ảnh thất bại.";
-            exit;
-        }
+        $image_url = ''; // ✅ gán lại rỗng
+    } elseif (empty($image_url)) {
+        // Nếu không gửi ảnh mới, giữ ảnh cũ
+        $image_url = $currentImage;
     }
 
     // Cập nhật dữ liệu
@@ -73,13 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':answer3', $answer3);
     $stmt->bindParam(':answer4', $answer4);
     $stmt->bindParam(':correct_answer', $correct_answer);
-    $stmt->bindParam(':image', $imageName);
+    $stmt->bindParam(':image', $image_url); // ✅ Cloudinary URL
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        echo "Cập nhật câu hỏi thành công.";
+        echo "✅ Cập nhật câu hỏi thành công.";
     } else {
-        echo "Lỗi khi cập nhật câu hỏi.";
+        echo "❌ Lỗi khi cập nhật câu hỏi.";
     }
 }
 ?>
