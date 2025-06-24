@@ -16,6 +16,9 @@
       <div class="form-left">
         <input type="hidden" name="id" id="question_id">
 
+        <label for="topic">Chủ đề:</label>
+        <input type="text" name="topic" id="topic" required>
+
         <label for="question">Câu hỏi:</label>
         <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
         <div id="preview_question" class="latex-preview"></div>
@@ -48,6 +51,7 @@
         <label for="image">Ảnh minh họa:</label>
         <input type="file" name="image" id="image">
         <img id="imagePreview">
+        <input type="hidden" name="image_url" id="image_url">
         <label id="deleteImageLabel" style="display:none;">
           <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
         </label>
@@ -75,20 +79,30 @@
 
   <script src="js/question_script.js"></script>
   <script>
-    document.getElementById("image").addEventListener("change", function (event) {
+    document.getElementById("image").addEventListener("change", async function (event) {
       const file = event.target.files[0];
       const preview = document.getElementById("imagePreview");
+      const imageUrlField = document.getElementById("image_url");
 
       if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          preview.src = e.target.result;
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "your_upload_preset");
+        const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        if (data.secure_url) {
+          preview.src = data.secure_url;
           preview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
+          imageUrlField.value = data.secure_url;
+        }
       } else {
         preview.src = "";
         preview.style.display = "none";
+        imageUrlField.value = "";
       }
     });
 
@@ -105,6 +119,7 @@
 
         const data = event.data.data;
         document.getElementById("question_id").value = data.id;
+        document.getElementById("topic").value = data.topic || "";
         document.getElementById("question").value = data.question;
         document.getElementById("answer1").value = data.answer1;
         document.getElementById("answer2").value = data.answer2;
@@ -113,12 +128,15 @@
         document.getElementById("correct_answer").value = data.correct_answer;
 
         const imgPreview = document.getElementById("imagePreview");
+        const imageUrlField = document.getElementById("image_url");
         if (data.image) {
           imgPreview.src = data.image;
           imgPreview.style.display = "block";
+          imageUrlField.value = data.image;
         } else {
           imgPreview.src = "";
           imgPreview.style.display = "none";
+          imageUrlField.value = "";
         }
 
         ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => renderPreview(id));
