@@ -15,6 +15,7 @@
     <input type="hidden" name="id" id="question_id">
 
     <label>Chủ đề:</label>
+    <label>Chủ đề:</label>
     <select name="category" id="category" required>
       <option value="">--Chọn chủ đề--</option>
       <option value="Xác suất">Xác suất</option>
@@ -22,7 +23,8 @@
       <option value="Tích phân">Tích phân</option>
       <option value="Vector">Vector</option>
       <option value="Hình học không gian">Hình học không gian</option>
-      </select><br>
+    </select><br>
+
 
     <label>Câu hỏi:</label>
     <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
