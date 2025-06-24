@@ -1,30 +1,42 @@
 <?php
-require 'db_connection.php'; // Kết nối CSDL
+require 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
     $question = $_POST['question'] ?? '';
     $answer1 = $_POST['answer1'] ?? '';
     $answer2 = $_POST['answer2'] ?? '';
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $image_url = $_POST['image_url'] ?? ''; // URL ảnh (đã upload lên Cloudinary)
-    $topic = $_POST['topic'] ?? ''; // ✅ Lấy giá trị topic
+    $imageName = null;
 
-    // Kiểm tra bắt buộc
-    if (empty($question) || empty($answer1) || empty($correct_answer) || empty($topic)) {
-        echo "❌ Vui lòng nhập đầy đủ thông tin câu hỏi, đáp án và chủ đề (topic).";
+    // Kiểm tra input cơ bản
+    if (empty($question) || empty($answer1) || empty($correct_answer)) {
+        echo "Vui lòng nhập đầy đủ thông tin câu hỏi.";
         exit;
     }
 
+    // Xử lý upload ảnh nếu có
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($_FILES['image']['type'], $allowedTypes)) {
+            echo "Chỉ cho phép định dạng JPG, PNG hoặc GIF.";
+            exit;
+        }
+
+        $uploadDir = 'images/uploads';
+        $imageName = time() . '_' . basename($_FILES['image']['name']);
+        $uploadFile = $uploadDir . '/' . $imageName;
+
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+            echo "Lỗi khi tải ảnh lên.";
+            exit;
+        }
+    }
+
     try {
-        // Câu lệnh INSERT có thêm trường topic
-        $sql = "INSERT INTO questions 
-                (question, answer1, answer2, answer3, answer4, correct_answer, image, topic)
-                VALUES 
-                (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :image, :topic)";
-        
+        $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, image)
+                VALUES (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :image)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':question', $question);
         $stmt->bindParam(':answer1', $answer1);
@@ -32,22 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':answer3', $answer3);
         $stmt->bindParam(':answer4', $answer4);
         $stmt->bindParam(':correct_answer', $correct_answer);
-        $stmt->bindParam(':image', $image_url);
-        $stmt->bindParam(':topic', $topic);
+        $stmt->bindParam(':image', $imageName);
 
         if ($stmt->execute()) {
-            echo "✅ Thêm câu hỏi thành công.";
-            if (!empty($image_url)) {
-                echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
-                echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:200px; margin-top:10px; border:1px solid #ccc; border-radius:4px;' />";
-            }
+            echo "Thêm câu hỏi thành công.";
         } else {
-            echo "❌ Có lỗi xảy ra khi lưu câu hỏi.";
+            echo "Lỗi khi thêm câu hỏi.";
         }
     } catch (PDOException $e) {
-        echo "❌ Lỗi PDO: " . $e->getMessage();
+        echo "Lỗi: " . $e->getMessage();
     }
-} else {
-    echo "❌ Phương thức không hợp lệ.";
 }
 ?>
