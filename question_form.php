@@ -21,8 +21,8 @@
       <option value="Thống kê">Thống kê</option>
       <option value="Tích phân">Tích phân</option>
       <option value="Vector">Vector</option>
-      <option value="Hình học không gian">Hình học không gian/option>
-    </select><br>
+      <option value="Hình học không gian">Hình học không gian</option>
+      </select><br>
 
     <label>Câu hỏi:</label>
     <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
@@ -63,7 +63,6 @@
       <div>
         <img id="imagePreview" src="" alt="Ảnh xem trước" style="display: none; max-width: 200px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px;">
       </div>
-      <a id="downloadImage" href="#" target="_blank" download style="display:none; margin-top: 5px; color: blue; text-decoration: underline;">📥 Tải ảnh</a><br>
       <label id="deleteImageLabel" style="display:none; margin-top: 5px;">
         <input type="checkbox" id="delete_image" name="delete_image" value="1"> Xóa ảnh minh họa
       </label>
