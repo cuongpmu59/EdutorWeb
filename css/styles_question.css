@@ -1,116 +1,118 @@
-/* ---------- Cấu hình cơ bản ---------- */
+/* ---------- Tổng thể ---------- */
 body {
 	font-family: 'Segoe UI', sans-serif;
-	background-color: #f8f9fa;
+	background-color: #eef2f7;
+	margin: 0;
 	padding: 20px;
 	color: #333;
-	line-height: 1.5;
+	line-height: 1.6;
   }
   
   /* ---------- Container chính ---------- */
   .question-container {
 	display: flex;
 	flex-direction: row;
-	gap: 20px;
-	align-items: flex-start;
-	background: #fff;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+	gap: 24px;
+	background: #ffffff;
+	padding: 24px;
+	border-radius: 12px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 	flex-wrap: wrap;
   }
   
+  /* ---------- Form ---------- */
   form {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
-	gap: 20px;
+	gap: 24px;
 	flex-wrap: wrap;
   }
   
-  /* ---------- Cột trái (Form nhập liệu) ---------- */
+  /* ---------- Cột trái: Nhập liệu ---------- */
   .form-left {
 	flex: 1;
 	min-width: 300px;
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
+	gap: 16px;
   }
   
   label {
-	font-weight: bold;
+	font-weight: 600;
 	margin-bottom: 5px;
+	color: #333;
   }
   
-  textarea,
   input[type="text"],
-  select {
+  input[type="file"],
+  select,
+  textarea {
 	width: 100%;
-	padding: 8px 10px;
+	padding: 10px 12px;
 	border: 1px solid #ccc;
-	border-radius: 6px;
+	border-radius: 8px;
 	font-size: 15px;
-	box-sizing: border-box;
 	background-color: #fff;
-	transition: border-color 0.2s, box-shadow 0.2s;
+	box-sizing: border-box;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
   
   textarea {
-	min-height: 80px;
+	min-height: 90px;
 	resize: vertical;
   }
   
-  textarea:focus,
   input:focus,
+  textarea:focus,
   select:focus {
-	border-color: #007bff;
-	box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+	border-color: #0066cc;
+	box-shadow: 0 0 6px rgba(0, 102, 204, 0.2);
 	outline: none;
   }
   
-  /* ---------- Xem trước công thức LaTeX ---------- */
+  /* ---------- Xem trước LaTeX ---------- */
   .latex-preview {
-	background: #f0f0f0;
-	padding: 10px;
+	background: #f9f9f9;
+	padding: 10px 14px;
+	border: 1px dashed #bbb;
 	border-radius: 6px;
-	font-size: 16px;
 	display: none;
-	border: 1px dashed #ccc;
+	font-size: 16px;
 	white-space: pre-wrap;
-	word-wrap: break-word;
-	overflow-x: auto;
-	transition: all 0.3s ease;
+	word-break: break-word;
   }
   
-  /* ---------- Ảnh minh hoạ ---------- */
+  /* ---------- Ảnh minh họa ---------- */
   img#imagePreview {
 	max-width: 100%;
 	max-height: 200px;
-	border-radius: 6px;
-	border: 1px solid #ddd;
-	margin-top: 5px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 6px;
 	display: none;
-	transition: all 0.3s ease;
+	transition: 0.3s ease;
   }
   
-  /* ---------- Cột phải (Nút & preview) ---------- */
+  /* ---------- Cột phải: Nút thao tác ---------- */
   .form-right {
-	width: 250px;
-	min-width: 250px;
+	width: 260px;
+	min-width: 260px;
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
+	gap: 12px;
   }
   
   .form-right button {
-	padding: 10px;
+	padding: 12px;
 	border: none;
 	background-color: #007bff;
-	color: white;
+	color: #fff;
 	font-weight: bold;
+	font-size: 15px;
 	border-radius: 6px;
 	cursor: pointer;
-	transition: background-color 0.2s;
+	transition: background-color 0.2s ease;
   }
   
   .form-right button:hover {
@@ -125,29 +127,56 @@ body {
 	background-color: #c82333;
   }
   
+  .form-right button.reset-btn {
+	background-color: #6c757d;
+  }
+  
+  .form-right button.reset-btn:hover {
+	background-color: #5a6268;
+  }
+  
+  .form-right button.search-btn {
+	background-color: #17a2b8;
+  }
+  
+  .form-right button.search-btn:hover {
+	background-color: #138496;
+  }
+  
   .form-right label {
 	font-weight: normal;
+	display: block;
   }
   
   /* ---------- Xem trước tổng thể ---------- */
   .full-preview {
-	background: #e9ecef;
-	padding: 15px;
-	border-radius: 6px;
-	border: 1px dashed #aaa;
+	background: #f1f3f5;
+	padding: 16px;
+	border-radius: 8px;
+	border: 1px dashed #999;
 	font-size: 15px;
-	word-wrap: break-word;
+	word-break: break-word;
 	overflow-x: auto;
+	margin-top: 10px;
   }
   
-  /* ---------- Responsive cho điện thoại ---------- */
+  /* ---------- Liên kết ảnh ---------- */
+  #downloadImage {
+	margin-top: 6px;
+	display: inline-block;
+	font-size: 14px;
+	color: #007bff;
+	text-decoration: none;
+  }
+  #downloadImage:hover {
+	text-decoration: underline;
+  }
+  
+  /* ---------- Responsive ---------- */
   @media (max-width: 768px) {
 	.question-container {
 	  flex-direction: column;
-	}
-  
-	form {
-	  flex-direction: column;
+	  padding: 16px;
 	}
   
 	.form-left,
@@ -167,7 +196,6 @@ body {
 	}
   
 	.full-preview {
-	  order: 10;
 	  width: 100%;
 	}
   }
