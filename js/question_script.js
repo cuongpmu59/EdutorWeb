@@ -1,3 +1,5 @@
+// question_script.js - hoàn chỉnh, hỗ trợ topic, Cloudinary, kiểm tra trùng lặp, MathJax
+
 function getFormData() {
   const form = document.getElementById("questionForm");
   return new FormData(form);
@@ -10,10 +12,10 @@ function saveQuestion() {
   const deleteImage = document.getElementById("delete_image").checked;
   formData.set("delete_image", deleteImage ? "1" : "0");
 
-  const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
+  const requiredFields = ["topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
   for (const field of requiredFields) {
     if (!formData.get(field)?.trim()) {
-      alert("Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.");
+      alert("Vui lòng nhập đầy đủ thông tin câu hỏi, chủ đề và đáp án.");
       return;
     }
   }
@@ -30,7 +32,6 @@ function saveQuestion() {
     }
   }
 
-  // Nếu là thêm mới → kiểm tra trùng lặp
   if (!id) {
     fetch("check_duplicate.php", {
       method: "POST",
@@ -50,7 +51,6 @@ function saveQuestion() {
       alert("Không thể kiểm tra trùng lặp.");
     });
   } else {
-    // Cập nhật
     if (confirm("Bạn có chắc muốn cập nhật câu hỏi này?")) {
       submitQuestion(formData, form, id);
     }
@@ -59,13 +59,12 @@ function saveQuestion() {
 
 async function submitQuestion(formData, form, id) {
   const url = id ? "update_question.php" : "insert_question.php";
-
-  // Upload ảnh lên Cloudinary nếu có
   const imageFile = formData.get("image");
+
   if (imageFile && imageFile.size > 0 && formData.get("delete_image") !== "1") {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
-    cloudForm.append("upload_preset", "quiz_photo"); // Thay bằng preset của bạn
+    cloudForm.append("upload_preset", "quiz_photo");
 
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
@@ -84,11 +83,10 @@ async function submitQuestion(formData, form, id) {
       return;
     }
   } else {
-    formData.set("image_url", ""); // Nếu không có ảnh hoặc bị xoá
+    formData.set("image_url", "");
     document.getElementById("downloadImage").style.display = "none";
   }
 
-  // Gửi dữ liệu lên PHP
   fetch(url, {
     method: "POST",
     body: formData
@@ -154,6 +152,7 @@ function togglePreview() {
 }
 
 function updateFullPreview() {
+  const topic = document.getElementById("topic").value;
   const q = document.getElementById("question").value;
   const a = document.getElementById("answer1").value;
   const b = document.getElementById("answer2").value;
@@ -162,6 +161,7 @@ function updateFullPreview() {
   const correct = document.getElementById("correct_answer").value;
 
   const html = `
+    <p><strong>Chủ đề:</strong> ${topic}</p>
     <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
     <ul>
       <li><strong>A.</strong> ${a}</li>
@@ -180,7 +180,7 @@ function updateFullPreview() {
 function renderPreview(fieldId) {
   const val = document.getElementById(fieldId).value;
   const div = document.getElementById("preview_" + fieldId);
-  div.innerHTML = val;
+  div.innerHTML = `\\(${val}\\)`;
   if (window.MathJax) MathJax.typesetPromise([div]);
   updateFullPreview();
 }
@@ -200,7 +200,7 @@ function searchQuestion() {
       alert("Không tìm thấy câu hỏi nào.");
     } else {
       alert("Tìm thấy " + data.length + " câu hỏi.");
-      console.log(data); // Tuỳ ý xử lý
+      console.log(data);
     }
   })
   .catch(err => {
@@ -246,7 +246,6 @@ document.getElementById("image").addEventListener("change", function () {
   }
 });
 
-// --- Cảnh báo rời trang nếu chưa lưu ---
 let formChanged = false;
 document.getElementById("questionForm").addEventListener("input", () => {
   formChanged = true;
