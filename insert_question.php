@@ -2,27 +2,28 @@
 require 'db_connection.php'; // Kết nối CSDL
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form (JS gửi qua AJAX)
+    // Lấy dữ liệu từ form gửi lên
     $question = $_POST['question'] ?? '';
     $answer1 = $_POST['answer1'] ?? '';
     $answer2 = $_POST['answer2'] ?? '';
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $category = $_POST['category'] ?? ''; // ✅ Lấy chủ đề
-    $image_url = $_POST['image_url'] ?? ''; // ✅ Đường dẫn ảnh từ Cloudinary
+    $topic = $_POST['topic'] ?? ''; // ✅ Chủ đề
+    $image_url = $_POST['image_url'] ?? ''; // ✅ URL ảnh từ Cloudinary
 
-    // Kiểm tra dữ liệu đầu vào
-    if (empty($question) || empty($answer1) || empty($correct_answer) || empty($category)) {
-        echo "❌ Vui lòng nhập đầy đủ thông tin câu hỏi, đáp án và chủ đề.";
+    // Kiểm tra dữ liệu đầu vào bắt buộc
+    if (empty($question) || empty($answer1) || empty($correct_answer) || empty($topic)) {
+        echo "❌ Vui lòng nhập đầy đủ thông tin bắt buộc (câu hỏi, đáp án A, đáp án đúng, chủ đề).";
         exit;
     }
 
     try {
-        // ✅ Câu lệnh thêm dữ liệu bao gồm trường category
+        // Câu lệnh thêm dữ liệu vào bảng
         $sql = "INSERT INTO questions 
-                (question, answer1, answer2, answer3, answer4, correct_answer, category, image)
-                VALUES (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :category, :image)";
+                (question, answer1, answer2, answer3, answer4, correct_answer, topic, image)
+                VALUES 
+                (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :topic, :image)";
         
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':question', $question);
@@ -31,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':answer3', $answer3);
         $stmt->bindParam(':answer4', $answer4);
         $stmt->bindParam(':correct_answer', $correct_answer);
-        $stmt->bindParam(':category', $category); // ✅ Gắn chủ đề
-        $stmt->bindParam(':image', $image_url); // ✅ Gắn đường dẫn ảnh
+        $stmt->bindParam(':topic', $topic);
+        $stmt->bindParam(':image', $image_url); // Có thể là chuỗi rỗng nếu không có ảnh
 
         if ($stmt->execute()) {
             echo "✅ Thêm câu hỏi thành công.";
