@@ -17,11 +17,11 @@
     <label>Chủ đề:</label>
     <select name="category" id="category" required>
       <option value="">--Chọn chủ đề--</option>
-      <option value="Toán đại số">Toán đại số</option>
-      <option value="Toán hình học">Toán hình học</option>
-      <option value="Giải tích">Giải tích</option>
-      <option value="Số phức">Số phức</option>
-      <option value="Xác suất">Xác suất</option>
+      <option value="Xác suất">Xác suất</option>
+      <option value="Thống kê">Thống kê</option>
+      <option value="Tích phân">Tích phân</option>
+      <option value="Vector">Vector</option>
+      <option value="Hình học không gian">Hình học không gian/option>
     </select><br>
 
     <label>Câu hỏi:</label>
