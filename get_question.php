@@ -57,7 +57,6 @@ try {
             currentRow = row;
             row.classList.add("selected-row");
 
-            // Gửi dữ liệu sang form cha
             parent.postMessage({ type: "fillForm", data: data }, "*");
         }
 
@@ -80,10 +79,7 @@ try {
         }
 
         window.addEventListener("keydown", rowKeyNavigation);
-
-        window.onload = () => {
-            MathJax.typesetPromise();
-        };
+        window.onload = () => MathJax.typesetPromise();
     </script>
 </head>
 <body>
@@ -91,6 +87,7 @@ try {
         <thead>
             <tr>
                 <th style="width:40px;">ID</th>
+                <th style="width:100px;">Chủ đề</th>
                 <th>Câu hỏi</th>
                 <th>Đáp án A</th>
                 <th>Đáp án B</th>
@@ -111,9 +108,11 @@ try {
                         "answer3" => $row["answer3"],
                         "answer4" => $row["answer4"],
                         "correct_answer" => strtoupper(trim($row["correct_answer"])),
-                        "image" => $row["image"]
+                        "image" => $row["image"],
+                        "category" => $row["topic"] ?? ""  // có thể là "category" tùy DB
                     ], JSON_UNESCAPED_UNICODE) ?>)'>
                         <td><?= htmlspecialchars($row["id"]) ?></td>
+                        <td><?= htmlspecialchars($row["topic"] ?? '') ?></td>
                         <td><?= htmlspecialchars($row["question"]) ?></td>
                         <td><?= htmlspecialchars($row["answer1"]) ?></td>
                         <td><?= htmlspecialchars($row["answer2"]) ?></td>
@@ -130,7 +129,7 @@ try {
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
-                <tr><td colspan="8" style="text-align:center;">Không có dữ liệu</td></tr>
+                <tr><td colspan="9" style="text-align:center;">Không có dữ liệu</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
