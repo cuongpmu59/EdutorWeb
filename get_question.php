@@ -57,6 +57,7 @@ try {
             currentRow = row;
             row.classList.add("selected-row");
 
+            // Gửi dữ liệu sang form cha
             parent.postMessage({ type: "fillForm", data: data }, "*");
         }
 
@@ -79,7 +80,10 @@ try {
         }
 
         window.addEventListener("keydown", rowKeyNavigation);
-        window.onload = () => MathJax.typesetPromise();
+
+        window.onload = () => {
+            MathJax.typesetPromise();
+        };
     </script>
 </head>
 <body>
@@ -87,12 +91,12 @@ try {
         <thead>
             <tr>
                 <th style="width:40px;">ID</th>
-                <th style="width:100px;">Chủ đề</th>
+                <th>Chủ đề</th>
                 <th>Câu hỏi</th>
-                <th>Đáp án A</th>
-                <th>Đáp án B</th>
-                <th>Đáp án C</th>
-                <th>Đáp án D</th>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
                 <th style="width:80px;">Đáp án đúng</th>
                 <th style="width:50px;">Ảnh</th>
             </tr>
@@ -109,7 +113,7 @@ try {
                         "answer4" => $row["answer4"],
                         "correct_answer" => strtoupper(trim($row["correct_answer"])),
                         "image" => $row["image"],
-                        "category" => $row["topic"] ?? ""  // có thể là "category" tùy DB
+                        "topic" => $row["topic"] ?? ""
                     ], JSON_UNESCAPED_UNICODE) ?>)'>
                         <td><?= htmlspecialchars($row["id"]) ?></td>
                         <td><?= htmlspecialchars($row["topic"] ?? '') ?></td>
