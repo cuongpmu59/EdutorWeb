@@ -9,19 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
-    $image_url = $_POST['image_url'] ?? ''; // ✅ Đường dẫn ảnh đã upload lên Cloudinary
+    $category = $_POST['category'] ?? ''; // ✅ Lấy chủ đề
+    $image_url = $_POST['image_url'] ?? ''; // ✅ Đường dẫn ảnh từ Cloudinary
 
     // Kiểm tra dữ liệu đầu vào
-    if (empty($question) || empty($answer1) || empty($correct_answer)) {
-        echo "❌ Vui lòng nhập đầy đủ thông tin câu hỏi và ít nhất đáp án A.";
+    if (empty($question) || empty($answer1) || empty($correct_answer) || empty($category)) {
+        echo "❌ Vui lòng nhập đầy đủ thông tin câu hỏi, đáp án và chủ đề.";
         exit;
     }
 
     try {
-        // Tạo câu lệnh SQL thêm mới
+        // ✅ Câu lệnh thêm dữ liệu bao gồm trường category
         $sql = "INSERT INTO questions 
-                (question, answer1, answer2, answer3, answer4, correct_answer, image)
-                VALUES (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :image)";
+                (question, answer1, answer2, answer3, answer4, correct_answer, category, image)
+                VALUES (:question, :answer1, :answer2, :answer3, :answer4, :correct_answer, :category, :image)";
         
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':question', $question);
@@ -30,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':answer3', $answer3);
         $stmt->bindParam(':answer4', $answer4);
         $stmt->bindParam(':correct_answer', $correct_answer);
-        $stmt->bindParam(':image', $image_url); // URL ảnh từ Cloudinary hoặc chuỗi rỗng
+        $stmt->bindParam(':category', $category); // ✅ Gắn chủ đề
+        $stmt->bindParam(':image', $image_url); // ✅ Gắn đường dẫn ảnh
 
         if ($stmt->execute()) {
             echo "✅ Thêm câu hỏi thành công.";
