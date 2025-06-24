@@ -1,5 +1,5 @@
 <?php
-require 'db_connection.php'; // Kết nối đến CSDL
+require 'db_connection.php'; // Kết nối CSDL
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy dữ liệu từ form
@@ -10,8 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $answer3 = $_POST['answer3'] ?? '';
     $answer4 = $_POST['answer4'] ?? '';
     $correct_answer = $_POST['correct_answer'] ?? '';
+    $topic = $_POST['topic'] ?? '';
     $deleteImage = $_POST['delete_image'] ?? '0'; // "1" nếu checkbox xóa ảnh được chọn
-    $image_url = $_POST['image_url'] ?? '';        // URL ảnh từ Cloudinary (nếu có)
+    $image_url = $_POST['image_url'] ?? '';        // URL ảnh từ Cloudinary
 
     // Kiểm tra ID
     if (!is_numeric($id)) {
@@ -25,15 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmtGet->execute();
     $currentImage = $stmtGet->fetchColumn();
 
-    // Xử lý logic ảnh:
+    // Xử lý ảnh
     if ($deleteImage === '1') {
-        $image_url = ''; // Nếu người dùng chọn xoá ảnh => rỗng
+        $image_url = ''; // Xoá ảnh
     } elseif (empty($image_url)) {
-        $image_url = $currentImage; // Nếu không gửi ảnh mới => giữ nguyên
+        $image_url = $currentImage; // Giữ nguyên ảnh cũ nếu không có ảnh mới
     }
 
     try {
-        // Cập nhật câu hỏi
+        // Câu lệnh UPDATE
         $sql = "UPDATE questions SET
                     question = :question,
                     answer1 = :answer1,
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     answer3 = :answer3,
                     answer4 = :answer4,
                     correct_answer = :correct_answer,
+                    topic = :topic,
                     image = :image
                 WHERE id = :id";
 
@@ -51,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':answer3', $answer3);
         $stmt->bindParam(':answer4', $answer4);
         $stmt->bindParam(':correct_answer', $correct_answer);
+        $stmt->bindParam(':topic', $topic);
         $stmt->bindParam(':image', $image_url);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
