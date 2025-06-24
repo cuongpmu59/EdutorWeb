@@ -15,8 +15,7 @@
     <input type="hidden" name="id" id="question_id">
 
     <label>Chủ đề:</label>
-    <label>Chủ đề:</label>
-    <select name="category" id="category" required>
+    <select name="topic" id="topic" required>
       <option value="">--Chọn chủ đề--</option>
       <option value="Xác suất">Xác suất</option>
       <option value="Thống kê">Thống kê</option>
@@ -24,7 +23,6 @@
       <option value="Vector">Vector</option>
       <option value="Hình học không gian">Hình học không gian</option>
     </select><br>
-
 
     <label>Câu hỏi:</label>
     <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
@@ -111,10 +109,10 @@
       const a2 = document.getElementById("answer2").value;
       const a3 = document.getElementById("answer3").value;
       const a4 = document.getElementById("answer4").value;
-      const category = document.getElementById("category").value;
+      const topic = document.getElementById("topic").value;
 
       const fullContent = `
-        <p><strong>Chủ đề:</strong> ${category}</p>
+        <p><strong>Chủ đề:</strong> ${topic}</p>
         <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
         <p><strong>A:</strong> \\(${a1}\\)</p>
         <p><strong>B:</strong> \\(${a2}\\)</p>
@@ -145,7 +143,7 @@
         document.getElementById("answer3").value = data.answer3;
         document.getElementById("answer4").value = data.answer4;
         document.getElementById("correct_answer").value = data.correct_answer;
-        document.getElementById("category").value = data.category || "";
+        document.getElementById("topic").value = data.topic || "";
 
         const imgPreview = document.getElementById("imagePreview");
         const downloadLink = document.getElementById("downloadImage");
