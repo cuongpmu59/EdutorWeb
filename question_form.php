@@ -14,6 +14,16 @@
   <form id="questionForm" enctype="multipart/form-data">
     <input type="hidden" name="id" id="question_id">
 
+    <label>Chủ đề:</label>
+    <select name="category" id="category" required>
+      <option value="">--Chọn chủ đề--</option>
+      <option value="Toán đại số">Toán đại số</option>
+      <option value="Toán hình học">Toán hình học</option>
+      <option value="Giải tích">Giải tích</option>
+      <option value="Số phức">Số phức</option>
+      <option value="Xác suất">Xác suất</option>
+    </select><br>
+
     <label>Câu hỏi:</label>
     <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
     <div id="preview_question" class="latex-preview"></div><br>
@@ -81,6 +91,47 @@
   <script src="js/question_script.js"></script>
 
   <script>
+    function renderPreview(id) {
+      const value = document.getElementById(id).value;
+      const previewId = 'preview_' + id;
+      const previewEl = document.getElementById(previewId);
+      previewEl.innerHTML = `\\(${value}\\)`;
+      if (document.getElementById("togglePreview").checked) {
+        MathJax.typesetPromise([previewEl]);
+      } else {
+        previewEl.innerHTML = '';
+      }
+      updateFullPreview();
+    }
+
+    function updateFullPreview() {
+      const q = document.getElementById("question").value;
+      const a1 = document.getElementById("answer1").value;
+      const a2 = document.getElementById("answer2").value;
+      const a3 = document.getElementById("answer3").value;
+      const a4 = document.getElementById("answer4").value;
+      const category = document.getElementById("category").value;
+
+      const fullContent = `
+        <p><strong>Chủ đề:</strong> ${category}</p>
+        <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
+        <p><strong>A:</strong> \\(${a1}\\)</p>
+        <p><strong>B:</strong> \\(${a2}\\)</p>
+        <p><strong>C:</strong> \\(${a3}\\)</p>
+        <p><strong>D:</strong> \\(${a4}\\)</p>
+      `;
+      const fullPreview = document.getElementById("fullPreview");
+      fullPreview.innerHTML = fullContent;
+      if (document.getElementById("togglePreview").checked) {
+        MathJax.typesetPromise([fullPreview]);
+      }
+    }
+
+    function togglePreview() {
+      ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(renderPreview);
+      updateFullPreview();
+    }
+
     window.addEventListener("message", function (event) {
       if (event.data.type === "fillForm") {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -93,6 +144,7 @@
         document.getElementById("answer3").value = data.answer3;
         document.getElementById("answer4").value = data.answer4;
         document.getElementById("correct_answer").value = data.correct_answer;
+        document.getElementById("category").value = data.category || "";
 
         const imgPreview = document.getElementById("imagePreview");
         const downloadLink = document.getElementById("downloadImage");
@@ -102,19 +154,15 @@
         if (data.image) {
           imgPreview.src = data.image;
           imgPreview.style.display = "block";
-
           downloadLink.href = data.image;
           downloadLink.style.display = "inline-block";
-
           deleteLabel.style.display = "inline-block";
           deleteCheckbox.checked = false;
         } else {
           imgPreview.src = "";
           imgPreview.style.display = "none";
-
           downloadLink.href = "#";
           downloadLink.style.display = "none";
-
           deleteLabel.style.display = "none";
           deleteCheckbox.checked = false;
         }
@@ -122,7 +170,6 @@
         ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => {
           renderPreview(id);
         });
-
         updateFullPreview();
       }
     });
