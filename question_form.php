@@ -87,8 +87,8 @@
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "your_upload_preset");
-        const response = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+        formData.append("upload_preset", "quiz_photo");
+        const response = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
           method: "POST",
           body: formData
         });
