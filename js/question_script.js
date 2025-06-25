@@ -194,7 +194,7 @@ function deleteQuestion() {
     .catch(err => alert("Xoá thất bại."));
 }
 
-function searchQuestion() {
+ffunction searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
 
@@ -203,13 +203,45 @@ function searchQuestion() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "keyword=" + encodeURIComponent(keyword)
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.length === 0) alert("Không tìm thấy câu hỏi nào.");
-      else alert("Tìm thấy " + data.length + " câu hỏi.");
-      console.log(data);
-    })
-    .catch(err => alert("Tìm kiếm thất bại."));
+  .then(res => res.json())
+  .then(data => {
+    if (data.length === 0) {
+      alert("Không tìm thấy câu hỏi nào.");
+    } else {
+      showSearchModal(data);
+    }
+  })
+  .catch(err => {
+    console.error("Lỗi:", err);
+    alert("Tìm kiếm thất bại.");
+  });
+}
+
+function showSearchModal(data) {
+  const modal = document.getElementById("searchModal");
+  const tbody = document.querySelector("#searchResultsTable tbody");
+  tbody.innerHTML = "";
+
+  data.forEach(item => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${item.id}</td>
+      <td>${item.topic}</td>
+      <td>${item.question}</td>
+      <td>${item.correct_answer}</td>
+    `;
+    row.addEventListener("click", () => {
+      window.postMessage({ type: "fillForm", data: item }, "*");
+      closeSearchModal();
+    });
+    tbody.appendChild(row);
+  });
+
+  modal.style.display = "flex";
+}
+
+function closeSearchModal() {
+  document.getElementById("searchModal").style.display = "none";
 }
 
 // ========== 4. Ảnh minh họa ==========
