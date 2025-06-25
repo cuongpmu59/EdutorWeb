@@ -6,16 +6,16 @@ body {
 	padding: 20px;
 	color: #333;
 	line-height: 1.6;
-  }
-  
-  /* ---------- Tiêu đề ---------- */
-  h2, h3 {
+}
+
+/* ---------- Tiêu đề ---------- */
+h2, h3 {
 	margin-top: 0;
 	color: #2c3e50;
-  }
-  
-  /* ---------- Container chính ---------- */
-  .question-container {
+}
+
+/* ---------- Container chính ---------- */
+.question-container {
 	display: flex;
 	flex-direction: row;
 	gap: 24px;
@@ -24,15 +24,15 @@ body {
 	border-radius: 12px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 	flex-wrap: wrap;
-  }
-  
-  /* ---------- Form ---------- */
-  form {
+}
+
+/* ---------- Form ---------- */
+form {
 	width: 100%;
-  }
-  
-  /* ---------- Cột trái: Nhập liệu ---------- */
-  .form-left {
+}
+
+/* ---------- Cột trái: Nhập liệu ---------- */
+.form-left {
 	flex: 1;
 	min-width: 300px;
 	display: flex;
@@ -40,20 +40,20 @@ body {
 	gap: 16px;
 	border-right: 1px solid #eee;
 	padding-right: 16px;
-  }
-  
-  /* ---------- Nhãn và ô nhập ---------- */
-  label {
+}
+
+/* ---------- Nhãn và ô nhập ---------- */
+label {
 	font-weight: 600;
 	margin-bottom: 5px;
 	color: #333;
 	display: block;
-  }
-  
-  input[type="text"],
-  input[type="file"],
-  select,
-  textarea {
+}
+
+input[type="text"],
+input[type="file"],
+select,
+textarea {
 	width: 100%;
 	padding: 10px 12px;
 	border: 1px solid #ccc;
@@ -62,30 +62,31 @@ body {
 	background-color: #fff;
 	box-sizing: border-box;
 	transition: border-color 0.25s ease, box-shadow 0.25s ease;
-  }
-  
-  input[type="text"]:hover,
-  input[type="file"]:hover,
-  select:hover,
-  textarea:hover {
-	border-color: #999;
-  }
-  
-  textarea {
+}
+
+input[type="text"]:hover,
+input[type="file"]:hover,
+select:hover,
+textarea:hover {
+	border-color: #888;
+	box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+textarea {
 	min-height: 90px;
 	resize: vertical;
-  }
-  
-  input:focus,
-  textarea:focus,
-  select:focus {
+}
+
+input:focus,
+textarea:focus,
+select:focus {
 	border-color: #0066cc;
-	box-shadow: 0 0 6px rgba(0, 102, 204, 0.2);
+	box-shadow: 0 0 6px rgba(0, 102, 204, 0.25);
 	outline: none;
-  }
-  
-  /* ---------- Xem trước LaTeX ---------- */
-  .latex-preview {
+}
+
+/* ---------- Xem trước LaTeX ---------- */
+.latex-preview {
 	background: #f9f9f9;
 	padding: 10px 14px;
 	border: 1px dashed #bbb;
@@ -94,10 +95,10 @@ body {
 	font-size: 16px;
 	white-space: pre-wrap;
 	word-break: break-word;
-  }
-  
-  /* ---------- Ảnh minh họa ---------- */
-  img#imagePreview {
+}
+
+/* ---------- Ảnh minh họa ---------- */
+img#imagePreview {
 	max-width: 100%;
 	max-height: 200px;
 	border-radius: 8px;
@@ -107,24 +108,24 @@ body {
 	opacity: 0;
 	transform: scale(0.95);
 	transition: all 0.3s ease;
-  }
-  
-  img#imagePreview.show {
+}
+
+img#imagePreview.show {
 	display: block;
 	opacity: 1;
 	transform: scale(1);
-  }
-  
-  /* ---------- Cột phải: Nút thao tác ---------- */
-  .form-right {
+}
+
+/* ---------- Cột phải: Nút thao tác ---------- */
+.form-right {
 	width: 260px;
 	min-width: 260px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-  }
-  
-  .form-right button {
+}
+
+.form-right button {
 	padding: 12px;
 	border: none;
 	background-color: #007bff;
@@ -133,44 +134,45 @@ body {
 	font-size: 15px;
 	border-radius: 6px;
 	cursor: pointer;
-	transition: background-color 0.2s ease;
-  }
-  
-  .form-right button:hover {
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.form-right button:hover {
 	background-color: #0056b3;
-  }
-  
-  .form-right button.delete-btn {
+	transform: translateY(-1px);
+}
+
+.form-right button.delete-btn {
 	background-color: #dc3545;
-  }
-  
-  .form-right button.delete-btn:hover {
+}
+
+.form-right button.delete-btn:hover {
 	background-color: #c82333;
-  }
-  
-  .form-right button.reset-btn {
+}
+
+.form-right button.reset-btn {
 	background-color: #6c757d;
-  }
-  
-  .form-right button.reset-btn:hover {
+}
+
+.form-right button.reset-btn:hover {
 	background-color: #5a6268;
-  }
-  
-  .form-right button.search-btn {
+}
+
+.form-right button.search-btn {
 	background-color: #17a2b8;
-  }
-  
-  .form-right button.search-btn:hover {
+}
+
+.form-right button.search-btn:hover {
 	background-color: #138496;
-  }
-  
-  .form-right button:disabled {
+}
+
+.form-right button:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
-  }
-  
-  /* ---------- Xem trước toàn bộ ---------- */
-  .full-preview {
+}
+
+/* ---------- Xem trước toàn bộ ---------- */
+.full-preview {
 	background: #f1f3f5;
 	padding: 16px;
 	border-radius: 8px;
@@ -180,52 +182,53 @@ body {
 	overflow-y: auto;
 	max-height: 250px;
 	margin-top: 10px;
-  }
-  
-  /* ---------- Scrollbar đẹp cho xem trước ---------- */
-  .full-preview::-webkit-scrollbar {
+}
+
+/* ---------- Scrollbar đẹp cho xem trước ---------- */
+.full-preview::-webkit-scrollbar {
 	width: 6px;
-  }
-  
-  .full-preview::-webkit-scrollbar-thumb {
+}
+
+.full-preview::-webkit-scrollbar-thumb {
 	background-color: #bbb;
 	border-radius: 4px;
-  }
-  
-  /* ---------- Responsive ---------- */
-  @media (max-width: 768px) {
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
 	.question-container {
-	  flex-direction: column;
-	  padding: 16px;
+		flex-direction: column;
+		padding: 16px;
 	}
-  
 	.form-left,
 	.form-right {
-	  width: 100%;
+		width: 100%;
 	}
-  
 	.form-left {
-	  border-right: none;
-	  padding-right: 0;
+		border-right: none;
+		padding-right: 0;
 	}
-  
 	.form-right {
-	  flex-direction: row;
-	  flex-wrap: wrap;
-	  justify-content: space-between;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
 	}
-  
 	.form-right button {
-	  flex: 1 1 48%;
-	  margin-bottom: 8px;
+		flex: 1 1 48%;
+		margin-bottom: 8px;
 	}
-  
 	.full-preview {
-	  width: 100%;
+		width: 100%;
 	}
-  }
+}
 
-  /* ===== Modal tìm kiếm ===== */
+@media (max-width: 480px) {
+	.form-right button {
+		flex: 1 1 100%;
+	}
+}
+
+/* ===== Modal tìm kiếm ===== */
 .modal {
 	position: fixed;
 	z-index: 9999;
@@ -235,9 +238,9 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
 	background: #fff;
 	padding: 20px;
 	border-radius: 10px;
@@ -245,44 +248,42 @@ body {
 	max-width: 800px;
 	position: relative;
 	box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  }
-  
-  .modal-content h3 {
+	transform: scale(0.95);
+	transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+	transform: scale(1.05);
+}
+
+.modal-content h3 {
 	margin-top: 0;
 	color: #007bff;
-  }
-  
-  .modal-content .close {
+}
+
+.modal-content .close {
 	position: absolute;
 	top: 10px; right: 16px;
 	font-size: 24px;
 	font-weight: bold;
 	color: #333;
 	cursor: pointer;
-  }
-  
-  #searchResultsTable {
+}
+
+#searchResultsTable {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 10px;
-  }
-  
-  #searchResultsTable th,
-  #searchResultsTable td {
+}
+
+#searchResultsTable th,
+#searchResultsTable td {
 	padding: 10px;
 	border: 1px solid #ddd;
 	text-align: left;
-  }
-  
-  #searchResultsTable tr:hover {
+}
+
+#searchResultsTable tr:hover {
 	background-color: #f2f2f2;
 	cursor: pointer;
-  }
-
-  @media (max-width: 480px) {
-	.form-right button {
-	  flex: 1 1 100%;
-	}
-  }
-
-  
+}
