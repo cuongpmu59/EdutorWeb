@@ -157,5 +157,26 @@
       }
     });
   </script>
+
+<!-- Modal tìm kiếm kết quả -->
+<div id="searchModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeSearchModal()">&times;</span>
+    <h3>Kết quả tìm kiếm</h3>
+    <table id="searchResultsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Chủ đề</th>
+          <th>Câu hỏi</th>
+          <th>Đáp án đúng</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+
 </body>
 </html>
