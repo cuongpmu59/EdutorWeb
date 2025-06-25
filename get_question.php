@@ -13,95 +13,60 @@ try {
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Danh sách câu hỏi</title>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Danh sách câu hỏi</title>
+  <meta name="description" content="Quản lý và xem danh sách câu hỏi trắc nghiệm với hỗ trợ tìm kiếm, phân trang, và hiển thị công thức toán học.">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0 5px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 6px 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-        tr:hover {
-            background-color: #f1f9ff;
-            cursor: pointer;
-        }
-        .selected-row {
-            background-color: #cceeff !important;
-        }
-        img.thumb {
-            max-width: 40px;
-            max-height: 40px;
-            display: block;
-            margin: auto;
-            border: 1px solid #aaa;
-            border-radius: 3px;
-        }
-    </style>
+  <!-- jQuery (bắt buộc cho DataTables) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <script>
-        let currentRow = null;
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-        function selectRow(row, data) {
-            if (currentRow) {
-                currentRow.classList.remove("selected-row");
-            }
-            currentRow = row;
-            row.classList.add("selected-row");
+  <!-- MathJax (hiển thị công thức Toán) -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-            parent.postMessage({ type: "fillForm", data: data }, window.location.origin);
-        }
-
-        function rowKeyNavigation(event) {
-            const rows = document.querySelectorAll("tbody tr");
-            if (rows.length === 0) return;
-
-            if (!currentRow) {
-                currentRow = rows[0];
-                currentRow.classList.add("selected-row");
-                currentRow.click();
-                return;
-            }
-
-            let index = Array.from(rows).indexOf(currentRow);
-
-            if (event.key === "ArrowDown" && index < rows.length - 1) {
-                rows[index].classList.remove("selected-row");
-                currentRow = rows[index + 1];
-            } else if (event.key === "ArrowUp" && index > 0) {
-                rows[index].classList.remove("selected-row");
-                currentRow = rows[index - 1];
-            } else {
-                return;
-            }
-
-            currentRow.classList.add("selected-row");
-            currentRow.click();
-        }
-
-        window.addEventListener("keydown", rowKeyNavigation);
-
-        window.onload = () => {
-            MathJax.typesetPromise().then(() => {
-                const firstRow = document.querySelector("tbody tr");
-                if (firstRow) firstRow.click();
-            });
-        };
-    </script>
+  <!-- CSS riêng của bạn -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    tr:hover {
+      background-color: #f1f9ff;
+      cursor: pointer;
+    }
+    .selected-row {
+      background-color: #cceeff !important;
+    }
+    img.thumb {
+      max-width: 40px;
+      max-height: 40px;
+      display: block;
+      margin: auto;
+      border: 1px solid #aaa;
+      border-radius: 3px;
+    }
+  </style>
 </head>
+
 <body>
     <table>
         <thead>
