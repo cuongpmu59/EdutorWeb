@@ -68,7 +68,7 @@ try {
 </head>
 
 <body>
-    <table>
+    <table id="questionTable">
         <thead>
             <tr>
                 <th style="width: 40px;">ID</th>
@@ -116,5 +116,40 @@ try {
             <?php endif; ?>
         </tbody>
     </table>
+    <script>
+  $(document).ready(function () {
+    const table = $('#questionTable').DataTable({
+      paging: true,
+      searching: true,
+      ordering: true,
+      info: true,
+      language: {
+        search: "Tìm kiếm:",
+        lengthMenu: "Hiển thị _MENU_ mục",
+        info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+        infoEmpty: "Không có dữ liệu",
+        zeroRecords: "Không tìm thấy kết quả phù hợp",
+        paginate: {
+          first: "Đầu",
+          last: "Cuối",
+          next: "Sau",
+          previous: "Trước"
+        }
+      }
+    });
+
+    // Render lại MathJax mỗi lần bảng thay đổi (phân trang, tìm kiếm, sắp xếp)
+    table.on('draw', () => {
+      MathJax.typesetPromise();
+    });
+
+    // Tự động chọn dòng đầu tiên sau khi trang tải
+    setTimeout(() => {
+      const firstRow = document.querySelector("tbody tr");
+      if (firstRow) firstRow.click();
+    }, 100);
+  });
+</script>
+
 </body>
 </html>
