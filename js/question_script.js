@@ -1,4 +1,4 @@
-// ========== 1. Utility Functions ==========
+// ========== 1. Utility Functions ========== 
 function getFormData() {
   return new FormData(document.getElementById("questionForm"));
 }
@@ -19,6 +19,16 @@ function containsMath(content) {
   return /\\\(|\\\[|\$\$/.test(content);
 }
 
+let mathJaxTimer;
+function debounceRenderMath(element) {
+  clearTimeout(mathJaxTimer);
+  mathJaxTimer = setTimeout(() => {
+    if (window.MathJax && containsMath(element.innerText)) {
+      MathJax.typesetPromise([element]);
+    }
+  }, 250);
+}
+
 function renderMathInPage() {
   if (!window.MathJax) return;
   if (containsMath(document.body.innerText)) {
@@ -31,9 +41,7 @@ function renderPreview(fieldId) {
   const value = document.getElementById(fieldId).value;
   const previewDiv = document.getElementById("preview_" + fieldId);
   previewDiv.innerHTML = value;
-  if (window.MathJax && containsMath(value)) {
-    MathJax.typesetPromise([previewDiv]);
-  }
+  debounceRenderMath(previewDiv);
   updateFullPreview();
 }
 
@@ -58,11 +66,7 @@ function updateFullPreview() {
 
   const preview = document.getElementById("fullPreview");
   preview.innerHTML = html;
-
-  const combined = q + a + b + c + d;
-  if (window.MathJax && containsMath(combined)) {
-    MathJax.typesetPromise([preview]);
-  }
+  debounceRenderMath(preview);
 }
 
 function togglePreview() {
@@ -112,6 +116,8 @@ function saveQuestion() {
     }
   }
 
+  document.querySelector("button[type='submit']").disabled = true;
+
   if (!id) {
     fetch("check_duplicate.php", {
       method: "POST",
@@ -122,14 +128,21 @@ function saveQuestion() {
     .then(data => {
       if (data.exists) {
         alert("Câu hỏi này đã tồn tại.");
+        document.querySelector("button[type='submit']").disabled = false;
       } else {
         submitQuestion(formData, id);
       }
     })
-    .catch(err => alert("Lỗi kiểm tra trùng lặp."));
+    .catch(err => {
+      console.error(err);
+      alert("Lỗi kiểm tra trùng lặp: " + err.message);
+      document.querySelector("button[type='submit']").disabled = false;
+    });
   } else {
     if (confirm("Bạn có chắc muốn cập nhật?")) {
       submitQuestion(formData, id);
+    } else {
+      document.querySelector("button[type='submit']").disabled = false;
     }
   }
 }
@@ -138,7 +151,9 @@ async function submitQuestion(formData, id) {
   const url = id ? "update_question.php" : "insert_question.php";
   const imageFile = formData.get("image");
 
-  if (imageFile && imageFile.size > 0 && !formData.get("delete_image")) {
+  if (formData.get("delete_image") === "1") {
+    formData.set("image_url", "");
+  } else if (imageFile && imageFile.size > 0) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
     cloudForm.append("upload_preset", "quiz_photo");
@@ -152,11 +167,10 @@ async function submitQuestion(formData, id) {
         formData.set("image_url", data.secure_url);
       }
     } catch (err) {
-      alert("Không thể tải ảnh lên Cloudinary.");
+      alert("Không thể tải ảnh lên Cloudinary: " + err.message);
+      document.querySelector("button[type='submit']").disabled = false;
       return;
     }
-  } else {
-    formData.set("image_url", "");
   }
 
   fetch(url, {
@@ -171,7 +185,13 @@ async function submitQuestion(formData, id) {
       refreshIframe();
       formChanged = false;
     })
-    .catch(err => alert("Lỗi khi lưu câu hỏi."));
+    .catch(err => {
+      console.error(err);
+      alert("Lỗi khi lưu câu hỏi: " + err.message);
+    })
+    .finally(() => {
+      document.querySelector("button[type='submit']").disabled = false;
+    });
 }
 
 function deleteQuestion() {
@@ -191,10 +211,13 @@ function deleteQuestion() {
       resetPreview();
       refreshIframe();
     })
-    .catch(err => alert("Xoá thất bại."));
+    .catch(err => {
+      console.error(err);
+      alert("Xoá thất bại: " + err.message);
+    });
 }
 
-ffunction searchQuestion() {
+function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
 
@@ -213,7 +236,7 @@ ffunction searchQuestion() {
   })
   .catch(err => {
     console.error("Lỗi:", err);
-    alert("Tìm kiếm thất bại.");
+    alert("Tìm kiếm thất bại: " + err.message);
   });
 }
 
