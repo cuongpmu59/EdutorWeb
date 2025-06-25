@@ -42,7 +42,13 @@ function renderPreview(fieldId) {
   const previewDiv = document.getElementById("preview_" + fieldId);
   previewDiv.innerHTML = value;
   debounceRenderMath(previewDiv);
-  updateFullPreview();
+  debounceFullPreview();
+}
+
+let previewTimer;
+function debounceFullPreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(updateFullPreview, 300);
 }
 
 function updateFullPreview() {
@@ -87,7 +93,7 @@ function resetPreview() {
   document.getElementById("image_url").value = "";
   document.getElementById("delete_image").checked = false;
   document.getElementById("deleteImageLabel").style.display = "none";
-  updateFullPreview();
+  debounceFullPreview();
 }
 
 // ========== 3. Form Submission ==========
@@ -116,7 +122,8 @@ function saveQuestion() {
     }
   }
 
-  document.querySelector("button[type='submit']").disabled = true;
+  const saveBtn = document.querySelector(".form-right button:nth-child(1)");
+  saveBtn.disabled = true;
 
   if (!id) {
     fetch("check_duplicate.php", {
@@ -128,26 +135,26 @@ function saveQuestion() {
     .then(data => {
       if (data.exists) {
         alert("Câu hỏi này đã tồn tại.");
-        document.querySelector("button[type='submit']").disabled = false;
+        saveBtn.disabled = false;
       } else {
-        submitQuestion(formData, id);
+        submitQuestion(formData, id, saveBtn);
       }
     })
     .catch(err => {
       console.error(err);
       alert("Lỗi kiểm tra trùng lặp: " + err.message);
-      document.querySelector("button[type='submit']").disabled = false;
+      saveBtn.disabled = false;
     });
   } else {
     if (confirm("Bạn có chắc muốn cập nhật?")) {
-      submitQuestion(formData, id);
+      submitQuestion(formData, id, saveBtn);
     } else {
-      document.querySelector("button[type='submit']").disabled = false;
+      saveBtn.disabled = false;
     }
   }
 }
 
-async function submitQuestion(formData, id) {
+async function submitQuestion(formData, id, saveBtn) {
   const url = id ? "update_question.php" : "insert_question.php";
   const imageFile = formData.get("image");
 
@@ -168,7 +175,7 @@ async function submitQuestion(formData, id) {
       }
     } catch (err) {
       alert("Không thể tải ảnh lên Cloudinary: " + err.message);
-      document.querySelector("button[type='submit']").disabled = false;
+      saveBtn.disabled = false;
       return;
     }
   }
@@ -190,7 +197,7 @@ async function submitQuestion(formData, id) {
       alert("Lỗi khi lưu câu hỏi: " + err.message);
     })
     .finally(() => {
-      document.querySelector("button[type='submit']").disabled = false;
+      saveBtn.disabled = false;
     });
 }
 
@@ -255,6 +262,7 @@ function showSearchModal(data) {
     `;
     row.addEventListener("click", () => {
       window.postMessage({ type: "fillForm", data: item }, "*");
+      row.style.backgroundColor = "#e0f7fa";
       closeSearchModal();
     });
     tbody.appendChild(row);
@@ -320,10 +328,16 @@ window.addEventListener("message", function (event) {
       imgPreview.src = data.image;
       imgPreview.classList.add("show");
       document.getElementById("image_url").value = data.image;
+      document.getElementById("deleteImageLabel").style.display = "inline-block";
+    } else {
+      document.getElementById("imagePreview").src = "";
+      document.getElementById("imagePreview").classList.remove("show");
+      document.getElementById("image_url").value = "";
+      document.getElementById("deleteImageLabel").style.display = "none";
     }
 
     ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
-    updateFullPreview();
+    debounceFullPreview();
   }
 });
 
