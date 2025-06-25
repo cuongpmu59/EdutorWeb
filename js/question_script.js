@@ -1,9 +1,6 @@
-// File: question_script.js
-
 // ========== 1. Utility Functions ==========
 function getFormData() {
-  const form = document.getElementById("questionForm");
-  return new FormData(form);
+  return new FormData(document.getElementById("questionForm"));
 }
 
 function refreshIframe() {
@@ -18,8 +15,13 @@ function refreshIframe() {
   }
 }
 
+function containsMath(content) {
+  return /\\\(|\\\[|\$\$/.test(content);
+}
+
 function renderMathInPage() {
-  if (window.MathJax) {
+  if (!window.MathJax) return;
+  if (containsMath(document.body.innerText)) {
     MathJax.typesetPromise();
   }
 }
@@ -29,12 +31,14 @@ function renderPreview(fieldId) {
   const value = document.getElementById(fieldId).value;
   const previewDiv = document.getElementById("preview_" + fieldId);
   previewDiv.innerHTML = value;
-  if (window.MathJax) MathJax.typesetPromise([previewDiv]);
+  if (window.MathJax && containsMath(value)) {
+    MathJax.typesetPromise([previewDiv]);
+  }
   updateFullPreview();
 }
 
 function updateFullPreview() {
-  const question = document.getElementById("question").value;
+  const q = document.getElementById("question").value;
   const a = document.getElementById("answer1").value;
   const b = document.getElementById("answer2").value;
   const c = document.getElementById("answer3").value;
@@ -42,7 +46,7 @@ function updateFullPreview() {
   const correct = document.getElementById("correct_answer").value;
 
   const html = `
-    <p><strong>Câu hỏi:</strong> \\(${question}\\)</p>
+    <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
     <ul>
       <li><strong>A.</strong> ${a}</li>
       <li><strong>B.</strong> ${b}</li>
@@ -54,7 +58,11 @@ function updateFullPreview() {
 
   const preview = document.getElementById("fullPreview");
   preview.innerHTML = html;
-  if (window.MathJax) MathJax.typesetPromise([preview]);
+
+  const combined = q + a + b + c + d;
+  if (window.MathJax && containsMath(combined)) {
+    MathJax.typesetPromise([preview]);
+  }
 }
 
 function togglePreview() {
@@ -73,10 +81,8 @@ function toggleFullPreview() {
 function resetPreview() {
   document.getElementById("imagePreview").classList.remove("show");
   document.getElementById("image_url").value = "";
-  const deleteCheckbox = document.getElementById("delete_image");
-  const deleteLabel = document.getElementById("deleteImageLabel");
-  deleteCheckbox.checked = false;
-  deleteLabel.style.display = "none";
+  document.getElementById("delete_image").checked = false;
+  document.getElementById("deleteImageLabel").style.display = "none";
   updateFullPreview();
 }
 
