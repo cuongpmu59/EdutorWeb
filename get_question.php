@@ -28,7 +28,18 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-  <!-- MathJax (hiển thị công thức Toán) -->
+<!-- DataTables Buttons CSS + JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
+<!-- FileSaver, JSZip, pdfmake để hỗ trợ export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+ 
+<!-- MathJax (hiển thị công thức Toán) -->
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <!-- CSS riêng của bạn -->
@@ -116,9 +127,12 @@ try {
             <?php endif; ?>
         </tbody>
     </table>
+    
     <script>
-  $(document).ready(function () {
+    $(document).ready(function () {
     const table = $('#questionTable').DataTable({
+      dom: 'Bfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
       paging: true,
       searching: true,
       ordering: true,
@@ -134,16 +148,23 @@ try {
           last: "Cuối",
           next: "Sau",
           previous: "Trước"
+        },
+        buttons: {
+          copy: "Sao chép",
+          csv: "Xuất CSV",
+          excel: "Xuất Excel",
+          pdf: "Xuất PDF",
+          print: "In"
         }
       }
     });
 
-    // Render lại MathJax mỗi lần bảng thay đổi (phân trang, tìm kiếm, sắp xếp)
+    // Render lại MathJax mỗi lần bảng thay đổi
     table.on('draw', () => {
       MathJax.typesetPromise();
     });
 
-    // Tự động chọn dòng đầu tiên sau khi trang tải
+    // Tự động chọn dòng đầu tiên
     setTimeout(() => {
       const firstRow = document.querySelector("tbody tr");
       if (firstRow) firstRow.click();
