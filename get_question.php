@@ -75,6 +75,19 @@ try {
 </head>
 
 <body>
+
+<label for="filterTopic"><strong>Lọc theo chủ đề:</strong></label>
+<select id="filterTopic" style="margin-bottom: 10px; padding: 4px 8px;">
+  <option value="">-- Tất cả --</option>
+  <?php
+    $topics = array_unique(array_column($rows, 'topic'));
+    sort($topics);
+    foreach ($topics as $tp) {
+      echo '<option value="' . htmlspecialchars($tp) . '">' . htmlspecialchars($tp) . '</option>';
+    }
+  ?>
+</select>
+
   <table id="questionTable">
     <thead>
       <tr>
@@ -136,45 +149,56 @@ try {
     }
 
     $(document).ready(function () {
-      const table = $('#questionTable').DataTable({
-        dom: 'Bfrtip',
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        language: {
-          search: "Tìm kiếm:",
-          lengthMenu: "Hiển thị _MENU_ mục",
-          info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-          infoEmpty: "Không có dữ liệu",
-          zeroRecords: "Không tìm thấy kết quả phù hợp",
-          paginate: {
-            first: "Đầu",
-            last: "Cuối",
-            next: "Sau",
-            previous: "Trước"
-          },
-          buttons: {
-            copy: "Sao chép",
-            csv: "Xuất CSV",
-            excel: "Xuất Excel",
-            pdf: "Xuất PDF",
-            print: "In"
-          }
-        }
-      });
+  const table = $('#questionTable').DataTable({
+    dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    paging: true,
+    searching: true,
+    ordering: true,
+    info: true,
+    language: {
+      search: "Tìm kiếm:",
+      lengthMenu: "Hiển thị _MENU_ mục",
+      info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+      infoEmpty: "Không có dữ liệu",
+      zeroRecords: "Không tìm thấy kết quả phù hợp",
+      paginate: {
+        first: "Đầu",
+        last: "Cuối",
+        next: "Sau",
+        previous: "Trước"
+      },
+      buttons: {
+        copy: "Sao chép",
+        csv: "Xuất CSV",
+        excel: "Xuất Excel",
+        pdf: "Xuất PDF",
+        print: "In"
+      }
+    }
+  });
 
-      table.on('draw', () => {
-        MathJax.typesetPromise();
-      });
+  // Lọc theo chủ đề
+  $('#filterTopic').on('change', function () {
+    const topic = this.value;
+    table.column(7) // cột thứ 8 (0-based index) là "Chủ đề"
+         .search(topic ? '^' + topic + '$' : '', true, false)
+         .draw();
+  });
 
-      // Auto chọn dòng đầu tiên
-      setTimeout(() => {
-        const firstRow = document.querySelector("tbody tr");
-        if (firstRow) firstRow.click();
-      }, 100);
-    });
+  // Render lại MathJax sau mỗi lần vẽ bảng
+  table.on('draw', () => {
+    MathJax.typesetPromise();
+  });
+
+  // Tự chọn dòng đầu tiên khi tải
+  setTimeout(() => {
+    const firstRow = document.querySelector("tbody tr");
+    if (firstRow) firstRow.click();
+  }, 100);
+});
+
+
   </script>
 </body>
 </html>
