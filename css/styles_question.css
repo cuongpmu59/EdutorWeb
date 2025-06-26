@@ -7,6 +7,7 @@ body {
 	color: #333;
 	line-height: 1.6;
 	cursor: default;
+	overscroll-behavior: contain;
 }
 
 /* ---------- Tiêu đề ---------- */
@@ -69,6 +70,7 @@ textarea:hover {
 textarea {
 	min-height: 90px;
 	resize: vertical;
+	max-height: 250px;
 }
 
 input:focus,
@@ -95,17 +97,18 @@ select:focus {
 img#imagePreview {
 	display: block;
 	height: auto;
-	max-height: 150px; /* Chiều cao giới hạn */
-	width: auto;       /* Chiều rộng tự điều chỉnh */
+	max-height: 150px;
+	max-width: 100%;
+	width: auto;
 	border-radius: 8px;
 	border: 1px solid #ccc;
 	margin-top: 6px;
 	visibility: hidden;
 	opacity: 0;
 	transform: scale(0.95);
+	object-fit: contain;
 	transition: all 0.3s ease;
-  }
-  
+}
 img#imagePreview.show {
 	visibility: visible;
 	opacity: 1;
@@ -183,6 +186,8 @@ img#imagePreview.show {
 .form-right button:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
+	opacity: 0.7;
+	pointer-events: none;
 }
 
 /* ---------- Xem trước toàn bộ ---------- */
@@ -223,6 +228,7 @@ img#imagePreview.show {
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0,0,0,0.4);
+	backdrop-filter: blur(3px);
 	display: none;
 	justify-content: center;
 	align-items: center;
@@ -247,9 +253,14 @@ img#imagePreview.show {
 	transition: transform 0.3s ease;
 	overflow-y: auto;
 	max-height: 90vh;
+	animation: slideUp 0.3s ease;
 }
 .modal.show .modal-content {
 	transform: scale(1.05);
+}
+@keyframes slideUp {
+	from { opacity: 0; transform: translateY(20px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 .modal-content h3 {
 	margin-top: 0;
@@ -279,13 +290,11 @@ img#imagePreview.show {
 	background-color: #f2f2f2;
 	cursor: pointer;
 }
-
 #searchResultsTable img {
 	max-width: 80px;
 	max-height: 60px;
 	object-fit: cover;
-  }
-  
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
@@ -298,11 +307,12 @@ img#imagePreview.show {
 		width: 100%;
 	}
 	.form-actions {
-		flex-direction: column;
+		flex-direction: row;
+		flex-wrap: wrap;
 	}
 	.form-right button {
-		width: 100%;
-		margin-bottom: 8px;
+		flex: 1 1 48%;
+		min-width: 140px;
 	}
 }
 @media (max-width: 480px) {
@@ -332,5 +342,8 @@ img#imagePreview.show {
 	.modal-content {
 		background: #2d2d2d;
 		color: #eee;
+	}
+	.form-right button {
+		filter: brightness(1.1);
 	}
 }
