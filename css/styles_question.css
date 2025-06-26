@@ -1,3 +1,4 @@
+
 /* ---------- Tổng thể ---------- */
 body {
 	font-family: 'Segoe UI', sans-serif;
@@ -7,13 +8,11 @@ body {
 	color: #333;
 	line-height: 1.6;
 }
-
 /* ---------- Tiêu đề ---------- */
 h2, h3 {
 	margin-top: 0;
 	color: #2c3e50;
 }
-
 /* ---------- Container chính ---------- */
 .question-container {
 	display: flex;
@@ -24,8 +23,8 @@ h2, h3 {
 	border-radius: 12px;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 	flex-wrap: wrap;
+	align-items: stretch;
 }
-
 /* ---------- Form ---------- */
 form {
 	width: 100%;
@@ -33,7 +32,6 @@ form {
 	flex-wrap: wrap;
 	gap: 24px;
 }
-
 /* ---------- Nhãn và ô nhập ---------- */
 label {
 	font-weight: 600;
@@ -41,7 +39,6 @@ label {
 	color: #333;
 	display: block;
 }
-
 input[type="text"],
 input[type="file"],
 select,
@@ -55,7 +52,6 @@ textarea {
 	box-sizing: border-box;
 	transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-
 input[type="text"]:hover,
 input[type="file"]:hover,
 select:hover,
@@ -63,12 +59,10 @@ textarea:hover {
 	border-color: #888;
 	box-shadow: 0 0 4px rgba(0,0,0,0.1);
 }
-
 textarea {
 	min-height: 90px;
 	resize: vertical;
 }
-
 input:focus,
 textarea:focus,
 select:focus {
@@ -76,7 +70,6 @@ select:focus {
 	box-shadow: 0 0 6px rgba(0, 102, 204, 0.25);
 	outline: none;
 }
-
 /* ---------- Xem trước LaTeX ---------- */
 .latex-preview {
 	background: #f9f9f9;
@@ -88,7 +81,6 @@ select:focus {
 	white-space: pre-wrap;
 	word-break: break-word;
 }
-
 /* ---------- Ảnh minh họa ---------- */
 img#imagePreview {
 	max-width: 100%;
@@ -96,18 +88,16 @@ img#imagePreview {
 	border-radius: 8px;
 	border: 1px solid #ccc;
 	margin-top: 6px;
-	display: none;
+	visibility: hidden;
 	opacity: 0;
 	transform: scale(0.95);
 	transition: all 0.3s ease;
 }
-
 img#imagePreview.show {
-	display: block;
+	visibility: visible;
 	opacity: 1;
 	transform: scale(1);
 }
-
 /* ---------- Cột phải: Nút thao tác ---------- */
 .form-actions {
 	display: flex;
@@ -116,14 +106,12 @@ img#imagePreview.show {
 	flex-wrap: wrap;
 	margin-top: 16px;
 }
-
 .form-left {
 	flex: 3;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
 }
-
 .form-right {
 	flex: 1;
 	min-width: 200px;
@@ -131,7 +119,6 @@ img#imagePreview.show {
 	flex-direction: column;
 	gap: 12px;
 }
-
 .form-right button {
 	padding: 12px;
 	border: none;
@@ -143,41 +130,36 @@ img#imagePreview.show {
 	cursor: pointer;
 	transition: background-color 0.2s ease, transform 0.2s ease;
 }
-
 .form-right button:hover {
 	background-color: #0056b3;
 	transform: translateY(-1px);
 }
-
+.form-right button:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
 .form-right button.delete-btn {
 	background-color: #dc3545;
 }
-
 .form-right button.delete-btn:hover {
 	background-color: #c82333;
 }
-
 .form-right button.reset-btn {
 	background-color: #6c757d;
 }
-
 .form-right button.reset-btn:hover {
 	background-color: #5a6268;
 }
-
 .form-right button.search-btn {
 	background-color: #17a2b8;
 }
-
 .form-right button.search-btn:hover {
 	background-color: #138496;
 }
-
 .form-right button:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
 }
-
 /* ---------- Xem trước toàn bộ ---------- */
 #fullPreview {
 	background: #f1f3f5;
@@ -191,16 +173,13 @@ img#imagePreview.show {
 	margin-top: 10px;
 	display: none;
 }
-
 #fullPreview::-webkit-scrollbar {
 	width: 6px;
 }
-
 #fullPreview::-webkit-scrollbar-thumb {
 	background-color: #bbb;
 	border-radius: 4px;
 }
-
 /* ---------- Iframe ---------- */
 .question-iframe {
 	width: 100%;
@@ -208,7 +187,6 @@ img#imagePreview.show {
 	border: none;
 	margin-top: 16px;
 }
-
 /* ===== Modal tìm kiếm ===== */
 .modal {
 	position: fixed;
@@ -220,7 +198,14 @@ img#imagePreview.show {
 	justify-content: center;
 	align-items: center;
 }
-
+.modal.show {
+	display: flex;
+	animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
 .modal-content {
 	background: #fff;
 	padding: 20px;
@@ -232,16 +217,13 @@ img#imagePreview.show {
 	transform: scale(0.95);
 	transition: transform 0.3s ease;
 }
-
 .modal.show .modal-content {
 	transform: scale(1.05);
 }
-
 .modal-content h3 {
 	margin-top: 0;
 	color: #007bff;
 }
-
 .modal-content .close {
 	position: absolute;
 	top: 10px; right: 16px;
@@ -250,25 +232,21 @@ img#imagePreview.show {
 	color: #333;
 	cursor: pointer;
 }
-
 #searchResultsTable {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 10px;
 }
-
 #searchResultsTable th,
 #searchResultsTable td {
 	padding: 10px;
 	border: 1px solid #ddd;
 	text-align: left;
 }
-
 #searchResultsTable tr:hover {
 	background-color: #f2f2f2;
 	cursor: pointer;
 }
-
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
 	.question-container {
@@ -287,9 +265,31 @@ img#imagePreview.show {
 		margin-bottom: 8px;
 	}
 }
-
 @media (max-width: 480px) {
 	.form-right button {
 		width: 100%;
+	}
+}
+/* ---------- Dark Mode ---------- */
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #121212;
+		color: #e0e0e0;
+	}
+	.question-container {
+		background: #1e1e1e;
+	}
+	input, textarea, select {
+		background-color: #2c2c2c;
+		color: #f1f1f1;
+		border-color: #444;
+	}
+	.latex-preview, #fullPreview {
+		background-color: #2a2a2a;
+		border-color: #555;
+	}
+	.modal-content {
+		background: #2d2d2d;
+		color: #eee;
 	}
 }
