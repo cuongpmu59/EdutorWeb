@@ -277,6 +277,13 @@ img#imagePreview.show {
 	cursor: pointer;
 }
 
+#searchResultsTable img {
+	max-width: 80px;
+	max-height: 60px;
+	object-fit: cover;
+  }
+  
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
 	.question-container {
