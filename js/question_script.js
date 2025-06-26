@@ -1,4 +1,4 @@
-// ========== 1. Utility Functions ========== 
+// ========== 1. Utility Functions ==========
 function getFormData() {
   return new FormData(document.getElementById("questionForm"));
 }
@@ -125,37 +125,15 @@ function saveQuestion() {
   const saveBtn = document.querySelector(".form-right button:nth-child(1)");
   saveBtn.disabled = true;
 
-  if (!id) {
-    fetch("check_duplicate.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "question=" + encodeURIComponent(formData.get("question"))
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.exists) {
-        alert("Câu hỏi này đã tồn tại.");
-        saveBtn.disabled = false;
-      } else {
-        submitQuestion(formData, id, saveBtn);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Lỗi kiểm tra trùng lặp: " + err.message);
-      saveBtn.disabled = false;
-    });
-  } else {
-    if (confirm("Bạn có chắc muốn cập nhật?")) {
-      submitQuestion(formData, id, saveBtn);
-    } else {
-      saveBtn.disabled = false;
-    }
+  if (id && !confirm("Bạn có chắc muốn cập nhật?")) {
+    saveBtn.disabled = false;
+    return;
   }
+
+  submitQuestion(formData, id, saveBtn);
 }
 
 async function submitQuestion(formData, id, saveBtn) {
-  const url = id ? "update_question.php" : "insert_question.php";
   const imageFile = formData.get("image");
 
   if (formData.get("delete_image") === "1") {
@@ -164,6 +142,7 @@ async function submitQuestion(formData, id, saveBtn) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
     cloudForm.append("upload_preset", "quiz_photo");
+
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
         method: "POST",
@@ -180,21 +159,21 @@ async function submitQuestion(formData, id, saveBtn) {
     }
   }
 
-  fetch(url, {
+  fetch("save_question.php", {
     method: "POST",
     body: formData
   })
-    .then(res => res.text())
-    .then(response => {
-      alert(response);
+    .then(async (res) => {
+      const text = await res.text();
+      if (!res.ok) throw new Error(text);
+      alert(text);
       if (!id) document.getElementById("questionForm").reset();
       resetPreview();
       refreshIframe();
       formChanged = false;
     })
     .catch(err => {
-      console.error(err);
-      alert("Lỗi khi lưu câu hỏi: " + err.message);
+      alert("Lỗi: " + err.message);
     })
     .finally(() => {
       saveBtn.disabled = false;
@@ -219,11 +198,11 @@ function deleteQuestion() {
       refreshIframe();
     })
     .catch(err => {
-      console.error(err);
       alert("Xoá thất bại: " + err.message);
     });
 }
 
+// ========== 4. Tìm kiếm ==========
 function searchQuestion() {
   const keyword = prompt("Nhập từ khóa cần tìm:");
   if (!keyword) return;
@@ -233,18 +212,17 @@ function searchQuestion() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "keyword=" + encodeURIComponent(keyword)
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.length === 0) {
-      alert("Không tìm thấy câu hỏi nào.");
-    } else {
-      showSearchModal(data);
-    }
-  })
-  .catch(err => {
-    console.error("Lỗi:", err);
-    alert("Tìm kiếm thất bại: " + err.message);
-  });
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        alert("Không tìm thấy câu hỏi nào.");
+      } else {
+        showSearchModal(data);
+      }
+    })
+    .catch(err => {
+      alert("Tìm kiếm thất bại: " + err.message);
+    });
 }
 
 function showSearchModal(data) {
@@ -275,7 +253,7 @@ function closeSearchModal() {
   document.getElementById("searchModal").style.display = "none";
 }
 
-// ========== 4. Ảnh minh họa ==========
+// ========== 5. Ảnh minh họa ==========
 document.getElementById("image").addEventListener("change", function () {
   const file = this.files[0];
   const preview = document.getElementById("imagePreview");
@@ -310,7 +288,7 @@ document.getElementById("image").addEventListener("change", function () {
   }
 });
 
-// ========== 5. Tự động đồng bộ ==========
+// ========== 6. Tự động đồng bộ ==========
 window.addEventListener("message", function (event) {
   if (event.data.type === "fillForm") {
     const data = event.data.data;
@@ -341,7 +319,7 @@ window.addEventListener("message", function (event) {
   }
 });
 
-// ========== 6. Cảnh báo nếu thoát ==========
+// ========== 7. Cảnh báo nếu thoát ==========
 let formChanged = false;
 document.getElementById("questionForm").addEventListener("input", () => {
   formChanged = true;
@@ -353,7 +331,7 @@ window.addEventListener("beforeunload", (e) => {
   }
 });
 
-// ========== 7. Khởi tạo ==========
+// ========== 8. Khởi tạo ==========
 document.addEventListener("DOMContentLoaded", () => {
   togglePreview();
   toggleFullPreview();
