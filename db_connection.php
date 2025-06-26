@@ -12,8 +12,7 @@ try {
     header("Content-Type: application/json; charset=utf-8");
     echo json_encode([
         'status' => 'error',
-        'message' => '❌ Kết nối thất bại: ' . $e->getMessage()
+        'message' => '❌ Kết nối CSDL thất bại: ' . $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
-?>
