@@ -208,11 +208,16 @@ function showSearchModal(data) {
   data.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${item.id}</td>
-      <td>${item.topic}</td>
-      <td>${item.question}</td>
-      <td>${item.correct_answer}</td>
-    `;
+  <td>${item.id}</td>
+  <td>${item.topic}</td>
+  <td>${item.question}</td>
+  <td>${item.correct_answer}</td>
+  <td>
+    ${item.image
+      ? `<img src="${item.image}" alt="img" style="max-height:60px; border-radius:4px;">`
+      : ""}
+  </td>
+`;
     row.onclick = () => {
       window.postMessage({ type: "fillForm", data: item }, "*");
       row.style.backgroundColor = "#e0f7fa";
@@ -230,6 +235,8 @@ function closeSearchModal() {
 // ========== 6. Image Preview ==========
 document.getElementById("image").addEventListener("change", function () {
   const file = this.files[0];
+  document.getElementById("imageFileName").textContent = file ? file.name : "";
+
   const preview = document.getElementById("imagePreview");
   const deleteCheckbox = document.getElementById("delete_image");
   const deleteLabel = document.getElementById("deleteImageLabel");
