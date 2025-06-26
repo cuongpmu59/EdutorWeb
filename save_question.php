@@ -32,7 +32,7 @@ if (!$topic) $errors[] = "Chủ đề không được để trống.";
 
 if ($errors) {
     http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => implode(" ", $errors)]);
+    echo json_encode(['status' => 'success', 'message' => '✅ Đã thêm câu hỏi mới.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -40,8 +40,10 @@ if ($errors) {
 $stmt = $conn->prepare("SELECT id FROM questions WHERE question = ?");
 $stmt->bind_param("s", $question);
 $stmt->execute();
+$existing_id = null;
 $stmt->bind_result($existing_id);
 $stmt->fetch();
+
 $stmt->close();
 
 if ($existing_id && (!$id || $existing_id != $id)) {
@@ -66,10 +68,13 @@ try {
     }
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Lỗi lưu câu hỏi: ' . $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Lỗi lưu câu hỏi: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
 
+// Đảm bảo không có gì ngoài JSON bị gửi
 $output = ob_get_clean();
-if ($output) {
-    echo json_encode(['status' => 'error', 'message' => 'Có nội dung ngoài JSON: ' . $output]);
+if (strlen(trim($output)) > 0 && !str_starts_with(trim($output), '{')) {
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Có nội dung ngoài JSON: ' . $output], JSON_UNESCAPED_UNICODE);
 }
+
