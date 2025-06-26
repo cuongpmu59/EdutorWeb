@@ -72,11 +72,12 @@ try {
         echo json_encode(['status' => 'success', 'message' => '✅ Cập nhật câu hỏi thành công.']);
     } else {
         // Thêm mới
-        $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO questions (topic, question, image, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$stmt) throw new Exception("Lỗi prepare: " . $conn->error);
-
-        $stmt->bind_param("ssssssss", $question, $answer1, $answer2, $answer3, $answer4, $correct, $topic, $image_url);
+        
+        $stmt->bind_param("sssssssss", $topic, $question, $image_url, $answer1, $answer2, $answer3, $answer4, $correct, $correct); // <-- thêm biến thứ 9
         $stmt->execute();
+        
         $stmt->close();
 
         echo json_encode(['status' => 'success', 'message' => '✅ Đã thêm câu hỏi mới.']);
