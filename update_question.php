@@ -1,8 +1,4 @@
 <?php
-ob_start();
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require 'db_connection.php';
 header("Content-Type: application/json; charset=utf-8");
 
@@ -10,7 +6,6 @@ function get_post($key) {
     return trim($_POST[$key] ?? '');
 }
 
-// ==== Nhận dữ liệu ====
 $id            = get_post('question_id');
 $topic         = get_post('topic');
 $question      = get_post('question');
@@ -22,11 +17,8 @@ $correct       = get_post('correct_answer');
 $image_url     = get_post('image_url');
 $delete_image  = get_post('delete_image');
 
-if ($delete_image === '1') {
-    $image_url = '';
-}
+if ($delete_image === '1') $image_url = '';
 
-// ==== Kiểm tra hợp lệ ====
 $errors = [];
 if (!$id || !is_numeric($id)) $errors[] = "ID câu hỏi không hợp lệ.";
 if (!$question) $errors[] = "Câu hỏi không được để trống.";
@@ -34,57 +26,26 @@ if (!$answer1 || !$answer2 || !$answer3 || !$answer4) $errors[] = "Tất cả đ
 if (!in_array($correct, ['A', 'B', 'C', 'D'])) $errors[] = "Đáp án đúng phải là A, B, C hoặc D.";
 if (!$topic) $errors[] = "Chủ đề không được để trống.";
 
-// ==== Nếu có lỗi form ====
 if (!empty($errors)) {
     http_response_code(400);
-    $output = trim(ob_get_clean()); // Dọn output trước khi echo JSON
-    echo json_encode([
-        'status' => 'error',
-        'message' => implode(" ", $errors),
-        'debug' => $output
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'error', 'message' => implode(" ", $errors)], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
-    // ==== Kiểm tra trùng ====
     $stmt = $conn->prepare("SELECT id FROM questions WHERE question = ? AND id != ?");
-    $stmt->bind_param("si", $question, $id);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
+    $stmt->execute([$question, $id]);
+    if ($stmt->rowCount() > 0) {
         http_response_code(409);
-        $output = trim(ob_get_clean());
-        echo json_encode([
-            'status' => 'duplicate',
-            'message' => '⚠️ Câu hỏi đã tồn tại.',
-            'debug' => $output
-        ], JSON_UNESCAPED_UNICODE);
-        $stmt->close();
+        echo json_encode(['status' => 'duplicate', 'message' => '⚠️ Câu hỏi đã tồn tại.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
-    $stmt->close();
 
-    // ==== Cập nhật ====
     $stmt = $conn->prepare("UPDATE questions SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=?, topic=?, image=? WHERE id=?");
-    $stmt->bind_param("ssssssssi", $question, $answer1, $answer2, $answer3, $answer4, $correct, $topic, $image_url, $id);
-    $stmt->execute();
-    $stmt->close();
+    $stmt->execute([$question, $answer1, $answer2, $answer3, $answer4, $correct, $topic, $image_url, $id]);
 
-    $output = trim(ob_get_clean());
-    echo json_encode([
-        'status' => 'success',
-        'message' => '✅ Cập nhật câu hỏi thành công.',
-        'debug' => $output
-    ], JSON_UNESCAPED_UNICODE);
-
+    echo json_encode(['status' => 'success', 'message' => '✅ Cập nhật câu hỏi thành công.'], JSON_UNESCAPED_UNICODE);
 } catch (Exception $e) {
     http_response_code(500);
-    $output = trim(ob_get_clean());
-    echo json_encode([
-        'status' => 'error',
-        'message' => '❌ Lỗi cập nhật: ' . $e->getMessage(),
-        'debug' => $output
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'error', 'message' => '❌ Lỗi cập nhật: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
