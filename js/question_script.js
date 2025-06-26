@@ -123,7 +123,7 @@ async function saveQuestion() {
   const saveBtn = document.querySelector(".form-right button:nth-child(1)");
   saveBtn.disabled = true;
 
-  // Upload ảnh nếu có
+  // Upload ảnh lên Cloudinary
   if (imageFile && imageFile.size > 0) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
@@ -142,15 +142,18 @@ async function saveQuestion() {
     }
   }
 
-  // Gửi form
+  // 🔄 Dùng file phù hợp
+  const apiUrl = id ? "update_question.php" : "insert_question.php";
+
   try {
-    const res = await fetch("save_question.php", {
+    const res = await fetch(apiUrl, {
       method: "POST",
       body: formData
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
     alert(data.message);
+
     if (!id) document.getElementById("questionForm").reset();
     resetPreview();
     refreshIframe();
@@ -161,6 +164,7 @@ async function saveQuestion() {
     saveBtn.disabled = false;
   }
 }
+
 
 // ========== 4. Delete ==========
 function deleteQuestion() {
