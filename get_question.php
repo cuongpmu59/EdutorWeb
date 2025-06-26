@@ -10,7 +10,6 @@ try {
     $rows = [];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -18,10 +17,8 @@ try {
   <title>Danh sách câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- jQuery -->
+  <!-- jQuery + DataTables -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-  <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
@@ -30,8 +27,6 @@ try {
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-
-  <!-- Export dependencies -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
@@ -42,8 +37,8 @@ try {
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
       padding: 10px;
+      margin: 0;
     }
     table {
       width: 100%;
@@ -69,24 +64,27 @@ try {
       display: block;
       margin: auto;
       border: 1px solid #aaa;
-      border-radius: 3px;
+      border-radius: 4px;
+    }
+    #filterTopic {
+      margin-bottom: 10px;
+      padding: 4px 8px;
     }
   </style>
 </head>
-
 <body>
 
-<label for="filterTopic"><strong>Lọc theo chủ đề:</strong></label>
-<select id="filterTopic" style="margin-bottom: 10px; padding: 4px 8px;">
-  <option value="">-- Tất cả --</option>
-  <?php
-    $topics = array_unique(array_column($rows, 'topic'));
-    sort($topics);
-    foreach ($topics as $tp) {
-      echo '<option value="' . htmlspecialchars($tp) . '">' . htmlspecialchars($tp) . '</option>';
-    }
-  ?>
-</select>
+  <label for="filterTopic"><strong>Lọc theo chủ đề:</strong></label>
+  <select id="filterTopic">
+    <option value="">-- Tất cả --</option>
+    <?php
+      $topics = array_unique(array_column($rows, 'topic'));
+      sort($topics);
+      foreach ($topics as $tp) {
+        echo '<option value="' . htmlspecialchars($tp) . '">' . htmlspecialchars($tp) . '</option>';
+      }
+    ?>
+  </select>
 
   <table id="questionTable">
     <thead>
@@ -108,15 +106,16 @@ try {
           <?php
             $thumbUrl = '';
             if (!empty($row["image"])) {
-                $thumbUrl = preg_replace(
-                    '~upload/~',
-                    'upload/w_60,h_60,c_fill/',
-                    $row["image"]
-                );
+              if (strpos($row["image"], 'cloudinary') !== false) {
+                // Tạo ảnh thumbnail Cloudinary
+                $thumbUrl = preg_replace('~upload/~', 'upload/w_60,h_60,c_fill/', $row["image"]);
+              } else {
+                // Dùng ảnh nội bộ (nếu có)
+                $thumbUrl = 'https://cuongedutor.infy.uk/images/uploads/' . ltrim($row["image"], "/");
+              }
             }
           ?>
-          <tr tabindex="0" onclick='selectRow(this, <?=
-            json_encode([
+          <tr onclick='selectRow(this, <?= json_encode([
               "id"             => $row["id"],
               "question"       => $row["question"],
               "answer1"        => $row["answer1"],
@@ -126,18 +125,19 @@ try {
               "correct_answer" => strtoupper(trim($row["correct_answer"])),
               "topic"          => $row["topic"] ?? "",
               "image"          => $row["image"] ?? ""
-            ], JSON_UNESCAPED_UNICODE)
-          ) ?>)'>
+          ], JSON_UNESCAPED_UNICODE) ?>)'>
             <td><?= htmlspecialchars($row["id"]) ?></td>
             <td><?= htmlspecialchars($row["question"]) ?></td>
             <td><?= htmlspecialchars($row["answer1"]) ?></td>
             <td><?= htmlspecialchars($row["answer2"]) ?></td>
             <td><?= htmlspecialchars($row["answer3"]) ?></td>
             <td><?= htmlspecialchars($row["answer4"]) ?></td>
-            <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
+            <td style="text-align:center; font-weight:bold;">
+              <?= strtoupper(substr($row["correct_answer"], 0, 1)) ?>
+            </td>
             <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
             <td style="text-align:center;">
-              <?php if (!empty($thumbUrl)): ?>
+              <?php if ($thumbUrl): ?>
                 <img class="thumb" src="<?= htmlspecialchars($thumbUrl) ?>" alt="Ảnh" />
               <?php endif; ?>
             </td>
@@ -151,13 +151,10 @@ try {
 
   <script>
     function selectRow(row, data) {
-      if (window.currentRow) {
-        window.currentRow.classList.remove("selected-row");
-      }
+      if (window.currentRow) window.currentRow.classList.remove("selected-row");
       window.currentRow = row;
       row.classList.add("selected-row");
-
-      parent.postMessage({ type: "fillForm", data: data }, window.location.origin);
+      parent.postMessage({ type: "fillForm", data: data }, "*");
     }
 
     $(document).ready(function () {
@@ -193,23 +190,18 @@ try {
       // Lọc theo chủ đề
       $('#filterTopic').on('change', function () {
         const topic = this.value;
-        table.column(7) // cột "Chủ đề"
-             .search(topic ? '^' + topic + '$' : '', true, false)
-             .draw();
+        table.column(7).search(topic ? '^' + topic + '$' : '', true, false).draw();
       });
 
-      // Render lại MathJax sau mỗi lần vẽ bảng
-      table.on('draw', () => {
-        MathJax.typesetPromise();
-      });
+      // Render lại MathJax
+      table.on('draw', () => MathJax.typesetPromise());
 
-      // Tự chọn dòng đầu tiên khi tải
+      // Tự chọn dòng đầu tiên sau khi tải
       setTimeout(() => {
         const firstRow = document.querySelector("tbody tr");
         if (firstRow) firstRow.click();
       }, 100);
     });
   </script>
-
 </body>
 </html>
