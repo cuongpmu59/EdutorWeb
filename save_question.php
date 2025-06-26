@@ -32,7 +32,10 @@ if (!$topic) $errors[] = "Chủ đề không được để trống.";
 
 if ($errors) {
     http_response_code(400);
-    echo json_encode(['status' => 'success', 'message' => '✅ Đã thêm câu hỏi mới.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'status' => 'error',
+        'message' => implode(" ", $errors)
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
