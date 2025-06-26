@@ -1,89 +1,88 @@
 <?php
 require 'db_connection.php'; // Kết nối CSDL
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Hàm làm sạch chuỗi nhập vào
-    function cleanInput($data) {
-        return htmlspecialchars(trim($data));
-    }
+// Hàm lấy giá trị từ POST và làm sạch
+function get_post($key) {
+    return trim($_POST[$key] ?? '');
+}
 
-    // Nhận và làm sạch dữ liệu từ form
-    $question = cleanInput($_POST['question'] ?? '');
-    $answer1 = cleanInput($_POST['answer1'] ?? '');
-    $answer2 = cleanInput($_POST['answer2'] ?? '');
-    $answer3 = cleanInput($_POST['answer3'] ?? '');
-    $answer4 = cleanInput($_POST['answer4'] ?? '');
-    $correct_answer = $_POST['correct_answer'] ?? '';
-    $image_path = '';
+// 1. Lấy dữ liệu từ POST
+$id          = get_post('question_id');
+$topic       = get_post('topic');
+$question    = get_post('question');
+$answer1     = get_post('answer1');
+$answer2     = get_post('answer2');
+$answer3     = get_post('answer3');
+$answer4     = get_post('answer4');
+$correct     = get_post('correct_answer');
+$image_url   = get_post('image_url');
+$delete_image = get_post('delete_image');
 
-    // Kiểm tra bắt buộc
-    if (empty($question) || empty($answer1) || empty($answer2) || empty($correct_answer)) {
-        die("Vui lòng nhập đầy đủ các trường bắt buộc (câu hỏi, đáp án A, B và đáp án đúng).");
-    }
+// 2. Xử lý xoá ảnh nếu được chọn
+if ($delete_image === '1') {
+    $image_url = '';
+}
 
-    // Kiểm tra giá trị hợp lệ cho correct_answer
-    $valid_answers = ['answer1', 'answer2', 'answer3', 'answer4'];
-    if (!in_array($correct_answer, $valid_answers)) {
-        die("Đáp án đúng không hợp lệ.");
-    }
+// 3. Kiểm tra hợp lệ đầu vào
+$errors = [];
+if (!$question) $errors[] = "Câu hỏi không được để trống.";
+if (!$answer1 || !$answer2 || !$answer3 || !$answer4) $errors[] = "Tất cả đáp án đều phải điền.";
+if (!in_array($correct, ['A', 'B', 'C', 'D'])) $errors[] = "Đáp án đúng phải là A, B, C hoặc D.";
 
-    // Xử lý ảnh nếu có
-    if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-        $uploadDir = "images/uploads";
-        $fileTmpPath = $_FILES["image"]["tmp_name"];
-        $originalName = basename($_FILES["image"]["name"]);
-        $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+if ($errors) {
+    http_response_code(400);
+    echo implode("\n", $errors);
+    exit;
+}
 
-        // Kiểm tra định dạng ảnh
-        if (!in_array($fileExt, $allowedExts)) {
-            die("Chỉ cho phép ảnh có định dạng jpg, jpeg, png, gif.");
-        }
+// 4. Kiểm tra trùng lặp câu hỏi (chỉ khi thêm mới hoặc cập nhật nội dung khác)
+try {
+    $stmt = $conn->prepare("SELECT id FROM questions WHERE question = ?");
+    if (!$stmt) throw new Exception("Lỗi prepare: " . $conn->error);
+    $stmt->bind_param("s", $question);
+    $stmt->execute();
+    $stmt->store_result();
 
-        // Giới hạn kích thước (ví dụ 2MB)
-        if ($_FILES["image"]["size"] > 2 * 1024 * 1024) {
-            die("Ảnh vượt quá dung lượng cho phép (2MB).");
-        }
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($existing_id);
+        $stmt->fetch();
 
-        // Tạo tên mới tránh trùng
-        $newFileName = uniqid('img_', true) . '.' . $fileExt;
-        $targetPath = $uploadDir . $newFileName;
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        if (!move_uploaded_file($fileTmpPath, $targetPath)) {
-            die("Lỗi khi lưu ảnh lên máy chủ.");
-        }
-
-        $image_path = $newFileName;
-    }
-
-    // Chuẩn bị và thực hiện câu lệnh SQL
-    $sql = "INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, image)
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        die("Lỗi chuẩn bị câu lệnh: " . $conn->error);
-    }
-    $stmt->bind_param("sssssss", $question, $answer1, $answer2, $answer3, $answer4, $correct_answer, $image_path);
-
-    if ($stmt->execute()) {
-        // Trả về thông báo thành công nếu gửi bằng fetch AJAX hoặc redirect
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-            echo "Thêm câu hỏi thành công!";
-        } else {
-            header("Location: question_form.php");
+        // Nếu thêm mới hoặc cập nhật sang câu hỏi đã tồn tại
+        if (!$id || ($id && $existing_id != $id)) {
+            http_response_code(409); // Conflict
+            echo "Câu hỏi đã tồn tại trong cơ sở dữ liệu.";
             exit;
         }
-    } else {
-        echo "Lỗi khi lưu câu hỏi: " . $stmt->error;
     }
-
     $stmt->close();
-    $conn->close();
-} else {
-    echo "Phương thức gửi không hợp lệ.";
+} catch (Exception $e) {
+    http_response_code(500);
+    echo "Lỗi kiểm tra trùng lặp: " . $e->getMessage();
+    exit;
+}
+
+// 5. Thêm hoặc cập nhật
+try {
+    if ($id) {
+        // Cập nhật
+        $stmt = $conn->prepare("UPDATE questions SET topic=?, question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=?, image=? WHERE id=?");
+        if (!$stmt) throw new Exception("Lỗi prepare: " . $conn->error);
+
+        $stmt->bind_param("ssssssssi", $topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, $id);
+        $stmt->execute();
+
+        echo "✅ Cập nhật câu hỏi thành công.";
+    } else {
+        // Thêm mới
+        $stmt = $conn->prepare("INSERT INTO questions (topic, question, answer1, answer2, answer3, answer4, correct_answer, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) throw new Exception("Lỗi prepare: " . $conn->error);
+
+        $stmt->bind_param("ssssssss", $topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url);
+        $stmt->execute();
+
+        echo "✅ Đã thêm câu hỏi mới.";
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo "Lỗi lưu câu hỏi: " . $e->getMessage();
 }
