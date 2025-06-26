@@ -105,17 +105,29 @@ try {
     <tbody>
       <?php if (count($rows) > 0): ?>
         <?php foreach ($rows as $row): ?>
-          <tr tabindex="0" onclick='selectRow(this, <?php echo json_encode([
-              "id" => $row["id"],
-              "question" => $row["question"],
-              "answer1" => $row["answer1"],
-              "answer2" => $row["answer2"],
-              "answer3" => $row["answer3"],
-              "answer4" => $row["answer4"],
+          <?php
+            $thumbUrl = '';
+            if (!empty($row["image"])) {
+                $thumbUrl = preg_replace(
+                    '~upload/~',
+                    'upload/w_60,h_60,c_fill/',
+                    $row["image"]
+                );
+            }
+          ?>
+          <tr tabindex="0" onclick='selectRow(this, <?=
+            json_encode([
+              "id"             => $row["id"],
+              "question"       => $row["question"],
+              "answer1"        => $row["answer1"],
+              "answer2"        => $row["answer2"],
+              "answer3"        => $row["answer3"],
+              "answer4"        => $row["answer4"],
               "correct_answer" => strtoupper(trim($row["correct_answer"])),
-              "topic" => $row["topic"] ?? "",
-              "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/uploads/" . ltrim($row["image"], "/") : ""
-          ]); ?>)'>
+              "topic"          => $row["topic"] ?? "",
+              "image"          => $row["image"] ?? ""
+            ], JSON_UNESCAPED_UNICODE)
+          ) ?>)'>
             <td><?= htmlspecialchars($row["id"]) ?></td>
             <td><?= htmlspecialchars($row["question"]) ?></td>
             <td><?= htmlspecialchars($row["answer1"]) ?></td>
@@ -125,8 +137,8 @@ try {
             <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
             <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
             <td style="text-align:center;">
-              <?php if (!empty($row["image"])): ?>
-                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>" alt="Ảnh minh họa" />
+              <?php if (!empty($thumbUrl)): ?>
+                <img class="thumb" src="<?= htmlspecialchars($thumbUrl) ?>" alt="Ảnh" />
               <?php endif; ?>
             </td>
           </tr>
@@ -149,56 +161,55 @@ try {
     }
 
     $(document).ready(function () {
-  const table = $('#questionTable').DataTable({
-    dom: 'Bfrtip',
-    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-    paging: true,
-    searching: true,
-    ordering: true,
-    info: true,
-    language: {
-      search: "Tìm kiếm:",
-      lengthMenu: "Hiển thị _MENU_ mục",
-      info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-      infoEmpty: "Không có dữ liệu",
-      zeroRecords: "Không tìm thấy kết quả phù hợp",
-      paginate: {
-        first: "Đầu",
-        last: "Cuối",
-        next: "Sau",
-        previous: "Trước"
-      },
-      buttons: {
-        copy: "Sao chép",
-        csv: "Xuất CSV",
-        excel: "Xuất Excel",
-        pdf: "Xuất PDF",
-        print: "In"
-      }
-    }
-  });
+      const table = $('#questionTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        language: {
+          search: "Tìm kiếm:",
+          lengthMenu: "Hiển thị _MENU_ mục",
+          info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+          infoEmpty: "Không có dữ liệu",
+          zeroRecords: "Không tìm thấy kết quả phù hợp",
+          paginate: {
+            first: "Đầu",
+            last: "Cuối",
+            next: "Sau",
+            previous: "Trước"
+          },
+          buttons: {
+            copy: "Sao chép",
+            csv: "Xuất CSV",
+            excel: "Xuất Excel",
+            pdf: "Xuất PDF",
+            print: "In"
+          }
+        }
+      });
 
-  // Lọc theo chủ đề
-  $('#filterTopic').on('change', function () {
-    const topic = this.value;
-    table.column(7) // cột thứ 8 (0-based index) là "Chủ đề"
-         .search(topic ? '^' + topic + '$' : '', true, false)
-         .draw();
-  });
+      // Lọc theo chủ đề
+      $('#filterTopic').on('change', function () {
+        const topic = this.value;
+        table.column(7) // cột "Chủ đề"
+             .search(topic ? '^' + topic + '$' : '', true, false)
+             .draw();
+      });
 
-  // Render lại MathJax sau mỗi lần vẽ bảng
-  table.on('draw', () => {
-    MathJax.typesetPromise();
-  });
+      // Render lại MathJax sau mỗi lần vẽ bảng
+      table.on('draw', () => {
+        MathJax.typesetPromise();
+      });
 
-  // Tự chọn dòng đầu tiên khi tải
-  setTimeout(() => {
-    const firstRow = document.querySelector("tbody tr");
-    if (firstRow) firstRow.click();
-  }, 100);
-});
-
-
+      // Tự chọn dòng đầu tiên khi tải
+      setTimeout(() => {
+        const firstRow = document.querySelector("tbody tr");
+        if (firstRow) firstRow.click();
+      }, 100);
+    });
   </script>
+
 </body>
 </html>
