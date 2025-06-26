@@ -10,7 +10,7 @@
 </head>
 <body>
   <div class="question-container">
-    <h2>Biểu mẫu Câu hỏi Trắc nghiệm</h2>
+    <h2>Câu hỏi Trắc nghiệm</h2>
     <form id="questionForm" enctype="multipart/form-data">
       <div class="form-left">
         <input type="hidden" id="question_id" name="question_id">
@@ -65,9 +65,9 @@
       </div>
 
       <div class="form-right">
-        <button type="button" onclick="saveQuestion()">Lưu / Cập nhật</button>
+        <button type="button" onclick="saveQuestion()">Thêm / Cập nhật</button>
         <button type="button" class="delete-btn" onclick="deleteQuestion()">Xoá</button>
-        <button type="reset" class="reset-btn" onclick="resetPreview()">Xoá trắng</button>
+        <button type="reset" class="reset-btn" onclick="resetPreview()">Làm mới</button>
         <button type="button" class="search-btn" onclick="searchQuestion()">Tìm kiếm</button>
       </div>
     </form>
