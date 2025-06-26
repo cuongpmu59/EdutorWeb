@@ -36,7 +36,7 @@ function renderMathInPage() {
   }
 }
 
-// ========== 2. Preview Handling ==========
+// ========== 2. Preview ==========
 function renderPreview(fieldId) {
   const value = document.getElementById(fieldId).value;
   const previewDiv = document.getElementById("preview_" + fieldId);
@@ -69,7 +69,6 @@ function updateFullPreview() {
     </ul>
     <p><strong>Đáp án đúng:</strong> ${correct}</p>
   `;
-
   const preview = document.getElementById("fullPreview");
   preview.innerHTML = html;
   debounceRenderMath(preview);
@@ -84,8 +83,7 @@ function togglePreview() {
 
 function toggleFullPreview() {
   const isChecked = document.getElementById("toggleFullPreview").checked;
-  const preview = document.getElementById("fullPreview");
-  preview.style.display = isChecked ? "block" : "none";
+  document.getElementById("fullPreview").style.display = isChecked ? "block" : "none";
 }
 
 function resetPreview() {
@@ -96,16 +94,16 @@ function resetPreview() {
   debounceFullPreview();
 }
 
-// ========== 3. Form Submission ==========
-function saveQuestion() {
+// ========== 3. Save Question ==========
+async function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
   const formData = getFormData();
   formData.set("delete_image", document.getElementById("delete_image").checked ? "1" : "0");
 
-  const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
-  for (let field of requiredFields) {
+  const required = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
+  for (let field of required) {
     if (!formData.get(field)?.trim()) {
-      alert("Vui lòng điền đủ thông tin câu hỏi và đáp án.");
+      alert("Vui lòng điền đầy đủ thông tin câu hỏi, đáp án và chủ đề.");
       return;
     }
   }
@@ -125,33 +123,18 @@ function saveQuestion() {
   const saveBtn = document.querySelector(".form-right button:nth-child(1)");
   saveBtn.disabled = true;
 
-  if (id && !confirm("Bạn có chắc muốn cập nhật?")) {
-    saveBtn.disabled = false;
-    return;
-  }
-
-  submitQuestion(formData, id, saveBtn);
-}
-
-async function submitQuestion(formData, id, saveBtn) {
-  const imageFile = formData.get("image");
-
-  if (formData.get("delete_image") === "1") {
-    formData.set("image_url", "");
-  } else if (imageFile && imageFile.size > 0) {
+  // Upload ảnh nếu có
+  if (imageFile && imageFile.size > 0) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
     cloudForm.append("upload_preset", "quiz_photo");
-
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
         method: "POST",
-        body: cloudForm
+        body: cloudForm,
       });
       const data = await res.json();
-      if (data.secure_url) {
-        formData.set("image_url", data.secure_url);
-      }
+      if (data.secure_url) formData.set("image_url", data.secure_url);
     } catch (err) {
       alert("Không thể tải ảnh lên Cloudinary: " + err.message);
       saveBtn.disabled = false;
@@ -159,31 +142,31 @@ async function submitQuestion(formData, id, saveBtn) {
     }
   }
 
-  fetch("save_question.php", {
-    method: "POST",
-    body: formData
-  })
-    .then(async (res) => {
-      const text = await res.text();
-      if (!res.ok) throw new Error(text);
-      alert(text);
-      if (!id) document.getElementById("questionForm").reset();
-      resetPreview();
-      refreshIframe();
-      formChanged = false;
-    })
-    .catch(err => {
-      alert("Lỗi: " + err.message);
-    })
-    .finally(() => {
-      saveBtn.disabled = false;
+  // Gửi form
+  try {
+    const res = await fetch("save_question.php", {
+      method: "POST",
+      body: formData
     });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    alert(data.message);
+    if (!id) document.getElementById("questionForm").reset();
+    resetPreview();
+    refreshIframe();
+    formChanged = false;
+  } catch (err) {
+    alert("❌ " + err.message);
+  } finally {
+    saveBtn.disabled = false;
+  }
 }
 
+// ========== 4. Delete ==========
 function deleteQuestion() {
   const id = document.getElementById("question_id").value.trim();
   if (!id) return alert("Chọn câu hỏi cần xoá.");
-  if (!confirm("Chắc chắn xoá?")) return;
+  if (!confirm("Bạn có chắc muốn xoá?")) return;
 
   fetch("delete_question.php", {
     method: "POST",
@@ -191,20 +174,18 @@ function deleteQuestion() {
     body: "id=" + encodeURIComponent(id)
   })
     .then(res => res.text())
-    .then(response => {
-      alert(response);
+    .then(res => {
+      alert(res);
       document.getElementById("questionForm").reset();
       resetPreview();
       refreshIframe();
     })
-    .catch(err => {
-      alert("Xoá thất bại: " + err.message);
-    });
+    .catch(err => alert("Xoá thất bại: " + err.message));
 }
 
-// ========== 4. Tìm kiếm ==========
+// ========== 5. Search ==========
 function searchQuestion() {
-  const keyword = prompt("Nhập từ khóa cần tìm:");
+  const keyword = prompt("Nhập từ khoá cần tìm:");
   if (!keyword) return;
 
   fetch("search_question.php", {
@@ -214,22 +195,16 @@ function searchQuestion() {
   })
     .then(res => res.json())
     .then(data => {
-      if (data.length === 0) {
-        alert("Không tìm thấy câu hỏi nào.");
-      } else {
-        showSearchModal(data);
-      }
+      if (data.length === 0) alert("Không tìm thấy câu hỏi nào.");
+      else showSearchModal(data);
     })
-    .catch(err => {
-      alert("Tìm kiếm thất bại: " + err.message);
-    });
+    .catch(err => alert("Lỗi tìm kiếm: " + err.message));
 }
 
 function showSearchModal(data) {
   const modal = document.getElementById("searchModal");
   const tbody = document.querySelector("#searchResultsTable tbody");
   tbody.innerHTML = "";
-
   data.forEach(item => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -238,14 +213,13 @@ function showSearchModal(data) {
       <td>${item.question}</td>
       <td>${item.correct_answer}</td>
     `;
-    row.addEventListener("click", () => {
+    row.onclick = () => {
       window.postMessage({ type: "fillForm", data: item }, "*");
       row.style.backgroundColor = "#e0f7fa";
       closeSearchModal();
-    });
+    };
     tbody.appendChild(row);
   });
-
   modal.style.display = "flex";
 }
 
@@ -253,7 +227,7 @@ function closeSearchModal() {
   document.getElementById("searchModal").style.display = "none";
 }
 
-// ========== 5. Ảnh minh họa ==========
+// ========== 6. Image Preview ==========
 document.getElementById("image").addEventListener("change", function () {
   const file = this.files[0];
   const preview = document.getElementById("imagePreview");
@@ -261,19 +235,8 @@ document.getElementById("image").addEventListener("change", function () {
   const deleteLabel = document.getElementById("deleteImageLabel");
 
   if (file) {
-    if (!file.type.startsWith("image/")) {
-      alert("Chỉ chấp nhận file ảnh!");
-      this.value = "";
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Ảnh quá lớn. Vui lòng chọn ảnh dưới 2MB.");
-      this.value = "";
-      return;
-    }
-
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = e => {
       preview.src = e.target.result;
       preview.classList.add("show");
       deleteCheckbox.checked = false;
@@ -288,7 +251,7 @@ document.getElementById("image").addEventListener("change", function () {
   }
 });
 
-// ========== 6. Tự động đồng bộ ==========
+// ========== 7. Đồng bộ từ bảng ==========
 window.addEventListener("message", function (event) {
   if (event.data.type === "fillForm") {
     const data = event.data.data;
@@ -302,9 +265,9 @@ window.addEventListener("message", function (event) {
     document.getElementById("correct_answer").value = data.correct_answer;
 
     if (data.image) {
-      const imgPreview = document.getElementById("imagePreview");
-      imgPreview.src = data.image;
-      imgPreview.classList.add("show");
+      const img = document.getElementById("imagePreview");
+      img.src = data.image;
+      img.classList.add("show");
       document.getElementById("image_url").value = data.image;
       document.getElementById("deleteImageLabel").style.display = "inline-block";
     } else {
@@ -319,7 +282,7 @@ window.addEventListener("message", function (event) {
   }
 });
 
-// ========== 7. Cảnh báo nếu thoát ==========
+// ========== 8. Cảnh báo khi thoát ==========
 let formChanged = false;
 document.getElementById("questionForm").addEventListener("input", () => {
   formChanged = true;
@@ -331,7 +294,7 @@ window.addEventListener("beforeunload", (e) => {
   }
 });
 
-// ========== 8. Khởi tạo ==========
+// ========== 9. Init ==========
 document.addEventListener("DOMContentLoaded", () => {
   togglePreview();
   toggleFullPreview();
