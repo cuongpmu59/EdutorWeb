@@ -94,10 +94,9 @@ select:focus {
 /* ---------- Ảnh minh họa ---------- */
 img#imagePreview {
 	display: block;
-	max-width: 250px;    /* giới hạn chiều rộng tối đa */
-	max-height: 150px;   /* giới hạn chiều cao tối đa */
-	width: auto;
 	height: auto;
+	max-height: 150px; /* Chiều cao giới hạn */
+	width: auto;       /* Chiều rộng tự điều chỉnh */
 	border-radius: 8px;
 	border: 1px solid #ccc;
 	margin-top: 6px;
@@ -106,6 +105,7 @@ img#imagePreview {
 	transform: scale(0.95);
 	transition: all 0.3s ease;
   }
+  
 img#imagePreview.show {
 	visibility: visible;
 	opacity: 1;
