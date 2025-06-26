@@ -1,75 +1,56 @@
 <?php
-require 'db_connection.php'; // Kết nối CSDL
+require 'db_connection.php';
+header("Content-Type: application/json; charset=utf-8");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
-    $id = $_POST['id'] ?? '';
-    $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct_answer = $_POST['correct_answer'] ?? '';
-    $topic = $_POST['topic'] ?? '';
-    $deleteImage = $_POST['delete_image'] ?? '0'; // "1" nếu checkbox xóa ảnh được chọn
-    $image_url = $_POST['image_url'] ?? '';        // URL ảnh từ Cloudinary
-
-    // Kiểm tra ID
-    if (!is_numeric($id)) {
-        echo "❌ ID không hợp lệ.";
-        exit;
-    }
-
-    // Lấy ảnh hiện tại từ CSDL
-    $stmtGet = $conn->prepare("SELECT image FROM questions WHERE id = :id");
-    $stmtGet->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmtGet->execute();
-    $currentImage = $stmtGet->fetchColumn();
-
-    // Xử lý ảnh
-    if ($deleteImage === '1') {
-        $image_url = ''; // Xoá ảnh
-    } elseif (empty($image_url)) {
-        $image_url = $currentImage; // Giữ nguyên ảnh cũ nếu không có ảnh mới
-    }
-
-    try {
-        // Câu lệnh UPDATE
-        $sql = "UPDATE questions SET
-                    question = :question,
-                    answer1 = :answer1,
-                    answer2 = :answer2,
-                    answer3 = :answer3,
-                    answer4 = :answer4,
-                    correct_answer = :correct_answer,
-                    topic = :topic,
-                    image = :image
-                WHERE id = :id";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':question', $question);
-        $stmt->bindParam(':answer1', $answer1);
-        $stmt->bindParam(':answer2', $answer2);
-        $stmt->bindParam(':answer3', $answer3);
-        $stmt->bindParam(':answer4', $answer4);
-        $stmt->bindParam(':correct_answer', $correct_answer);
-        $stmt->bindParam(':topic', $topic);
-        $stmt->bindParam(':image', $image_url);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            echo "✅ Cập nhật câu hỏi thành công.";
-            if (!empty($image_url)) {
-                echo "<br><a href='" . htmlspecialchars($image_url) . "' target='_blank'>🖼️ Xem ảnh minh họa</a><br>";
-                echo "<img src='" . htmlspecialchars($image_url) . "' alt='Ảnh minh họa' style='max-width:200px; max-height:200px; display:block; margin-top:10px; border:1px solid #ccc; border-radius:4px;' />";
-            }
-        } else {
-            echo "❌ Cập nhật thất bại.";
-        }
-    } catch (PDOException $e) {
-        echo "❌ Lỗi PDO: " . $e->getMessage();
-    }
-} else {
-    echo "❌ Phương thức không hợp lệ.";
+function get_post($key) {
+    return trim($_POST[$key] ?? '');
 }
-?>
+
+$id        = get_post('question_id');
+$topic     = get_post('topic');
+$question  = get_post('question');
+$answer1   = get_post('answer1');
+$answer2   = get_post('answer2');
+$answer3   = get_post('answer3');
+$answer4   = get_post('answer4');
+$correct   = get_post('correct_answer');
+$image_url = get_post('image_url');
+$delete_image = get_post('delete_image');
+
+if ($delete_image === '1') {
+    $image_url = '';
+}
+
+// ==== Validation ====
+$errors = [];
+if (!$id) $errors[] = "ID câu hỏi không hợp lệ.";
+if (!$question) $errors[] = "Câu hỏi không được để trống.";
+if (!$answer1 || !$answer2 || !$answer3 || !$answer4) $errors[] = "Tất cả đáp án đều phải điền.";
+if (!in_array($correct, ['A', 'B', 'C', 'D'])) $errors[] = "Đáp án đúng phải là A, B, C hoặc D.";
+if (!$topic) $errors[] = "Chủ đề không được để trống.";
+
+if ($errors) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => implode(" ", $errors)], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ==== Kiểm tra trùng với câu hỏi khác ====
+$stmt = $conn->prepare("SELECT id FROM questions WHERE question = ? AND id != ?");
+$stmt->bind_param("si", $question, $id);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) {
+    http_response_code(409);
+    echo json_encode(['status' => 'duplicate', 'message' => '⚠️ Câu hỏi đã tồn tại.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+$stmt->close();
+
+// ==== Cập nhật ====
+$stmt = $conn->prepare("UPDATE questions SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=?, topic=?, image=? WHERE id=?");
+$stmt->bind_param("ssssssssi", $question, $answer1, $answer2, $answer3, $answer4, $correct, $topic, $image_url, $id);
+$stmt->execute();
+$stmt->close();
+
+echo json_encode(['status' => 'success', 'message' => '✅ Cập nhật câu hỏi thành công.'], JSON_UNESCAPED_UNICODE);
