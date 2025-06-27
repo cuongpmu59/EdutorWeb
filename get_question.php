@@ -1,188 +1,219 @@
-<?php
-require 'db_connection.php';
-header("X-Frame-Options: SAMEORIGIN");
+// ========== 1. Thêm câu hỏi ==========
+export async function addQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
 
-try {
-    $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $rows = [];
+  if (form.image.files[0]) {
+    const url = await uploadImage(form.image.files[0]);
+    if (!url) return alert("Tải ảnh thất bại!");
+    formData.set("image_url", url);
+  }
+
+  fetch("insert_question.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      form.reset();
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi thêm câu hỏi!"));
 }
-?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <title>Danh sách câu hỏi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      vertical-align: top;
-    }
-    tr:hover {
-      background: #f1f9ff;
-      cursor: pointer;
-    }
-    .selected-row {
-      background-color: #cceeff !important;
-    }
-    img.thumb {
-      max-width: 40px;
-      max-height: 40px;
-      display: block;
-      margin: auto;
-      border-radius: 4px;
-      border: 1px solid #aaa;
-    }
-    #filterTopic {
-      margin-bottom: 10px;
-      padding: 4px 8px;
-    }
-  </style>
-</head>
-<body>
+// ========== 2. Cập nhật câu hỏi ==========
+export async function updateQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
 
-  <label for="filterTopic"><strong>Lọc theo chủ đề:</strong></label>
-  <select id="filterTopic">
-    <option value="">-- Tất cả --</option>
-    <?php
-      $topics = array_unique(array_column($rows, 'topic'));
-      sort($topics);
-      foreach ($topics as $tp) {
-        echo '<option value="' . htmlspecialchars($tp) . '">' . htmlspecialchars($tp) . '</option>';
+  if (form.image.files[0]) {
+    const url = await uploadImage(form.image.files[0]);
+    if (!url) return alert("Tải ảnh thất bại!");
+    formData.set("image_url", url);
+  }
+
+  fetch("update_question.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi cập nhật!"));
+}
+
+// ========== 3. Xóa câu hỏi ==========
+export function deleteQuestion() {
+  const id = document.getElementById("question_id").value;
+  if (!id || !confirm("Xoá câu hỏi này?")) return;
+
+  fetch("delete_question.php", {
+    method: "POST",
+    body: new URLSearchParams({ id }),
+  })
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      document.getElementById("questionForm").reset();
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi xoá câu hỏi!"));
+}
+
+// ========== 4. Làm mới iframe ==========
+function refreshIframe() {
+  const iframe = document.getElementById("questionIframe");
+  if (iframe) {
+    iframe.contentWindow.location.reload();
+    iframe.onload = () => {
+      if (iframe.contentWindow.MathJax) {
+        iframe.contentWindow.MathJax.typesetPromise();
       }
-    ?>
-  </select>
+    };
+  }
+}
 
-  <table id="questionTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Câu hỏi</th>
-        <th>A</th>
-        <th>B</th>
-        <th>C</th>
-        <th>D</th>
-        <th>Đúng</th>
-        <th>Chủ đề</th>
-        <th>Ảnh</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($rows as $row): 
-        $thumbUrl = '';
-        if (!empty($row["image"])) {
-          $thumbUrl = strpos($row["image"], 'cloudinary') !== false
-            ? preg_replace('~upload/~', 'upload/w_60,h_60,c_fill/', $row["image"])
-            : 'https://cuongedutor.infy.uk/images/uploads/' . ltrim($row["image"], "/");
-        }
-        $data = json_encode([
-          "id" => $row["id"],
-          "question" => $row["question"],
-          "answer1" => $row["answer1"],
-          "answer2" => $row["answer2"],
-          "answer3" => $row["answer3"],
-          "answer4" => $row["answer4"],
-          "correct_answer" => strtoupper(trim($row["correct_answer"])),
-          "topic" => $row["topic"],
-          "image" => $row["image"]
-        ], JSON_UNESCAPED_UNICODE);
-      ?>
-      <tr onclick='selectRow(this, <?= $data ?>)'>
-        <td><?= htmlspecialchars($row["id"]) ?></td>
-        <td><?= htmlspecialchars($row["question"]) ?></td>
-        <td><?= htmlspecialchars($row["answer1"]) ?></td>
-        <td><?= htmlspecialchars($row["answer2"]) ?></td>
-        <td><?= htmlspecialchars($row["answer3"]) ?></td>
-        <td><?= htmlspecialchars($row["answer4"]) ?></td>
-        <td style="text-align:center; font-weight:bold;">
-          <?= strtoupper(substr($row["correct_answer"], 0, 1)) ?>
-        </td>
-        <td><?= htmlspecialchars($row["topic"]) ?></td>
-        <td style="text-align:center;">
-          <?php if ($thumbUrl): ?>
-            <img class="thumb" src="<?= htmlspecialchars($thumbUrl) ?>" alt="Ảnh" />
-          <?php endif; ?>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+// ========== 5. Xem trước toàn bộ ==========
+export function previewFull() {
+  const q = (id) => document.getElementById(id).value;
+  document.getElementById("pv_id").innerText = q("question_id");
+  document.getElementById("pv_topic").innerText = q("topic");
+  document.getElementById("pv_question").innerText = q("question");
+  document.getElementById("pv_a").innerText = q("answer1");
+  document.getElementById("pv_b").innerText = q("answer2");
+  document.getElementById("pv_c").innerText = q("answer3");
+  document.getElementById("pv_d").innerText = q("answer4");
+  document.getElementById("pv_correct").innerText = q("correct_answer");
 
-  <script>
-    function selectRow(row, data) {
-      if (window.currentRow) window.currentRow.classList.remove("selected-row");
-      window.currentRow = row;
-      row.classList.add("selected-row");
-      row.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      parent.postMessage({ type: "fillForm", data }, "*");
+  const pvImg = document.getElementById("pv_image");
+  const url = q("image_url");
+  if (url) {
+    pvImg.src = url;
+    pvImg.style.display = "block";
+  } else {
+    pvImg.style.display = "none";
+  }
+
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+// ========== 6. Zoom ảnh ==========
+export function zoomImage(img) {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+  modal.style.display = "block";
+  modalImg.src = img.src;
+}
+
+// ========== 7. Modal tìm kiếm ==========
+export function openSearchModal() {
+  document.getElementById("searchModal").style.display = "block";
+}
+export function closeSearchModal() {
+  document.getElementById("searchModal").style.display = "none";
+}
+
+// ========== 8. Tìm kiếm câu hỏi ==========
+export function searchQuestion() {
+  const keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
+  const tableBody = document.querySelector("#searchResultTable tbody");
+  const iframe = document.getElementById("questionIframe");
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+  const rows = iframeDoc.querySelectorAll("tbody tr");
+  tableBody.innerHTML = "";
+
+  rows.forEach((row) => {
+    const cols = row.querySelectorAll("td");
+    const text = Array.from(cols).map((c) => c.textContent.toLowerCase()).join(" ");
+    if (text.includes(keyword)) {
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${cols[0].textContent}</td>
+        <td>${cols[7].textContent}</td>
+        <td>${cols[1].textContent}</td>
+      `;
+      newRow.onclick = () => {
+        row.click();
+        closeSearchModal();
+      };
+      tableBody.appendChild(newRow);
     }
+  });
+}
 
-    $(document).ready(function () {
-      const table = $('#questionTable').DataTable({
-        paging: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        language: {
-          search: "Tìm:",
-          lengthMenu: "Hiển thị _MENU_ dòng",
-          info: "Từ _START_ đến _END_ của _TOTAL_ dòng",
-          infoEmpty: "Không có dữ liệu",
-          zeroRecords: "Không tìm thấy kết quả phù hợp",
-          paginate: { first: "Đầu", last: "Cuối", next: "→", previous: "←" }
-        }
+// ========== 9. Nhập CSV ==========
+export function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const lines = reader.result.split("\n").filter(Boolean);
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(",");
+      const data = {};
+      headers.forEach((h, idx) => data[h.trim()] = cols[idx]?.trim() || "");
+
+      fetch("insert_question.php", {
+        method: "POST",
+        body: new URLSearchParams(data),
       });
+    }
 
-      $('#filterTopic').on('change', function () {
-        const topic = this.value;
-        table.column(7).search(topic ? '^' + topic + '$' : '', true, false).draw();
-      });
+    alert("Đã nhập từ CSV");
+    refreshIframe();
+  };
+  reader.readAsText(file);
+}
 
-      // Chọn dòng đầu tiên sau khi tải
-      setTimeout(() => {
-        const firstRow = document.querySelector("tbody tr");
-        if (firstRow) firstRow.click();
-      }, 200);
+// ========== 10. Upload ảnh lên Cloudinary ==========
+async function uploadImage(file) {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("upload_preset", "quiz_photo"); // ⚠️ Thay bằng preset thật
+  form.append("cloud_name", "dbdf2gwc9");       // ⚠️ Thay bằng cloud name
 
-      // Render lại MathJax nếu cần
-      table.on('draw', () => MathJax.typesetPromise());
-    });
+  const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+    method: "POST",
+    body: form,
+  });
+  const data = await res.json();
+  return data.secure_url || "";
+}
 
-    // Điều hướng ↑ / ↓
-    document.addEventListener("keydown", function (e) {
-      const selected = document.querySelector("tbody tr.selected-row");
-      if (!selected) return;
+// ========== 11. Xem trước từng phần ==========
+["question", "answer1", "answer2", "answer3", "answer4"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", () => {
+    const val = document.getElementById(id).value;
+    document.getElementById("preview_" + id).textContent = val;
+    if (window.MathJax) MathJax.typesetPromise();
+  });
+});
 
-      let targetRow;
-      if (e.key === "ArrowDown") {
-        targetRow = selected.nextElementSibling;
-      } else if (e.key === "ArrowUp") {
-        targetRow = selected.previousElementSibling;
-      }
+// ========== 12. Bật/tắt xem trước toàn bộ ==========
+document.getElementById("togglePreview").addEventListener("change", (e) => {
+  document.getElementById("previewBox").style.display = e.target.checked ? "block" : "none";
+});
 
-      if (targetRow) {
-        targetRow.click();
-        e.preventDefault();
-      }
-    });
-  </script>
-</body>
-</html>
+// ========== 13. Dark Mode ==========
+document.getElementById("toggleDarkMode").addEventListener("change", function () {
+  document.body.classList.toggle("dark-mode", this.checked);
+});
+
+// ========== 14. Cảnh báo khi rời trang nếu có thay đổi ==========
+let formChanged = false;
+document.getElementById("questionForm").addEventListener("input", () => {
+  formChanged = true;
+});
+window.addEventListener("beforeunload", (e) => {
+  if (formChanged) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
