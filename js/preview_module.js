@@ -1,5 +1,4 @@
-// File: preview_module.js
-
+// preview_module.js
 let mathJaxTimer, previewTimer;
 
 export function containsMath(content) {
