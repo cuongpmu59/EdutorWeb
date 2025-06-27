@@ -1,4 +1,3 @@
-// question_script.js
 import {
   renderPreview,
   resetPreview,
@@ -6,28 +5,29 @@ import {
   togglePreview
 } from './preview_module.js';
 
-// ========== 1. Utility Functions ==========
-function getFormData() {
-  return new FormData(document.getElementById("questionForm"));
-}
-
-function refreshIframe() {
-  const iframe = document.getElementById("questionIframe");
-  if (iframe) {
-    iframe.contentWindow.location.reload();
-    iframe.onload = function () {
-      if (iframe.contentWindow.MathJax) {
-        iframe.contentWindow.MathJax.typesetPromise();
-      }
-    };
+function addQuestion() {
+  document.getElementById("questionForm").reset();
+  document.getElementById("question_id").value = "";
+  const img = document.getElementById("previewImage");
+  if (img) {
+    img.src = "";
+    img.style.display = "none";
   }
+  const deleteLabel = document.getElementById("deleteImageLabel");
+  if (deleteLabel) deleteLabel.style.display = "none";
+
+  formChanged = false;
+  resetPreview();
 }
 
-// ========== 3. Save ==========
+function updateQuestion() {
+  // Tùy bạn triển khai — bạn có thể gọi saveQuestion() nếu phù hợp
+  saveQuestion();
+}
+
 async function saveQuestion() {
   const id = document.getElementById("question_id").value.trim();
-  const formData = getFormData();
-  formData.set("delete_image", document.getElementById("delete_image").checked ? "1" : "0");
+  const formData = new FormData(document.getElementById("questionForm"));
 
   const required = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
   for (let field of required) {
@@ -49,10 +49,6 @@ async function saveQuestion() {
     }
   }
 
-  const saveBtn = document.querySelector(".form-right button:nth-child(1)");
-  if (saveBtn.disabled) return; // ngăn double click
-  saveBtn.disabled = true;
-
   if (imageFile && imageFile.size > 0) {
     const cloudForm = new FormData();
     cloudForm.append("file", imageFile);
@@ -67,7 +63,6 @@ async function saveQuestion() {
       if (data.secure_url) formData.set("image_url", data.secure_url);
     } catch (err) {
       alert("Không thể tải ảnh lên Cloudinary: " + err.message);
-      saveBtn.disabled = false;
       return;
     }
   }
@@ -87,12 +82,9 @@ async function saveQuestion() {
     formChanged = false;
   } catch (err) {
     alert("❌ " + err.message);
-  } finally {
-    saveBtn.disabled = false;
   }
 }
 
-// ========== 4. Delete ==========
 function deleteQuestion() {
   const id = document.getElementById("question_id").value;
   if (!id || !confirm("Bạn có chắc muốn xoá?")) return;
@@ -113,33 +105,40 @@ function deleteQuestion() {
     });
 }
 
-// ========== 5. Image Preview ==========
-document.getElementById("image").addEventListener("change", function () {
-  const file = this.files[0];
-  const preview = document.getElementById("imagePreview");
-  const deleteCheckbox = document.getElementById("delete_image");
-  const deleteLabel = document.getElementById("deleteImageLabel");
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      preview.src = e.target.result;
-      preview.classList.add("show");
-      deleteCheckbox.checked = false;
-      deleteLabel.style.display = "inline-block";
-      debounceFullPreview();
+function refreshIframe() {
+  const iframe = document.getElementById("questionIframe");
+  if (iframe) {
+    iframe.contentWindow.location.reload();
+    iframe.onload = () => {
+      if (iframe.contentWindow.MathJax) {
+        iframe.contentWindow.MathJax.typesetPromise();
+      }
     };
-    reader.readAsDataURL(file);
-  } else {
-    preview.src = "";
-    preview.classList.remove("show");
-    deleteCheckbox.checked = false;
-    deleteLabel.style.display = "none";
-    debounceFullPreview();
   }
-});
+}
 
-// ========== 6. Đồng bộ từ iframe ==========
+function previewFull() {
+  debounceFullPreview();
+}
+
+function openSearchModal() {
+  document.getElementById("searchModal").style.display = "block";
+}
+
+function closeSearchModal() {
+  document.getElementById("searchModal").style.display = "none";
+}
+
+function searchQuestion() {
+  const keyword = document.getElementById("searchKeyword").value.toLowerCase();
+  const rows = document.querySelectorAll("#searchResultTable tbody tr");
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(keyword) ? "" : "none";
+  });
+}
+
+// Đồng bộ với iframe
 window.addEventListener("message", function (event) {
   if (event.data?.type === "fillForm") {
     const data = event.data.data;
@@ -152,17 +151,13 @@ window.addEventListener("message", function (event) {
     document.getElementById("answer4").value = data.answer4;
     document.getElementById("correct_answer").value = data.correct_answer;
 
-    const previewImg = document.getElementById("imagePreview");
+    const img = document.getElementById("previewImage");
     if (data.image) {
-      previewImg.src = data.image;
-      previewImg.classList.add("show");
-      document.getElementById("image_url").value = data.image;
-      document.getElementById("deleteImageLabel").style.display = "inline-block";
+      img.src = data.image;
+      img.style.display = "block";
     } else {
-      previewImg.src = "";
-      previewImg.classList.remove("show");
-      document.getElementById("image_url").value = "";
-      document.getElementById("deleteImageLabel").style.display = "none";
+      img.src = "";
+      img.style.display = "none";
     }
 
     ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
@@ -170,13 +165,13 @@ window.addEventListener("message", function (event) {
   }
 });
 
-// ========== 7. Xem trước toggle ==========
+// Auto-toggle preview
 document.addEventListener("DOMContentLoaded", () => {
   togglePreview();
   document.getElementById("togglePreview").addEventListener("change", togglePreview);
 });
 
-// ========== 8. Cảnh báo khi rời trang ==========
+// Cảnh báo rời trang
 let formChanged = false;
 document.getElementById("questionForm").addEventListener("input", () => formChanged = true);
 window.addEventListener("beforeunload", function (e) {
@@ -186,10 +181,12 @@ window.addEventListener("beforeunload", function (e) {
   }
 });
 
-// ========== 9. Export các hàm (nếu cần gọi ngoài) ==========
 export {
-  saveQuestion,
+  addQuestion,
+  updateQuestion,
   deleteQuestion,
-  renderPreview,
-  resetPreview
+  previewFull,
+  openSearchModal,
+  closeSearchModal,
+  searchQuestion
 };
