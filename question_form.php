@@ -151,6 +151,36 @@
     window.importCSV = importCSV;
 
     document.getElementById("importCSV").addEventListener("change", importCSV);
+
+    // Nhận dữ liệu từ iframe và điền vào form
+    window.addEventListener("message", function (event) {
+      if (!event.data || event.data.type !== "fillForm") return;
+
+      const q = event.data.data;
+
+      document.getElementById("question_id").value = q.id;
+      document.getElementById("topic").value = q.topic;
+      document.getElementById("question").value = q.question;
+      document.getElementById("answer1").value = q.answer1;
+      document.getElementById("answer2").value = q.answer2;
+      document.getElementById("answer3").value = q.answer3;
+      document.getElementById("answer4").value = q.answer4;
+      document.getElementById("correct_answer").value = q.correct_answer;
+      document.getElementById("image_url").value = q.image;
+
+      const previewImg = document.getElementById("previewImage");
+      const deleteLabel = document.getElementById("deleteImageLabel");
+      if (q.image) {
+        previewImg.src = q.image;
+        previewImg.style.display = "block";
+        deleteLabel.style.display = "inline-block";
+      } else {
+        previewImg.style.display = "none";
+        deleteLabel.style.display = "none";
+      }
+
+      previewFull();
+    });
   </script>
 </body>
 </html>
