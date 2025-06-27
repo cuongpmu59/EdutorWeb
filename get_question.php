@@ -70,20 +70,6 @@ try {
       margin-bottom: 10px;
       padding: 4px 8px;
     }
-    #previewBox {
-      margin-top: 12px;
-      padding: 10px;
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      display: block;
-    }
-    #previewBox h3 {
-      margin-top: 0;
-      color: #333;
-    }
-    #previewBox div {
-      margin-bottom: 6px;
-    }
   </style>
 </head>
 <body>
@@ -121,8 +107,10 @@ try {
             $thumbUrl = '';
             if (!empty($row["image"])) {
               if (strpos($row["image"], 'cloudinary') !== false) {
+                // Tạo ảnh thumbnail Cloudinary
                 $thumbUrl = preg_replace('~upload/~', 'upload/w_60,h_60,c_fill/', $row["image"]);
               } else {
+                // Dùng ảnh nội bộ (nếu có)
                 $thumbUrl = 'https://cuongedutor.infy.uk/images/uploads/' . ltrim($row["image"], "/");
               }
             }
@@ -161,46 +149,12 @@ try {
     </tbody>
   </table>
 
-  <label><input type="checkbox" id="togglePreview" checked> Hiện xem trước toàn bộ</label>
-
-  <div id="previewBox">
-    <h3>Xem trước toàn bộ nội dung</h3>
-    <div><strong>ID:</strong> <span id="pv_id"></span></div>
-    <div><strong>Chủ đề:</strong> <span id="pv_topic"></span></div>
-    <div><strong>Câu hỏi:</strong> <span id="pv_question"></span></div>
-    <div><strong>Đáp án A:</strong> <span id="pv_a"></span></div>
-    <div><strong>Đáp án B:</strong> <span id="pv_b"></span></div>
-    <div><strong>Đáp án C:</strong> <span id="pv_c"></span></div>
-    <div><strong>Đáp án D:</strong> <span id="pv_d"></span></div>
-    <div><strong>Đáp án đúng:</strong> <span id="pv_correct"></span></div>
-    <div><strong>Ảnh:</strong><br><img id="pv_image" src="" style="max-width:200px; margin-top:5px;" /></div>
-  </div>
-
   <script>
     function selectRow(row, data) {
       if (window.currentRow) window.currentRow.classList.remove("selected-row");
       window.currentRow = row;
       row.classList.add("selected-row");
-
       parent.postMessage({ type: "fillForm", data: data }, "*");
-
-      if (document.getElementById("togglePreview").checked) {
-        document.getElementById("pv_id").textContent = data.id;
-        document.getElementById("pv_topic").textContent = data.topic;
-        document.getElementById("pv_question").innerHTML = data.question;
-        document.getElementById("pv_a").innerHTML = data.answer1;
-        document.getElementById("pv_b").innerHTML = data.answer2;
-        document.getElementById("pv_c").innerHTML = data.answer3;
-        document.getElementById("pv_d").innerHTML = data.answer4;
-        document.getElementById("pv_correct").textContent = data.correct_answer;
-        if (data.image) {
-          document.getElementById("pv_image").src = data.image;
-          document.getElementById("pv_image").style.display = 'block';
-        } else {
-          document.getElementById("pv_image").style.display = 'none';
-        }
-        MathJax.typesetPromise();
-      }
     }
 
     $(document).ready(function () {
@@ -233,17 +187,16 @@ try {
         }
       });
 
+      // Lọc theo chủ đề
       $('#filterTopic').on('change', function () {
         const topic = this.value;
         table.column(7).search(topic ? '^' + topic + '$' : '', true, false).draw();
       });
 
-      $('#togglePreview').on('change', function () {
-        $('#previewBox').toggle(this.checked);
-      });
-
+      // Render lại MathJax
       table.on('draw', () => MathJax.typesetPromise());
 
+      // Tự chọn dòng đầu tiên sau khi tải
       setTimeout(() => {
         const firstRow = document.querySelector("tbody tr");
         if (firstRow) firstRow.click();
