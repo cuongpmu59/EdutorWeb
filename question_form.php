@@ -68,12 +68,21 @@
         <button type="reset">Làm mới</button>
         <button type="button" onclick="openSearchModal()">Tìm kiếm</button>
         <button type="button" onclick="document.getElementById('importCSV').click()">Nhập CSV</button>
-        <input type="file" id="excelFile" accept=".xlsx,.xls" style="display:none">
-        <button type="button" onclick="document.getElementById('excelFile').click()">📥 Nhập Excel</button>
-
+        <button onclick="window.open('export_question.php')" type="button">📤 Xuất Excel</button>
       </div>
 
       <input type="file" id="importCSV" accept=".csv" style="display:none">
+    </form>
+
+    <form action="generate_exam_pdf.php" method="get" target="_blank" style="margin-top: 10px;">
+      <label>Chọn chủ đề xuất đề thi:</label>
+      <select name="topic" id="topicExport">
+        <option value="">-- Tất cả --</option>
+        <option value="Đại số">Đại số</option>
+        <option value="Hình học">Hình học</option>
+        <!-- thêm các chủ đề khác nếu cần -->
+      </select>
+      <button type="submit">📄 Xuất đề thi PDF</button>
     </form>
 
     <hr>
