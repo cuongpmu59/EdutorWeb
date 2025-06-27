@@ -1,109 +1,69 @@
-import {
-  renderPreview,
-  resetPreview,
-  debounceFullPreview,
-  togglePreview
-} from './preview_module.js';
+// ========== 1. Thêm câu hỏi ==========
+export async function addQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
 
-function addQuestion() {
-  document.getElementById("questionForm").reset();
-  document.getElementById("question_id").value = "";
-  const img = document.getElementById("previewImage");
-  if (img) {
-    img.src = "";
-    img.style.display = "none";
+  if (form.image.files[0]) {
+    const url = await uploadImage(form.image.files[0]);
+    if (!url) return alert("Tải ảnh thất bại!");
+    formData.set("image_url", url);
   }
-  const deleteLabel = document.getElementById("deleteImageLabel");
-  if (deleteLabel) deleteLabel.style.display = "none";
 
-  formChanged = false;
-  resetPreview();
+  fetch("insert_question.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      form.reset();
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi thêm câu hỏi!"));
 }
 
-function updateQuestion() {
-  saveQuestion();
+// ========== 2. Cập nhật câu hỏi ==========
+export async function updateQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
+
+  if (form.image.files[0]) {
+    const url = await uploadImage(form.image.files[0]);
+    if (!url) return alert("Tải ảnh thất bại!");
+    formData.set("image_url", url);
+  }
+
+  fetch("update_question.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi cập nhật!"));
 }
 
-async function saveQuestion() {
-  const id = document.getElementById("question_id").value.trim();
-  const formData = new FormData(document.getElementById("questionForm"));
-
-  const required = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
-  for (let field of required) {
-    if (!formData.get(field)?.trim()) {
-      alert("Vui lòng điền đầy đủ thông tin.");
-      return;
-    }
-  }
-
-  const imageFile = formData.get("image");
-  if (imageFile && imageFile.size > 0) {
-    if (!imageFile.type.startsWith("image/")) {
-      alert("Chỉ chấp nhận file ảnh!");
-      return;
-    }
-    if (imageFile.size > 2 * 1024 * 1024) {
-      alert("Ảnh vượt quá 2MB.");
-      return;
-    }
-  }
-
-  if (imageFile && imageFile.size > 0) {
-    const cloudForm = new FormData();
-    cloudForm.append("file", imageFile);
-    cloudForm.append("upload_preset", "quiz_photo");
-
-    try {
-      const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
-        method: "POST",
-        body: cloudForm,
-      });
-      const data = await res.json();
-      if (data.secure_url) formData.set("image_url", data.secure_url);
-    } catch (err) {
-      alert("Không thể tải ảnh lên Cloudinary: " + err.message);
-      return;
-    }
-  }
-
-  const apiUrl = id ? "update_question.php" : "insert_question.php";
-
-  try {
-    const res = await fetch(apiUrl, {
-      method: "POST",
-      body: formData
-    });
-    const data = await res.json();
-    alert(data.message);
-    if (!id) document.getElementById("questionForm").reset();
-    resetPreview();
-    refreshIframe();
-    formChanged = false;
-  } catch (err) {
-    alert("❌ " + err.message);
-  }
-}
-
-function deleteQuestion() {
+// ========== 3. Xoá câu hỏi ==========
+export function deleteQuestion() {
   const id = document.getElementById("question_id").value;
-  if (!id || !confirm("Bạn có chắc muốn xoá?")) return;
+  if (!id || !confirm("Bạn chắc chắn xoá?")) return;
 
   fetch("delete_question.php", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "id=" + encodeURIComponent(id)
+    body: new URLSearchParams({ id }),
   })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      if (data.status === "success") {
-        document.getElementById("questionForm").reset();
-        resetPreview();
-        refreshIframe();
-      }
-    });
+    .then((res) => res.text())
+    .then((msg) => {
+      alert(msg);
+      document.getElementById("questionForm").reset();
+      refreshIframe();
+    })
+    .catch(() => alert("Lỗi khi xoá câu hỏi!"));
 }
 
+// ========== 4. Làm mới iframe ==========
 function refreshIframe() {
   const iframe = document.getElementById("questionIframe");
   if (iframe) {
@@ -116,148 +76,172 @@ function refreshIframe() {
   }
 }
 
-function previewFull() {
-  debounceFullPreview();
+// ========== 5. Xem trước toàn bộ ==========
+export function previewFull() {
+  const q = (id) => document.getElementById(id).value;
+  document.getElementById("pv_id").innerText = q("question_id");
+  document.getElementById("pv_topic").innerText = q("topic");
+  document.getElementById("pv_question").innerText = q("question");
+  document.getElementById("pv_a").innerText = q("answer1");
+  document.getElementById("pv_b").innerText = q("answer2");
+  document.getElementById("pv_c").innerText = q("answer3");
+  document.getElementById("pv_d").innerText = q("answer4");
+  document.getElementById("pv_correct").innerText = q("correct_answer");
+
+  const img = document.getElementById("pv_image");
+  const url = q("image_url");
+  if (url) {
+    img.src = url;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
+
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
-function openSearchModal() {
+// ========== 6. Zoom ảnh ==========
+export function zoomImage(img) {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+  modal.style.display = "block";
+  modalImg.src = img.src;
+}
+
+// ========== 7. Modal tìm kiếm ==========
+export function openSearchModal() {
   document.getElementById("searchModal").style.display = "block";
 }
-
-function closeSearchModal() {
+export function closeSearchModal() {
   document.getElementById("searchModal").style.display = "none";
 }
 
-function searchQuestion() {
-  const keyword = document.getElementById("searchKeyword").value.toLowerCase();
-  const rows = document.querySelectorAll("#searchResultTable tbody tr");
-  rows.forEach(row => {
-    const text = row.innerText.toLowerCase();
-    row.style.display = text.includes(keyword) ? "" : "none";
+// ========== 8. Tìm kiếm câu hỏi ==========
+export function searchQuestion() {
+  const keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
+  const tableBody = document.querySelector("#searchResultTable tbody");
+  const iframe = document.getElementById("questionIframe");
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+  const rows = iframeDoc.querySelectorAll("tbody tr");
+  tableBody.innerHTML = "";
+
+  rows.forEach((row) => {
+    const cols = row.querySelectorAll("td");
+    const text = Array.from(cols).map((c) => c.textContent.toLowerCase()).join(" ");
+    if (text.includes(keyword)) {
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${cols[0].textContent}</td>
+        <td>${cols[7].textContent}</td>
+        <td>${cols[1].textContent}</td>
+      `;
+      newRow.onclick = () => {
+        row.click();
+        closeSearchModal();
+      };
+      tableBody.appendChild(newRow);
+    }
   });
 }
 
-// Đồng bộ với iframe
-window.addEventListener("message", function (event) {
-  if (event.data?.type === "fillForm") {
-    const data = event.data.data;
-    document.getElementById("question_id").value = data.id;
-    document.getElementById("topic").value = data.topic;
-    document.getElementById("question").value = data.question;
-    document.getElementById("answer1").value = data.answer1;
-    document.getElementById("answer2").value = data.answer2;
-    document.getElementById("answer3").value = data.answer3;
-    document.getElementById("answer4").value = data.answer4;
-    document.getElementById("correct_answer").value = data.correct_answer;
+// ========== 9. Nhập CSV ==========
+export function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-    const img = document.getElementById("previewImage");
-    if (data.image) {
-      img.src = data.image;
-      img.style.display = "block";
-    } else {
-      img.src = "";
-      img.style.display = "none";
+  const reader = new FileReader();
+  reader.onload = () => {
+    const lines = reader.result.split("\n").filter(Boolean);
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(",");
+      const data = {};
+      headers.forEach((h, idx) => data[h.trim()] = cols[idx]?.trim() || "");
+
+      fetch("insert_question.php", {
+        method: "POST",
+        body: new URLSearchParams(data),
+      });
     }
 
-    ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
-    debounceFullPreview();
-  }
+    alert("Đã nhập từ CSV");
+    refreshIframe();
+  };
+  reader.readAsText(file);
+}
+
+// ========== 10. Upload ảnh lên Cloudinary ==========
+async function uploadImage(file) {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("upload_preset", "quiz_photo");
+  form.append("cloud_name", "dbdf2gwc9");
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+    method: "POST",
+    body: form,
+  });
+  const data = await res.json();
+  return data.secure_url || "";
+}
+
+// ========== 11. Xem trước từng phần ==========
+["question", "answer1", "answer2", "answer3", "answer4"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", () => {
+    document.getElementById("preview_" + id).textContent = document.getElementById(id).value;
+    if (window.MathJax) MathJax.typesetPromise();
+  });
 });
 
-// Auto-toggle preview
-document.addEventListener("DOMContentLoaded", () => {
-  togglePreview();
-  document.getElementById("togglePreview").addEventListener("change", togglePreview);
+// ========== 12. Toggle xem trước ==========
+document.getElementById("togglePreview").addEventListener("change", (e) => {
+  document.getElementById("previewBox").style.display = e.target.checked ? "block" : "none";
 });
 
-// Cảnh báo rời trang
+// ========== 13. Dark Mode ==========
+document.getElementById("toggleDarkMode").addEventListener("change", function () {
+  document.body.classList.toggle("dark-mode", this.checked);
+});
+
+// ========== 14. Cảnh báo rời trang khi chưa lưu ==========
 let formChanged = false;
-document.getElementById("questionForm").addEventListener("input", () => formChanged = true);
-window.addEventListener("beforeunload", function (e) {
+document.getElementById("questionForm").addEventListener("input", () => {
+  formChanged = true;
+});
+window.addEventListener("beforeunload", (e) => {
   if (formChanged) {
     e.preventDefault();
     e.returnValue = "";
   }
 });
 
-function importCSV(file) {
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const lines = e.target.result.split('\n').slice(1);
-    let count = 0;
-    lines.forEach(line => {
-      const parts = line.split(',');
-      if (parts.length >= 7) {
-        const [question, a, b, c, d, correct, topic] = parts.map(p => p.trim());
-        if (!question || !a || !b || !c || !d || !correct || !topic) return;
+// ========== 15. Nhận dữ liệu từ iframe và điền vào form ==========
+window.addEventListener("message", (event) => {
+  if (event.data?.type === "fillForm") {
+    const data = event.data.data;
+    document.getElementById("question_id").value = data.id || "";
+    document.getElementById("topic").value = data.topic || "";
+    document.getElementById("question").value = data.question || "";
+    document.getElementById("answer1").value = data.answer1 || "";
+    document.getElementById("answer2").value = data.answer2 || "";
+    document.getElementById("answer3").value = data.answer3 || "";
+    document.getElementById("answer4").value = data.answer4 || "";
+    document.getElementById("correct_answer").value = data.correct_answer || "";
+    document.getElementById("image_url").value = data.image || "";
 
-        const formData = new FormData();
-        formData.append("question", question);
-        formData.append("answer1", a);
-        formData.append("answer2", b);
-        formData.append("answer3", c);
-        formData.append("answer4", d);
-        formData.append("correct_answer", correct);
-        formData.append("topic", topic);
-
-        fetch("insert_question.php", { method: "POST", body: formData })
-          .then(res => res.json())
-          .then(data => {
-            if (data.status === "success") count++;
-            refreshIframe();
-          });
-      }
-    });
-    alert("Đã nhập thành công một số câu hỏi từ CSV.");
-  };
-  reader.readAsText(file);
-}
-
-async function importExcel(file) {
-  const reader = new FileReader();
-  reader.onload = async function (e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    let importedCount = 0;
-    for (let i = 1; i < rows.length; i++) {
-      const [question, a, b, c, d, correct, topic] = rows[i];
-      if (!question || !a || !b || !c || !d || !correct || !topic) continue;
-
-      const formData = new FormData();
-      formData.append("question", question);
-      formData.append("answer1", a);
-      formData.append("answer2", b);
-      formData.append("answer3", c);
-      formData.append("answer4", d);
-      formData.append("correct_answer", correct);
-      formData.append("topic", topic);
-
-      try {
-        const res = await fetch("insert_question.php", { method: "POST", body: formData });
-        const json = await res.json();
-        if (json.status === "success") importedCount++;
-      } catch (err) {
-        console.error("Lỗi khi thêm dòng:", err);
-      }
+    const img = document.getElementById("previewImage");
+    if (data.image) {
+      img.src = data.image;
+      img.style.display = "block";
+      document.getElementById("deleteImageLabel").style.display = "inline";
+    } else {
+      img.src = "";
+      img.style.display = "none";
+      document.getElementById("deleteImageLabel").style.display = "none";
     }
-    alert(`✅ Đã nhập ${importedCount} câu hỏi từ Excel.`);
-    refreshIframe();
-  };
-  reader.readAsArrayBuffer(file);
-}
 
-export {
-  addQuestion,
-  updateQuestion,
-  deleteQuestion,
-  previewFull,
-  openSearchModal,
-  closeSearchModal,
-  searchQuestion,
-  importCSV,
-  importExcel
-};
+    previewFull();
+  }
+});
