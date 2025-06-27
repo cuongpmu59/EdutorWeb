@@ -21,7 +21,6 @@ function addQuestion() {
 }
 
 function updateQuestion() {
-  // Tùy bạn triển khai — bạn có thể gọi saveQuestion() nếu phù hợp
   saveQuestion();
 }
 
@@ -181,6 +180,76 @@ window.addEventListener("beforeunload", function (e) {
   }
 });
 
+function importCSV(file) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const lines = e.target.result.split('\n').slice(1);
+    let count = 0;
+    lines.forEach(line => {
+      const parts = line.split(',');
+      if (parts.length >= 7) {
+        const [question, a, b, c, d, correct, topic] = parts.map(p => p.trim());
+        if (!question || !a || !b || !c || !d || !correct || !topic) return;
+
+        const formData = new FormData();
+        formData.append("question", question);
+        formData.append("answer1", a);
+        formData.append("answer2", b);
+        formData.append("answer3", c);
+        formData.append("answer4", d);
+        formData.append("correct_answer", correct);
+        formData.append("topic", topic);
+
+        fetch("insert_question.php", { method: "POST", body: formData })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === "success") count++;
+            refreshIframe();
+          });
+      }
+    });
+    alert("Đã nhập thành công một số câu hỏi từ CSV.");
+  };
+  reader.readAsText(file);
+}
+
+async function importExcel(file) {
+  const reader = new FileReader();
+  reader.onload = async function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    let importedCount = 0;
+    for (let i = 1; i < rows.length; i++) {
+      const [question, a, b, c, d, correct, topic] = rows[i];
+      if (!question || !a || !b || !c || !d || !correct || !topic) continue;
+
+      const formData = new FormData();
+      formData.append("question", question);
+      formData.append("answer1", a);
+      formData.append("answer2", b);
+      formData.append("answer3", c);
+      formData.append("answer4", d);
+      formData.append("correct_answer", correct);
+      formData.append("topic", topic);
+
+      try {
+        const res = await fetch("insert_question.php", { method: "POST", body: formData });
+        const json = await res.json();
+        if (json.status === "success") importedCount++;
+      } catch (err) {
+        console.error("Lỗi khi thêm dòng:", err);
+      }
+    }
+    alert(`✅ Đã nhập ${importedCount} câu hỏi từ Excel.`);
+    refreshIframe();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
 export {
   addQuestion,
   updateQuestion,
@@ -188,5 +257,7 @@ export {
   previewFull,
   openSearchModal,
   closeSearchModal,
-  searchQuestion
+  searchQuestion,
+  importCSV,
+  importExcel
 };
