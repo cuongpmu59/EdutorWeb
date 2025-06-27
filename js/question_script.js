@@ -177,14 +177,16 @@ function deleteQuestion() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "id=" + encodeURIComponent(id)
   })
-    .then(res => res.text())
-    .then(res => {
-      alert(res);
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    if (data.status === "success") {
       document.getElementById("questionForm").reset();
       resetPreview();
       refreshIframe();
-    })
-    .catch(err => alert("Xoá thất bại: " + err.message));
+    }
+  });
+  
 }
 
 // ========== 5. Search ==========
@@ -310,3 +312,16 @@ document.addEventListener("DOMContentLoaded", () => {
   togglePreview();
   toggleFullPreview();
 });
+
+// Toggle ẩn/hiện khối xem trước toàn bộ
+document.addEventListener('DOMContentLoaded', function () {
+  const toggle = document.getElementById("togglePreview");
+  const previewBox = document.getElementById("previewBox");
+
+  if (toggle && previewBox) {
+    toggle.addEventListener("change", function () {
+      previewBox.style.display = toggle.checked ? "block" : "none";
+    });
+  }
+});
+
