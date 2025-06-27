@@ -1,3 +1,11 @@
+// question_script.js
+import {
+  renderPreview,
+  resetPreview,
+  debounceFullPreview,
+  togglePreview
+} from './preview_module.js';
+
 // ========== 1. Utility Functions ==========
 function getFormData() {
   return new FormData(document.getElementById("questionForm"));
@@ -13,66 +21,6 @@ function refreshIframe() {
       }
     };
   }
-}
-
-function containsMath(content) {
-  return /\\\(|\\\[|\$\$/.test(content);
-}
-
-let mathJaxTimer;
-function debounceRenderMath(element) {
-  clearTimeout(mathJaxTimer);
-  mathJaxTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(element.innerText)) {
-      MathJax.typesetPromise([element]);
-    }
-  }, 250);
-}
-
-// ========== 2. Preview ==========
-
-function renderPreview(fieldId) {
-  const value = document.getElementById(fieldId).value;
-  const previewDiv = document.getElementById("preview_" + fieldId);
-  previewDiv.innerHTML = value;
-  debounceRenderMath(previewDiv);
-  debounceFullPreview();
-}
-
-let previewTimer;
-function debounceFullPreview() {
-  clearTimeout(previewTimer);
-  previewTimer = setTimeout(updateFullPreview, 300);
-}
-
-function updateFullPreview() {
-  document.getElementById("pv_id").textContent = document.getElementById("question_id").value;
-  document.getElementById("pv_topic").textContent = document.getElementById("topic").value;
-  document.getElementById("pv_question").innerHTML = document.getElementById("question").value;
-  document.getElementById("pv_a").innerHTML = document.getElementById("answer1").value;
-  document.getElementById("pv_b").innerHTML = document.getElementById("answer2").value;
-  document.getElementById("pv_c").innerHTML = document.getElementById("answer3").value;
-  document.getElementById("pv_d").innerHTML = document.getElementById("answer4").value;
-  document.getElementById("pv_correct").textContent = document.getElementById("correct_answer").value;
-
-  const img = document.getElementById("imagePreview");
-  const pvImg = document.getElementById("pv_image");
-  if (img && img.src && img.style.display !== "none") {
-    pvImg.src = img.src;
-    pvImg.style.display = "block";
-  } else {
-    pvImg.src = "";
-    pvImg.style.display = "none";
-  }
-
-  if (window.MathJax) {
-    MathJax.typesetPromise([document.getElementById("previewBox")]);
-  }
-}
-
-function togglePreview() {
-  const isChecked = document.getElementById("togglePreview").checked;
-  document.getElementById("previewBox").style.display = isChecked ? "block" : "none";
 }
 
 // ========== 3. Save ==========
@@ -102,6 +50,7 @@ async function saveQuestion() {
   }
 
   const saveBtn = document.querySelector(".form-right button:nth-child(1)");
+  if (saveBtn.disabled) return; // ngăn double click
   saveBtn.disabled = true;
 
   if (imageFile && imageFile.size > 0) {
@@ -236,3 +185,11 @@ window.addEventListener("beforeunload", function (e) {
     e.returnValue = "";
   }
 });
+
+// ========== 9. Export các hàm (nếu cần gọi ngoài) ==========
+export {
+  saveQuestion,
+  deleteQuestion,
+  renderPreview,
+  resetPreview
+};
