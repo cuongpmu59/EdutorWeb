@@ -100,6 +100,19 @@
     </div>
   </div>
 
-  <script src="js/question_script.js"></script>
+  <script type="module">
+  import {
+    addQuestion, updateQuestion, deleteQuestion,
+    previewFull, openSearchModal, closeSearchModal, searchQuestion
+  } from './js/question_script.js';
+
+  window.addQuestion = addQuestion;
+  window.updateQuestion = updateQuestion;
+  window.deleteQuestion = deleteQuestion;
+  window.previewFull = previewFull;
+  window.openSearchModal = openSearchModal;
+  window.closeSearchModal = closeSearchModal;
+  window.searchQuestion = searchQuestion;
+</script>
 </body>
 </html>
