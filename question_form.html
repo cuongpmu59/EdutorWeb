@@ -1,0 +1,146 @@
+<?php
+require 'db_connection.php';
+
+$sql = "SELECT * FROM questions ORDER BY id DESC";
+$result = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Câu hỏi</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+    form {
+      flex: 1;
+    }
+    table {
+      flex: 2;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    td, th {
+      border: 1px solid #ccc;
+      padding: 5px;
+    }
+    th {
+      background: #eee;
+    }
+    img {
+      max-width: 100px;
+      max-height: 100px;
+    }
+    .form-img-preview {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<form action="insert_question.php" method="post" enctype="multipart/form-data">
+  <h2>Nhập câu hỏi</h2>
+  <input type="hidden" name="id" id="id">
+  <label>Câu hỏi:</label><br>
+  <textarea name="question" id="question" rows="3" cols="40"></textarea><br><br>
+
+  <label>Ảnh minh họa:</label><br>
+  <input type="file" name="image" id="imageInput"><br>
+  <img id="previewImage" class="form-img-preview" style="display:none;"><br><br>
+
+  <label>Đáp án A:</label><br>
+  <input type="text" name="answer1" id="answer1"><br>
+  <label>Đáp án B:</label><br>
+  <input type="text" name="answer2" id="answer2"><br>
+  <label>Đáp án C:</label><br>
+  <input type="text" name="answer3" id="answer3"><br>
+  <label>Đáp án D:</label><br>
+  <input type="text" name="answer4" id="answer4"><br>
+
+  <label>Đáp án đúng (1-4):</label><br>
+  <input type="number" name="correct_answer" id="correct_answer" min="1" max="4"><br><br>
+
+  <button type="submit">Lưu câu hỏi</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Câu hỏi</th>
+      <th>Ảnh</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>Đúng</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+    while ($row = $result->fetch_assoc()) {
+      $id = $row["id"];
+      $question = htmlspecialchars($row["question"], ENT_QUOTES);
+      $answer1 = htmlspecialchars($row["answer1"], ENT_QUOTES);
+      $answer2 = htmlspecialchars($row["answer2"], ENT_QUOTES);
+      $answer3 = htmlspecialchars($row["answer3"], ENT_QUOTES);
+      $answer4 = htmlspecialchars($row["answer4"], ENT_QUOTES);
+      $correct = $row["correct_answer"];
+      $image = htmlspecialchars($row["image"], ENT_QUOTES);
+      $imgTag = $image ? "<img src='$image'>" : "";
+
+      echo "<tr onclick='fillForm(this)' 
+        data-id='$id' 
+        data-question=\"$question\"
+        data-image=\"$image\"
+        data-answer1=\"$answer1\"
+        data-answer2=\"$answer2\"
+        data-answer3=\"$answer3\"
+        data-answer4=\"$answer4\"
+        data-correct=\"$correct\">
+        <td>$id</td>
+        <td class='math'>$question</td>
+        <td>$imgTag</td>
+        <td class='math'>$answer1</td>
+        <td class='math'>$answer2</td>
+        <td class='math'>$answer3</td>
+        <td class='math'>$answer4</td>
+        <td>$correct</td>
+      </tr>";
+    }
+    ?>
+  </tbody>
+</table>
+
+<script>
+function fillForm(row) {
+  document.getElementById('id').value = row.dataset.id;
+  document.getElementById('question').value = row.dataset.question;
+  document.getElementById('answer1').value = row.dataset.answer1;
+  document.getElementById('answer2').value = row.dataset.answer2;
+  document.getElementById('answer3').value = row.dataset.answer3;
+  document.getElementById('answer4').value = row.dataset.answer4;
+  document.getElementById('correct_answer').value = row.dataset.correct;
+
+  const img = document.getElementById('previewImage');
+  if (row.dataset.image && row.dataset.image.trim() !== "") {
+    img.src = row.dataset.image;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+
+  if (window.MathJax) MathJax.typeset();
+}
+</script>
+
+</body>
+</html>
