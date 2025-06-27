@@ -89,6 +89,22 @@
           </thead>
           <tbody></tbody>
         </table>
+        <hr>
+<label><input type="checkbox" id="togglePreview" checked> Hiện xem trước toàn bộ</label>
+
+<div id="previewBox" style="display: block; margin-top: 10px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9;">
+  <h3>Xem trước toàn bộ nội dung</h3>
+  <div><strong>ID:</strong> <span id="pv_id"></span></div>
+  <div><strong>Chủ đề:</strong> <span id="pv_topic"></span></div>
+  <div><strong>Câu hỏi:</strong> <span id="pv_question"></span></div>
+  <div><strong>Đáp án A:</strong> <span id="pv_a"></span></div>
+  <div><strong>Đáp án B:</strong> <span id="pv_b"></span></div>
+  <div><strong>Đáp án C:</strong> <span id="pv_c"></span></div>
+  <div><strong>Đáp án D:</strong> <span id="pv_d"></span></div>
+  <div><strong>Đáp án đúng:</strong> <span id="pv_correct"></span></div>
+  <div><strong>Ảnh:</strong><br><img id="pv_image" src="" style="max-width: 200px; margin-top: 5px;" /></div>
+</div>
+
         <button onclick="closeSearchModal()">Đóng</button>
       </div>
     </div>
