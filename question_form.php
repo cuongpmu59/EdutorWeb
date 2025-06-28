@@ -4,89 +4,107 @@
   <meta charset="UTF-8">
   <title>Quản lý câu hỏi trắc nghiệm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  
+  <!-- CSS & MathJax -->
   <link rel="stylesheet" href="css/styles_question.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
+
 <body>
-  <div class="header-bar">
-    <h2>Quản lý câu hỏi trắc nghiệm</h2>
-    <label class="switch">
-      <input type="checkbox" id="toggleDarkMode">
-      <span class="slider round"></span>
-    </label>
+  <div class="header-bar d-flex justify-content-between align-items-center p-2 bg-light">
+    <h2 class="m-0">Quản lý câu hỏi trắc nghiệm</h2>
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="toggleDarkMode">
+    </div>
   </div>
 
-  <div class="question-container">
-    <form id="questionForm">
+  <div class="container my-4">
+    <form id="questionForm" enctype="multipart/form-data">
       <input type="hidden" id="question_id" name="question_id">
       <input type="hidden" id="image_url" name="image_url">
 
-      <label for="topic">Chủ đề:</label>
-      <input type="text" id="topic" name="topic" required>
+      <!-- Chủ đề & câu hỏi -->
+      <div class="mb-3">
+        <label for="topic" class="form-label">Chủ đề:</label>
+        <input type="text" class="form-control" id="topic" name="topic" required>
+      </div>
 
-      <label for="question">Câu hỏi:</label>
-      <textarea id="question" name="question" rows="2" required></textarea>
-      <div id="preview_question" class="preview-field"></div>
+      <div class="mb-3">
+        <label for="question" class="form-label">Câu hỏi:</label>
+        <textarea class="form-control" id="question" name="question" rows="2" required></textarea>
+        <div id="preview_question" class="preview-field"></div>
+      </div>
 
-      <label for="answer1">Đáp án A:</label>
-      <textarea id="answer1" name="answer1" rows="2" required></textarea>
-      <div id="preview_answer1" class="preview-field"></div>
+      <!-- Các đáp án -->
+      <?php
+      $answers = ['A', 'B', 'C', 'D'];
+      foreach ($answers as $i => $label) {
+        echo <<<HTML
+        <div class="mb-3">
+          <label for="answer{$i+1}" class="form-label">Đáp án {$label}:</label>
+          <textarea class="form-control" id="answer{$i+1}" name="answer{$i+1}" rows="2" required></textarea>
+          <div id="preview_answer{$i+1}" class="preview-field"></div>
+        </div>
+        HTML;
+      }
+      ?>
 
-      <label for="answer2">Đáp án B:</label>
-      <textarea id="answer2" name="answer2" rows="2" required></textarea>
-      <div id="preview_answer2" class="preview-field"></div>
+      <!-- Đáp án đúng -->
+      <div class="mb-3">
+        <label for="correct_answer" class="form-label">Đáp án đúng:</label>
+        <select id="correct_answer" name="correct_answer" class="form-select" required>
+          <option value="">--Chọn--</option>
+          <?php foreach ($answers as $a) echo "<option value='$a'>$a</option>"; ?>
+        </select>
+      </div>
 
-      <label for="answer3">Đáp án C:</label>
-      <textarea id="answer3" name="answer3" rows="2" required></textarea>
-      <div id="preview_answer3" class="preview-field"></div>
+      <!-- Ảnh minh hoạ -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Ảnh minh họa:</label>
+        <input class="form-control" type="file" id="image" name="image" accept="image/*">
+        <label id="deleteImageLabel" style="display:none">
+          <input type="checkbox" id="delete_image" name="delete_image"> Xóa ảnh hiện tại
+        </label>
+        <img id="previewImage" src="" class="preview-thumb mt-2" style="display:none; max-width: 150px;" onclick="zoomImage(this)">
+      </div>
 
-      <label for="answer4">Đáp án D:</label>
-      <textarea id="answer4" name="answer4" rows="2" required></textarea>
-      <div id="preview_answer4" class="preview-field"></div>
-
-      <label for="correct_answer">Đáp án đúng:</label>
-      <select id="correct_answer" name="correct_answer" required>
-        <option value="">--Chọn--</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-        <option value="D">D</option>
-      </select>
-
-      <label for="image">Ảnh minh họa:</label>
-      <input type="file" id="image" name="image" accept="image/*">
-      <label id="deleteImageLabel" style="display:none">
-        <input type="checkbox" id="delete_image" name="delete_image"> Xóa ảnh hiện tại
-      </label>
-      <img id="previewImage" src="" class="preview-thumb" style="display:none" onclick="zoomImage(this)">
-
-      <div class="button-group">
-        <button type="button" onclick="addQuestion()">Thêm</button>
-        <button type="button" onclick="updateQuestion()">Sửa</button>
-        <button type="button" onclick="deleteQuestion()">Xoá</button>
-        <button type="reset">Làm mới</button>
-        <button type="button" onclick="openSearchModal()">Tìm kiếm</button>
-        <button type="button" onclick="document.getElementById('importCSV').click()">Nhập CSV</button>
-        <button onclick="window.open('export_question.php')" type="button">📤 Xuất Excel</button>
+      <!-- Nút thao tác -->
+      <div class="mb-4 d-flex flex-wrap gap-2">
+        <button type="button" onclick="addQuestion()" class="btn btn-success">Thêm</button>
+        <button type="button" onclick="updateQuestion()" class="btn btn-warning">Sửa</button>
+        <button type="button" onclick="deleteQuestion()" class="btn btn-danger">Xoá</button>
+        <button type="reset" class="btn btn-secondary">Làm mới</button>
+        <button type="button" onclick="openSearchModal()" class="btn btn-info">Tìm kiếm</button>
+        <button type="button" onclick="document.getElementById('importCSV').click()" class="btn btn-outline-dark">Nhập CSV</button>
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#xlsxModal">📤 Nhập Excel</button>
+        <button type="button" onclick="window.open('export_question.php')" class="btn btn-outline-success">📤 Xuất Excel</button>
       </div>
 
       <input type="file" id="importCSV" accept=".csv" style="display:none">
     </form>
 
-    <form action="generate_exam_pdf.php" method="get" target="_blank" style="margin-top: 10px;">
+    <!-- Xuất PDF -->
+    <form action="generate_exam_pdf.php" method="get" target="_blank" class="my-3">
       <label>Chọn chủ đề xuất đề thi:</label>
-      <select name="topic" id="topicExport">
+      <select name="topic" id="topicExport" class="form-select d-inline w-auto mx-2">
         <option value="">-- Tất cả --</option>
         <option value="Đại số">Đại số</option>
         <option value="Hình học">Hình học</option>
-        <!-- thêm các chủ đề khác nếu cần -->
       </select>
-      <button type="submit">📄 Xuất đề thi PDF</button>
+      <button type="submit" class="btn btn-outline-dark">📄 Xuất đề thi PDF</button>
     </form>
 
+    <!-- Xem trước -->
     <hr>
-    <label><input type="checkbox" id="togglePreview" checked> Hiện xem trước toàn bộ</label>
+    <div class="form-check mb-2">
+      <input type="checkbox" class="form-check-input" id="togglePreview" checked>
+      <label class="form-check-label" for="togglePreview">Hiện xem trước toàn bộ</label>
+    </div>
 
     <div id="previewBox" class="preview-box">
       <h3>Xem trước toàn bộ nội dung</h3>
@@ -98,44 +116,23 @@
       <div><strong>Đáp án C:</strong> <span id="pv_c"></span></div>
       <div><strong>Đáp án D:</strong> <span id="pv_d"></span></div>
       <div><strong>Đáp án đúng:</strong> <span id="pv_correct"></span></div>
-      <div><strong>Ảnh:</strong><br><img id="pv_image" src="" style="max-width: 200px; margin-top: 5px; display: none;"></div>
+      <div><strong>Ảnh:</strong><br><img id="pv_image" src="" style="max-width:200px; display:none;"></div>
     </div>
-  </div>
 
-  <hr>
-  <h3>Danh sách câu hỏi</h3>
-  <iframe id="questionIframe" src="get_question.php" width="100%" height="400" style="border: 1px solid #ccc;"></iframe>
+    <hr>
+    <h3>Danh sách câu hỏi</h3>
+    <iframe id="questionIframe" src="get_question.php" width="100%" height="400" style="border:1px solid #ccc;"></iframe>
+  </div>
 
   <!-- Modal ảnh -->
   <div id="imageModal" class="modal" onclick="this.style.display='none'">
     <img class="modal-content" id="modalImage">
   </div>
 
-  <!-- Modal tìm kiếm -->
-  <div id="searchModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeSearchModal()">&times;</span>
-      <h3>Tìm kiếm câu hỏi</h3>
-      <input type="text" id="searchKeyword" placeholder="Nhập từ khóa...">
-      <button onclick="searchQuestion()">Tìm</button>
-      <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#xlsxModal">
-        📥 Nhập Excel (.xlsx)
-      </button>
+  <!-- Modal tìm kiếm & Modal Excel -->
+  <?php include 'modals.php'; ?>
 
-      <table id="searchResultTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Chủ đề</th>
-            <th>Câu hỏi</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <button onclick="closeSearchModal()">Đóng</button>
-    </div>
-  </div>
-
+  <!-- JavaScript -->
   <script type="module">
     import {
       addQuestion, updateQuestion, deleteQuestion,
@@ -154,60 +151,6 @@
     window.importCSV = importCSV;
 
     document.getElementById("importCSV").addEventListener("change", importCSV);
-
-    // Nhận dữ liệu từ iframe và điền vào form
-    window.addEventListener("message", function (event) {
-      if (!event.data || event.data.type !== "fillForm") return;
-
-      const q = event.data.data;
-
-      document.getElementById("question_id").value = q.id;
-      document.getElementById("topic").value = q.topic;
-      document.getElementById("question").value = q.question;
-      document.getElementById("answer1").value = q.answer1;
-      document.getElementById("answer2").value = q.answer2;
-      document.getElementById("answer3").value = q.answer3;
-      document.getElementById("answer4").value = q.answer4;
-      document.getElementById("correct_answer").value = q.correct_answer;
-      document.getElementById("image_url").value = q.image;
-
-      const previewImg = document.getElementById("previewImage");
-      const deleteLabel = document.getElementById("deleteImageLabel");
-      if (q.image) {
-        previewImg.src = q.image;
-        previewImg.style.display = "block";
-        deleteLabel.style.display = "inline-block";
-      } else {
-        previewImg.style.display = "none";
-        deleteLabel.style.display = "none";
-      }
-
-      previewFull();
-    });
   </script>
-
-  <!-- Modal Nhập Excel -->
-<div class="modal fade" id="xlsxModal" tabindex="-1" aria-labelledby="xlsxModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="xlsxUploadForm" class="modal-content" enctype="multipart/form-data">
-      <div class="modal-header">
-        <h5 class="modal-title" id="xlsxModalLabel">📥 Nhập câu hỏi từ Excel (.xlsx)</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">Chọn file Excel (.xlsx):</label>
-        <input type="file" name="xlsx_file" accept=".xlsx" class="form-control" required>
-        <div class="mt-2">
-          <a href="template.xlsx" download class="btn btn-outline-secondary btn-sm">📄 Tải file mẫu Excel</a>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Tải lên</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 </body>
 </html>
