@@ -70,7 +70,7 @@
         <label id="deleteImageLabel" style="display:none">
           <input type="checkbox" id="delete_image" name="delete_image"> Xóa ảnh hiện tại
         </label>
-        <img id="previewImage" src="" class="preview-thumb mt-2" style="display:none; max-width: 150px;" onclick="zoomImage(this)">
+        <img id="previewImage" src="" class="preview-thumb mt-2" style="display:none; max-width: 150px;" onclick="showImageModal(this.src)">
       </div>
 
       <!-- Nút thao tác -->
