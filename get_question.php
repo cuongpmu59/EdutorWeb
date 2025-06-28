@@ -141,8 +141,7 @@ try {
                         <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
                         <td style="text-align:center;">
                             <?php if (!empty($row["image"])): ?>
-                              <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>"
-                                  alt="Ảnh minh họa" onclick="showImageModal(this.src)" />
+                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>" alt="Ảnh minh họa" />
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -152,32 +151,5 @@ try {
             <?php endif; ?>
         </tbody>
     </table>
-
-    <!-- 🌟 Modal Nhập Excel .xlsx -->
-<div class="modal fade" id="xlsxModal" tabindex="-1" aria-labelledby="xlsxModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <form id="xlsxUploadForm" class="modal-content" enctype="multipart/form-data">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="xlsxModalLabel">📥 Nhập câu hỏi từ Excel (.xlsx)</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="xlsx_file" class="form-label">Chọn file Excel:</label>
-          <input class="form-control" type="file" name="xlsx_file" id="xlsx_file" accept=".xlsx" required>
-        </div>
-        <div class="alert alert-info">
-          <strong>Lưu ý:</strong> File cần đúng định dạng cột: <code>question</code>, <code>answer1</code>, <code>answer2</code>, <code>answer3</code>, <code>answer4</code>, <code>correct_answer</code>, <code>topic</code>, <code>image_url</code>.
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a href="template.xlsx" class="btn btn-link" download>Tải mẫu Excel</a>
-        <button type="submit" class="btn btn-success">Tải lên</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 </body>
 </html>
