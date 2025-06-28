@@ -49,6 +49,30 @@ try {
             margin: auto;
             border: 1px solid #aaa;
             border-radius: 3px;
+            cursor: zoom-in;
+        }
+        /* Modal phóng to ảnh */
+        #imageModal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+        }
+        #imageModal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        #imageModal span {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
         }
     </style>
 
@@ -100,6 +124,19 @@ try {
                 if (firstRow) firstRow.click();
             });
         };
+
+        function showImage(src) {
+            document.getElementById("modalImage").src = src;
+            document.getElementById("imageModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
+        window.addEventListener("keydown", e => {
+            if (e.key === "Escape") closeModal();
+        });
     </script>
 </head>
 <body>
@@ -120,6 +157,11 @@ try {
         <tbody>
             <?php if (count($rows) > 0): ?>
                 <?php foreach ($rows as $row): ?>
+                    <?php
+                        $imageUrl = !empty($row["image"]) ? $row["image"] : "";
+                        // Tạo URL thumbnail 40x40 từ Cloudinary nếu có
+                        $thumbnailUrl = preg_replace("/upload\//", "upload/c_fill,h_40,w_40/", $imageUrl);
+                    ?>
                     <tr tabindex="0" onclick='selectRow(this, <?php echo json_encode([
                         "id" => $row["id"],
                         "question" => $row["question"],
@@ -129,7 +171,7 @@ try {
                         "answer4" => $row["answer4"],
                         "correct_answer" => strtoupper(trim($row["correct_answer"])),
                         "topic" => $row["topic"] ?? "",
-                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/uploads/" . ltrim($row["image"], "/") : ""
+                        "image" => $imageUrl
                     ]); ?>)'>
                         <td><?= htmlspecialchars($row["id"]) ?></td>
                         <td><?= htmlspecialchars($row["question"]) ?></td>
@@ -140,8 +182,9 @@ try {
                         <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
                         <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
                         <td style="text-align:center;">
-                            <?php if (!empty($row["image"])): ?>
-                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>" alt="Ảnh minh họa" />
+                            <?php if (!empty($imageUrl)): ?>
+                                <img class="thumb" src="<?= htmlspecialchars($thumbnailUrl) ?>" alt="Ảnh minh họa"
+                                     onclick="showImage('<?= htmlspecialchars($imageUrl) ?>')">
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -151,5 +194,11 @@ try {
             <?php endif; ?>
         </tbody>
     </table>
+
+    <!-- Modal phóng to ảnh -->
+    <div id="imageModal">
+        <span onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" />
+    </div>
 </body>
 </html>
