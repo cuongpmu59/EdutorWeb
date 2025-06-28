@@ -179,5 +179,35 @@
 
     document.getElementById("importCSV").addEventListener("change", importCSV);
   </script>
+  <script>
+  const darkToggle = document.getElementById("toggleDarkMode");
+
+  // Khôi phục trạng thái dark mode từ localStorage
+  if (localStorage.getItem("darkMode") === "on") {
+    document.body.classList.add("dark-mode");
+    darkToggle.checked = true;
+  }
+
+  darkToggle.addEventListener("change", function () {
+    if (this.checked) {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("darkMode", "on");
+    } else {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("darkMode", "off");
+    }
+  });
+</script>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+  <div id="toastMsg" class="toast align-items-center text-white bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastContent">Thành công!</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>
