@@ -16,14 +16,15 @@ function refreshIframe() {
 }
 
 function containsMath(content) {
-  return /\\\(|\\\[|\$\$/.test(content);
+  return /\\\(|\\\)|\\\[|\\\]|\$\$/.test(content);
 }
+
 
 let mathJaxTimer;
 function debounceRenderMath(element) {
   clearTimeout(mathJaxTimer);
   mathJaxTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(element.innerText)) {
+    if (window.MathJax && containsMath(element.innerHTML)) {
       MathJax.typesetPromise([element]);
     }
   }, 250);
@@ -36,13 +37,25 @@ function renderMathInPage() {
   }
 }
 
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, function (m) {
+    return ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    })[m];
+  });
+}
+
 // ========== 2. Preview ==========
 function renderPreview(fieldId) {
   const value = document.getElementById(fieldId).value;
   const previewDiv = document.getElementById("preview_" + fieldId);
-  previewDiv.innerHTML = value;
+  previewDiv.innerHTML = escapeHtml(value);
   debounceRenderMath(previewDiv);
-  debounceFullPreview();
+  
 }
 
 let previewTimer;
@@ -166,7 +179,7 @@ async function saveQuestion() {
     saveBtn.disabled = false;
   }
   
-
+}
 
 // ========== 4. Delete ==========
 function deleteQuestion() {
@@ -294,6 +307,7 @@ window.addEventListener("message", function (event) {
 
     ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
     debounceFullPreview();
+    formChanged = false;
   }
 });
 
@@ -321,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+let currentRow = null; // Thêm dòng này ở đầu script hoặc trong $(document).ready
 $(document).ready(function () {
   const table = $('#questionTable').DataTable({
     language: {
@@ -364,4 +379,7 @@ $(document).ready(function () {
     parent.postMessage({ type: "fillForm", data: rowData }, window.location.origin);
   });
 });
+
+
+
 
