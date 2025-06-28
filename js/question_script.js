@@ -125,6 +125,9 @@ export async function updateQuestion() {
     const result = await response.json();
     if (result.status === "success") {
       showToast(result.message, "success");
+      form.reset();
+      setPreviewImage("");
+      previewFull();
       refreshIframe();
     } else {
       showToast(result.message, result.status === "duplicate" ? "warning" : "danger");
@@ -132,30 +135,6 @@ export async function updateQuestion() {
   } catch (error) {
     showToast("❌ Lỗi hệ thống khi cập nhật!", "danger");
     console.error(error);
-  }
-}
-
-
-    const res = await fetch("update_question.php", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    if (res.ok && data.status === "success") {
-      showToast(data.message, "success");
-      form.reset();
-      document.getElementById("previewImage").style.display = "none";
-      document.getElementById("deleteImageLabel").style.display = "none";
-      previewFull();
-    } else {
-      showToast(data.message || "❌ Cập nhật thất bại!", "danger");
-    }
-
-  } catch (err) {
-    console.error(err);
-    showToast("❌ Lỗi hệ thống. Vui lòng thử lại!", "danger");
   }
 }
 
@@ -348,5 +327,3 @@ function showToast(msg, type = "success") {
   bsToast.show();
 }
 
-showToast("Đã thêm câu hỏi thành công!");
-showToast("Xóa thất bại!", "danger");
