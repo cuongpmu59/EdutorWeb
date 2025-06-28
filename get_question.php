@@ -1,219 +1,155 @@
-// ========== 1. Thêm câu hỏi ==========
-export async function addQuestion() {
-  const form = document.getElementById("questionForm");
-  const formData = new FormData(form);
+<?php
+require 'db_connection.php';
+header("X-Frame-Options: SAMEORIGIN");
 
-  if (form.image.files[0]) {
-    const url = await uploadImage(form.image.files[0]);
-    if (!url) return alert("Tải ảnh thất bại!");
-    formData.set("image_url", url);
-  }
-
-  fetch("insert_question.php", {
-    method: "POST",
-    body: formData,
-  })
-    .then((res) => res.text())
-    .then((msg) => {
-      alert(msg);
-      form.reset();
-      refreshIframe();
-    })
-    .catch(() => alert("Lỗi khi thêm câu hỏi!"));
+try {
+    $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $rows = [];
 }
+?>
 
-// ========== 2. Cập nhật câu hỏi ==========
-export async function updateQuestion() {
-  const form = document.getElementById("questionForm");
-  const formData = new FormData(form);
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Danh sách câu hỏi</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  if (form.image.files[0]) {
-    const url = await uploadImage(form.image.files[0]);
-    if (!url) return alert("Tải ảnh thất bại!");
-    formData.set("image_url", url);
-  }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        tr:hover {
+            background-color: #f1f9ff;
+            cursor: pointer;
+        }
+        .selected-row {
+            background-color: #cceeff !important;
+        }
+        img.thumb {
+            max-width: 40px;
+            max-height: 40px;
+            display: block;
+            margin: auto;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+        }
+    </style>
 
-  fetch("update_question.php", {
-    method: "POST",
-    body: formData,
-  })
-    .then((res) => res.text())
-    .then((msg) => {
-      alert(msg);
-      refreshIframe();
-    })
-    .catch(() => alert("Lỗi khi cập nhật!"));
-}
+    <script>
+        let currentRow = null;
 
-// ========== 3. Xóa câu hỏi ==========
-export function deleteQuestion() {
-  const id = document.getElementById("question_id").value;
-  if (!id || !confirm("Xoá câu hỏi này?")) return;
+        function selectRow(row, data) {
+            if (currentRow) {
+                currentRow.classList.remove("selected-row");
+            }
+            currentRow = row;
+            row.classList.add("selected-row");
 
-  fetch("delete_question.php", {
-    method: "POST",
-    body: new URLSearchParams({ id }),
-  })
-    .then((res) => res.text())
-    .then((msg) => {
-      alert(msg);
-      document.getElementById("questionForm").reset();
-      refreshIframe();
-    })
-    .catch(() => alert("Lỗi khi xoá câu hỏi!"));
-}
+            parent.postMessage({ type: "fillForm", data: data }, window.location.origin);
+        }
 
-// ========== 4. Làm mới iframe ==========
-function refreshIframe() {
-  const iframe = document.getElementById("questionIframe");
-  if (iframe) {
-    iframe.contentWindow.location.reload();
-    iframe.onload = () => {
-      if (iframe.contentWindow.MathJax) {
-        iframe.contentWindow.MathJax.typesetPromise();
-      }
-    };
-  }
-}
+        function rowKeyNavigation(event) {
+            const rows = document.querySelectorAll("tbody tr");
+            if (rows.length === 0) return;
 
-// ========== 5. Xem trước toàn bộ ==========
-export function previewFull() {
-  const q = (id) => document.getElementById(id).value;
-  document.getElementById("pv_id").innerText = q("question_id");
-  document.getElementById("pv_topic").innerText = q("topic");
-  document.getElementById("pv_question").innerText = q("question");
-  document.getElementById("pv_a").innerText = q("answer1");
-  document.getElementById("pv_b").innerText = q("answer2");
-  document.getElementById("pv_c").innerText = q("answer3");
-  document.getElementById("pv_d").innerText = q("answer4");
-  document.getElementById("pv_correct").innerText = q("correct_answer");
+            if (!currentRow) {
+                currentRow = rows[0];
+                currentRow.classList.add("selected-row");
+                currentRow.click();
+                return;
+            }
 
-  const pvImg = document.getElementById("pv_image");
-  const url = q("image_url");
-  if (url) {
-    pvImg.src = url;
-    pvImg.style.display = "block";
-  } else {
-    pvImg.style.display = "none";
-  }
+            let index = Array.from(rows).indexOf(currentRow);
 
-  if (window.MathJax) MathJax.typesetPromise();
-}
+            if (event.key === "ArrowDown" && index < rows.length - 1) {
+                rows[index].classList.remove("selected-row");
+                currentRow = rows[index + 1];
+            } else if (event.key === "ArrowUp" && index > 0) {
+                rows[index].classList.remove("selected-row");
+                currentRow = rows[index - 1];
+            } else {
+                return;
+            }
 
-// ========== 6. Zoom ảnh ==========
-export function zoomImage(img) {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-  modal.style.display = "block";
-  modalImg.src = img.src;
-}
+            currentRow.classList.add("selected-row");
+            currentRow.click();
+        }
 
-// ========== 7. Modal tìm kiếm ==========
-export function openSearchModal() {
-  document.getElementById("searchModal").style.display = "block";
-}
-export function closeSearchModal() {
-  document.getElementById("searchModal").style.display = "none";
-}
+        window.addEventListener("keydown", rowKeyNavigation);
 
-// ========== 8. Tìm kiếm câu hỏi ==========
-export function searchQuestion() {
-  const keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
-  const tableBody = document.querySelector("#searchResultTable tbody");
-  const iframe = document.getElementById("questionIframe");
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-  const rows = iframeDoc.querySelectorAll("tbody tr");
-  tableBody.innerHTML = "";
-
-  rows.forEach((row) => {
-    const cols = row.querySelectorAll("td");
-    const text = Array.from(cols).map((c) => c.textContent.toLowerCase()).join(" ");
-    if (text.includes(keyword)) {
-      const newRow = document.createElement("tr");
-      newRow.innerHTML = `
-        <td>${cols[0].textContent}</td>
-        <td>${cols[7].textContent}</td>
-        <td>${cols[1].textContent}</td>
-      `;
-      newRow.onclick = () => {
-        row.click();
-        closeSearchModal();
-      };
-      tableBody.appendChild(newRow);
-    }
-  });
-}
-
-// ========== 9. Nhập CSV ==========
-export function importCSV(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const lines = reader.result.split("\n").filter(Boolean);
-    const headers = lines[0].split(",");
-
-    for (let i = 1; i < lines.length; i++) {
-      const cols = lines[i].split(",");
-      const data = {};
-      headers.forEach((h, idx) => data[h.trim()] = cols[idx]?.trim() || "");
-
-      fetch("insert_question.php", {
-        method: "POST",
-        body: new URLSearchParams(data),
-      });
-    }
-
-    alert("Đã nhập từ CSV");
-    refreshIframe();
-  };
-  reader.readAsText(file);
-}
-
-// ========== 10. Upload ảnh lên Cloudinary ==========
-async function uploadImage(file) {
-  const form = new FormData();
-  form.append("file", file);
-  form.append("upload_preset", "quiz_photo"); // ⚠️ Thay bằng preset thật
-  form.append("cloud_name", "dbdf2gwc9");       // ⚠️ Thay bằng cloud name
-
-  const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
-    method: "POST",
-    body: form,
-  });
-  const data = await res.json();
-  return data.secure_url || "";
-}
-
-// ========== 11. Xem trước từng phần ==========
-["question", "answer1", "answer2", "answer3", "answer4"].forEach((id) => {
-  document.getElementById(id).addEventListener("input", () => {
-    const val = document.getElementById(id).value;
-    document.getElementById("preview_" + id).textContent = val;
-    if (window.MathJax) MathJax.typesetPromise();
-  });
-});
-
-// ========== 12. Bật/tắt xem trước toàn bộ ==========
-document.getElementById("togglePreview").addEventListener("change", (e) => {
-  document.getElementById("previewBox").style.display = e.target.checked ? "block" : "none";
-});
-
-// ========== 13. Dark Mode ==========
-document.getElementById("toggleDarkMode").addEventListener("change", function () {
-  document.body.classList.toggle("dark-mode", this.checked);
-});
-
-// ========== 14. Cảnh báo khi rời trang nếu có thay đổi ==========
-let formChanged = false;
-document.getElementById("questionForm").addEventListener("input", () => {
-  formChanged = true;
-});
-window.addEventListener("beforeunload", (e) => {
-  if (formChanged) {
-    e.preventDefault();
-    e.returnValue = "";
-  }
-});
+        window.onload = () => {
+            MathJax.typesetPromise().then(() => {
+                const firstRow = document.querySelector("tbody tr");
+                if (firstRow) firstRow.click();
+            });
+        };
+    </script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40px;">ID</th>
+                <th>Câu hỏi</th>
+                <th>Đáp án A</th>
+                <th>Đáp án B</th>
+                <th>Đáp án C</th>
+                <th>Đáp án D</th>
+                <th style="width: 80px;">Đáp án đúng</th>
+                <th style="width: 100px;">Chủ đề</th>
+                <th style="width: 50px;">Ảnh</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (count($rows) > 0): ?>
+                <?php foreach ($rows as $row): ?>
+                    <tr tabindex="0" onclick='selectRow(this, <?php echo json_encode([
+                        "id" => $row["id"],
+                        "question" => $row["question"],
+                        "answer1" => $row["answer1"],
+                        "answer2" => $row["answer2"],
+                        "answer3" => $row["answer3"],
+                        "answer4" => $row["answer4"],
+                        "correct_answer" => strtoupper(trim($row["correct_answer"])),
+                        "topic" => $row["topic"] ?? "",
+                        "image" => $row["image"] ? "https://cuongedutor.infy.uk/images/uploads/" . ltrim($row["image"], "/") : ""
+                    ]); ?>)'>
+                        <td><?= htmlspecialchars($row["id"]) ?></td>
+                        <td><?= htmlspecialchars($row["question"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer1"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer2"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer3"]) ?></td>
+                        <td><?= htmlspecialchars($row["answer4"]) ?></td>
+                        <td style="text-align:center; font-weight:bold;"><?= strtoupper(substr($row["correct_answer"], 0, 1)) ?></td>
+                        <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
+                        <td style="text-align:center;">
+                            <?php if (!empty($row["image"])): ?>
+                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>" alt="Ảnh minh họa" />
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="9" style="text-align:center;">Không có dữ liệu</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</body>
+</html>
