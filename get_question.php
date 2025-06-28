@@ -2,6 +2,15 @@
 require 'db_connection.php';
 header("X-Frame-Options: SAMEORIGIN");
 
+// ===== Lấy danh sách chủ đề duy nhất =====
+$topics = [];
+try {
+    $stmtTopics = $conn->query("SELECT DISTINCT topic FROM questions WHERE topic IS NOT NULL AND topic != '' ORDER BY topic");
+    $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
+} catch (Exception $e) {
+    $topics = [];
+}
+
 try {
     $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
     $stmt->execute();
@@ -147,7 +156,17 @@ try {
 <body>
 <div style="margin:10px 0;">
     <a href="export_pdf.php" target="_blank" class="btn btn-danger">📄 Xuất PDF</a>
+
+    <!-- Dropdown lọc chủ đề -->
+    <label for="filterTopic" style="margin-left: 15px;"><strong>Lọc theo chủ đề:</strong></label>
+    <select id="filterTopic">
+        <option value="">-- Tất cả --</option>
+        <?php foreach ($topics as $t): ?>
+            <option value="<?= htmlspecialchars($t) ?>"><?= htmlspecialchars($t) ?></option>
+        <?php endforeach; ?>
+    </select>
 </div>
+
 
         <table id="questionTable">
         <thead>
