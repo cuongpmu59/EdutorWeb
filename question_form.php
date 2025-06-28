@@ -118,6 +118,9 @@
       <h3>Tìm kiếm câu hỏi</h3>
       <input type="text" id="searchKeyword" placeholder="Nhập từ khóa...">
       <button onclick="searchQuestion()">Tìm</button>
+      <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#xlsxModal">
+        📥 Nhập Excel (.xlsx)
+      </button>
 
       <table id="searchResultTable">
         <thead>
@@ -182,5 +185,29 @@
       previewFull();
     });
   </script>
+
+  <!-- Modal Nhập Excel -->
+<div class="modal fade" id="xlsxModal" tabindex="-1" aria-labelledby="xlsxModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="xlsxUploadForm" class="modal-content" enctype="multipart/form-data">
+      <div class="modal-header">
+        <h5 class="modal-title" id="xlsxModalLabel">📥 Nhập câu hỏi từ Excel (.xlsx)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Chọn file Excel (.xlsx):</label>
+        <input type="file" name="xlsx_file" accept=".xlsx" class="form-control" required>
+        <div class="mt-2">
+          <a href="template.xlsx" download class="btn btn-outline-secondary btn-sm">📄 Tải file mẫu Excel</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Tải lên</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
