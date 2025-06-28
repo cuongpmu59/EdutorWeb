@@ -245,3 +245,20 @@ window.addEventListener("message", (event) => {
     previewFull();
   }
 });
+
+document.getElementById("xlsxUploadForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  fetch("get_question.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(`✅ Đã thêm: ${data.inserted}, Bỏ qua (trùng): ${data.skipped}`);
+      this.reset();
+      bootstrap.Modal.getInstance(document.getElementById("xlsxModal")).hide();
+      refreshIframe();
+    })
+    .catch(() => alert("❌ Lỗi khi tải lên Excel"));
+});
