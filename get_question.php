@@ -141,7 +141,8 @@ try {
                         <td><?= htmlspecialchars($row["topic"] ?? "") ?></td>
                         <td style="text-align:center;">
                             <?php if (!empty($row["image"])): ?>
-                                <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>" alt="Ảnh minh họa" />
+                              <img class="thumb" src="https://cuongedutor.infy.uk/images/uploads/<?= htmlspecialchars(ltrim($row["image"], "/")) ?>"
+                                  alt="Ảnh minh họa" onclick="showImageModal(this.src)" />
                             <?php endif; ?>
                         </td>
                     </tr>
