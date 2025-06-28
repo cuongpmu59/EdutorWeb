@@ -321,3 +321,40 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+$(document).ready(function () {
+  const table = $('#questionTable').DataTable({
+    language: {
+      url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+    },
+    pageLength: 10,
+    lengthChange: true,
+    columnDefs: [
+      { orderable: false, targets: [8] } // Không sắp xếp cột ảnh
+    ]
+  });
+
+  // Khi click vào hàng → postMessage + tô sáng
+  $('#questionTable tbody').on('click', 'tr', function () {
+    if (currentRow) $(currentRow).removeClass('selected-row');
+    currentRow = this;
+    $(this).addClass('selected-row');
+
+    const data = table.row(this).data();
+    if (!data) return;
+
+    const cells = this.querySelectorAll("td");
+    const rowData = {
+      id: cells[0].innerText.trim(),
+      question: cells[1].innerText.trim(),
+      answer1: cells[2].innerText.trim(),
+      answer2: cells[3].innerText.trim(),
+      answer3: cells[4].innerText.trim(),
+      answer4: cells[5].innerText.trim(),
+      correct_answer: cells[6].innerText.trim(),
+      topic: cells[7].innerText.trim(),
+      image: cells[8].querySelector('img')?.getAttribute('src')?.replace(/upload\/c_fill,h_40,w_40\//, 'upload/') || ""
+    };
+    parent.postMessage({ type: "fillForm", data: rowData }, window.location.origin);
+  });
+});
+
