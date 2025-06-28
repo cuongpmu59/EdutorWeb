@@ -106,24 +106,35 @@ export async function updateQuestion() {
   const form = document.getElementById("questionForm");
   const formData = new FormData(form);
 
+  const id = form.question_id.value;
+  if (!id) return showToast("⚠️ Vui lòng chọn câu hỏi để sửa!", "warning");
+
+  // Nếu có ảnh mới thì upload ảnh
+  if (form.image.files[0]) {
+    const url = await uploadImage(form.image.files[0]);
+    if (!url) return showToast("❌ Tải ảnh thất bại!", "danger");
+    formData.set("image_url", url);
+  }
+
   try {
-    // Nếu có ảnh mới → upload lên Cloudinary
-    if (form.image.files[0]) {
-      const url = await uploadImage(form.image.files[0]);
-      if (!url) {
-        showToast("❌ Tải ảnh thất bại!", "danger");
-        return;
-      }
-      formData.set("image_url", url);
-      formData.delete("delete_image"); // Không xoá nếu có ảnh mới
+    const response = await fetch("update_question.php", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+    if (result.status === "success") {
+      showToast(result.message, "success");
+      refreshIframe();
     } else {
-      // Nếu chọn xoá ảnh
-      const deleteChecked = document.getElementById("delete_image").checked;
-      if (deleteChecked) {
-        formData.set("delete_image", "1");
-        formData.set("image_url", ""); // Đảm bảo clear URL nếu có
-      }
+      showToast(result.message, result.status === "duplicate" ? "warning" : "danger");
     }
+  } catch (error) {
+    showToast("❌ Lỗi hệ thống khi cập nhật!", "danger");
+    console.error(error);
+  }
+}
+
 
     const res = await fetch("update_question.php", {
       method: "POST",
