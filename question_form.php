@@ -3,228 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <title>Quản lý câu hỏi trắc nghiệm</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-  
-  <!-- CSS & MathJax -->
   <link rel="stylesheet" href="css/styles_question.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-
 <body>
-  <div class="header-bar d-flex justify-content-between align-items-center p-2 bg-light">
-    <h2 class="m-0">Quản lý câu hỏi trắc nghiệm</h2>
-    <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="toggleDarkMode">
-    </div>
-  </div>
+  <h2>Nhập câu hỏi</h2>
+  <label><input type="checkbox" id="togglePreview" checked onchange="togglePreview()"> Hiện xem trước công thức</label><br>
 
-  <div class="container my-4">
-    <form id="questionForm" enctype="multipart/form-data">
-      <input type="hidden" id="question_id" name="question_id">
-      <input type="hidden" id="image_url" name="image_url">
+  <!-- ... các phần head và mở đầu giữ nguyên như bạn đã có ... -->
 
-      <!-- Chủ đề & câu hỏi -->
-      <div class="mb-3">
-        <label for="topic" class="form-label">Chủ đề:</label>
-        <input type="text" class="form-control" id="topic" name="topic" required>
-      </div>
+<form id="questionForm" enctype="multipart/form-data">
+  <div class="question-container">
+    <div class="form-left">
+      <input type="hidden" name="id" id="question_id">
 
-      <div class="mb-3">
-        <label for="question" class="form-label">Câu hỏi:</label>
-        <textarea class="form-control" id="question" name="question" rows="2" required></textarea>
-        <div id="preview_question" class="preview-field"></div>
-      </div>
+      <!-- Chủ đề -->
+      <label for="topic">Chủ đề:</label>
+      <input type="text" name="topic" id="topic" required>
+
+      <!-- Câu hỏi -->
+      <label for="question">Câu hỏi:</label>
+      <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
+      <div id="preview_question" class="latex-preview"></div>
 
       <!-- Các đáp án -->
-      <?php
-      $answers = ['A', 'B', 'C', 'D'];
-      foreach ($answers as $i => $label) {
-        echo <<<HTML
-        <div class="mb-3">
-          <label for="answer{$i+1}" class="form-label">Đáp án {$label}:</label>
-          <textarea class="form-control" id="answer{$i+1}" name="answer{$i+1}" rows="2" required></textarea>
-          <div id="preview_answer{$i+1}" class="preview-field"></div>
-        </div>
-        HTML;
-      }
-      ?>
+      <label for="answer1">Đáp án A:</label>
+      <input type="text" name="answer1" id="answer1" required oninput="renderPreview('answer1')">
+      <div id="preview_answer1" class="latex-preview"></div>
+
+      <label for="answer2">Đáp án B:</label>
+      <input type="text" name="answer2" id="answer2" required oninput="renderPreview('answer2')">
+      <div id="preview_answer2" class="latex-preview"></div>
+
+      <label for="answer3">Đáp án C:</label>
+      <input type="text" name="answer3" id="answer3" required oninput="renderPreview('answer3')">
+      <div id="preview_answer3" class="latex-preview"></div>
+
+      <label for="answer4">Đáp án D:</label>
+      <input type="text" name="answer4" id="answer4" required oninput="renderPreview('answer4')">
+      <div id="preview_answer4" class="latex-preview"></div>
 
       <!-- Đáp án đúng -->
-      <div class="mb-3">
-        <label for="correct_answer" class="form-label">Đáp án đúng:</label>
-        <select id="correct_answer" name="correct_answer" class="form-select" required>
-          <option value="">--Chọn--</option>
-          <?php foreach ($answers as $a) echo "<option value='$a'>$a</option>"; ?>
-        </select>
-      </div>
-
-      <!-- Ảnh minh hoạ -->
-      <div class="mb-3">
-        <label for="image" class="form-label">Ảnh minh họa:</label>
-        <input class="form-control" type="file" id="image" name="image" accept="image/*">
-        <label id="deleteImageLabel" style="display:none">
-          <input type="checkbox" id="delete_image" name="delete_image"> Xóa ảnh hiện tại
-        </label>
-        <img id="previewImage" src="" class="preview-thumb mt-2" style="display:none; max-width: 150px;" onclick="showImageModal(this.src)">
-      </div>
-
-      <!-- Nút thao tác -->
-      <div class="mb-4 d-flex flex-wrap gap-2">
-        <button type="button" onclick="addQuestion()" class="btn btn-success">Thêm</button>
-        <button type="button" onclick="updateQuestion()" class="btn btn-warning">Sửa</button>
-        <button type="button" onclick="deleteQuestion()" class="btn btn-danger">Xoá</button>
-        <button type="reset" class="btn btn-secondary">Làm mới</button>
-        <button type="button" onclick="openSearchModal()" class="btn btn-info">Tìm kiếm</button>
-        <button type="button" onclick="document.getElementById('importCSV').click()" class="btn btn-outline-dark">Nhập CSV</button>
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#xlsxModal">📤 Nhập Excel</button>
-        <button type="button" onclick="window.open('export_question.php')" class="btn btn-outline-success">📤 Xuất Excel</button>
-      </div>
-
-      <input type="file" id="importCSV" accept=".csv" style="display:none">
-    </form>
-
-    <!-- Xuất PDF -->
-    <form action="generate_exam_pdf.php" method="get" target="_blank" class="my-3">
-      <label>Chọn chủ đề xuất đề thi:</label>
-      <select name="topic" id="topicExport" class="form-select d-inline w-auto mx-2">
-        <option value="">-- Tất cả --</option>
-        <option value="Đại số">Đại số</option>
-        <option value="Hình học">Hình học</option>
+      <label for="correct_answer">Đáp án đúng:</label>
+      <select name="correct_answer" id="correct_answer" required>
+        <option value="">--Chọn--</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
       </select>
-      <button type="submit" class="btn btn-outline-dark">📄 Xuất đề thi PDF</button>
-    </form>
 
-    <!-- Xem trước -->
-    <hr>
-    <div class="form-check mb-2">
-      <input type="checkbox" class="form-check-input" id="togglePreview" checked>
-      <label class="form-check-label" for="togglePreview">Hiện xem trước toàn bộ</label>
+      <!-- Ảnh minh họa -->
+      <label for="image">Ảnh minh họa:</label>
+      <input type="file" name="image" id="image">
+      <img id="imagePreview">
+      <input type="hidden" name="image_url" id="image_url">
+      <label id="deleteImageLabel" style="display:none;">
+        <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
+      </label>
     </div>
 
-    <div id="previewBox" class="preview-box">
-      <h3>Xem trước toàn bộ nội dung</h3>
-      <div><strong>ID:</strong> <span id="pv_id"></span></div>
-      <div><strong>Chủ đề:</strong> <span id="pv_topic"></span></div>
-      <div><strong>Câu hỏi:</strong> <span id="pv_question"></span></div>
-      <div><strong>Đáp án A:</strong> <span id="pv_a"></span></div>
-      <div><strong>Đáp án B:</strong> <span id="pv_b"></span></div>
-      <div><strong>Đáp án C:</strong> <span id="pv_c"></span></div>
-      <div><strong>Đáp án D:</strong> <span id="pv_d"></span></div>
-      <div><strong>Đáp án đúng:</strong> <span id="pv_correct"></span></div>
-      <div><strong>Ảnh:</strong><br><img id="pv_image" src="" style="max-width:200px; display:none;"></div>
+    <!-- Các nút bên phải -->
+    <div class="form-right">
+      <button type="button" onclick="saveQuestion()">Lưu</button>
+      <button type="button" class="delete-btn" onclick="deleteQuestion()">Xoá</button>
+      <button type="button" class="search-btn" onclick="searchQuestion()">Tìm kiếm</button>
+      <button type="reset" class="reset-btn" onclick="resetPreview()">Làm mới</button>
+      <button type="button" onclick="document.getElementById('importFile').click()">📥 Nhập file</button>
+      <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
+      <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
     </div>
-
-    <hr>
-    <h3>Danh sách câu hỏi</h3>
-    <iframe id="questionIframe" src="get_question.php" width="100%" height="400" style="border:1px solid #ccc;"></iframe>
   </div>
 
-  <!-- 🌌 Modal hiển thị ảnh phóng to -->
-<div id="imageModal" style="
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-">
-  <img id="modalImage" style="
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #fff;
-  ">
-</div>
+  <!-- Xem trước toàn bộ -->
+  <label style="margin-top:15px; display:inline-block;">
+    <input type="checkbox" id="toggleFullPreview" checked onchange="toggleFullPreview()"> Hiện xem trước toàn bộ
+  </label>
+  <div id="fullPreview" class="full-preview"></div>
+</form>
 
-<script>
-  function showImageModal(src) {
-    const modal = document.getElementById("imageModal");
-    const img = document.getElementById("modalImage");
-    img.src = src;
-    modal.style.display = "flex";
-  }
+<!-- ... iframe danh sách câu hỏi ... -->
 
-  // Đóng modal khi click ra ngoài ảnh
-  document.getElementById("imageModal").addEventListener("click", function () {
-    this.style.display = "none";
-  });
-</script>
+  <div id="message"></div>
 
-  <!-- Modal tìm kiếm & Modal Excel -->
-  <?php include 'modals.php'; ?>
+  <h3>Danh sách câu hỏi</h3>
+  <iframe id="questionIframe" src="get_question.php" width="100%" height="400"></iframe>
 
-  <!-- JavaScript -->
-  <script type="module">
-    import {
-      addQuestion, updateQuestion, deleteQuestion,
-      previewFull, openSearchModal, closeSearchModal, searchQuestion,
-      zoomImage, importCSV
-    } from './js/question_script.js';
-
-    window.addQuestion = addQuestion;
-    window.updateQuestion = updateQuestion;
-    window.deleteQuestion = deleteQuestion;
-    window.previewFull = previewFull;
-    window.openSearchModal = openSearchModal;
-    window.closeSearchModal = closeSearchModal;
-    window.searchQuestion = searchQuestion;
-    window.zoomImage = zoomImage;
-    window.importCSV = importCSV;
-
-    document.getElementById("importCSV").addEventListener("change", importCSV);
-  </script>
+  <script src="js/question_script.js"></script>
   <script>
-  const darkToggle = document.getElementById("toggleDarkMode");
+    document.getElementById("image").addEventListener("change", async function (event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById("imagePreview");
+      const imageUrlField = document.getElementById("image_url");
 
-  // Khôi phục trạng thái dark mode từ localStorage
-  if (localStorage.getItem("darkMode") === "on") {
-    document.body.classList.add("dark-mode");
-    darkToggle.checked = true;
-  }
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "quiz_photo");
+        const response = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+          method: "POST",
+          body: formData
+        });
 
-  darkToggle.addEventListener("change", function () {
-    if (this.checked) {
-      document.body.classList.add("dark-mode");
-      localStorage.setItem("darkMode", "on");
-    } else {
-      document.body.classList.remove("dark-mode");
-      localStorage.setItem("darkMode", "off");
+        const data = await response.json();
+        if (data.secure_url) {
+          preview.src = data.secure_url;
+          preview.style.display = "block";
+          imageUrlField.value = data.secure_url;
+        }
+      } else {
+        preview.src = "";
+        preview.style.display = "none";
+        imageUrlField.value = "";
+      }
+    });
+
+    function togglePreview() {
+      const show = document.getElementById("togglePreview").checked;
+      document.querySelectorAll(".latex-preview").forEach(el => {
+        el.style.display = show ? "block" : "none";
+      });
     }
-  });
-</script>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
-  <div id="toastMsg" class="toast align-items-center text-white bg-success border-0" role="alert">
-    <div class="d-flex">
-      <div class="toast-body" id="toastContent">Thành công!</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
+    window.addEventListener("message", function (event) {
+      if (event.data.type === "fillForm") {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const data = event.data.data;
+        document.getElementById("question_id").value = data.id;
+        document.getElementById("topic").value = data.topic || "";
+        document.getElementById("question").value = data.question;
+        document.getElementById("answer1").value = data.answer1;
+        document.getElementById("answer2").value = data.answer2;
+        document.getElementById("answer3").value = data.answer3;
+        document.getElementById("answer4").value = data.answer4;
+        document.getElementById("correct_answer").value = data.correct_answer;
+
+        const imgPreview = document.getElementById("imagePreview");
+        const imageUrlField = document.getElementById("image_url");
+        if (data.image) {
+          imgPreview.src = data.image;
+          imgPreview.style.display = "block";
+          imageUrlField.value = data.image;
+        } else {
+          imgPreview.src = "";
+          imgPreview.style.display = "none";
+          imageUrlField.value = "";
+        }
+
+        ['question', 'answer1', 'answer2', 'answer3', 'answer4'].forEach(id => renderPreview(id));
+        updateFullPreview();
+      }
+    });
+  </script>
+
+<!-- Modal tìm kiếm kết quả -->
+<div id="searchModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeSearchModal()">&times;</span>
+    <h3>Kết quả tìm kiếm</h3>
+    <table id="searchResultsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Chủ đề</th>
+          <th>Câu hỏi</th>
+          <th>Đáp án đúng</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 </div>
 
-<script>
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toastMsg");
-  const toastContent = document.getElementById("toastContent");
-
-  toastContent.textContent = message;
-
-  // Đặt màu theo loại (Bootstrap v5)
-  toast.classList.remove("bg-success", "bg-danger", "bg-warning");
-  if (type === "danger") toast.classList.add("bg-danger");
-  else if (type === "warning") toast.classList.add("bg-warning");
-  else toast.classList.add("bg-success");
-
-  const bsToast = new bootstrap.Toast(toast);
-  bsToast.show();
-}
-</script>
 
 </body>
 </html>
