@@ -150,22 +150,22 @@ async function saveQuestion() {
       method: "POST",
       body: formData
     });
-
-    try {
+  
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Lỗi không rõ");
+  
     alert(data.message);
-
     if (!id) document.getElementById("questionForm").reset();
     resetPreview();
     refreshIframe();
     document.getElementById("questionIframe").scrollIntoView({ behavior: "smooth" });
     formChanged = false;
   } catch (err) {
-    alert("❌ " + (err.message || "Không thể phân tích phản hồi từ máy chủ."));
+    alert("❌ " + (err.message || "Không thể xử lý phản hồi từ máy chủ."));
   } finally {
     saveBtn.disabled = false;
   }
+  
 
 
 // ========== 4. Delete ==========
