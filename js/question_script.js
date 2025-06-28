@@ -329,9 +329,16 @@ $(document).ready(function () {
     pageLength: 10,
     lengthChange: true,
     columnDefs: [
-      { orderable: false, targets: [8] } // Không sắp xếp cột ảnh
+      { orderable: false, targets: [8] }
     ]
   });
+
+  // === Lọc theo chủ đề ===
+  $('#filterTopic').on('change', function () {
+    const selected = $(this).val();
+    table.column(7).search(selected).draw();
+  });
+
 
   // Khi click vào hàng → postMessage + tô sáng
   $('#questionTable tbody').on('click', 'tr', function () {
