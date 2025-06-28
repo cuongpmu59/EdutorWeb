@@ -208,6 +208,24 @@
   </div>
 </div>
 
+<script>
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toastMsg");
+  const toastContent = document.getElementById("toastContent");
+
+  toastContent.textContent = message;
+
+  // Đặt màu theo loại (Bootstrap v5)
+  toast.classList.remove("bg-success", "bg-danger", "bg-warning");
+  if (type === "danger") toast.classList.add("bg-danger");
+  else if (type === "warning") toast.classList.add("bg-warning");
+  else toast.classList.add("bg-success");
+
+  const bsToast = new bootstrap.Toast(toast);
+  bsToast.show();
+}
+</script>
+
 
 </body>
 </html>
