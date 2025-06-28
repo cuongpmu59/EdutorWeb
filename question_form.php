@@ -124,10 +124,37 @@
     <iframe id="questionIframe" src="get_question.php" width="100%" height="400" style="border:1px solid #ccc;"></iframe>
   </div>
 
-  <!-- Modal ảnh -->
-  <div id="imageModal" class="modal" onclick="this.style.display='none'">
-    <img class="modal-content" id="modalImage">
-  </div>
+  <!-- 🌌 Modal hiển thị ảnh phóng to -->
+<div id="imageModal" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+">
+  <img id="modalImage" style="
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #fff;
+  ">
+</div>
+
+<script>
+  function showImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const img = document.getElementById("modalImage");
+    img.src = src;
+    modal.style.display = "flex";
+  }
+
+  // Đóng modal khi click ra ngoài ảnh
+  document.getElementById("imageModal").addEventListener("click", function () {
+    this.style.display = "none";
+  });
+</script>
 
   <!-- Modal tìm kiếm & Modal Excel -->
   <?php include 'modals.php'; ?>
