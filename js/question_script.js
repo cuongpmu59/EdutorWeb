@@ -150,20 +150,22 @@ async function saveQuestion() {
       method: "POST",
       body: formData
     });
+
+    try {
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(data.message || "Lỗi không rõ");
     alert(data.message);
 
     if (!id) document.getElementById("questionForm").reset();
     resetPreview();
     refreshIframe();
+    document.getElementById("questionIframe").scrollIntoView({ behavior: "smooth" });
     formChanged = false;
   } catch (err) {
-    alert("❌ " + err.message);
+    alert("❌ " + (err.message || "Không thể phân tích phản hồi từ máy chủ."));
   } finally {
     saveBtn.disabled = false;
   }
-}
 
 
 // ========== 4. Delete ==========
@@ -305,12 +307,6 @@ window.addEventListener("beforeunload", (e) => {
     e.preventDefault();
     e.returnValue = "";
   }
-});
-
-// ========== 9. Init ==========
-document.addEventListener("DOMContentLoaded", () => {
-  togglePreview();
-  toggleFullPreview();
 });
 
 // Toggle ẩn/hiện khối xem trước toàn bộ
