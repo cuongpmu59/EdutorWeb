@@ -140,6 +140,10 @@ try {
     </script>
 </head>
 <body>
+<div style="margin:10px 0;">
+    <a href="export_pdf.php" target="_blank" class="btn btn-danger">📄 Xuất PDF</a>
+</div>
+
     <table>
         <thead>
             <tr>
