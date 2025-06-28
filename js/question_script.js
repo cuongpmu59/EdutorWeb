@@ -62,13 +62,92 @@ async function submitQuestion(endpoint) {
   }
 }
 
-export function addQuestion() {
-  submitQuestion("insert_question.php");
+export async function addQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
+
+  try {
+    // Nếu có ảnh thì upload lên Cloudinary
+    if (form.image.files[0]) {
+      const url = await uploadImage(form.image.files[0]);
+      if (!url) {
+        showToast("❌ Tải ảnh thất bại!", "danger");
+        return;
+      }
+      formData.set("image_url", url);
+    }
+
+    const res = await fetch("insert_question.php", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.status === "success") {
+      showToast(data.message, "success");
+      form.reset();
+      document.getElementById("previewImage").style.display = "none";
+      document.getElementById("deleteImageLabel").style.display = "none";
+      previewFull();
+    } else if (data.status === "duplicate") {
+      showToast(data.message, "warning");
+    } else {
+      showToast(data.message || "❌ Thêm câu hỏi thất bại!", "danger");
+    }
+
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Lỗi hệ thống. Vui lòng thử lại!", "danger");
+  }
 }
 
-export function updateQuestion() {
-  submitQuestion("update_question.php");
+export async function updateQuestion() {
+  const form = document.getElementById("questionForm");
+  const formData = new FormData(form);
+
+  try {
+    // Nếu có ảnh mới → upload lên Cloudinary
+    if (form.image.files[0]) {
+      const url = await uploadImage(form.image.files[0]);
+      if (!url) {
+        showToast("❌ Tải ảnh thất bại!", "danger");
+        return;
+      }
+      formData.set("image_url", url);
+      formData.delete("delete_image"); // Không xoá nếu có ảnh mới
+    } else {
+      // Nếu chọn xoá ảnh
+      const deleteChecked = document.getElementById("delete_image").checked;
+      if (deleteChecked) {
+        formData.set("delete_image", "1");
+        formData.set("image_url", ""); // Đảm bảo clear URL nếu có
+      }
+    }
+
+    const res = await fetch("update_question.php", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.status === "success") {
+      showToast(data.message, "success");
+      form.reset();
+      document.getElementById("previewImage").style.display = "none";
+      document.getElementById("deleteImageLabel").style.display = "none";
+      previewFull();
+    } else {
+      showToast(data.message || "❌ Cập nhật thất bại!", "danger");
+    }
+
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Lỗi hệ thống. Vui lòng thử lại!", "danger");
+  }
 }
+
 
 // ========== Xoá câu hỏi ==========
 export async function deleteQuestion() {
@@ -248,3 +327,15 @@ document.getElementById("xlsxUploadForm").addEventListener("submit", async funct
     alert("❌ Lỗi khi tải lên Excel");
   }
 });
+
+function showToast(msg, type = "success") {
+  const toastEl = document.getElementById("toastMsg");
+  const toastContent = document.getElementById("toastContent");
+  toastContent.textContent = msg;
+  toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+  const bsToast = new bootstrap.Toast(toastEl);
+  bsToast.show();
+}
+
+showToast("Đã thêm câu hỏi thành công!");
+showToast("Xóa thất bại!", "danger");
