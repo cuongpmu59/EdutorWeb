@@ -226,11 +226,5 @@ function showToast(message, type = "success") {
 }
 </script>
 
-<!-- Toast -->
-<div id="toastMsg" class="toast ..."><div id="toastContent"></div></div>
-
-<script type="module" src="question_script.js"></script>
-
-
 </body>
 </html>
