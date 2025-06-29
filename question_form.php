@@ -7,14 +7,14 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 </head>
 <body>
   <h2>Nhập câu hỏi</h2>
-  <label><input type="checkbox" id="togglePreview" checked onchange="togglePreview()"> Hiện xem trước công thức</label><br>
+  <label><input type="checkbox" id="togglePreview" checked onchange="togglePreview()"> Hiện xem trước công thức</label>
 
   <form id="questionForm" enctype="multipart/form-data">
-    <div class="question-container">
+    <div class="question-container two-column">
+      <!-- Left: Nhập liệu -->
       <div class="form-left">
         <input type="hidden" name="id" id="question_id">
 
@@ -53,21 +53,26 @@
         <label for="image">Ảnh minh họa:</label>
         <input type="file" name="image" id="image">
         <small id="imageFileName" class="text-muted"></small>
-
         <img id="imagePreview">
         <input type="hidden" name="image_url" id="image_url">
+
         <label id="deleteImageLabel" style="display:none;">
           <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
         </label>
       </div>
 
+      <!-- Right: Các nút thao tác -->
       <div class="form-right">
-        <button type="button" onclick="saveQuestion()">Lưu</button>
-        <button type="button" class="delete-btn" onclick="deleteQuestion()">Xoá</button>
-        <button type="button" class="search-btn" onclick="searchQuestion()">Tìm kiếm</button>
-        <button type="reset" class="reset-btn" onclick="resetPreview()">Làm mới</button>
-        
-
+        <div class="button-group">
+          <button type="button" onclick="saveQuestion()">💾 Lưu</button>
+          <button type="button" class="delete-btn" onclick="deleteQuestion()">🗑️ Xoá</button>
+          <button type="button" class="search-btn" onclick="searchQuestion()">🔍 Tìm kiếm</button>
+          <button type="reset" class="reset-btn" onclick="resetPreview()">🔄 Làm mới</button>
+          <hr>
+          <button type="button" onclick="document.getElementById('importFile').click()">📥 Nhập Excel</button>
+          <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
+          <button type="button" onclick="exportToExcel()">📤 Xuất Excel</button>
+        </div>
       </div>
     </div>
 
@@ -77,18 +82,11 @@
     <div id="fullPreview" class="full-preview"></div>
   </form>
 
-  <h3 style="display: flex; justify-content: space-between; align-items: center;">
-  <span>Danh sách câu hỏi</span>
-  <span>
-    <button onclick="document.getElementById('importFile').click()">📥 Nhập Excel</button>
-    <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
-    <button onclick="exportToExcel()">📤 Xuất Excel</button>
-  </span>
-  </h3>
-  <iframe id="questionIframe" src="get_question.php" width="100%" height="400"></iframe>
+  <h3>Danh sách câu hỏi</h3>
+  <iframe id="questionIframe" src="get_question.php"></iframe>
 
-  <!-- Modal tìm kiếm kết quả -->
-  <div id="searchModal" class="modal" style="display: none;">
+  <!-- Modal tìm kiếm -->
+  <div id="searchModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeSearchModal()">&times;</span>
       <h3>Kết quả tìm kiếm</h3>
@@ -106,7 +104,6 @@
     </div>
   </div>
 
-  <!-- JavaScript chính -->
   <script src="js/question_script.js"></script>
 </body>
 </html>
