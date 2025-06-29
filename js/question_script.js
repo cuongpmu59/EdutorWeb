@@ -128,7 +128,6 @@ async function saveQuestion() {
   btn.disabled = true;
 
   try {
-    // Upload ảnh nếu có
     if (imageFile?.size > 0) {
       const uploadForm = new FormData();
       uploadForm.append("file", imageFile);
