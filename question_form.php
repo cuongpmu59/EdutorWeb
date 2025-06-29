@@ -68,7 +68,7 @@
           <button type="button" onclick="handleSaveQuestion(true)">✏️ Sửa</button>
           <button type="button" class="delete-btn" onclick="deleteQuestion()">🗑️ Xoá</button>
           <button type="reset" class="reset-btn" onclick="resetForm()">🔄 Làm mới</button>
-          </div>
+        </div>
       </div>
     </div>
 
@@ -90,33 +90,6 @@
   </h3>
 
   <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border:1px solid #ccc;"></iframe>
-
-<script>
-document.getElementById("filterTopic").addEventListener("change", function () {
-  const topic = this.value;
-  const iframe = document.getElementById("questionIframe");
-  iframe.src = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
-});
-</script>
-
-  <!-- Modal tìm kiếm -->
-  <div id="searchModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeSearchModal()">&times;</span>
-      <h3>Kết quả tìm kiếm</h3>
-      <table id="searchResultsTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Chủ đề</th>
-            <th>Câu hỏi</th>
-            <th>Đáp án đúng</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
 
   <script src="js/question_script.js"></script>
 </body>
