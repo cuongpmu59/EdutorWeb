@@ -5,7 +5,7 @@
   <title>Quản lý câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="css/styles_question.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -14,7 +14,6 @@
 
   <form id="questionForm" enctype="multipart/form-data">
     <div class="question-container two-column">
-      <!-- Left: Nhập liệu -->
       <div class="form-left">
         <input type="hidden" name="id" id="question_id">
 
@@ -50,18 +49,17 @@
           <option value="D">D</option>
         </select>
 
-        <label for="image">Ảnh minh họa:</label>
+        <label for="image">Ảnh minh hoạ:</label>
         <input type="file" name="image" id="image">
         <small id="imageFileName" class="text-muted"></small>
         <img id="imagePreview">
         <input type="hidden" name="image_url" id="image_url">
 
         <label id="deleteImageLabel" style="display:none;">
-          <input type="checkbox" id="delete_image"> Xóa ảnh minh họa
+          <input type="checkbox" id="delete_image"> Xóa ảnh minh hoạ
         </label>
       </div>
 
-      <!-- Right: Các nút thao tác -->
       <div class="form-right">
         <div class="button-group">
           <button type="button" onclick="handleSaveQuestion(false)">➕ Thêm</button>
@@ -81,9 +79,9 @@
   <h3 style="display: flex; justify-content: space-between; align-items: center;">
     <span>Danh sách câu hỏi</span>
     <span style="display: flex; gap: 10px; align-items: center;">
-      <button onclick="document.getElementById('importFile').click()">📥 Nhập Excel</button>
+      <button onclick="document.getElementById('importFile').click()">📅 Nhập Excel</button>
       <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
-      <button onclick="exportToExcel()">📤 Xuất Excel</button>
+      <button onclick="exportToExcel()">📄 Xuất Excel</button>
       <button class="search-btn" onclick="searchQuestionByInput()">🔍 Tìm</button>
       <input type="text" id="searchInput" placeholder="Từ khoá..." onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
     </span>
@@ -93,39 +91,24 @@
 
   <script src="js/question_script.js"></script>
   <script>
-  window.addEventListener("message", function (event) {
-    if (event.origin !== window.location.origin) return; // Bảo mật: chỉ nhận từ cùng domain
+    window.addEventListener("message", function (event) {
+      if (event.origin !== window.location.origin) return;
+      if (event.data.type === "fillForm" && event.data.data) {
+        const d = event.data.data;
+        ["id", "topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "image_url"].forEach(id => {
+          const el = document.getElementById(id === "id" ? "question_id" : id);
+          if (el) el.value = d[id] || "";
+        });
 
-    if (event.data.type === "fillForm" && event.data.data) {
-      const data = event.data.data;
-      document.getElementById("question_id").value = data.id || "";
-      document.getElementById("topic").value = data.topic || "";
-      document.getElementById("question").value = data.question || "";
-      document.getElementById("answer1").value = data.answer1 || "";
-      document.getElementById("answer2").value = data.answer2 || "";
-      document.getElementById("answer3").value = data.answer3 || "";
-      document.getElementById("answer4").value = data.answer4 || "";
-      document.getElementById("correct_answer").value = data.correct_answer || "";
-      document.getElementById("image_url").value = data.image || "";
+        const hasImg = d.image;
+        document.getElementById("imagePreview").style.display = hasImg ? "block" : "none";
+        document.getElementById("imagePreview").src = hasImg || "";
+        document.getElementById("deleteImageLabel").style.display = hasImg ? "inline-block" : "none";
 
-      // Nếu có ảnh thì hiển thị
-      if (data.image) {
-        document.getElementById("imagePreview").src = data.image;
-        document.getElementById("imagePreview").style.display = "block";
-        document.getElementById("deleteImageLabel").style.display = "inline-block";
-      } else {
-        document.getElementById("imagePreview").style.display = "none";
-        document.getElementById("deleteImageLabel").style.display = "none";
+        ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
+        formChanged = false;
       }
-
-      // Cập nhật xem trước MathJax
-      ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => renderPreview(id));
-
-      // Đánh dấu form đã thay đổi nếu có logic liên quan
-      formChanged = false;
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
