@@ -1,4 +1,3 @@
-/* ---------- Root Variables ---------- */
 :root {
 	--bg-light: #eef2f7;
 	--bg-dark: #1e1e1e;
@@ -28,7 +27,7 @@
 	color: #2c3e50;
   }
   
-  /* ---------- Container Layout ---------- */
+  /* ---------- Containers ---------- */
   .question-container,
   .preview-box,
   .modal-content,
@@ -49,7 +48,7 @@
 	margin-bottom: 20px;
   }
   
-  /* ---------- Two-column Form ---------- */
+  /* ---------- Two-column Form Layout ---------- */
   .two-column {
 	display: flex;
 	flex-wrap: wrap;
@@ -61,8 +60,10 @@
   }
   .form-right {
 	flex: 1 1 30%;
+	border-left: 1px solid var(--border);
+	padding-left: 20px;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: center;
 	align-items: flex-start;
   }
   
@@ -72,7 +73,6 @@
 	margin-top: 10px;
 	display: block;
   }
-  
   input[type="text"],
   input[type="file"],
   select,
@@ -85,7 +85,6 @@
 	border-radius: 4px;
 	resize: vertical;
   }
-  
   input:focus,
   textarea:focus,
   select:focus {
@@ -94,13 +93,16 @@
 	box-shadow: 0 0 3px rgba(52,152,219,0.6);
   }
   
-  /* ---------- Button Styles ---------- */
+  /* ---------- Buttons ---------- */
   .button-group {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	gap: 10px;
+	width: 100%;
   }
-  
+  .button-group button {
+	width: 100%;
+  }
   button {
 	padding: 8px 14px;
 	font-size: 14px;
@@ -111,19 +113,15 @@
 	cursor: pointer;
 	transition: background-color 0.3s;
   }
-  
   button:hover { background-color: #2980b9; }
-  
   button.delete-btn { background-color: var(--danger); }
   button.delete-btn:hover { background-color: #c0392b; }
-  
   button.search-btn { background-color: var(--warning); }
   button.search-btn:hover { background-color: #d68910; }
-  
   button.reset-btn { background-color: var(--gray); }
   button.reset-btn:hover { background-color: #616a6b; }
   
-  /* ---------- Preview ---------- */
+  /* ---------- Previews ---------- */
   .latex-preview,
   .preview-field {
 	background: #f4f4f4;
@@ -132,7 +130,6 @@
 	margin-bottom: 10px;
 	white-space: pre-wrap;
   }
-  
   .full-preview {
 	background: #fafafa;
 	padding: 15px;
@@ -152,7 +149,6 @@
 	cursor: zoom-in;
 	display: none;
   }
-  
   #imagePreview:hover {
 	transform: scale(1.05);
   }
@@ -167,14 +163,12 @@
 	padding-top: 60px;
 	background: rgba(0, 0, 0, 0.85);
   }
-  
   .modal-content {
 	max-width: 700px;
 	margin: auto;
 	position: relative;
 	background: #fff;
   }
-  
   .modal .close {
 	position: absolute;
 	top: 10px; right: 15px;
@@ -191,7 +185,6 @@
 	border-collapse: collapse;
 	margin-top: 10px;
   }
-  
   #searchResultTable th,
   #searchResultTable td {
 	border: 1px solid var(--border);
@@ -212,7 +205,6 @@
 	background: var(--bg-dark);
 	color: var(--color-light);
   }
-  
   body.dark-mode .header-bar,
   body.dark-mode .question-container,
   body.dark-mode .preview-box,
@@ -221,7 +213,6 @@
 	background: #2a2a2a;
 	border: 1px solid #444;
   }
-  
   body.dark-mode textarea,
   body.dark-mode input,
   body.dark-mode select {
@@ -229,20 +220,17 @@
 	color: #fff;
 	border: 1px solid #555;
   }
-  
   body.dark-mode button {
 	background: #333;
 	color: #fff;
 	border: 1px solid #555;
   }
-  
   body.dark-mode .latex-preview,
   body.dark-mode .preview-field,
   body.dark-mode .full-preview {
 	background: #252525;
 	border-left: 3px solid #555;
   }
-  
   body.dark-mode table,
   body.dark-mode th,
   body.dark-mode td {
@@ -250,7 +238,6 @@
 	color: #ddd;
 	border-color: #555;
   }
-  
   body.dark-mode .modal {
 	background-color: rgba(0, 0, 0, 0.9);
   }
@@ -260,26 +247,27 @@
 	.two-column {
 	  flex-direction: column;
 	}
-  
-	.form-left, .form-right {
+	.form-left,
+	.form-right {
 	  flex: 1 1 100%;
 	}
-  
 	.form-right {
 	  justify-content: center;
 	  margin-top: 10px;
 	  border-left: none;
 	  border-top: 1px solid var(--border);
+	  padding-left: 0;
 	}
-  
 	.button-group {
 	  justify-content: center;
+	  align-items: center;
 	}
-  
-	iframe {
+	.button-group button {
+	  width: 100%;
+	}
+	#questionIframe {
 	  height: 320px;
 	}
-  
 	.question-container,
 	.preview-box,
 	.modal-content {
