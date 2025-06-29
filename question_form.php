@@ -64,11 +64,11 @@
       <!-- Right: Các nút thao tác -->
       <div class="form-right">
         <div class="button-group">
-          <button type="button" onclick="saveQuestion()">➕ Thêm</button>
-          <button type="button" onclick="saveQuestion()">✏️ Sửa</button>
+          <button type="button" onclick="handleSaveQuestion(false)">➕ Thêm</button>
+          <button type="button" onclick="handleSaveQuestion(true)">✏️ Sửa</button>
           <button type="button" class="delete-btn" onclick="deleteQuestion()">🗑️ Xoá</button>
-          <button type="reset" class="reset-btn" onclick="resetPreview()">🔄 Làm mới</button>
-        </div>
+          <button type="reset" class="reset-btn" onclick="resetForm()">🔄 Làm mới</button>
+          </div>
       </div>
     </div>
 
