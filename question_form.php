@@ -92,5 +92,40 @@
   <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border:1px solid #ccc;"></iframe>
 
   <script src="js/question_script.js"></script>
+  <script>
+  window.addEventListener("message", function (event) {
+    if (event.origin !== window.location.origin) return; // Bảo mật: chỉ nhận từ cùng domain
+
+    if (event.data.type === "fillForm" && event.data.data) {
+      const data = event.data.data;
+      document.getElementById("question_id").value = data.id || "";
+      document.getElementById("topic").value = data.topic || "";
+      document.getElementById("question").value = data.question || "";
+      document.getElementById("answer1").value = data.answer1 || "";
+      document.getElementById("answer2").value = data.answer2 || "";
+      document.getElementById("answer3").value = data.answer3 || "";
+      document.getElementById("answer4").value = data.answer4 || "";
+      document.getElementById("correct_answer").value = data.correct_answer || "";
+      document.getElementById("image_url").value = data.image || "";
+
+      // Nếu có ảnh thì hiển thị
+      if (data.image) {
+        document.getElementById("imagePreview").src = data.image;
+        document.getElementById("imagePreview").style.display = "block";
+        document.getElementById("deleteImageLabel").style.display = "inline-block";
+      } else {
+        document.getElementById("imagePreview").style.display = "none";
+        document.getElementById("deleteImageLabel").style.display = "none";
+      }
+
+      // Cập nhật xem trước MathJax
+      ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => renderPreview(id));
+
+      // Đánh dấu form đã thay đổi nếu có logic liên quan
+      formChanged = false;
+    }
+  });
+</script>
+
 </body>
 </html>
