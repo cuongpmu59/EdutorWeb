@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="css/styles_question.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </head>
 <body>
   <h2>Nhập câu hỏi</h2>
@@ -64,9 +66,8 @@
         <button type="button" class="delete-btn" onclick="deleteQuestion()">Xoá</button>
         <button type="button" class="search-btn" onclick="searchQuestion()">Tìm kiếm</button>
         <button type="reset" class="reset-btn" onclick="resetPreview()">Làm mới</button>
-        <button type="button" onclick="document.getElementById('importFile').click()">📥 Nhập file</button>
-        <input type="file" id="importFile" style="display: none;" accept=".csv" onchange="importFile(this.files[0])">
-        <button type="button" onclick="exportToCSV()">📤 Xuất file</button>
+        
+
       </div>
     </div>
 
@@ -76,7 +77,14 @@
     <div id="fullPreview" class="full-preview"></div>
   </form>
 
-  <h3>Danh sách câu hỏi</h3>
+  <h3 style="display: flex; justify-content: space-between; align-items: center;">
+  <span>Danh sách câu hỏi</span>
+  <span>
+    <button onclick="document.getElementById('importFile').click()">📥 Nhập Excel</button>
+    <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
+    <button onclick="exportToExcel()">📤 Xuất Excel</button>
+  </span>
+  </h3>
   <iframe id="questionIframe" src="get_question.php" width="100%" height="400"></iframe>
 
   <!-- Modal tìm kiếm kết quả -->
