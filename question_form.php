@@ -89,7 +89,15 @@
     </span>
   </h3>
 
-  <iframe id="questionIframe" src="get_question.php"></iframe>
+  <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border:1px solid #ccc;"></iframe>
+
+<script>
+document.getElementById("filterTopic").addEventListener("change", function () {
+  const topic = this.value;
+  const iframe = document.getElementById("questionIframe");
+  iframe.src = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
+});
+</script>
 
   <!-- Modal tìm kiếm -->
   <div id="searchModal" class="modal">
