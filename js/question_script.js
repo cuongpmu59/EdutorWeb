@@ -16,7 +16,7 @@ function refreshIframe() {
 }
 
 function containsMath(content) {
-  return /\\\(|\\\)|\\\[|\\\]|\$\$/.test(content);
+  return /(\\\(.+?\\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(content);
 }
 
 
@@ -31,7 +31,11 @@ function debounceRenderMath(element) {
 }
 
 function renderMathInPage() {
-  if (!window.MathJax) return;
+  if (!window.MathJax) {
+    console.warn("MathJax chưa được tải.");
+    return;
+  }
+  
   if (containsMath(document.body.innerText)) {
     MathJax.typesetPromise();
   }
@@ -173,6 +177,8 @@ async function saveQuestion() {
     refreshIframe();
     document.getElementById("questionIframe").scrollIntoView({ behavior: "smooth" });
     formChanged = false;
+    setTimeout(() => formChanged = false, 100);
+
   } catch (err) {
     alert("❌ " + (err.message || "Không thể xử lý phản hồi từ máy chủ."));
   } finally {
@@ -299,7 +305,7 @@ window.addEventListener("message", function (event) {
       document.getElementById("image_url").value = data.image;
       document.getElementById("deleteImageLabel").style.display = "inline-block";
     } else {
-      document.getElementById("imagePreview").src = "";
+      document.getElementById("imagePreview").src = document.getElementById("image_url").value || "";
       document.getElementById("imagePreview").classList.remove("show");
       document.getElementById("image_url").value = "";
       document.getElementById("deleteImageLabel").style.display = "none";
