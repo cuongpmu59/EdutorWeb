@@ -9,15 +9,13 @@ require 'db_connection.php';
 
 // Tạo đối tượng PDF
 $pdf = new TCPDF();
+$pdf->SetFont('dejavusans', '', 12);
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Hệ thống');
 $pdf->SetTitle('Danh sách câu hỏi');
 $pdf->SetMargins(10, 10, 10);
 $pdf->SetAutoPageBreak(TRUE, 10); // ✅ Tự động ngắt trang
 $pdf->AddPage();
-
-// ✅ Font Unicode hỗ trợ tiếng Việt
-$pdf->SetFont('dejavusans', '', 12);
 
 // Truy vấn dữ liệu
 try {
