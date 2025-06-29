@@ -14,8 +14,8 @@ function refreshIframe() {
   }
 }
 
-const containsMath = text => /(\\\(.+?\\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
-const wrapMath = text => containsMath(text) ? text : `\\(${text}\\)`;
+const containsMath = text => /(\\(.+?\\))|(\\[.+?\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
+const wrapMath = text => containsMath(text) ? text : `\(${text}\)`;
 
 const escapeHtml = str => str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
 
@@ -147,137 +147,42 @@ function deleteQuestion() {
     });
 }
 
-// ========== Search ==========
-function searchQuestion() {
-  const keyword = prompt("Nhập từ khoá:");
-  if (!keyword) return;
+// ========== Excel Import/Export ==========
+function exportToExcel() {
+  const iframe = document.getElementById("questionIframe");
+  const table = iframe.contentWindow.document.querySelector("#questionTable");
+  if (!table) return alert("Không tìm thấy bảng.");
 
-  fetch("search_question.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "keyword=" + encodeURIComponent(keyword)
-  })
-    .then(res => res.json())
-    .then(data => data.length ? showSearchModal(data) : alert("Không tìm thấy câu hỏi."))
-    .catch(err => alert("Lỗi tìm kiếm: " + err.message));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.table_to_sheet(table);
+  XLSX.utils.book_append_sheet(wb, ws, "Danh sách câu hỏi");
+  XLSX.writeFile(wb, "danh_sach_cau_hoi.xlsx");
 }
 
-function showSearchModal(data) {
-  const tbody = $$("#searchResultsTable tbody");
-  tbody.innerHTML = "";
-  data.forEach(item => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${item.id}</td>
-      <td>${item.topic}</td>
-      <td>${item.question}</td>
-      <td>${item.correct_answer}</td>
-      <td>${item.image ? `<img src="${item.image}" style="max-height:60px;border-radius:4px;">` : ""}</td>
-    `;
-    row.onclick = () => {
-      window.postMessage({ type: "fillForm", data: item }, "*");
-      closeSearchModal();
-    };
-    tbody.appendChild(row);
-  });
-  $("searchModal").style.display = "flex";
+function importExcel(file) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    rows.slice(1).forEach(row => {
+      const [id, question, a1, a2, a3, a4, correct, topic] = row;
+      if (question && correct) {
+        fetch("insert_question.php", {
+          method: "POST",
+          body: new URLSearchParams({
+            id: id || "",
+            question, answer1: a1, answer2: a2, answer3: a3, answer4: a4,
+            correct_answer: correct, topic
+          })
+        });
+      }
+    });
+
+    alert("Đã nhập Excel. Hệ thống sẽ tự tải lại sau vài giây.");
+    setTimeout(refreshIframe, 2000);
+  };
+  reader.readAsArrayBuffer(file);
 }
-
-function closeSearchModal() {
-  $("searchModal").style.display = "none";
-}
-
-// ========== Image Preview ==========
-$("image").addEventListener("change", function () {
-  const file = this.files[0];
-  $("imageFileName").textContent = file?.name || "";
-  const preview = $("imagePreview"), delChk = $("delete_image"), delLbl = $("deleteImageLabel");
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      preview.src = e.target.result;
-      preview.classList.add("show");
-      delChk.checked = false;
-      delLbl.style.display = "inline-block";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    preview.src = "";
-    preview.classList.remove("show");
-    delChk.checked = false;
-    delLbl.style.display = "none";
-  }
-});
-
-// ========== Sync from Table ==========
-window.addEventListener("message", ({ data }) => {
-  if (data.type === "fillForm") {
-    const d = data.data;
-    ["question_id", "topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer"].forEach(id => $(id).value = d[id]);
-    const img = $("imagePreview"), label = $("deleteImageLabel"), url = $("image_url");
-    if (d.image) {
-      img.src = d.image;
-      img.classList.add("show");
-      url.value = d.image;
-      label.style.display = "inline-block";
-    } else {
-      img.src = "";
-      img.classList.remove("show");
-      url.value = "";
-      label.style.display = "none";
-    }
-    ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
-    debounceFullPreview();
-    formChanged = false;
-  }
-});
-
-// ========== Exit Warning ==========
-let formChanged = false;
-$("questionForm").addEventListener("input", () => formChanged = true);
-window.addEventListener("beforeunload", e => {
-  if (formChanged) {
-    e.preventDefault();
-    e.returnValue = "";
-  }
-});
-
-// ========== DOM Ready ==========
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = $("togglePreview");
-  if (toggle) toggle.addEventListener("change", () => togglePreviewBox("togglePreview", "previewBox"));
-});
-
-// ========== DataTable Interaction ==========
-let currentRow = null;
-$(document).ready(() => {
-  const table = $('#questionTable').DataTable({
-    language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json' },
-    pageLength: 10,
-    columnDefs: [{ orderable: false, targets: [8] }]
-  });
-
-  $('#filterTopic').on('change', function () {
-    table.column(7).search($(this).val()).draw();
-  });
-
-  $('#questionTable tbody').on('click', 'tr', function () {
-    if (currentRow) $(currentRow).removeClass('selected-row');
-    currentRow = this;
-    $(this).addClass('selected-row');
-
-    const cells = this.querySelectorAll("td");
-    const rowData = {
-      id: cells[0].innerText.trim(),
-      topic: cells[1].innerText.trim(),
-      question: cells[2].innerText.trim(),
-      answer1: cells[3].innerText.trim(),
-      answer2: cells[4].innerText.trim(),
-      answer3: cells[5].innerText.trim(),
-      answer4: cells[6].innerText.trim(),
-      correct_answer: cells[7].innerText.trim(),
-      image: cells[8].querySelector("img")?.src?.replace(/upload\/c_fill,h_40,w_40\//, "upload/") || ""
-    };
-    parent.postMessage({ type: "fillForm", data: rowData }, window.location.origin);
-  });
-});
