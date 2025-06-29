@@ -84,8 +84,8 @@
       <button onclick="document.getElementById('importFile').click()">📥 Nhập Excel</button>
       <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
       <button onclick="exportToExcel()">📤 Xuất Excel</button>
-      <input type="text" id="searchInput" placeholder="Từ khoá..." onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
       <button class="search-btn" onclick="searchQuestionByInput()">🔍 Tìm</button>
+      <input type="text" id="searchInput" placeholder="Từ khoá..." onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
     </span>
   </h3>
 
