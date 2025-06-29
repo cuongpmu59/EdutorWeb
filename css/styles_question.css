@@ -8,42 +8,42 @@ body {
 	line-height: 1.6;
 	cursor: default;
 	overscroll-behavior: contain;
+	display: block;
   }
   
-  /* ---------- Tiêu đề ---------- */
+  /* ---------- Tiêu đề & Header ---------- */
   h2, h3 {
 	margin-top: 0;
 	color: #2c3e50;
   }
-  
-  /* ---------- Header ---------- */
   .header-bar {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background-color: #fff;
+	background: #fff;
 	padding: 10px 20px;
 	border-bottom: 2px solid #ccc;
 	margin-bottom: 20px;
   }
   
-  /* ---------- Container & Form ---------- */
+  /* ---------- Container chung ---------- */
   .question-container,
   .preview-box,
-  .modal-content {
-	background-color: #fff;
+  .modal-content,
+  .full-preview {
+	background: #fff;
 	padding: 20px;
 	border-radius: 8px;
 	box-shadow: 0 0 5px rgba(0,0,0,0.1);
 	margin-top: 20px;
   }
   
+  /* ---------- Form & Inputs ---------- */
   label {
 	font-weight: 500;
 	margin-top: 10px;
 	display: block;
   }
-  
   textarea,
   input[type="text"],
   input[type="file"],
@@ -56,7 +56,6 @@ body {
 	border-radius: 4px;
 	resize: vertical;
   }
-  
   textarea:focus,
   input:focus,
   select:focus {
@@ -65,51 +64,66 @@ body {
 	box-shadow: 0 0 3px rgba(52, 152, 219, 0.6);
   }
   
-  /* ---------- Nhóm nút ---------- */
-  .button-group {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin-top: 10px;
-  }
-  
+  /* ---------- Nút chức năng ---------- */
+  button,
   .button-group button {
 	padding: 8px 14px;
 	font-size: 14px;
 	border: none;
 	border-radius: 4px;
-	background-color: #3498db;
-	color: white;
+	background: #3498db;
+	color: #fff;
 	cursor: pointer;
 	transition: background-color 0.3s;
   }
-  
+  button:hover,
   .button-group button:hover {
 	background-color: #2980b9;
   }
+  button.delete-btn { background: #e74c3c; }
+  button.delete-btn:hover { background: #c0392b; }
+  button.search-btn { background: #f39c12; }
+  button.search-btn:hover { background: #d68910; }
+  button.reset-btn { background: #7f8c8d; }
+  button.reset-btn:hover { background: #616a6b; }
   
   /* ---------- Xem trước ---------- */
-  .preview-field {
-	background-color: #f4f4f4;
+  .latex-preview,
+  .preview-field,
+  .full-preview {
+	background: #f4f4f4;
 	padding: 8px;
 	border-left: 3px solid #3498db;
 	margin-bottom: 10px;
 	white-space: pre-wrap;
   }
-  
-  .preview-box img {
-	max-width: 200px;
-	margin-top: 5px;
-	display: none;
+  .full-preview {
+	background: #fafafa;
+	padding: 15px;
+	border-left: 4px solid #3498db;
+	font-size: 15px;
+	border-radius: 5px;
+	white-space: pre-line;
   }
   
   /* ---------- Ảnh minh họa ---------- */
+  #imagePreview,
+  .preview-thumb {
+	margin-top: 8px;
+	border-radius: 4px;
+	border: 1px solid #ccc;
+	cursor: zoom-in;
+  }
+  #imagePreview {
+	max-height: 120px;
+	transition: transform 0.2s ease;
+	display: none;
+  }
+  #imagePreview:hover {
+	transform: scale(1.05);
+  }
   .preview-thumb {
 	max-width: 100px;
-	margin-top: 5px;
-	cursor: zoom-in;
-	border: 1px solid #ccc;
-	border-radius: 4px;
   }
   
   /* ---------- Modal chung ---------- */
@@ -123,25 +137,14 @@ body {
 	height: 100%;
 	overflow: auto;
 	padding-top: 60px;
-	background-color: rgba(0, 0, 0, 0.85);
+	background: rgba(0, 0, 0, 0.85);
   }
-  
   .modal-content {
 	margin: auto;
-	max-width: 90%;
-	max-height: 80%;
-	display: block;
-	border-radius: 8px;
-  }
-  
-  /* ---------- Modal tìm kiếm ---------- */
-  .modal .modal-content {
-	background-color: #fff;
 	max-width: 700px;
 	padding: 20px;
 	position: relative;
   }
-  
   .modal .close {
 	position: absolute;
 	top: 10px;
@@ -151,7 +154,6 @@ body {
 	color: #aaa;
 	cursor: pointer;
   }
-  
   .modal .close:hover {
 	color: red;
   }
@@ -162,7 +164,6 @@ body {
 	border-collapse: collapse;
 	margin-top: 10px;
   }
-  
   #searchResultTable th,
   #searchResultTable td {
 	border: 1px solid #ccc;
@@ -170,24 +171,22 @@ body {
 	text-align: left;
   }
   
-  /* ---------- Toggle Dark Mode ---------- */
+  /* ---------- Toggle Switch ---------- */
   .switch {
 	position: relative;
 	display: inline-block;
 	width: 50px;
 	height: 24px;
   }
-  
   .switch input {
 	opacity: 0;
 	width: 0;
 	height: 0;
   }
-  
   .slider {
 	position: absolute;
 	cursor: pointer;
-	background-color: #ccc;
+	background: #ccc;
 	border-radius: 34px;
 	top: 0;
 	left: 0;
@@ -195,7 +194,6 @@ body {
 	bottom: 0;
 	transition: 0.4s;
   }
-  
   .slider:before {
 	content: "";
 	position: absolute;
@@ -203,67 +201,58 @@ body {
 	width: 18px;
 	left: 4px;
 	bottom: 3px;
-	background-color: white;
+	background: #fff;
 	border-radius: 50%;
 	transition: 0.4s;
   }
-  
   input:checked + .slider {
-	background-color: #2196f3;
+	background: #2196f3;
   }
-  
   input:checked + .slider:before {
 	transform: translateX(26px);
   }
   
   /* ---------- Dark Mode ---------- */
   body.dark-mode {
-	background-color: #121212;
-	color: #e0e0e0;
+	background: #1e1e1e;
+	color: #f0f0f0;
   }
-  
-  body.dark-mode .header-bar {
-	background-color: #1e1e1e;
-	border-bottom: 1px solid #333;
-  }
-  
+  body.dark-mode .header-bar,
   body.dark-mode .question-container,
   body.dark-mode .preview-box,
-  body.dark-mode .modal-content {
-	background-color: #1e1e1e;
+  body.dark-mode .modal-content,
+  body.dark-mode .full-preview {
+	background: #1e1e1e;
 	border: 1px solid #444;
   }
-  
   body.dark-mode textarea,
   body.dark-mode input[type="text"],
   body.dark-mode input[type="file"],
   body.dark-mode select {
-	background-color: #2b2b2b;
+	background: #2b2b2b;
 	color: #fff;
 	border: 1px solid #555;
   }
-  
-  body.dark-mode .button-group button,
   body.dark-mode button,
+  body.dark-mode .button-group button,
   body.dark-mode input[type="submit"] {
-	background-color: #333;
+	background: #333;
 	color: #fff;
 	border: 1px solid #555;
   }
-  
-  body.dark-mode .preview-field {
-	background-color: #252525;
+  body.dark-mode .preview-field,
+  body.dark-mode .latex-preview,
+  body.dark-mode .full-preview {
+	background: #252525;
 	border-left: 3px solid #555;
   }
-  
   body.dark-mode table,
   body.dark-mode th,
   body.dark-mode td {
-	background-color: #1e1e1e;
+	background: #1e1e1e;
 	color: #ddd;
 	border-color: #555;
   }
-  
   body.dark-mode .modal {
 	background-color: rgba(0, 0, 0, 0.9);
   }
@@ -272,50 +261,25 @@ body {
   @media (max-width: 768px) {
 	.question-container,
 	.preview-box,
-	.modal .modal-content {
+	.modal-content {
 	  padding: 10px;
 	}
-  
 	.button-group {
 	  flex-direction: column;
 	}
-  
 	.button-group button {
 	  width: 100%;
 	}
-  
 	iframe {
 	  height: 320px;
 	}
   }
-
-  body.dark-mode {
-	background-color: #1e1e1e;
-	color: #f0f0f0;
-  }
-  body.dark-mode .form-control,
-  body.dark-mode .form-select {
-	background-color: #2c2c2c;
-	color: #f0f0f0;
-	border-color: #444;
-  }
-  body.dark-mode .btn {
-	border-color: #666;
-  }
-  body.dark-mode .bg-light {
-	background-color: #2a2a2a !important;
-	color: #f0f0f0 !important;
-  }
-  body.dark-mode .preview-box {
-	background-color: #333;
-	color: #fff;
-	border-color: #555;
-  }
-
+  
+  /* ---------- Iframe ---------- */
   #questionIframe {
 	width: 100%;
-	height: 60vh; /* Tự co theo chiều cao màn hình */
+	height: 60vh;
 	border: 1px solid #ccc;
+	display: block;
   }
-  
   
