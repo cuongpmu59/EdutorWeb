@@ -2,7 +2,7 @@
 require 'db_connection.php';
 header("X-Frame-Options: SAMEORIGIN");
 
-// ===== Lấy danh sách chủ đề duy nhất =====
+// ===== Lấy danh sách chủ đề =====
 $topics = [];
 try {
     $stmtTopics = $conn->query("SELECT DISTINCT topic FROM questions WHERE topic IS NOT NULL AND topic != '' ORDER BY topic");
@@ -40,18 +40,31 @@ try {
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0 5px;
+            padding: 0 10px;
+        }
+        .table-wrapper {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
             font-size: 14px;
         }
-        th, td {
+        thead th {
+            background: #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
             border: 1px solid #ccc;
             padding: 6px 8px;
-            text-align: left;
-            vertical-align: top;
+        }
+        tbody td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            word-wrap: break-word;
         }
         tr:hover {
             background-color: #f1f9ff;
@@ -97,8 +110,6 @@ try {
 
 <div style="margin:10px 0;">
     <a href="export_pdf.php" target="_blank" class="btn btn-danger">📄 Xuất PDF</a>
-
-    <!-- Dropdown lọc chủ đề -->
     <label for="filterTopicInline" style="margin-left: 15px;"><strong>Lọc theo chủ đề:</strong></label>
     <select id="filterTopicInline">
         <option value="">-- Tất cả --</option>
@@ -118,6 +129,7 @@ document.getElementById("filterTopicInline").addEventListener("change", function
 });
 </script>
 
+<div class="table-wrapper">
 <table id="questionTable">
     <thead>
         <tr>
@@ -173,6 +185,7 @@ document.getElementById("filterTopicInline").addEventListener("change", function
         <?php endif; ?>
     </tbody>
 </table>
+</div>
 
 <!-- Modal ảnh -->
 <div id="imageModal">
