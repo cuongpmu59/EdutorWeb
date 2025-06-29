@@ -12,9 +12,16 @@ try {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $topicFilter = $_GET['topic'] ?? '';
+
+    if ($topicFilter !== '') {
+        $stmt = $conn->prepare("SELECT * FROM questions WHERE topic = :topic ORDER BY id DESC");
+        $stmt->execute(['topic' => $topicFilter]);
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM questions ORDER BY id DESC");
+        $stmt->execute();
+    }
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $rows = [];
 }
