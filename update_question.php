@@ -8,7 +8,7 @@ function get_post($key) {
 }
 
 // ===== Nhận dữ liệu =====
-$id            = get_post('question_id');
+$id            = get_post('id');
 $topic         = get_post('topic');
 $question      = get_post('question');
 $answer1       = get_post('answer1');
