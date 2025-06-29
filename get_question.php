@@ -45,6 +45,28 @@ try {
             margin: 0;
             padding: 0 5px;
         }
+
+        <!-- Dropdown lọc chủ đề ngay trong get_question.php -->
+<div style="margin:10px 0;">
+  <label for="filterTopicInline"><strong>Lọc theo chủ đề:</strong></label>
+  <select id="filterTopicInline">
+    <option value="">-- Tất cả --</option>
+    <?php foreach ($topics as $t): ?>
+      <option value="<?= htmlspecialchars($t) ?>" <?= ($topicFilter == $t ? 'selected' : '') ?>>
+        <?= htmlspecialchars($t) ?>
+      </option>
+    <?php endforeach; ?>
+  </select>
+</div>
+
+<script>
+document.getElementById("filterTopicInline").addEventListener("change", function () {
+  const topic = this.value;
+  const newUrl = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
+  window.location.href = newUrl;
+});
+</script>
+
         table {
             width: 100%;
             border-collapse: collapse;
