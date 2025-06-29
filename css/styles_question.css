@@ -235,4 +235,34 @@
 	border: 1px solid var(--border);
 	display: block;
   }
+
+  .two-column {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+  }
+  
+  .form-left {
+	flex: 2;
+	min-width: 0;
+  }
+  
+  .form-right {
+	flex: 1;
+	min-width: 180px;
+	padding: 10px;
+	border-left: 1px solid var(--border);
+  }
+  
+  @media (max-width: 768px) {
+	.two-column {
+	  flex-direction: column;
+	}
+  
+	.form-right {
+	  border-left: none;
+	  border-top: 1px solid var(--border);
+	}
+  }
+  
   
