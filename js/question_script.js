@@ -15,6 +15,10 @@ function refreshIframe() {
   }
 }
 
+function wrapMathIfNeeded(text) {
+  return containsMath(text) ? text : `\\(${text}\\)`;
+}
+
 function containsMath(content) {
   return /(\\\(.+?\\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(content);
 }
@@ -77,7 +81,7 @@ function updateFullPreview() {
   const correct = document.getElementById("correct_answer").value;
 
   const html = `
-    <p><strong>Câu hỏi:</strong> \\(${q}\\)</p>
+    <p><strong>Câu hỏi:</strong> ${wrapMathIfNeeded(q)}</p>
     <ul>
       <li><strong>A.</strong> ${a}</li>
       <li><strong>B.</strong> ${b}</li>
@@ -104,12 +108,27 @@ function toggleFullPreview() {
 }
 
 function resetPreview() {
-  document.getElementById("imagePreview").classList.remove("show");
+  const imgUrl = document.getElementById("image_url").value;
+  const preview = document.getElementById("imagePreview");
+  const deleteLabel = document.getElementById("deleteImageLabel");
+  const deleteCheckbox = document.getElementById("delete_image");
+
+  if (imgUrl) {
+    preview.src = imgUrl;
+    preview.classList.add("show");
+    deleteLabel.style.display = "inline-block";
+  } else {
+    preview.src = "";
+    preview.classList.remove("show");
+    deleteLabel.style.display = "none";
+  }
+
   document.getElementById("image_url").value = "";
-  document.getElementById("delete_image").checked = false;
-  document.getElementById("deleteImageLabel").style.display = "none";
+  deleteCheckbox.checked = false;
+
   debounceFullPreview();
 }
+  
 
 // ========== 3. Save Question ==========
 async function saveQuestion() {
@@ -156,6 +175,7 @@ async function saveQuestion() {
       alert("Không thể tải ảnh lên Cloudinary: " + err.message);
       saveBtn.disabled = false;
       return;
+      
     }
   }
 
