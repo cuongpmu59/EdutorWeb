@@ -80,7 +80,16 @@ function resetPreview() {
 }
 
 // ========== Save ==========
-async function saveQuestion() {
+function saveQuestion(action) {
+  if (action === 'add') {
+    // gọi hàm thêm mới
+  } else if (action === 'edit') {
+    // gọi hàm cập nhật
+  }
+}
+
+// Hàm chính để xử lý lưu thêm/sửa
+async function handleSaveQuestion(isEdit) {
   const id = $("question_id").value.trim();
   const formData = getFormData();
   formData.set("delete_image", $("delete_image").checked ? "1" : "0");
@@ -95,34 +104,53 @@ async function saveQuestion() {
     if (file.size > 2 * 1024 * 1024) return alert("Ảnh quá lớn. < 2MB thôi.");
   }
 
-  const btn = $$(".form-right button");
-  btn.disabled = true;
+  const buttons = document.querySelectorAll(".form-right button");
+  buttons.forEach(btn => btn.disabled = true);
 
   try {
+    // Upload ảnh nếu có
     if (file?.size > 0) {
       const upForm = new FormData();
       upForm.append("file", file);
       upForm.append("upload_preset", "quiz_photo");
-      const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", { method: "POST", body: upForm });
+
+      const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+        method: "POST",
+        body: upForm
+      });
+
       const data = await res.json();
-      if (data.secure_url) formData.set("image_url", data.secure_url);
+      if (data.secure_url) {
+        formData.set("image_url", data.secure_url);
+      }
     }
 
-    const api = id ? "update_question.php" : "insert_question.php";
-    const res = await fetch(api, { method: "POST", body: formData });
+    const api = isEdit ? "update_question.php" : "insert_question.php";
+    const res = await fetch(api, {
+      method: "POST",
+      body: formData
+    });
+
     const result = await res.json();
     if (!res.ok) throw new Error(result.message || "Lỗi không xác định");
 
     alert(result.message);
-    if (!id) $("questionForm").reset();
-    resetPreview();
+
+    // Đặt lại form nếu thêm mới, nếu sửa thì chỉ làm mới preview
+    if (!isEdit) {
+      resetForm();
+    } else {
+      resetPreview();
+    }
+
     refreshIframe();
     $("questionIframe").scrollIntoView({ behavior: "smooth" });
     formChanged = false;
+
   } catch (e) {
     alert("❌ " + (e.message || "Lỗi khi lưu câu hỏi."));
   } finally {
-    btn.disabled = false;
+    buttons.forEach(btn => btn.disabled = false);
   }
 }
 
@@ -140,8 +168,7 @@ function deleteQuestion() {
     .then(data => {
       alert(data.message);
       if (data.status === "success") {
-        $("questionForm").reset();
-        resetPreview();
+        resetForm();
         refreshIframe();
       }
     });
@@ -186,3 +213,65 @@ function importExcel(file) {
   };
   reader.readAsArrayBuffer(file);
 }
+
+document.getElementById("image").addEventListener("change", function () {
+  const file = this.files[0];
+  const label = document.getElementById("imageFileName");
+  label.textContent = file ? file.name : "";
+});
+
+document.getElementById("image").addEventListener("change", function () {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const preview = document.getElementById("imagePreview");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      preview.style.maxWidth = "100%";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+let formChanged = false;
+document.getElementById("questionForm").addEventListener("input", () => {
+  formChanged = true;
+});
+window.addEventListener("beforeunload", function (e) {
+  if (formChanged) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+function resetForm() {
+  // Reset toàn bộ form về trạng thái ban đầu
+  const form = $("questionForm");
+  form.reset();
+
+  // Reset ID để tránh nhầm lẫn giữa thêm và sửa
+  $("question_id").value = "";
+
+  // Ẩn ảnh xem trước
+  const img = $("imagePreview");
+  img.src = "";
+  img.style.display = "none";
+  img.classList.remove("show");
+
+  // Ẩn nhãn xoá ảnh nếu có
+  $("deleteImageLabel").style.display = "none";
+  $("delete_image").checked = false;
+
+  // Reset trường ảnh URL (ẩn)
+  $("image_url").value = "";
+  $("imageFileName").textContent = "";
+
+  // Làm mới xem trước công thức toàn bộ
+  debounceFullPreview();
+
+  // Đánh dấu form chưa thay đổi
+  formChanged = false;
+}
+
+
