@@ -50,21 +50,28 @@ function debounceFullPreview() {
 }
 
 function updateFullPreview() {
-  const q = $("question").value;
-  const answers = ["answer1", "answer2", "answer3", "answer4"].map(id => $(id).value);
-  const correct = $("correct_answer").value;
-  const html = `
-    <p><strong>Câu hỏi:</strong> ${q}</p>
-    <ul>
-      ${["A", "B", "C", "D"].map((label, i) => `<li><strong>${label}.</strong> ${answers[i]}</li>`).join('')}
-    </ul>
-    <p><strong>Đáp án đúng:</strong> ${correct}</p>
+  const topic = document.getElementById("topic").value;
+  const question = document.getElementById("question").value;
+  const a1 = document.getElementById("answer1").value;
+  const a2 = document.getElementById("answer2").value;
+  const a3 = document.getElementById("answer3").value;
+  const a4 = document.getElementById("answer4").value;
+  const correct = document.getElementById("correct_answer").value;
+
+  const content = `
+    <strong>Chủ đề:</strong> ${topic}<br>
+    <strong>Câu hỏi:</strong> ${question}<br>
+    <strong>Đáp án A:</strong> ${a1}<br>
+    <strong>Đáp án B:</strong> ${a2}<br>
+    <strong>Đáp án C:</strong> ${a3}<br>
+    <strong>Đáp án D:</strong> ${a4}<br>
+    <strong>Đáp án đúng:</strong> ${correct}
   `;
 
-  const preview = $("fullPreview");
-  preview.innerHTML = html;
-  debounceRender(preview);
+  document.getElementById("fullPreview").innerHTML = content;
+  if (window.MathJax) MathJax.typesetPromise(["#fullPreview"]);
 }
+
 
 function adjustFullPreviewHeight() {
   const box = document.getElementById("fullPreviewBox");
