@@ -1,13 +1,5 @@
 <?php
 require 'db_connection.php';
-function wrapMath($text) {
-    $trimmed = trim($text);
-    if (preg_match('/(\\\\\(.+?\\\\\))|(\\\\\[(.+?)\\\\\])|(\$\$.+?\$\$)|(\$.+?\$)/', $trimmed)) {
-        return $trimmed;
-    }
-    return '\\(' . htmlspecialchars($trimmed, ENT_QUOTES) . '\\)';
-}
-
 header("X-Frame-Options: SAMEORIGIN");
 
 // ===== Lấy danh sách chủ đề duy nhất =====
@@ -169,12 +161,11 @@ document.getElementById("filterTopicInline").addEventListener("change", function
                     "image" => $imageUrl
                 ]) ?>)'>
                     <td><?= htmlspecialchars($row["id"]) ?></td>
-                    <td><?= wrapMath($row["question"]) ?></td>
-                    <td><?= wrapMath($row["answer1"]) ?></td>
-                    <td><?= wrapMath($row["answer2"]) ?></td>
-                    <td><?= wrapMath($row["answer3"]) ?></td>
-                    <td><?= wrapMath($row["answer4"]) ?></td>
-
+                    <td><?= htmlspecialchars($row["question"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer1"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer2"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer3"]) ?></td>
+                    <td><?= htmlspecialchars($row["answer4"]) ?></td>
                     <td style="text-align:center; font-weight:bold;">
                         <?= strtoupper(substr($row["correct_answer"], 0, 1)) ?>
                     </td>
