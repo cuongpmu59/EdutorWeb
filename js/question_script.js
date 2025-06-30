@@ -259,3 +259,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function togglePreview() {
+  const isChecked = document.getElementById("togglePreview").checked;
+  const previewFields = document.querySelectorAll(".latex-preview");
+
+  previewFields.forEach(div => {
+    div.style.display = isChecked ? "block" : "none";
+  });
+}
+
+
