@@ -271,3 +271,14 @@ function togglePreview() {
 
 document.getElementById("togglePreview").addEventListener("change", togglePreview);
 
+preview.classList.toggle("invalid-math", !valid);
+preview.title = valid ? "" : "Công thức không hợp lệ";
+
+$("questionForm").addEventListener("input", () => {
+  formChanged = true;
+  const toggle = $("togglePreview");
+  if (!toggle.checked) {
+    toggle.checked = true;
+    togglePreview();
+  }
+});
