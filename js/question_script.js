@@ -35,8 +35,9 @@ function renderMathPage() {
 function renderPreview(id) {
   const val = $(id).value;
   const preview = $("preview_" + id);
-  preview.textContent = val;
+  preview.innerHTML = wrapMath(val);
   debounceRender(preview);
+  validateInput(id);  // <- thêm dòng này
 }
 
 
@@ -51,14 +52,18 @@ function updateFullPreview() {
   const answers = ["answer1", "answer2", "answer3", "answer4"].map(id => $(id).value);
   const correct = $("correct_answer").value;
   const html = `
-    <p><strong>Câu hỏi:</strong> ${wrapMath(q)}</p>
-    <ul>${["A","B","C","D"].map((l,i) => `<li><strong>${l}.</strong> ${answers[i]}</li>`).join('')}</ul>
+    <p><strong>Câu hỏi:</strong> ${q}</p>
+    <ul>
+      ${["A", "B", "C", "D"].map((label, i) => `<li><strong>${label}.</strong> ${answers[i]}</li>`).join('')}
+    </ul>
     <p><strong>Đáp án đúng:</strong> ${correct}</p>
   `;
+
   const preview = $("fullPreview");
   preview.innerHTML = html;
   debounceRender(preview);
 }
+
 
 function togglePreviewBox(id, target) {
   $(target).style.display = $(id).checked ? "block" : "none";
@@ -291,4 +296,26 @@ function isValidMath(text) {
     return false;
   }
 }
+
+window.addEventListener("load", () => {
+  if (!window.MathJax || !MathJax.typesetPromise) {
+    console.error("❌ MathJax chưa sẵn sàng!");
+    return;
+  }
+
+  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
+});
+
+function validateInput(id) {
+  const el = $(id);
+  const preview = $("preview_" + id);
+  if (!isValidMath(el.value)) {
+    preview.style.border = "1px solid red";
+    preview.title = "Công thức không hợp lệ";
+  } else {
+    preview.style.border = "";
+    preview.title = "";
+  }
+}
+
 
