@@ -35,9 +35,10 @@ function renderMathPage() {
 function renderPreview(id) {
   const val = $(id).value;
   const preview = $("preview_" + id);
-  preview.innerHTML = escapeHtml(val);
+  preview.textContent = val;
   debounceRender(preview);
 }
+
 
 let previewTimer;
 function debounceFullPreview() {
