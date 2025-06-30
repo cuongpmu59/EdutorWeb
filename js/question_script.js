@@ -2,8 +2,10 @@
 const $ = id => document.getElementById(id);
 
 const containsMath = text => /(\\(.+?\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
+function wrapMath(text) {
+  return containsMath(text) ? text : `\\(${escapeHtml(text)}\\)`;
+}
 const escapeHtml = str => str.replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
-
 let mathTimer, previewTimer, formChanged = false;
 
 function debounceRender(el) {
@@ -17,7 +19,8 @@ function renderPreview(id) {
   const val = $(id)?.value ?? "";
   const preview = $(`preview_${id}`);
   if (!preview) return;
-  preview.innerHTML = val;
+  preview.innerHTML = wrapMath(val);
+
   debounceRender(preview);
   validateInput(id);
 }
@@ -237,3 +240,5 @@ function validateInput(id) {
     preview.title = "";
   }
 }
+
+
