@@ -1,17 +1,25 @@
 // ========== Utility Functions ==========
 const $ = id => document.getElementById(id);
 
-const containsMath = text => /(\\(.+?\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
+const containsMath = text =>
+  /(\\\(.+?\\\))|(\\\[.+?\\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
+
+const escapeHtml = str =>
+  str.replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
+
 function wrapMath(text) {
-  return containsMath(text) ? text : `\\(${escapeHtml(text)}\\)`;
+  const trimmed = text.trim();
+  return containsMath(trimmed) ? trimmed : `\\(${escapeHtml(trimmed)}\\)`;
 }
-const escapeHtml = str => str.replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]);
+
 let mathTimer, previewTimer, formChanged = false;
 
 function debounceRender(el) {
   clearTimeout(mathTimer);
   mathTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(el.innerHTML)) MathJax.typesetPromise([el]);
+    if (window.MathJax && containsMath(el.innerHTML)) {
+      MathJax.typesetPromise([el]);
+    }
   }, 250);
 }
 
@@ -20,7 +28,6 @@ function renderPreview(id) {
   const preview = $(`preview_${id}`);
   if (!preview) return;
   preview.innerHTML = wrapMath(val);
-
   debounceRender(preview);
   validateInput(id);
 }
@@ -38,12 +45,12 @@ function updateFullPreview() {
   $("fullPreview").innerHTML = `
     <p><strong>Câu hỏi:</strong> ${q}</p>
     <ul>
-      ${["A", "B", "C", "D"].map((label, i) => `<li><strong>${label}.</strong> ${answers[i]}</li>`).join('')}
+      ${["A", "B", "C", "D"].map((label, i) => `<li><strong>${label}.</strong> ${answers[i]}</li>`).join("")}
     </ul>
     <p><strong>Đáp án đúng:</strong> ${correct}</p>
   `;
-
-  debounceRender($("fullPreview"));  // Quan trọng!
+  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(validateInput);
+  debounceRender($("fullPreview"));
 }
 
 function togglePreviewBox(id, target) {
@@ -146,7 +153,7 @@ function deleteQuestion() {
 }
 
 function exportToExcel() {
-  const table = document.getElementById("questionIframe").contentWindow.document.querySelector("#questionTable");
+  const table = $("questionIframe").contentWindow.document.querySelector("#questionTable");
   if (!table) return alert("Không tìm thấy bảng.");
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.table_to_sheet(table);
@@ -223,22 +230,18 @@ function isValidMath(text) {
   }
 }
 
-window.addEventListener("load", () => {
-  if (!window.MathJax?.typesetPromise) return console.error("❌ MathJax chưa sẵn sàng!");
-  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
-});
-
 function validateInput(id) {
   const el = $(id);
   const preview = $(`preview_${id}`);
   if (!preview) return;
-  if (!isValidMath(el.value)) {
-    preview.style.border = "1px solid red";
-    preview.title = "Công thức không hợp lệ";
-  } else {
-    preview.style.border = "";
-    preview.title = "";
-  }
+  const valid = isValidMath(el.value);
+  preview.classList.toggle("invalid-math", !valid);
+  preview.title = valid ? "" : "Công thức không hợp lệ";
 }
 
-
+window.addEventListener("load", () => {
+  if (!window.MathJax?.typesetPromise)
+    return console.error("❌ MathJax chưa sẵn sàng!");
+  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
+  debounceFullPreview();
+});
