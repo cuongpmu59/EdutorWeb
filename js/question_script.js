@@ -28,17 +28,19 @@ function debounceFullPreview() {
 }
 
 function updateFullPreview() {
-  const q = $("question").value;
-  const answers = [1, 2, 3, 4].map(i => $(`answer${i}`).value);
+  const q = wrapMath($("question").value);
+  const answers = [1, 2, 3, 4].map(i => wrapMath($(`answer${i}`).value));
   const correct = $("correct_answer").value;
-  const html = `
+
+  $("fullPreview").innerHTML = `
     <p><strong>Câu hỏi:</strong> ${q}</p>
     <ul>
       ${["A", "B", "C", "D"].map((label, i) => `<li><strong>${label}.</strong> ${answers[i]}</li>`).join('')}
     </ul>
-    <p><strong>Đáp án đúng:</strong> ${correct}</p>`;
-  $("fullPreview").innerHTML = html;
-  debounceRender($("fullPreview"));
+    <p><strong>Đáp án đúng:</strong> ${correct}</p>
+  `;
+
+  debounceRender($("fullPreview"));  // Quan trọng!
 }
 
 function togglePreviewBox(id, target) {
