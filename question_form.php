@@ -73,10 +73,7 @@
       <button onclick="document.getElementById('importFile').click()">📅 Nhập Excel</button>
       <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
       <button onclick="exportToExcel()">📄 Xuất Excel</button>
-      <button class="search-btn" onclick="searchQuestionByInput()">🔍 Tìm</button>
-      <input type="text" id="searchInput" placeholder="Từ khoá..."
-        onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
-    </span>
+      </span>
   </h3>
 
   <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border:1px solid #ccc;"></iframe>
