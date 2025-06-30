@@ -320,6 +320,20 @@ function validateInput(id) {
 
 $(document).ready(function () {
   $('#questionTable').DataTable({
+    dom: 'Bfrtip', // B = Buttons, f = filter, t = table, i = info, p = pagination
+    buttons: [
+      {
+        extend: 'excelHtml5',
+        text: '📥 Xuất Excel',
+        className: 'btn-export-excel',
+        title: 'Danh sách câu hỏi'
+      },
+      {
+        extend: 'print',
+        text: '🖨️ In bảng',
+        className: 'btn-print'
+      }
+    ],
     pageLength: 20,
     lengthMenu: [10, 20, 50, 100],
     language: {
@@ -335,7 +349,7 @@ $(document).ready(function () {
         previous: "‹"
       }
     },
-    order: [[0, 'desc']] // Sắp xếp mặc định theo ID giảm dần
+    order: [[0, 'desc']]
   });
 });
 
