@@ -65,6 +65,7 @@ function togglePreviewBox(id, target) {
 
 function resetPreview() {
   const img = $("imagePreview"), url = $("image_url"), delLbl = $("deleteImageLabel"), delChk = $("delete_image");
+
   if (url.value) {
     img.src = url.value;
     img.classList.add("show");
@@ -74,6 +75,13 @@ function resetPreview() {
     img.classList.remove("show");
     delLbl.style.display = "none";
   }
+
+  // Nếu người dùng đã chọn "xoá ảnh", thì ẩn luôn ảnh
+  if (delChk.checked) {
+    img.src = "";
+    img.style.display = "none";
+  }
+
   url.value = "";
   delChk.checked = false;
   debounceFullPreview();
@@ -274,4 +282,12 @@ function resetForm() {
   formChanged = false;
 }
 
+function isValidMath(text) {
+  try {
+    MathJax.tex2chtml(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
