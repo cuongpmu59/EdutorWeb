@@ -64,6 +64,13 @@ function updateFullPreview() {
   debounceRender(preview);
 }
 
+function adjustFullPreviewHeight() {
+  const box = document.getElementById("fullPreviewBox");
+  if (box && box.style.display !== "none") {
+    box.style.height = "auto"; // Reset trước
+    box.style.height = box.scrollHeight + "px"; // Tự điều chỉnh theo nội dung
+  }
+}
 
 function togglePreviewBox(id, target) {
   $(target).style.display = $(id).checked ? "block" : "none";
