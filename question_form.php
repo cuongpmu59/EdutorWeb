@@ -61,10 +61,7 @@
         onchange="togglePreviewBox('showPreview', 'fullPreviewBox'); debounceFullPreview()">
       Xem trước toàn bộ
     </label>
-    <div id="fullPreviewBox" style="display: none; margin-top: 15px; padding: 10px; border: 1px dashed #ccc;">
-      <h5>Xem trước toàn bộ:</h5>
-      <div id="fullPreview" class="full-preview"></div>
-    </div>
+    <div id="fullPreviewBox" class="full-preview; style="display: none; margin-top: 15px; padding: 10px; border: 1px dashed #ccc;"></div>
   </form>
 
   <h3 style="display: flex; justify-content: space-between; align-items: center;">
