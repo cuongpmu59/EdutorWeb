@@ -244,6 +244,7 @@ window.addEventListener("load", () => {
     return console.error("❌ MathJax chưa sẵn sàng!");
   ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
   debounceFullPreview();
+  togglePreview(); // 👈 Thêm dòng này để áp dụng trạng thái ban đầu
 });
 
 // Toggle Dark Mode
