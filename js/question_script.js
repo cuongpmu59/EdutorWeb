@@ -269,4 +269,5 @@ function togglePreview() {
   });
 }
 
+document.getElementById("togglePreview").addEventListener("change", togglePreview);
 
