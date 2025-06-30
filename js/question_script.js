@@ -320,7 +320,7 @@ function validateInput(id) {
 
 $(document).ready(function () {
   $('#questionTable').DataTable({
-    dom: 'Bfrtip', // B = Buttons, f = filter, t = table, i = info, p = pagination
+    dom: 'Bfrtip',
     buttons: [
       {
         extend: 'excelHtml5',
@@ -331,7 +331,8 @@ $(document).ready(function () {
       {
         extend: 'print',
         text: '🖨️ In bảng',
-        className: 'btn-print'
+        className: 'btn-print',
+        title: 'Danh sách câu hỏi'
       }
     ],
     pageLength: 20,
@@ -351,5 +352,6 @@ $(document).ready(function () {
     },
     order: [[0, 'desc']]
   });
+  
 });
 
