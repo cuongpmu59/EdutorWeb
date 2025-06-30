@@ -307,9 +307,10 @@
 	padding: 10px;
 	border: 1px dashed #ccc;
 	background: #f9f9f9;
-	max-height: 400px;   /* hoặc 50vh để co giãn theo chiều cao màn hình */
-	overflow-y: auto;
+	overflow: auto;
+	max-height: none; /* Bỏ giới hạn */
   }
+  
   
   #fullPreview {
 	white-space: pre-wrap;
