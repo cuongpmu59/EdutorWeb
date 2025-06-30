@@ -1,5 +1,13 @@
 <?php
 require 'db_connection.php';
+function wrapMath($text) {
+    $trimmed = trim($text);
+    if (preg_match('/(\\\\\(.+?\\\\\))|(\\\\\[(.+?)\\\\\])|(\$\$.+?\$\$)|(\$.+?\$)/', $trimmed)) {
+        return $trimmed;
+    }
+    return '\\(' . htmlspecialchars($trimmed, ENT_QUOTES) . '\\)';
+}
+
 header("X-Frame-Options: SAMEORIGIN");
 
 // ===== Lấy danh sách chủ đề duy nhất =====
