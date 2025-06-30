@@ -300,4 +300,19 @@
   .btn-print {
 	background-color: #007bff;
   }
+   
+  #fullPreviewBox {
+	display: none;
+	margin-top: 15px;
+	padding: 10px;
+	border: 1px dashed #ccc;
+	background: #f9f9f9;
+	max-height: 400px;   /* hoặc 50vh để co giãn theo chiều cao màn hình */
+	overflow-y: auto;
+  }
+  
+  #fullPreview {
+	white-space: pre-wrap;
+	line-height: 1.6;
+  }
   
