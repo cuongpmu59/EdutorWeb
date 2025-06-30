@@ -24,21 +24,7 @@
         <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
         <div id="preview_question" class="latex-preview"></div>
 
-        <label for="answer1">Đáp án A:</label>
-        <input type="text" name="answer1" id="answer1" required oninput="renderPreview('answer1')">
-        <div id="preview_answer1" class="latex-preview"></div>
-
-        <label for="answer2">Đáp án B:</label>
-        <input type="text" name="answer2" id="answer2" required oninput="renderPreview('answer2')">
-        <div id="preview_answer2" class="latex-preview"></div>
-
-        <label for="answer3">Đáp án C:</label>
-        <input type="text" name="answer3" id="answer3" required oninput="renderPreview('answer3')">
-        <div id="preview_answer3" class="latex-preview"></div>
-
-        <label for="answer4">Đáp án D:</label>
-        <input type="text" name="answer4" id="answer4" required oninput="renderPreview('answer4')">
-        <div id="preview_answer4" class="latex-preview"></div>
+        <div id="answersContainer"></div>
 
         <label for="correct_answer">Đáp án đúng:</label>
         <select name="correct_answer" id="correct_answer" required>
@@ -71,9 +57,14 @@
     </div>
 
     <label style="margin-top:15px; display:inline-block;">
-      <input type="checkbox" id="toggleFullPreview" checked onchange="toggleFullPreview()"> Hiện xem trước toàn bộ
+      <input type="checkbox" id="showPreview"
+        onchange="togglePreviewBox('showPreview', 'fullPreviewBox'); debounceFullPreview()">
+      Xem trước toàn bộ
     </label>
-    <div id="fullPreview" class="full-preview"></div>
+    <div id="fullPreviewBox" style="display: none; margin-top: 15px; padding: 10px; border: 1px dashed #ccc;">
+      <h5>Xem trước toàn bộ:</h5>
+      <div id="fullPreview" class="full-preview"></div>
+    </div>
   </form>
 
   <h3 style="display: flex; justify-content: space-between; align-items: center;">
@@ -83,7 +74,8 @@
       <input type="file" id="importFile" style="display:none" accept=".xlsx,.xls" onchange="importExcel(this.files[0])">
       <button onclick="exportToExcel()">📄 Xuất Excel</button>
       <button class="search-btn" onclick="searchQuestionByInput()">🔍 Tìm</button>
-      <input type="text" id="searchInput" placeholder="Từ khoá..." onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
+      <input type="text" id="searchInput" placeholder="Từ khoá..."
+        onkeydown="if(event.key==='Enter'){searchQuestionByInput()}" style="padding:5px;">
     </span>
   </h3>
 
@@ -91,6 +83,18 @@
 
   <script src="js/question_script.js"></script>
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("answersContainer");
+      ["A", "B", "C", "D"].forEach((label, i) => {
+        const id = `answer${i + 1}`;
+        container.insertAdjacentHTML("beforeend", `
+          <label for="${id}">Đáp án ${label}:</label>
+          <input type="text" name="${id}" id="${id}" required oninput="renderPreview('${id}')">
+          <div id="preview_${id}" class="latex-preview"></div>
+        `);
+      });
+    });
+
     window.addEventListener("message", function (event) {
       if (event.origin !== window.location.origin) return;
       if (event.data.type === "fillForm" && event.data.data) {
@@ -101,8 +105,10 @@
         });
 
         const hasImg = d.image;
-        document.getElementById("imagePreview").style.display = hasImg ? "block" : "none";
-        document.getElementById("imagePreview").src = hasImg || "";
+        const imgPreview = document.getElementById("imagePreview");
+        imgPreview.style.display = hasImg ? "block" : "none";
+        imgPreview.src = hasImg || "";
+
         document.getElementById("deleteImageLabel").style.display = hasImg ? "inline-block" : "none";
 
         ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
