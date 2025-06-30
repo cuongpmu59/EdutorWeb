@@ -248,5 +248,28 @@ window.onload = () => {
 };
 </script>
 
+<script>
+$(document).ready(function () {
+  $('#questionTable').DataTable({
+    pageLength: 20,
+    lengthMenu: [10, 20, 50, 100],
+    language: {
+      search: "🔍 Tìm kiếm:",
+      lengthMenu: "Hiển thị _MENU_ dòng",
+      info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+      zeroRecords: "Không tìm thấy kết quả phù hợp",
+      infoEmpty: "Không có dữ liệu",
+      paginate: {
+        first: "«",
+        last: "»",
+        next: "›",
+        previous: "‹"
+      }
+    },
+    order: [[0, 'desc']]
+  });
+});
+</script>
+
 </body>
 </html>
