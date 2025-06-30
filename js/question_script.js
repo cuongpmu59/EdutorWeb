@@ -41,10 +41,12 @@ function renderPreview(id) {
 }
 
 
-let previewTimer;
 function debounceFullPreview() {
-  clearTimeout(previewTimer);
-  previewTimer = setTimeout(updateFullPreview, 300);
+  clearTimeout(previewTimeout);
+  previewTimeout = setTimeout(() => {
+    updateFullPreview();
+    adjustFullPreviewHeight(); // ✅ Gọi thêm ở đây
+  }, 300);
 }
 
 function updateFullPreview() {
