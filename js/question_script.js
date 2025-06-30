@@ -199,12 +199,21 @@ $("image").addEventListener("change", function () {
 
 $("questionForm").addEventListener("input", e => {
   formChanged = true;
+
   const id = e.target.id;
-  if (["question", "answer1", "answer2", "answer3", "answer4"].includes(id)) {
-    renderPreview(id);        // ✅ cập nhật từng preview nhỏ
-    debounceFullPreview();    // ✅ cập nhật preview toàn bộ
+  const previewFields = ["question", "answer1", "answer2", "answer3", "answer4"];
+  if (previewFields.includes(id)) {
+    renderPreview(id);
+    debounceFullPreview();
+  }
+
+  const toggle = $("togglePreview");
+  if (toggle && !toggle.checked) {
+    toggle.checked = true;
+    togglePreview(); // bật hiển thị nếu chưa
   }
 });
+
 
 
 window.addEventListener("beforeunload", e => {
@@ -279,15 +288,3 @@ function togglePreview() {
 }
 
 document.getElementById("togglePreview").addEventListener("change", togglePreview);
-
-preview.classList.toggle("invalid-math", !valid);
-preview.title = valid ? "" : "Công thức không hợp lệ";
-
-$("questionForm").addEventListener("input", () => {
-  formChanged = true;
-  const toggle = $("togglePreview");
-  if (!toggle.checked) {
-    toggle.checked = true;
-    togglePreview();
-  }
-});
