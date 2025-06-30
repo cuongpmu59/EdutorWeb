@@ -197,7 +197,15 @@ $("image").addEventListener("change", function () {
   }
 });
 
-$("questionForm").addEventListener("input", () => formChanged = true);
+$("questionForm").addEventListener("input", e => {
+  formChanged = true;
+  const id = e.target.id;
+  if (["question", "answer1", "answer2", "answer3", "answer4"].includes(id)) {
+    renderPreview(id);        // ✅ cập nhật từng preview nhỏ
+    debounceFullPreview();    // ✅ cập nhật preview toàn bộ
+  }
+});
+
 
 window.addEventListener("beforeunload", e => {
   if (formChanged) {
@@ -218,6 +226,7 @@ function resetForm() {
   $("image_url").value = "";
   $("imageFileName").textContent = "";
   debounceFullPreview();
+  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
   formChanged = false;
 }
 
