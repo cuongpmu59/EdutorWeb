@@ -1,3 +1,4 @@
+
 :root {
 	--bg-light: #eef2f7;
 	--bg-dark: #1e1e1e;
@@ -123,7 +124,8 @@
   
   /* ---------- Previews ---------- */
   .latex-preview,
-  .preview-field {
+  .preview-field,
+  .preview-box {
 	background: #f4f4f4;
 	padding: 8px;
 	border-left: 3px solid var(--accent);
@@ -137,6 +139,11 @@
 	border-radius: 5px;
 	font-size: 15px;
 	white-space: pre-line;
+  }
+  .preview-box.invalid-math {
+	border: 1px solid var(--danger);
+	background: #fff0f0;
+	box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
   }
   
   /* ---------- Image Preview ---------- */
@@ -227,9 +234,14 @@
   }
   body.dark-mode .latex-preview,
   body.dark-mode .preview-field,
+  body.dark-mode .preview-box,
   body.dark-mode .full-preview {
 	background: #252525;
 	border-left: 3px solid #555;
+  }
+  body.dark-mode .preview-box.invalid-math {
+	background: #3a1f1f;
+	border-color: var(--danger);
   }
   body.dark-mode table,
   body.dark-mode th,
