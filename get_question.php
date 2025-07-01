@@ -120,9 +120,12 @@ document.getElementById("filterTopicInline").addEventListener("change", function
       <td><?= $q['topic'] ?></td>
       <td>
         <?php if (!empty($q['image_url'])): ?>
-        <img src="<?= htmlspecialchars($q['image_url']) ?>" class="thumb" onclick="showImage(this.src)">
+        <img src="<?= htmlspecialchars($q['image_url']) ?>" class="thumb" alt="Ảnh" onerror="this.style.display='none'">
+        <?php else: ?>
+        <!-- Không có ảnh -->
         <?php endif; ?>
-</td>
+        </td>
+
     </tr>
     <?php endforeach; ?>
   </tbody>
