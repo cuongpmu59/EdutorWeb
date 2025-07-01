@@ -234,7 +234,7 @@ window.addEventListener("keydown", e => {
 
 
 $(document).ready(function () {
-    table = $('#questionTable').DataTable({
+  table = $('#questionTable').DataTable({
     dom: 'Bfrtip',
     buttons: [
       {
@@ -263,96 +263,31 @@ $(document).ready(function () {
     order: [[0, 'desc']]
   });
 
-  // Gửi dữ liệu về form cha
+  // Gửi dữ liệu về form cha khi click dòng
   $('#questionTable tbody').on('click', 'tr', function () {
-  const tds = $(this).find("td");
-  const imageURL = tds.eq(8).find('img').attr('src') || "";
-  const data = {
-    id: tds.eq(0).text().trim(),
-    question: tds.eq(1).text().trim(),
-    answer1: tds.eq(2).text().trim(),
-    answer2: tds.eq(3).text().trim(),
-    answer3: tds.eq(4).text().trim(),
-    answer4: tds.eq(5).text().trim(),
-    correct_answer: tds.eq(6).text().trim(),
-    topic: tds.eq(7).text().trim(),
-    image: imageURL
-  };
+    const tds = $(this).find("td");
+    const imageURL = tds.eq(8).find('img').attr('src') || "";
+    const data = {
+      id: tds.eq(0).text().trim(),
+      question: tds.eq(1).text().trim(),
+      answer1: tds.eq(2).text().trim(),
+      answer2: tds.eq(3).text().trim(),
+      answer3: tds.eq(4).text().trim(),
+      answer4: tds.eq(5).text().trim(),
+      correct_answer: tds.eq(6).text().trim(),
+      topic: tds.eq(7).text().trim(),
+      image: imageURL
+    };
+    currentRowIndex = table.row(this, { search: 'applied' }).index();
+    selectRow(this, data);
+  });
+}); // <-- kết thúc $(document).ready
 
-  // Cập nhật chỉ số dòng hiện tại
-  if (first) {
-    first.click();
-    currentRowIndex = table.row(first, { search: 'applied' }).index();
-}
-  // Gửi về form cha
-  parent.postMessage({ type: "fillForm", data }, "*");
-
-  const previewHtml = `
-    <strong>Câu hỏi:</strong><br>${escapeHTML(data.question)}<br><br>
-    <strong>Đáp án A:</strong> ${escapeHTML(data.answer1)}<br>
-    <strong>Đáp án B:</strong> ${escapeHTML(data.answer2)}<br>
-    <strong>Đáp án C:</strong> ${escapeHTML(data.answer3)}<br>
-    <strong>Đáp án D:</strong> ${escapeHTML(data.answer4)}<br><br>
-    <strong>Đáp án đúng:</strong> <span style="color:green;font-weight:bold;">${escapeHTML(data.correct_answer)}</span><br>
-    <strong>Chủ đề:</strong> ${escapeHTML(data.topic)}<br>
-    ${data.image ? `<img src="${escapeHTML(data.image)}" style="max-height:120px;margin-top:10px;border:1px solid #ccc;">` : ""}
-  `;
-  document.getElementById("previewArea").innerHTML = previewHtml;
-  MathJax.typesetPromise?.();
-});
-
-<script>
-document.getElementById('excelInput').addEventListener('change', function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const data = new Uint8Array(event.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-
-    const firstSheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[firstSheetName];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    if (rows.length === 0) return alert("File Excel rỗng!");
-
-    // Xóa dữ liệu cũ trong bảng
-    table.clear();
-
-    // Bắt đầu từ dòng 1 (bỏ dòng tiêu đề)
-    for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      if (!row || row.length < 8) continue;
-
-      const imageURL = row[8] || "";
-      const imageHTML = imageURL
-        ? `<img src="${imageURL}" class="thumb" alt="Ảnh" onclick="showImage(this.src)" onerror="this.style.display='none'">`
-        : "";
-
-      table.row.add([
-        row[0] || "", // ID
-        row[1] || "", // Câu hỏi
-        row[2] || "", // A
-        row[3] || "", // B
-        row[4] || "", // C
-        row[5] || "", // D
-        row[6] || "", // Đáp án đúng
-        row[7] || "", // Chủ đề
-        imageHTML
-      ]);
-    }
-
-    table.draw();
-    alert("✅ Đã nhập dữ liệu Excel vào bảng!");
-  };
-
-  reader.readAsArrayBuffer(file);
-});
 </script>
-});
-</script>
+
+<!-- MathJax -->
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </body>
 </html>
+
