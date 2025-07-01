@@ -150,7 +150,9 @@ async function handleSaveQuestion(isEdit) {
       });
 
       const data = await res.json();
-      if (data.secure_url) {
+      if (!data.secure_url) {
+        throw new Error("Lỗi upload ảnh: " + (data.error?.message || "Không rõ nguyên nhân."));
+      }else{
         formData.set("image_url", data.secure_url);
       }
     }
@@ -305,10 +307,12 @@ function resetForm() {
 }
 
 function isValidMath(text) {
+  if (!text.trim()) return true;
   try {
-    MathJax.tex2chtml(text);
+    MathJax.tex2chtml(text); // nếu sai cú pháp sẽ throw
     return true;
-  } catch {
+  } catch (e) {
+    console.warn("Math invalid:", text, e.message);
     return false;
   }
 }
@@ -325,9 +329,12 @@ window.addEventListener("load", () => {
 function validateInput(id) {
   const el = $(id);
   const preview = $("preview_" + id);
+
   if (!isValidMath(el.value)) {
     preview.style.border = "1px solid red";
     preview.title = "Công thức không hợp lệ";
+    // Gợi ý: Thêm icon cảnh báo
+    preview.innerHTML += '<span style="color:red;"> ⚠️</span>';
   } else {
     preview.style.border = "";
     preview.title = "";
