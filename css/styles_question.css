@@ -318,10 +318,10 @@
 	max-height: 1000px; /* hoặc lớn hơn tuỳ nội dung */
   }
 
-  fullPreview {
+  #fullPreview {
 	white-space: pre-wrap;
 	line-height: 1.6;
-  }
+}
   
   .latex-preview {
 	padding: 5px;
