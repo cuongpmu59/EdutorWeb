@@ -23,9 +23,10 @@ let mathTimer;
 function debounceRender(el) {
   clearTimeout(mathTimer);
   mathTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(el.innerHTML)) MathJax.typesetPromise([el]);
-  }, 250);
-}
+    if (window.MathJax && containsMath(el.innerHTML)) {
+      MathJax.typesetPromise([el]);
+    }
+  
 
 function renderMathPage() {
   if (window.MathJax && containsMath(document.body.innerText)) MathJax.typesetPromise();
@@ -58,20 +59,28 @@ function updateFullPreview() {
   const a4 = document.getElementById("answer4").value;
   const correct = document.getElementById("correct_answer").value;
 
+  const escape = escapeHtml;
   const content = `
-    <strong>Chủ đề:</strong> ${topic}<br>
-    <strong>Câu hỏi:</strong> ${question}<br>
-    <strong>Đáp án A:</strong> ${a1}<br>
-    <strong>Đáp án B:</strong> ${a2}<br>
-    <strong>Đáp án C:</strong> ${a3}<br>
-    <strong>Đáp án D:</strong> ${a4}<br>
-    <strong>Đáp án đúng:</strong> ${correct}
-  `;
+  <strong>Chủ đề:</strong> ${escape(topic)}<br>
+  <strong>Câu hỏi:</strong> ${escape(question)}<br>
+  <strong>Đáp án A:</strong> ${escape(a1)}<br>
+  <strong>Đáp án B:</strong> ${escape(a2)}<br>
+  <strong>Đáp án C:</strong> ${escape(a3)}<br>
+  <strong>Đáp án D:</strong> ${escape(a4)}<br>
+  <strong>Đáp án đúng:</strong> ${escape(correct)}
+`;
+
 
   document.getElementById("fullPreview").innerHTML = content;
   if (window.MathJax) MathJax.typesetPromise(["#fullPreview"]);
 }
 
+function togglePreview() {
+  const show = document.getElementById("togglePreview").checked;
+  document.querySelectorAll(".latex-preview").forEach(div => {
+    div.style.display = show ? "block" : "none";
+  });
+}
 
 function adjustFullPreviewHeight() {
   const box = document.getElementById("fullPreviewBox");
@@ -248,16 +257,13 @@ function importExcel(file) {
 
 document.getElementById("image").addEventListener("change", function () {
   const file = this.files[0];
-  const label = document.getElementById("imageFileName");
+  const label = $("imageFileName");
   label.textContent = file ? file.name : "";
-});
 
-document.getElementById("image").addEventListener("change", function () {
-  const file = this.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = function (e) {
-      const preview = document.getElementById("imagePreview");
+      const preview = $("imagePreview");
       preview.src = e.target.result;
       preview.style.display = "block";
       preview.style.maxWidth = "100%";
@@ -265,6 +271,7 @@ document.getElementById("image").addEventListener("change", function () {
     reader.readAsDataURL(file);
   }
 });
+
 
 let formChanged = false;
 document.getElementById("questionForm").addEventListener("input", () => {
@@ -339,42 +346,5 @@ function validateInput(id) {
     preview.style.border = "";
     preview.title = "";
   }
-}
-
-$(document).ready(function () {
-  $('#questionTable').DataTable({
-    dom: 'Bfrtip',
-    buttons: [
-      {
-        extend: 'excelHtml5',
-        text: '📥 Xuất Excel',
-        className: 'btn-export-excel',
-        title: 'Danh sách câu hỏi'
-      },
-      {
-        extend: 'print',
-        text: '🖨️ In bảng',
-        className: 'btn-print',
-        title: 'Danh sách câu hỏi'
-      }
-    ],
-    pageLength: 20,
-    lengthMenu: [10, 20, 50, 100],
-    language: {
-      search: "🔍 Tìm kiếm:",
-      lengthMenu: "Hiển thị _MENU_ dòng",
-      info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
-      zeroRecords: "Không tìm thấy kết quả phù hợp",
-      infoEmpty: "Không có dữ liệu",
-      paginate: {
-        first: "«",
-        last: "»",
-        next: "›",
-        previous: "‹"
-      }
-    },
-    order: [[0, 'desc']]
-  });
-  
-});
+};
 
