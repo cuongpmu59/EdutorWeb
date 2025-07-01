@@ -36,6 +36,9 @@ try {
 
     <!-- DataTables Core -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
+    <!-- Thư viện đọc Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <!-- JSZip (bắt buộc cho Excel export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -97,6 +100,12 @@ document.getElementById("filterTopicInline").addEventListener("change", function
     location.href = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
 });
 </script>
+
+<!-- Nhập Excel -->
+<div style="margin: 10px 0;">
+  <label><strong>📤 Nhập Excel:</strong></label>
+  <input type="file" id="excelInput" accept=".xlsx, .xls" />
+</div>
 
 <!-- Bảng câu hỏi -->
 <table id="questionTable">
@@ -257,7 +266,6 @@ $(document).ready(function () {
   // Gửi dữ liệu về form cha
   $('#questionTable tbody').on('click', 'tr', function () {
   const tds = $(this).find("td");
-
   const imageURL = tds.eq(8).find('img').attr('src') || "";
   const data = {
     id: tds.eq(0).text().trim(),
@@ -293,6 +301,55 @@ $(document).ready(function () {
   MathJax.typesetPromise?.();
 });
 
+<script>
+document.getElementById('excelInput').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const data = new Uint8Array(event.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+
+    const firstSheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[firstSheetName];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    if (rows.length === 0) return alert("File Excel rỗng!");
+
+    // Xóa dữ liệu cũ trong bảng
+    table.clear();
+
+    // Bắt đầu từ dòng 1 (bỏ dòng tiêu đề)
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length < 8) continue;
+
+      const imageURL = row[8] || "";
+      const imageHTML = imageURL
+        ? `<img src="${imageURL}" class="thumb" alt="Ảnh" onclick="showImage(this.src)" onerror="this.style.display='none'">`
+        : "";
+
+      table.row.add([
+        row[0] || "", // ID
+        row[1] || "", // Câu hỏi
+        row[2] || "", // A
+        row[3] || "", // B
+        row[4] || "", // C
+        row[5] || "", // D
+        row[6] || "", // Đáp án đúng
+        row[7] || "", // Chủ đề
+        imageHTML
+      ]);
+    }
+
+    table.draw();
+    alert("✅ Đã nhập dữ liệu Excel vào bảng!");
+  };
+
+  reader.readAsArrayBuffer(file);
+});
+</script>
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
