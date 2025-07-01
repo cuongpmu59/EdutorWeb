@@ -119,9 +119,8 @@ document.getElementById("filterTopicInline").addEventListener("change", function
       <td><?= $q['correct_answer'] ?></td>
       <td><?= $q['topic'] ?></td>
       <td>
-        <?php if (!empty($q['image_url'])): ?>
-        <img src="<?= htmlspecialchars($q['image_url']) ?>" class="thumb" alt="Ảnh" onerror="this.style.display='none'">
-        <?php else: ?>
+      <?php if (!empty($q['image'])): ?>
+        <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" alt="Ảnh" onclick="showImage(this.src)" onerror="this.style.display='none'">        <?php else: ?>
         <!-- Không có ảnh -->
         <?php endif; ?>
         </td>
@@ -236,20 +235,19 @@ $(document).ready(function () {
   $('#questionTable tbody').on('click', 'tr', function () {
   const tds = $(this).find("td");
 
-  const imageURL = tds.eq(8).find('img').attr('src') || ""; // Lấy src trực tiếp
-
+  const imageURL = tds.eq(8).find('img').attr('src') || "";
   const data = {
-    id: tds.eq(0).text().trim(),
-    question: tds.eq(1).text().trim(),
-    answer1: tds.eq(2).text().trim(),
-    answer2: tds.eq(3).text().trim(),
-    answer3: tds.eq(4).text().trim(),
-    answer4: tds.eq(5).text().trim(),
-    correct_answer: tds.eq(6).text().trim(),
-    topic: tds.eq(7).text().trim(),
-    image: imageURL,
-    image_url: imageURL
-  };
+  id: tds.eq(0).text().trim(),
+  question: tds.eq(1).text().trim(),
+  answer1: tds.eq(2).text().trim(),
+  answer2: tds.eq(3).text().trim(),
+  answer3: tds.eq(4).text().trim(),
+  answer4: tds.eq(5).text().trim(),
+  correct_answer: tds.eq(6).text().trim(),
+  topic: tds.eq(7).text().trim(),
+  image: imageURL // Chỉ cần 1 thuộc tính là image
+};
+
 
   parent.postMessage({ type: "fillForm", data }, "*");
 
