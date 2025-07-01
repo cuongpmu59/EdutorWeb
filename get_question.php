@@ -228,34 +228,46 @@ window.addEventListener("keydown", e => {
 
 
 $(document).ready(function () {
+
   table = $('#questionTable').DataTable({
-    dom: 'Bfrtip',
-    buttons: [
-      {
-        extend: 'excelHtml5',
-        text: '📥 Xuất Excel',
-        className: 'btn-export-excel',
-        title: 'Danh sách câu hỏi'
-      },
-      {
-        extend: 'print',
-        text: '🖨️ In bảng',
-        className: 'btn-print',
-        title: 'Danh sách câu hỏi'
-      }
-    ],
-    pageLength: 20,
-    lengthMenu: [10, 20, 50, 100],
-    language: {
-      search: "🔍 Tìm kiếm:",
-      lengthMenu: "Hiển thị _MENU_ dòng",
-      info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
-      zeroRecords: "Không tìm thấy kết quả phù hợp",
-      infoEmpty: "Không có dữ liệu",
-      paginate: { first: "«", last: "»", next: "›", previous: "‹" }
+
+  initComplete: function () {
+  const btnContainer = $('#questionTable_wrapper .dt-buttons').detach();
+  $('#dt-buttons-container').append(btnContainer);
+  }
+
+  dom: 'Bfrtip',
+  buttons: [
+    {
+      extend: 'excelHtml5',
+      text: '📥 Xuất Excel',
+      className: 'btn-export-excel',
+      title: 'Danh sách câu hỏi'
     },
-    order: [[0, 'desc']]
-  });
+    {
+      extend: 'print',
+      text: '🖨️ In bảng',
+      className: 'btn-print',
+      title: 'Danh sách câu hỏi'
+    }
+  ],
+  pageLength: 20,
+  lengthMenu: [10, 20, 50, 100],
+  language: {
+    search: "🔍 Tìm kiếm:",
+    lengthMenu: "Hiển thị _MENU_ dòng",
+    info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+    zeroRecords: "Không tìm thấy kết quả phù hợp",
+    infoEmpty: "Không có dữ liệu",
+    paginate: { first: "«", last: "»", next: "›", previous: "‹" }
+  },
+  order: [[0, 'desc']],
+  initComplete: function () {
+    const btnContainer = $('#questionTable_wrapper .dt-buttons').detach();
+    $('#dt-buttons-container').append(btnContainer);
+  }
+});
+
 
   // Gửi dữ liệu về form cha khi click dòng
   $('#questionTable tbody').on('click', 'tr', function () {
