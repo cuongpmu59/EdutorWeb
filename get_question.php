@@ -31,8 +31,14 @@ try {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" />
 
-    <!-- JS -->
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
+    <!-- DataTables Buttons -->
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -94,57 +100,34 @@ document.getElementById("filterTopicInline").addEventListener("change", function
 
 <!-- Bảng câu hỏi -->
 <table id="questionTable">
-    <thead>
-        <tr>
-            <th style="width: 40px;">ID</th>
-            <th>Câu hỏi</th>
-            <th>Đáp án A</th>
-            <th>Đáp án B</th>
-            <th>Đáp án C</th>
-            <th>Đáp án D</th>
-            <th style="width: 80px;">Đáp án đúng</th>
-            <th style="width: 100px;">Chủ đề</th>
-            <th style="width: 50px;">Ảnh</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($rows as $row): ?>
-            <?php
-                $imageUrl = $row["image"] ?? "";
-                $thumb = $imageUrl ? preg_replace("/upload\//", "upload/c_fill,h_40,w_40/", $imageUrl) : "";
-                $data = [
-                    "id" => $row["id"],
-                    "question" => $row["question"],
-                    "answer1" => $row["answer1"],
-                    "answer2" => $row["answer2"],
-                    "answer3" => $row["answer3"],
-                    "answer4" => $row["answer4"],
-                    "correct_answer" => strtoupper(trim($row["correct_answer"])),
-                    "topic" => $row["topic"] ?? "",
-                    "image" => $imageUrl
-                ];
-            ?>
-            <tr tabindex="0" onclick='selectRow(this, <?= json_encode($data) ?>)'>
-                <td><?= htmlspecialchars($row["id"]) ?></td>
-                <td><?= htmlspecialchars($row["question"]) ?></td>
-                <td><?= htmlspecialchars($row["answer1"]) ?></td>
-                <td><?= htmlspecialchars($row["answer2"]) ?></td>
-                <td><?= htmlspecialchars($row["answer3"]) ?></td>
-                <td><?= htmlspecialchars($row["answer4"]) ?></td>
-                <td style="text-align:center;font-weight:bold;"><?= $data["correct_answer"] ?></td>
-                <td><?= htmlspecialchars($data["topic"]) ?></td>
-                <td style="text-align:center;">
-                    <?php if ($imageUrl): ?>
-                        <img class="thumb" src="<?= htmlspecialchars($thumb) ?>" alt="Ảnh"
-                             onclick="showImage('<?= htmlspecialchars($imageUrl) ?>')">
-                    <?php endif; ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        <?php if (empty($rows)): ?>
-            <tr><td colspan="9" style="text-align:center;">Không có dữ liệu</td></tr>
-        <?php endif; ?>
-    </tbody>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Câu hỏi</th>
+      <th>Đáp án A</th>
+      <th>Đáp án B</th>
+      <th>Đáp án C</th>
+      <th>Đáp án D</th>
+      <th>Đáp án đúng</th>
+      <th>Chủ đề</th>
+      <th>Ảnh</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($questions as $q): ?>
+    <tr>
+      <td><?= $q['id'] ?></td>
+      <td><?= htmlspecialchars($q['question']) ?></td>
+      <td><?= htmlspecialchars($q['answer1']) ?></td>
+      <td><?= htmlspecialchars($q['answer2']) ?></td>
+      <td><?= htmlspecialchars($q['answer3']) ?></td>
+      <td><?= htmlspecialchars($q['answer4']) ?></td>
+      <td><?= $q['correct_answer'] ?></td>
+      <td><?= $q['topic'] ?></td>
+      <td><?= $q['image_url'] ?? '' ?></td>
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
 </table>
 
 <!-- Preview -->
@@ -219,19 +202,70 @@ window.onload = () => {
 };
 
 $(document).ready(function () {
-    $('#questionTable').DataTable({
-        pageLength: 20,
-        lengthMenu: [10, 20, 50, 100],
-        language: {
-            search: "🔍 Tìm kiếm:",
-            lengthMenu: "Hiển thị _MENU_ dòng",
-            info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
-            zeroRecords: "Không tìm thấy kết quả phù hợp",
-            infoEmpty: "Không có dữ liệu",
-            paginate: { first: "«", last: "»", next: "›", previous: "‹" }
-        },
-        order: [[0, 'desc']]
-    });
+  const table = $('#questionTable').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excelHtml5',
+        text: '📥 Xuất Excel',
+        className: 'btn-export-excel',
+        title: 'Danh sách câu hỏi'
+      },
+      {
+        extend: 'print',
+        text: '🖨️ In bảng',
+        className: 'btn-print',
+        title: 'Danh sách câu hỏi'
+      }
+    ],
+    pageLength: 20,
+    lengthMenu: [10, 20, 50, 100],
+    language: {
+      search: "🔍 Tìm kiếm:",
+      lengthMenu: "Hiển thị _MENU_ dòng",
+      info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
+      zeroRecords: "Không tìm thấy kết quả phù hợp",
+      infoEmpty: "Không có dữ liệu",
+      paginate: { first: "«", last: "»", next: "›", previous: "‹" }
+    },
+    order: [[0, 'desc']]
+  });
+
+  // Gửi dữ liệu về form cha
+  $('#questionTable tbody').on('click', 'tr', function () {
+    const row = table.row(this).data();
+    if (!row) return;
+
+    const data = {
+      id: row[0],
+      question: row[1],
+      answer1: row[2],
+      answer2: row[3],
+      answer3: row[4],
+      answer4: row[5],
+      correct_answer: row[6],
+      topic: row[7],
+      image: row[8]?.match(/src=["'](.*?)["']/)?.[1] || "",
+      image_url: row[8]?.match(/src=["'](.*?)["']/)?.[1] || ""
+    };
+
+    // Gửi về form cha
+    parent.postMessage({ type: "fillForm", data }, "*");
+
+    // Hiển thị xem trước
+    const previewHtml = `
+      <strong>Câu hỏi:</strong><br>${escapeHTML(data.question)}<br><br>
+      <strong>Đáp án A:</strong> ${escapeHTML(data.answer1)}<br>
+      <strong>Đáp án B:</strong> ${escapeHTML(data.answer2)}<br>
+      <strong>Đáp án C:</strong> ${escapeHTML(data.answer3)}<br>
+      <strong>Đáp án D:</strong> ${escapeHTML(data.answer4)}<br><br>
+      <strong>Đáp án đúng:</strong> <span style="color:green;font-weight:bold;">${escapeHTML(data.correct_answer)}</span><br>
+      <strong>Chủ đề:</strong> ${escapeHTML(data.topic)}<br>
+      ${data.image ? `<img src="${escapeHTML(data.image)}" style="max-height:120px;margin-top:10px;border:1px solid #ccc;">` : ""}
+    `;
+    document.getElementById("previewArea").innerHTML = previewHtml;
+    MathJax.typesetPromise?.();
+  });
 });
 </script>
 
