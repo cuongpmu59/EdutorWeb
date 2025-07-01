@@ -139,11 +139,13 @@ document.getElementById("filterTopicInline").addEventListener("change", function
 <div id="imageModal"><span onclick="closeModal()">&times;</span><img id="modalImage" /></div>
 
 <!-- Script -->
+
 <script>
+let table; // Biến toàn cục để dùng DataTable
+let currentRowIndex = null; // Vị trí dòng hiện tại khi điều hướng bằng phím
 const escapeHTML = str => (str || "").replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[c]));
-
 let currentRow = null;
 
 function selectRow(row, data) {
@@ -176,33 +178,32 @@ function closeModal() {
     document.getElementById("imageModal").style.display = "none";
 }
 
-function rowKeyNavigation(e) {
-    const rows = [...document.querySelectorAll("tbody tr")];
-    if (rows.length === 0) return;
+ffunction rowKeyNavigation(e) {
+    const rowCount = table.rows({ search: "applied" }).count();
+    if (rowCount === 0) return;
 
-    if (!currentRow) return rows[0].click();
+    if (currentRowIndex === null) currentRowIndex = 0;
+    else if (e.key === "ArrowDown" && currentRowIndex < rowCount - 1) currentRowIndex++;
+    else if (e.key === "ArrowUp" && currentRowIndex > 0) currentRowIndex--;
 
-    let index = rows.indexOf(currentRow);
-    if (e.key === "ArrowDown" && index < rows.length - 1) {
-        rows[index + 1].click();
-    } else if (e.key === "ArrowUp" && index > 0) {
-        rows[index - 1].click();
-    }
+    const rowNode = table.row(currentRowIndex, { search: "applied" }).node();
+    if (rowNode) $(rowNode).trigger("click");
+
+    // Cuộn tự động đến dòng đang chọn (nếu cần)
+    rowNode?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
+
 window.addEventListener("keydown", e => {
     if (e.key === "Escape") closeModal();
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") rowKeyNavigation(e);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault(); // Ngăn trang cuộn xuống
+        rowKeyNavigation(e);
+    }
 });
 
-window.onload = () => {
-    MathJax.typesetPromise?.().then(() => {
-        const first = document.querySelector("tbody tr");
-        if (first) first.click();
-    });
-};
 
 $(document).ready(function () {
-  const table = $('#questionTable').DataTable({
+    table = $('#questionTable').DataTable({
     dom: 'Bfrtip',
     buttons: [
       {
@@ -237,18 +238,21 @@ $(document).ready(function () {
 
   const imageURL = tds.eq(8).find('img').attr('src') || "";
   const data = {
-  id: tds.eq(0).text().trim(),
-  question: tds.eq(1).text().trim(),
-  answer1: tds.eq(2).text().trim(),
-  answer2: tds.eq(3).text().trim(),
-  answer3: tds.eq(4).text().trim(),
-  answer4: tds.eq(5).text().trim(),
-  correct_answer: tds.eq(6).text().trim(),
-  topic: tds.eq(7).text().trim(),
-  image: imageURL // Chỉ cần 1 thuộc tính là image
-};
+    id: tds.eq(0).text().trim(),
+    question: tds.eq(1).text().trim(),
+    answer1: tds.eq(2).text().trim(),
+    answer2: tds.eq(3).text().trim(),
+    answer3: tds.eq(4).text().trim(),
+    answer4: tds.eq(5).text().trim(),
+    correct_answer: tds.eq(6).text().trim(),
+    topic: tds.eq(7).text().trim(),
+    image: imageURL
+  };
 
+  // Cập nhật chỉ số dòng hiện tại
+  currentRowIndex = table.row(this).index();
 
+  // Gửi về form cha
   parent.postMessage({ type: "fillForm", data }, "*");
 
   const previewHtml = `
