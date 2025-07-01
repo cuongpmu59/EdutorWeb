@@ -81,24 +81,6 @@ try {
 </head>
 <body>
 
-<div id="topToolbar">
-  <div class="left-tools">
-    <label><strong>Lọc chủ đề:</strong></label>
-    <select id="filterTopicInline">
-      <option value="">-- Tất cả --</option>
-      <?php foreach ($topics as $t): ?>
-        <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
-          <?= htmlspecialchars($t) ?>
-        </option>
-      <?php endforeach; ?>
-    </select>
-
-    <label style="margin-left: 20px;"><strong>📤 Nhập Excel:</strong></label>
-    <input type="file" id="excelInput" accept=".xlsx, .xls" />
-  </div>
-  
-  <div class="right-tools" id="dt-buttons-container"></div>
-</div>
 <div id="customToolbar">
   <div class="left-group">
     <label><strong>Lọc chủ đề:</strong></label>
@@ -116,8 +98,8 @@ try {
   </div>
 
   <div class="right-group">
-    <div id="dt-buttons-container" style="display: inline-block;"></div>
-    <div id="dt-search-container" style="display: inline-block; margin-left: 15px;"></div>
+  <div id="dt-buttons-container" style="display: inline-block;"></div>
+  <div id="dt-search-container" style="display: inline-block; margin-left: 15px;"></div>
   </div>
 </div>
 
@@ -252,15 +234,14 @@ $(document).ready(function () {
 
   table = $('#questionTable').DataTable({
 
-    initComplete: function () {
-  // Di chuyển nút export
+  initComplete: function () {
   const btns = $('#questionTable_wrapper .dt-buttons').detach();
   $('#dt-buttons-container').append(btns);
 
-  // Di chuyển thanh tìm kiếm
   const searchBox = $('#questionTable_filter').detach();
   $('#dt-search-container').append(searchBox);
 }
+
 
 
   dom: 'Bfrtip',
@@ -289,10 +270,7 @@ $(document).ready(function () {
     paginate: { first: "«", last: "»", next: "›", previous: "‹" }
   },
   order: [[0, 'desc']],
-  initComplete: function () {
-    const btnContainer = $('#questionTable_wrapper .dt-buttons').detach();
-    $('#dt-buttons-container').append(btnContainer);
-  }
+  
 });
 
 
