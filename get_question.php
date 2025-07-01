@@ -283,6 +283,44 @@ $(document).ready(function () {
   });
 }); // <-- kết thúc $(document).ready
 
+document.getElementById("excelInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Dạng mảng 2 chiều
+
+        // Bỏ dòng tiêu đề nếu có
+        const dataRows = rows.filter(row => row.length >= 8 && row[0] !== "ID");
+
+        // Thêm vào DataTable và preview
+        dataRows.forEach((row, index) => {
+            const [id, question, answer1, answer2, answer3, answer4, correct, topic, image] = row;
+
+            const rowNode = table.row.add([
+                id || '', escapeHTML(question || ''),
+                escapeHTML(answer1 || ''), escapeHTML(answer2 || ''),
+                escapeHTML(answer3 || ''), escapeHTML(answer4 || ''),
+                correct || '', topic || '',
+                image ? `<img src="${image}" class="thumb" onclick="showImage('${image}')" onerror="this.style.display='none'>"` : ''
+            ]).draw().node();
+
+            // Nếu bạn muốn gửi lên server để lưu, bạn có thể gọi API tại đây
+        });
+
+        alert("Đã nhập " + dataRows.length + " câu hỏi từ Excel.");
+        this.value = ''; // Reset input
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+
 </script>
 
 <!-- MathJax -->
