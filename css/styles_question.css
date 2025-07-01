@@ -359,3 +359,42 @@
 	}
   }
 	
+  #topToolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	background: #f8f9fa;
+	border: 1px solid #ccc;
+	padding: 10px 15px;
+	margin-bottom: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  #topToolbar label {
+	margin-right: 8px;
+  }
+  
+  .left-tools {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+  }
+  
+  .right-tools .dt-button {
+	background: #007bff;
+	color: white;
+	border: none;
+	padding: 6px 12px;
+	margin-left: 5px;
+	border-radius: 5px;
+	font-size: 14px;
+	cursor: pointer;
+  }
+  .right-tools .dt-button:hover {
+	background: #0056b3;
+  }
+  
