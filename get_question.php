@@ -33,13 +33,7 @@ try {
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    
     <!-- DataTables Buttons -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
@@ -114,7 +108,7 @@ document.getElementById("filterTopicInline").addEventListener("change", function
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($questions as $q): ?>
+    <?php foreach ($rows as $q): ?>
     <tr>
       <td><?= $q['id'] ?></td>
       <td><?= htmlspecialchars($q['question']) ?></td>
@@ -124,7 +118,11 @@ document.getElementById("filterTopicInline").addEventListener("change", function
       <td><?= htmlspecialchars($q['answer4']) ?></td>
       <td><?= $q['correct_answer'] ?></td>
       <td><?= $q['topic'] ?></td>
-      <td><?= $q['image_url'] ?? '' ?></td>
+      <td>
+        <?php if (!empty($q['image_url'])): ?>
+        <img src="<?= htmlspecialchars($q['image_url']) ?>" class="thumb" onclick="showImage(this.src)">
+        <?php endif; ?>
+</td>
     </tr>
     <?php endforeach; ?>
   </tbody>
@@ -268,6 +266,7 @@ $(document).ready(function () {
   });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </body>
 </html>
