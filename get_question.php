@@ -234,45 +234,39 @@ $(document).ready(function () {
 
   // Gửi dữ liệu về form cha
   $('#questionTable tbody').on('click', 'tr', function () {
+  const tds = $(this).find("td");
 
-    const tds = $(this).find("td").map(function () {
-    return $(this).html().trim();
-    }).get();
+  const imageURL = tds.eq(8).find('img').attr('src') || ""; // Lấy src trực tiếp
 
-    if (tds.length === 0) return;
-      const imgSrcMatch = tds[8]?.match(/src=["'](.*?)["']/);
-      const imageURL = imgSrcMatch ? imgSrcMatch[1] : "";
-      const data = {
-      id: tds[0],
-      question: tds[1],
-      answer1: tds[2],
-      answer2: tds[3],
-      answer3: tds[4],
-      answer4: tds[5],
-      correct_answer: tds[6],
-      topic: tds[7],
-      image: imageURL,
-      image_url: imageURL
-      };
+  const data = {
+    id: tds.eq(0).text().trim(),
+    question: tds.eq(1).text().trim(),
+    answer1: tds.eq(2).text().trim(),
+    answer2: tds.eq(3).text().trim(),
+    answer3: tds.eq(4).text().trim(),
+    answer4: tds.eq(5).text().trim(),
+    correct_answer: tds.eq(6).text().trim(),
+    topic: tds.eq(7).text().trim(),
+    image: imageURL,
+    image_url: imageURL
+  };
 
+  parent.postMessage({ type: "fillForm", data }, "*");
 
-    // Gửi về form cha
-    parent.postMessage({ type: "fillForm", data }, "*");
+  const previewHtml = `
+    <strong>Câu hỏi:</strong><br>${escapeHTML(data.question)}<br><br>
+    <strong>Đáp án A:</strong> ${escapeHTML(data.answer1)}<br>
+    <strong>Đáp án B:</strong> ${escapeHTML(data.answer2)}<br>
+    <strong>Đáp án C:</strong> ${escapeHTML(data.answer3)}<br>
+    <strong>Đáp án D:</strong> ${escapeHTML(data.answer4)}<br><br>
+    <strong>Đáp án đúng:</strong> <span style="color:green;font-weight:bold;">${escapeHTML(data.correct_answer)}</span><br>
+    <strong>Chủ đề:</strong> ${escapeHTML(data.topic)}<br>
+    ${data.image ? `<img src="${escapeHTML(data.image)}" style="max-height:120px;margin-top:10px;border:1px solid #ccc;">` : ""}
+  `;
+  document.getElementById("previewArea").innerHTML = previewHtml;
+  MathJax.typesetPromise?.();
+});
 
-    // Hiển thị xem trước
-    const previewHtml = `
-      <strong>Câu hỏi:</strong><br>${escapeHTML(data.question)}<br><br>
-      <strong>Đáp án A:</strong> ${escapeHTML(data.answer1)}<br>
-      <strong>Đáp án B:</strong> ${escapeHTML(data.answer2)}<br>
-      <strong>Đáp án C:</strong> ${escapeHTML(data.answer3)}<br>
-      <strong>Đáp án D:</strong> ${escapeHTML(data.answer4)}<br><br>
-      <strong>Đáp án đúng:</strong> <span style="color:green;font-weight:bold;">${escapeHTML(data.correct_answer)}</span><br>
-      <strong>Chủ đề:</strong> ${escapeHTML(data.topic)}<br>
-      ${data.image ? `<img src="${escapeHTML(data.image)}" style="max-height:120px;margin-top:10px;border:1px solid #ccc;">` : ""}
-    `;
-    document.getElementById("previewArea").innerHTML = previewHtml;
-    MathJax.typesetPromise?.();
-  });
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
