@@ -231,21 +231,27 @@ $(document).ready(function () {
 
   // Gửi dữ liệu về form cha
   $('#questionTable tbody').on('click', 'tr', function () {
-    const row = table.row(this).data();
-    if (!row) return;
 
-    const data = {
-      id: row[0],
-      question: row[1],
-      answer1: row[2],
-      answer2: row[3],
-      answer3: row[4],
-      answer4: row[5],
-      correct_answer: row[6],
-      topic: row[7],
-      image: row[8]?.match(/src=["'](.*?)["']/)?.[1] || "",
-      image_url: row[8]?.match(/src=["'](.*?)["']/)?.[1] || ""
-    };
+    const tds = $(this).find("td").map(function () {
+    return $(this).html().trim();
+    }).get();
+
+    if (tds.length === 0) return;
+      const imgSrcMatch = tds[8]?.match(/src=["'](.*?)["']/);
+      const imageURL = imgSrcMatch ? imgSrcMatch[1] : "";
+      const data = {
+      id: tds[0],
+      question: tds[1],
+      answer1: tds[2],
+      answer2: tds[3],
+      answer3: tds[4],
+      answer4: tds[5],
+      correct_answer: tds[6],
+      topic: tds[7],
+      image: imageURL,
+      image_url: imageURL
+      };
+
 
     // Gửi về form cha
     parent.postMessage({ type: "fillForm", data }, "*");
