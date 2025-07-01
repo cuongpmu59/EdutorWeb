@@ -178,7 +178,7 @@ function closeModal() {
     document.getElementById("imageModal").style.display = "none";
 }
 
-ffunction rowKeyNavigation(e) {
+function rowKeyNavigation(e) {
     const rowCount = table.rows({ search: "applied" }).count();
     if (rowCount === 0) return;
 
@@ -187,10 +187,26 @@ ffunction rowKeyNavigation(e) {
     else if (e.key === "ArrowUp" && currentRowIndex > 0) currentRowIndex--;
 
     const rowNode = table.row(currentRowIndex, { search: "applied" }).node();
-    if (rowNode) $(rowNode).trigger("click");
+    if (!rowNode) return;
 
-    // Cuộn tự động đến dòng đang chọn (nếu cần)
-    rowNode?.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Tự tạo dữ liệu như khi click
+    const tds = $(rowNode).find("td");
+    const imageURL = tds.eq(8).find('img').attr('src') || "";
+    const data = {
+        id: tds.eq(0).text().trim(),
+        question: tds.eq(1).text().trim(),
+        answer1: tds.eq(2).text().trim(),
+        answer2: tds.eq(3).text().trim(),
+        answer3: tds.eq(4).text().trim(),
+        answer4: tds.eq(5).text().trim(),
+        correct_answer: tds.eq(6).text().trim(),
+        topic: tds.eq(7).text().trim(),
+        image: imageURL
+    };
+
+    selectRow(rowNode, data);
+
+    rowNode.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 window.addEventListener("keydown", e => {
@@ -250,8 +266,10 @@ $(document).ready(function () {
   };
 
   // Cập nhật chỉ số dòng hiện tại
-  currentRowIndex = table.row(this).index();
-
+  if (first) {
+    first.click();
+    currentRowIndex = table.row(first, { search: 'applied' }).index();
+}
   // Gửi về form cha
   parent.postMessage({ type: "fillForm", data }, "*");
 
