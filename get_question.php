@@ -6,16 +6,18 @@ header("X-Frame-Options: SAMEORIGIN");
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excelData'])) {
     $data = json_decode($_POST['excelData'], true);
     if (is_array($data)) {
-        $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        foreach ($data as $row) {
-            $stmt->execute([
-                $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '', $row['answer3'] ?? '',
-                $row['answer4'] ?? '', $row['correct_answer'] ?? '', $row['topic'] ?? '', $row['image'] ?? ''
-            ]);
-        }
-        echo "OK";
-        exit;
-    }
+      $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+      foreach ($data as $row) {
+          if (empty($row['question']) || empty($row['correct_answer'])) continue;
+          $stmt->execute([
+              $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '',
+              $row['answer3'] ?? '', $row['answer4'] ?? '', $row['correct_answer'] ?? '',
+              $row['topic'] ?? '', $row['image'] ?? ''
+          ]);
+      }
+      echo "OK";
+      exit;
+  }
 }
 
 // Lấy danh sách câu hỏi
@@ -223,10 +225,12 @@ $(document).ready(() => {
       }));
 
       // Gửi lên server lưu vào CSDL
-      $.post("get_question.php", { excelData: JSON.stringify(formatted) }, function (res) {
-        if (res === "OK") location.reload();
-        else alert("Lỗi khi lưu dữ liệu.");
-      });
+      $.post("get_question.php", { excelData: JSON.stringify(formatted) })
+      .done(res => {
+      if (res.trim() === "OK") location.reload();
+      else alert("Lỗi khi lưu dữ liệu:\n" + res);
+      })
+      .fail(err => alert("Không kết nối được đến máy chủ."));
     };
     reader.readAsBinaryString(file);
   });
