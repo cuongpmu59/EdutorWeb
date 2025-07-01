@@ -81,31 +81,25 @@ try {
 </head>
 <body>
 
-<!-- Bộ lọc chủ đề -->
-<div style="margin:10px 0;">
-    <label for="filterTopicInline" style="margin-left: 15px;"><strong>Lọc theo chủ đề:</strong></label>
+<div id="topToolbar">
+  <div class="left-tools">
+    <label><strong>Lọc chủ đề:</strong></label>
     <select id="filterTopicInline">
-        <option value="">-- Tất cả --</option>
-        <?php foreach ($topics as $t): ?>
-            <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
-                <?= htmlspecialchars($t) ?>
-            </option>
-        <?php endforeach; ?>
+      <option value="">-- Tất cả --</option>
+      <?php foreach ($topics as $t): ?>
+        <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
+          <?= htmlspecialchars($t) ?>
+        </option>
+      <?php endforeach; ?>
     </select>
+
+    <label style="margin-left: 20px;"><strong>📤 Nhập Excel:</strong></label>
+    <input type="file" id="excelInput" accept=".xlsx, .xls" />
+  </div>
+  
+  <div class="right-tools" id="dt-buttons-container"></div>
 </div>
 
-<script>
-document.getElementById("filterTopicInline").addEventListener("change", function () {
-    const topic = this.value;
-    location.href = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
-});
-</script>
-
-<!-- Nhập Excel -->
-<div style="margin: 10px 0;">
-  <label><strong>📤 Nhập Excel:</strong></label>
-  <input type="file" id="excelInput" accept=".xlsx, .xls" />
-</div>
 
 <!-- Bảng câu hỏi -->
 <table id="questionTable">
