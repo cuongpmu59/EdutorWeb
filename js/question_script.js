@@ -15,7 +15,7 @@ function refreshIframe() {
 }
 
 const containsMath = text => /(\\(.+?\\))|(\\[.+?\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
-const wrapMath = text => containsMath(text) ? text : `\(${text}\)`;
+const wrapMath = text => containsMath(text) ? text : `\\(${text}\\)`;
 
 const escapeHtml = str => str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
 
@@ -26,6 +26,9 @@ function debounceRender(el) {
     if (window.MathJax && containsMath(el.innerHTML)) {
       MathJax.typesetPromise([el]);
     }
+  }, 300); // <-- bạn quên đóng ở đây
+}
+  
   
 
 function renderMathPage() {
@@ -338,13 +341,12 @@ function validateInput(id) {
   const preview = $("preview_" + id);
 
   if (!isValidMath(el.value)) {
-    preview.style.border = "1px solid red";
+    preview.classList.add("invalid-math");
     preview.title = "Công thức không hợp lệ";
-    // Gợi ý: Thêm icon cảnh báo
-    preview.innerHTML += '<span style="color:red;"> ⚠️</span>';
   } else {
-    preview.style.border = "";
+    preview.classList.remove("invalid-math");
     preview.title = "";
   }
+  
 };
 
