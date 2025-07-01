@@ -397,21 +397,22 @@
   .right-tools .dt-button:hover {
 	background: #0056b3;
   }
+
   #customToolbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 10px;
-	background: #f8f9fa;
-	border: 1px solid #ccc;
-	padding: 10px 15px;
-	margin-bottom: 10px;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #f8f9fa;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
   
-  .left-group, .right-group {
+.left-group, .right-group {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -432,8 +433,7 @@
   }
   
   #dt-search-container input[type="search"] {
-	padding: 5px 10px;
+	padding: 6px 10px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
-  }
-	
+  }	
