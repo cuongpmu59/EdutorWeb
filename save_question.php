@@ -20,7 +20,27 @@ $correct = get_post('correct_answer');
 $image_url = get_post('image_url');
 $delete_image = get_post('delete_image');
 
-if ($delete_image === '1') {
+if ($delete_image === '1' && $id) {
+    require 'vendor/autoload.php';
+
+    \Cloudinary\Configuration\Configuration::instance([
+        'cloud' => [
+            'cloud_name' => getenv('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => getenv('CLOUDINARY_API_KEY'),
+            'api_secret' => getenv('CLOUDINARY_API_SECRET'),
+        ]
+    ]);
+
+    try {
+        $publicId = "pic_$id";
+        $result = \Cloudinary\Api\Upload::destroy($publicId);
+        if (($result['result'] ?? '') !== 'ok') {
+            error_log("⚠️ Không xoá được ảnh Cloudinary: $publicId");
+        }
+    } catch (Exception $e) {
+        error_log("❌ Lỗi xoá ảnh Cloudinary: " . $e->getMessage());
+    }
+
     $image_url = '';
 }
 
