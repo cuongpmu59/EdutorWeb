@@ -1,8 +1,9 @@
 <?php
 require 'db_connection.php';
+require 'vendor/autoload.php'; // Cloudinary SDK
 header("Content-Type: application/json; charset=utf-8");
 
-// ==== Lấy và kiểm tra ID ====
+// ===== Lấy ID =====
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 if ($id <= 0) {
     http_response_code(400);
@@ -13,13 +14,13 @@ if ($id <= 0) {
     exit;
 }
 
-// ==== Kiểm tra tồn tại câu hỏi ====
-$stmt = $conn->prepare("SELECT id FROM questions WHERE id = ?");
+// ===== Lấy ảnh hiện tại =====
+$image_url = '';
+$stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows === 0) {
+$stmt->bind_result($image_url);
+if (!$stmt->fetch()) {
     http_response_code(404);
     echo json_encode([
         'status' => 'error',
@@ -30,7 +31,27 @@ if ($stmt->num_rows === 0) {
 }
 $stmt->close();
 
-// ==== Tiến hành xoá ====
+// ===== Xoá ảnh trên Cloudinary nếu có =====
+if (!empty($image_url)) {
+    // Thiết lập thông tin Cloudinary
+    \Cloudinary\Configuration\Configuration::instance([
+        'cloud' => [
+            'cloud_name' => 'dbdf2gwc9',
+            'api_key'    => '451298475188791',
+            'api_secret' => '*****************',
+        ]
+    ]);
+
+    try {
+        $publicId = "pic_$id";
+        $result = \Cloudinary\Api\Upload::destroy($publicId);
+        // Có thể kiểm tra: $result['result'] === 'ok'
+    } catch (Exception $e) {
+        error_log("❌ Lỗi xoá ảnh Cloudinary: " . $e->getMessage());
+    }
+}
+
+// ===== Xoá câu hỏi =====
 try {
     $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
     $stmt->bind_param("i", $id);
