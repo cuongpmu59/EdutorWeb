@@ -1,6 +1,6 @@
 <?php
 require 'db_connection.php';
-require 'vendor/autoload.php'; // Cloudinary SDK
+require 'vendor/autoload.php'; // Gọi Cloudinary SDK
 header("Content-Type: application/json; charset=utf-8");
 
 // ===== Lấy ID =====
@@ -14,58 +14,59 @@ if ($id <= 0) {
     exit;
 }
 
-// ===== Lấy ảnh hiện tại =====
+// ===== Lấy ảnh hiện tại từ DB =====
 $image_url = '';
-$stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$stmt->bind_result($image_url);
-if (!$stmt->fetch()) {
-    http_response_code(404);
+try {
+    $stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
+    $stmt->execute([$id]);
+    $image_url = $stmt->fetchColumn();
+
+    if (!$image_url) {
+        $image_url = '';
+    }
+} catch (PDOException $e) {
+    http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Không tìm thấy câu hỏi.'
+        'message' => 'Lỗi khi truy vấn ảnh: ' . $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
-    $stmt->close();
     exit;
 }
-$stmt->close();
 
 // ===== Xoá ảnh trên Cloudinary nếu có =====
 if (!empty($image_url)) {
-    // Thiết lập thông tin Cloudinary
     \Cloudinary\Configuration\Configuration::instance([
         'cloud' => [
             'cloud_name' => 'dbdf2gwc9',
             'api_key'    => '451298475188791',
-            'api_secret' => '*****************',
+            'api_secret' => '*********************************' 
         ]
     ]);
 
     try {
         $publicId = "pic_$id";
         $result = \Cloudinary\Api\Upload::destroy($publicId);
-        // Có thể kiểm tra: $result['result'] === 'ok'
+        if (($result['result'] ?? '') !== 'ok') {
+            error_log("⚠️ Không xoá được ảnh trên Cloudinary: pic_$id");
+        }
     } catch (Exception $e) {
-        error_log("❌ Lỗi xoá ảnh Cloudinary: " . $e->getMessage());
+        error_log("❌ Lỗi khi xoá ảnh Cloudinary: " . $e->getMessage());
     }
 }
 
-// ===== Xoá câu hỏi =====
+// ===== Xoá câu hỏi trong DB =====
 try {
     $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
+    $stmt->execute([$id]);
 
     echo json_encode([
         'status' => 'success',
         'message' => '✅ Đã xoá câu hỏi thành công.'
     ], JSON_UNESCAPED_UNICODE);
-} catch (Exception $e) {
+} catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Lỗi khi xoá: ' . $e->getMessage()
+        'message' => '❌ Lỗi khi xoá câu hỏi: ' . $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
