@@ -15,7 +15,7 @@ function refreshIframe() {
 }
 
 const containsMath = text => /(\\(.+?\\))|(\\[.+?\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
-const wrapMath = text => containsMath(text) ? text : `\\(${text}\\)`;
+const wrapMath = text => containsMath(text) ? text : `\\(${text})\\`;
 
 const escapeHtml = str => str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
 
@@ -26,7 +26,7 @@ function debounceRender(el) {
     if (window.MathJax && containsMath(el.innerHTML)) {
       MathJax.typesetPromise([el]);
     }
-  }, 300); // <-- bạn quên đóng ở đây
+  }, 300); 
 }
   
   
@@ -44,7 +44,7 @@ function renderPreview(id) {
   validateInput(id);  // <- thêm dòng này
 }
 
-
+let previewTimeout;
 function debounceFullPreview() {
   clearTimeout(previewTimeout);
   previewTimeout = setTimeout(() => {
