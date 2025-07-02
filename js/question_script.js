@@ -251,19 +251,45 @@ function resetForm() {
 function deleteImage() {
   if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
 
-  const imgPreview = document.getElementById("imagePreview");
-  const imageInput = document.getElementById("image");
-  const imageUrlInput = document.getElementById("image_url");
+  const id = document.getElementById("question_id").value.trim();
+  if (!id) {
+    alert("Bạn cần chọn một câu hỏi đã có để xoá ảnh.");
+    return;
+  }
 
-  imgPreview.style.display = "none";
-  imgPreview.src = "";
-  imageInput.value = "";
-  imageUrlInput.value = "";
-  imageInput.setAttribute("data-delete", "1");
-  document.getElementById("deleteImageBtn").style.display = "none";
-  alert("Đã xoá ảnh minh hoạ khỏi form. Khi lưu sẽ cập nhật vào cơ sở dữ liệu.");
+  const publicId = `pic_${id}`;
+
+  // Gửi yêu cầu xoá ảnh trên Cloudinary
+  fetch("delete_cloudinary_image.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ public_id: publicId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Đã xoá ảnh khỏi Cloudinary.");
+
+      // Xoá ảnh khỏi form
+      const imgPreview = document.getElementById("imagePreview");
+      const imageInput = document.getElementById("image");
+      const imageUrlInput = document.getElementById("image_url");
+      const deleteImageBtn = document.getElementById("deleteImageBtn");
+
+      imgPreview.style.display = "none";
+      imgPreview.src = "";
+      imageInput.value = "";
+      imageUrlInput.value = "";
+      imageInput.setAttribute("data-delete", "1");
+      deleteImageBtn.style.display = "none";
+    } else {
+      alert("Không thể xoá ảnh: " + data.message);
+    }
+  })
+  .catch(err => {
+    alert("Lỗi khi xoá ảnh: " + err.message);
+  });
 }
-
 
 function isValidMath(text) {
   if (!text.trim()) return true;
