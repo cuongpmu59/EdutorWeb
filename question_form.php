@@ -502,6 +502,16 @@ async function handleSaveQuestion(isEdit) {
       if (!updateImageData.success) throw new Error("Không cập nhật được ảnh.");
 
       formData.set("image_url", uploadData.secure_url);
+
+      // ✅ CẬP NHẬT lại toàn bộ nếu là chỉnh sửa
+      if (isEdit) {
+        const updateRes = await fetch("update_question.php", {
+          method: "POST",
+          body: formData
+        });
+        const updateData = await updateRes.json();
+        if (!updateData.success) throw new Error(updateData.message || "Lỗi cập nhật sau khi upload ảnh.");
+      }
     }
 
     alert(isEdit ? "Đã cập nhật câu hỏi." : "Đã thêm câu hỏi.");
@@ -513,6 +523,7 @@ async function handleSaveQuestion(isEdit) {
     buttons.forEach(btn => btn.disabled = false);
   }
 }
+
 function deleteImage() {
   if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
 
