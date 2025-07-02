@@ -113,5 +113,36 @@
       }
     });
   </script>
+
+function debounceFullPreview() {
+  clearTimeout(window._previewTimer);
+  window._previewTimer = setTimeout(() => {
+    const q = document.getElementById("question").value;
+    const a = ["answer1", "answer2", "answer3", "answer4"].map(id => document.getElementById(id).value);
+    const correct = document.getElementById("correct_answer").value;
+
+    const content = `
+      <p><strong>Chủ đề:</strong> ${document.getElementById("topic").value}</p>
+      <p><strong>Câu hỏi:</strong> ${q}</p>
+      ${a.map((text, i) => `<p><strong>Đáp án ${String.fromCharCode(65 + i)}:</strong> ${text}</p>`).join("")}
+      <p><strong>Đáp án đúng:</strong> ${correct}</p>
+    `;
+    document.getElementById("fullPreview").innerHTML = content;
+
+    if (window.MathJax?.typesetPromise) {
+      MathJax.typesetPromise([document.getElementById("fullPreview")]);
+    }
+  }, 300);
+}
+
+function deleteQuestion() {
+  if (!confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
+
+  const id = document.getElementById("question_id").value;
+  if (!id) return alert("Vui lòng chọn câu hỏi để xoá.");
+  
+  // Xử lý xoá ở đây (AJAX hoặc fetch)
+}
+
 </body>
 </html>
