@@ -248,6 +248,23 @@ function resetForm() {
   formChanged = false;
 }
 
+function deleteImage() {
+  if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
+
+  const imgPreview = document.getElementById("imagePreview");
+  const imageInput = document.getElementById("image");
+  const imageUrlInput = document.getElementById("image_url");
+
+  imgPreview.style.display = "none";
+  imgPreview.src = "";
+  imageInput.value = "";
+  imageUrlInput.value = "";
+  imageInput.setAttribute("data-delete", "1");
+  document.getElementById("deleteImageBtn").style.display = "none";
+  alert("Đã xoá ảnh minh hoạ khỏi form. Khi lưu sẽ cập nhật vào cơ sở dữ liệu.");
+}
+
+
 function isValidMath(text) {
   if (!text.trim()) return true;
   try {
