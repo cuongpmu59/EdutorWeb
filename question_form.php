@@ -325,15 +325,8 @@
       }, 300);
     }
 
-    function deleteQuestion() {
-      if (!confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
-
-      const id = document.getElementById("question_id").value;
-      if (!id) return alert("Vui lòng chọn câu hỏi để xoá.");
-
-      // TODO: Thêm xử lý AJAX hoặc fetch để xoá từ cơ sở dữ liệu
-    }
-    function exportToPDF() {
+    
+  function exportToPDF() {
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "export_exam_pdf.php";
@@ -358,6 +351,135 @@
   form.submit();
   form.remove();
 }
+function validateForm() {
+  const requiredFields = ["topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
+  for (const id of requiredFields) {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      alert(`Vui lòng nhập đầy đủ thông tin: ${id}`);
+      el.focus();
+      return false;
+    }
+  }
+  return true;
+}
+function deleteQuestion() {
+  const id = document.getElementById("question_id").value;
+  if (!id) return alert("Vui lòng chọn câu hỏi để xoá.");
+  if (!confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
+
+  fetch("delete_question.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Đã xoá câu hỏi.");
+      resetForm();
+      refreshIframe();
+    } else {
+      alert("Lỗi khi xoá câu hỏi.");
+    }
+  });
+}
+function togglePreviewBox(checkboxId, previewId) {
+  const box = document.getElementById(previewId);
+  const checked = document.getElementById(checkboxId).checked;
+  box.style.display = checked ? "block" : "none";
+  if (checked) debounceFullPreview();
+}
+function togglePreview() {
+  const show = document.getElementById("togglePreview").checked;
+  document.querySelectorAll(".latex-preview").forEach(div => {
+    div.style.display = show ? "block" : "none";
+  });
+}
+function refreshIframe() {
+  const iframe = document.getElementById("questionIframe");
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.location.reload();
+  }
+}
+
+function resetForm() {
+  document.getElementById("questionForm").reset();
+  document.getElementById("question_id").value = "";
+  document.getElementById("imagePreview").style.display = "none";
+  document.getElementById("imagePreview").src = "";
+  document.getElementById("deleteImageLabel").style.display = "none";
+  togglePreview();  // cập nhật lại trạng thái preview
+  debounceFullPreview(); // cập nhật lại preview toàn bộ nếu cần
+}
+// Hàm chính để xử lý lưu thêm/sửa
+async function handleSaveQuestion(isEdit) {
+  const id = $("question_id").value.trim();
+  const formData = getFormData();
+  formData.set("delete_image", $("delete_image").checked ? "1" : "0");
+
+  for (let field of ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"]) {
+    if (!formData.get(field)?.trim()) return alert("Vui lòng điền đầy đủ thông tin.");
+  }
+
+  const file = formData.get("image");
+  if (file?.size > 0) {
+    if (!file.type.startsWith("image/")) return alert("Chỉ chấp nhận ảnh.");
+    if (file.size > 2 * 1024 * 1024) return alert("Ảnh quá lớn. < 2MB thôi.");
+  }
+
+  const buttons = document.querySelectorAll(".form-right button");
+  buttons.forEach(btn => btn.disabled = true);
+
+  try {
+    // Upload ảnh nếu có
+    if (file?.size > 0) {
+      const upForm = new FormData();
+      upForm.append("file", file);
+      upForm.append("upload_preset", "quiz_photo");
+
+      const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+        method: "POST",
+        body: upForm
+      });
+
+      const data = await res.json();
+      if (!data.secure_url) {
+        throw new Error("Lỗi upload ảnh: " + (data.error?.message || "Không rõ nguyên nhân."));
+      }else{
+        formData.set("image_url", data.secure_url);
+      }
+    }
+
+    const api = isEdit ? "update_question.php" : "insert_question.php";
+    const res = await fetch(api, {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Lỗi không xác định");
+
+    alert(result.message);
+
+    // Đặt lại form nếu thêm mới, nếu sửa thì chỉ làm mới preview
+    if (!isEdit) {
+      resetForm();
+    } else {
+      resetPreview();
+    }
+
+    refreshIframe();
+    $("questionIframe").scrollIntoView({ behavior: "smooth" });
+    formChanged = false;
+
+  } catch (e) {
+    alert("❌ " + (e.message || "Lỗi khi lưu câu hỏi."));
+  } finally {
+    buttons.forEach(btn => btn.disabled = false);
+  }
+}
+
 
   </script>
 </body>
