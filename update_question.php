@@ -20,6 +20,26 @@ $image_url     = get_post('image_url');
 $delete_image  = get_post('delete_image');
 
 if ($delete_image === '1') {
+    // ==== Xóa ảnh khỏi Cloudinary ====
+    require 'vendor/autoload.php';
+
+    \Cloudinary\Configuration\Configuration::instance([
+      'cloud' => [
+        'cloud_name' => 'dbdf2gwc9',
+        'api_key'    => 'YOUR_API_KEY',
+        'api_secret' => 'YOUR_API_SECRET',
+      ]
+    ]);
+
+    try {
+        $publicId = "pic_$id";
+        $result = \Cloudinary\Api\Upload::destroy($publicId);
+        // Có thể ghi log nếu cần: $result['result'] === 'ok'
+    } catch (Exception $e) {
+        // Không dừng script nếu lỗi xoá ảnh
+        error_log("Lỗi xoá ảnh Cloudinary: " . $e->getMessage());
+    }
+
     $image_url = '';
 }
 
