@@ -26,8 +26,8 @@ if ($delete_image === '1') {
     \Cloudinary\Configuration\Configuration::instance([
       'cloud' => [
         'cloud_name' => 'dbdf2gwc9',
-        'api_key'    => 'YOUR_API_KEY',
-        'api_secret' => 'YOUR_API_SECRET',
+        'api_key'    => '451298475188791',
+        'api_secret' => 'PK2QC',
       ]
     ]);
 
