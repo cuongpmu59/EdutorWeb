@@ -236,10 +236,8 @@
         <small id="imageFileName" class="text-muted"></small>
         <img id="imagePreview">
         <input type="hidden" name="image_url" id="image_url">
+        <button type="button" id="deleteImageBtn" class="delete-btn" style="display:none;" onclick="deleteImage()">🗑️ Xoá ảnh minh hoạ</button>
 
-        <label id="deleteImageLabel" style="display:none;">
-          <input type="checkbox" id="delete_image"> Xóa ảnh minh hoạ
-        </label>
       </div>
 
       <div class="form-right">
@@ -302,7 +300,8 @@
         imgPreview.style.display = hasImg ? "block" : "none";
         imgPreview.src = hasImg || "";
 
-        document.getElementById("deleteImageLabel").style.display = hasImg ? "inline-block" : "none";
+        document.getElementById("deleteImageBtn").style.display = hasImg ? "inline-block" : "none";
+        document.getElementById("image").removeAttribute("data-delete");
 
         ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
         formChanged = false;
@@ -413,16 +412,18 @@ function resetForm() {
   document.getElementById("question_id").value = "";
   document.getElementById("imagePreview").style.display = "none";
   document.getElementById("imagePreview").src = "";
-  document.getElementById("deleteImageLabel").style.display = "none";
-  togglePreview();  // cập nhật lại trạng thái preview
-  debounceFullPreview(); // cập nhật lại preview toàn bộ nếu cần
+  document.getElementById("deleteImageBtn").style.display = "none";
+  togglePreview();
+  debounceFullPreview();
+  document.getElementById("image").removeAttribute("data-delete");
 }
+
 
 // Hàm chính để xử lý lưu thêm/sửa
 async function handleSaveQuestion(isEdit) {
   const id = document.getElementById("question_id").value.trim();
   const formData = new FormData(document.getElementById("questionForm"));
-  formData.set("delete_image", document.getElementById("delete_image").checked ? "1" : "0");
+  formData.set("delete_image", document.getElementById("image").getAttribute("data-delete") === "1" ? "1" : "0");
 
   const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
   for (let field of requiredFields) {
@@ -511,6 +512,25 @@ async function handleSaveQuestion(isEdit) {
   } finally {
     buttons.forEach(btn => btn.disabled = false);
   }
+}
+function deleteImage() {
+  if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
+
+  // Xoá ảnh khỏi form
+  const imgPreview = document.getElementById("imagePreview");
+  const imageInput = document.getElementById("image");
+  const imageUrlInput = document.getElementById("image_url");
+  const deleteImageBtn = document.getElementById("deleteImageBtn");
+
+  imgPreview.style.display = "none";
+  imgPreview.src = "";
+  imageInput.value = "";
+  imageUrlInput.value = "";
+  imageInput.setAttribute("data-delete", "1");
+
+  deleteImageBtn.style.display = "none";
+
+  alert("Đã xoá ảnh khỏi biểu mẫu. Khi bạn lưu, ảnh sẽ được xoá khỏi hệ thống.");
 }
 
   </script>
