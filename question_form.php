@@ -412,14 +412,23 @@ function resetForm() {
   togglePreview();  // cập nhật lại trạng thái preview
   debounceFullPreview(); // cập nhật lại preview toàn bộ nếu cần
 }
+
 // Hàm chính để xử lý lưu thêm/sửa
 async function handleSaveQuestion(isEdit) {
   const id = $("question_id").value.trim();
   const formData = getFormData();
   formData.set("delete_image", $("delete_image").checked ? "1" : "0");
+  async function handleSaveQuestion(isEdit) {
+  const id = document.getElementById("question_id").value.trim();
+  const formData = new FormData(document.getElementById("questionForm"));
+  formData.set("delete_image", document.getElementById("delete_image").checked ? "1" : "0");
 
-  for (let field of ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"]) {
-    if (!formData.get(field)?.trim()) return alert("Vui lòng điền đầy đủ thông tin.");
+  const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
+  for (let field of requiredFields) {
+    if (!formData.get(field)?.trim()) {
+      alert(`Vui lòng nhập đầy đủ thông tin: ${field}`);
+      return;
+    }
   }
 
   const file = formData.get("image");
@@ -432,54 +441,76 @@ async function handleSaveQuestion(isEdit) {
   buttons.forEach(btn => btn.disabled = true);
 
   try {
-    // Upload ảnh nếu có
-    if (file?.size > 0) {
-      const upForm = new FormData();
-      upForm.append("file", file);
-      upForm.append("upload_preset", "quiz_photo");
+    let questionId = id;
 
-      const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+    // THÊM MỚI không có ảnh
+    if (!isEdit && (!file || file.size === 0)) {
+      const res = await fetch("insert_question.php", {
         method: "POST",
-        body: upForm
+        body: formData
       });
-
       const data = await res.json();
-      if (!data.secure_url) {
-        throw new Error("Lỗi upload ảnh: " + (data.error?.message || "Không rõ nguyên nhân."));
-      }else{
-        formData.set("image_url", data.secure_url);
+      if (!data.success || !data.id) throw new Error(data.message || "Lỗi tạo câu hỏi.");
+      questionId = data.id;
+    }
+
+    // SỬA không có ảnh
+    if (isEdit && (!file || file.size === 0)) {
+      const res = await fetch("update_question.php", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Lỗi cập nhật câu hỏi.");
+    }
+
+    // CÓ ẢNH (thêm hoặc sửa đều dùng chung logic)
+    if (file?.size > 0) {
+      // Nếu thêm mới => insert trước để lấy ID
+      if (!isEdit) {
+        const res = await fetch("insert_question.php", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (!data.success || !data.id) throw new Error(data.message || "Lỗi tạo câu hỏi.");
+        questionId = data.id;
+        formData.set("id", questionId);
       }
+
+      // Upload ảnh lên Cloudinary
+      const uploadForm = new FormData();
+      uploadForm.append("file", file);
+      uploadForm.append("upload_preset", "quiz_photo");
+      uploadForm.append("public_id", `pic_${questionId}`);
+
+      const uploadRes = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+        method: "POST",
+        body: uploadForm
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadData.secure_url) throw new Error("Lỗi upload ảnh: " + (uploadData.error?.message || "Không rõ."));
+
+      const updateImageRes = await fetch("update_image_url.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: questionId, image_url: uploadData.secure_url })
+      });
+      const updateImageData = await updateImageRes.json();
+      if (!updateImageData.success) throw new Error("Không cập nhật được ảnh.");
+
+      formData.set("image_url", uploadData.secure_url);
     }
 
-    const api = isEdit ? "update_question.php" : "insert_question.php";
-    const res = await fetch(api, {
-      method: "POST",
-      body: formData
-    });
-
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.message || "Lỗi không xác định");
-
-    alert(result.message);
-
-    // Đặt lại form nếu thêm mới, nếu sửa thì chỉ làm mới preview
-    if (!isEdit) {
-      resetForm();
-    } else {
-      resetPreview();
-    }
-
+    alert(isEdit ? "Đã cập nhật câu hỏi." : "Đã thêm câu hỏi.");
+    resetForm();
     refreshIframe();
-    $("questionIframe").scrollIntoView({ behavior: "smooth" });
-    formChanged = false;
-
-  } catch (e) {
-    alert("❌ " + (e.message || "Lỗi khi lưu câu hỏi."));
+  } catch (err) {
+    alert("Lỗi: " + err.message);
   } finally {
     buttons.forEach(btn => btn.disabled = false);
   }
 }
-
 
   </script>
 </body>
