@@ -57,10 +57,13 @@ try {
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$topic, $question, $image_url, $answer1, $answer2, $answer3, $answer4, $correct]);
 
+    $newId = $conn->lastInsertId();
+
     http_response_code(200);
     echo json_encode([
         'status' => 'success',
-        'message' => '✅ Đã thêm câu hỏi mới.'
+        'message' => '✅ Đã thêm câu hỏi mới.',
+        'id' => $newId
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
