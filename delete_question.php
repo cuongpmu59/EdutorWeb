@@ -39,7 +39,7 @@ if (!empty($image_url)) {
         'cloud' => [
             'cloud_name' => 'dbdf2gwc9',
             'api_key'    => '451298475188791',
-            'api_secret' => '*********************************' 
+            'api_secret' => 'PK2QC' 
         ]
     ]);
 
