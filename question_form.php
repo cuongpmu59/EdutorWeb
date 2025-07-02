@@ -254,15 +254,20 @@
       </div>
     </div>
 
-    <label style="margin-top:15px; display:inline-block;">
-      <input type="checkbox" id="showPreview"
-        onchange="togglePreviewBox('showPreview', 'fullPreviewBox'); debounceFullPreview()">
-      Xem trước toàn bộ
-    </label>
-    <div id="fullPreviewBox" class="full-preview" style="display: none;">
-      <h5>Xem trước toàn bộ:</h5>
-      <div id="fullPreview" class="full-preview"></div>
-    </div>
+    <div style="margin-top:15px;">
+  <label style="display:inline-block;">
+    <input type="checkbox" id="showPreview"
+      onchange="togglePreviewBox('showPreview', 'fullPreviewBox'); debounceFullPreview()">
+    Xem trước toàn bộ
+  </label>
+
+  <div id="fullPreviewBox" class="full-preview" style="display: none;">
+    <h5>Xem trước toàn bộ:</h5>
+    <div id="fullPreview" class="full-preview"></div>
+  </div>
+  </div>
+
+
   </form>
 
   <h3>Danh sách câu hỏi</h3>
