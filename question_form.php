@@ -415,10 +415,6 @@ function resetForm() {
 
 // Hàm chính để xử lý lưu thêm/sửa
 async function handleSaveQuestion(isEdit) {
-  const id = $("question_id").value.trim();
-  const formData = getFormData();
-  formData.set("delete_image", $("delete_image").checked ? "1" : "0");
-  async function handleSaveQuestion(isEdit) {
   const id = document.getElementById("question_id").value.trim();
   const formData = new FormData(document.getElementById("questionForm"));
   formData.set("delete_image", document.getElementById("delete_image").checked ? "1" : "0");
