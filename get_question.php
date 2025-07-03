@@ -2,25 +2,25 @@
 require 'db_connection.php';
 header("X-Frame-Options: SAMEORIGIN");
 
-// Xử lý nếu có dữ liệu từ Excel gửi lên
+// ========== Nhập từ Excel ==========
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excelData'])) {
     $data = json_decode($_POST['excelData'], true);
     if (is_array($data)) {
-      $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-      foreach ($data as $row) {
-          if (empty($row['question']) || empty($row['correct_answer'])) continue;
-          $stmt->execute([
-              $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '',
-              $row['answer3'] ?? '', $row['answer4'] ?? '', $row['correct_answer'] ?? '',
-              $row['topic'] ?? '', $row['image'] ?? ''
-          ]);
-      }
-      echo "OK";
-      exit;
-  }
+        $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        foreach ($data as $row) {
+            if (empty($row['question']) || empty($row['correct_answer'])) continue;
+            $stmt->execute([
+                $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '',
+                $row['answer3'] ?? '', $row['answer4'] ?? '', $row['correct_answer'] ?? '',
+                $row['topic'] ?? '', $row['image'] ?? ''
+            ]);
+        }
+        echo "OK";
+        exit;
+    }
 }
 
-// Lấy danh sách câu hỏi
+// ========== Lấy danh sách câu hỏi ==========
 $topics = [];
 try {
     $stmtTopics = $conn->query("SELECT DISTINCT topic FROM questions WHERE topic IS NOT NULL AND topic != '' ORDER BY topic");
@@ -97,13 +97,7 @@ try {
       <td><?= $q['topic'] ?></td>
       <td>
         <?php if (!empty($q['image'])): ?>
-          <?php
-          $img = $q['image'];
-          $imgSrc = (str_starts_with($img, 'http') || str_starts_with($img, '//'))
-          ? $img
-          : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$img}";
-          ?>
-<img src="<?= htmlspecialchars($imgSrc) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
+          <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
         <?php endif; ?>
       </td>
     </tr>
@@ -145,6 +139,7 @@ function selectRow(row, data) {
   `;
   MathJax.typesetPromise?.();
 }
+
 function showImage(src) {
   document.getElementById("modalImage").src = src;
   document.getElementById("imageModal").style.display = "flex";
@@ -152,6 +147,7 @@ function showImage(src) {
 function closeModal() {
   document.getElementById("imageModal").style.display = "none";
 }
+
 function rowKeyNavigation(e) {
   const rowCount = table.rows({ search: "applied" }).count();
   if (rowCount === 0) return;
@@ -232,15 +228,13 @@ $(document).ready(() => {
 
       // Gửi lên server lưu vào CSDL
       $.post("get_question.php", { excelData: JSON.stringify(formatted) })
-      .done(res => {
-      if (res.trim() === "OK") {
-        alert("✅ Nhập dữ liệu thành công!");
-        location.reload();
-        }
-
-      else alert("Lỗi khi lưu dữ liệu:\n" + res);
-      })
-      .fail(err => alert("Không kết nối được đến máy chủ."));
+        .done(res => {
+          if (res.trim() === "OK") {
+            alert("✅ Nhập dữ liệu thành công!");
+            location.reload();
+          } else alert("Lỗi khi lưu dữ liệu:\n" + res);
+        })
+        .fail(err => alert("Không kết nối được đến máy chủ."));
     };
     reader.readAsBinaryString(file);
   });
