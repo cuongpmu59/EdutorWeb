@@ -88,9 +88,10 @@ try {
     http_response_code(200);
     echo json_encode([
         'status' => 'success',
-        'message' => '✅ Đã cập nhật thành công.'
-      ], JSON_UNESCAPED_UNICODE);
-   
+        'message' => '✅ Đã cập nhật thành công.',
+        'new_image_url' => $image_url
+    ], JSON_UNESCAPED_UNICODE);
+
 
 } catch (PDOException $e) {
     http_response_code(500);
