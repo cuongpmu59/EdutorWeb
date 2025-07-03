@@ -1,327 +1,203 @@
-// ========== Utility Functions ==========
+// ========== Tiện ích ==========
 const $ = id => document.getElementById(id);
-const $$ = selector => document.querySelector(selector);
 
-function getFormData() {
-  return new FormData($("questionForm"));
-}
-
-function refreshIframe() {
-  const iframe = $("questionIframe");
-  if (iframe) {
-    iframe.contentWindow.location.reload();
-    iframe.onload = () => iframe.contentWindow.MathJax?.typesetPromise();
+// ========== Xử lý MathJax ==========
+function updateMathJax() {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise();
   }
 }
 
-const containsMath = text => /(\\(.+?\\))|(\\[.+?\\])|(\$\$.+?\$\$)|(\$.+?\$)/.test(text);
-const wrapMath = text => containsMath(text) ? text : `\\(${text})\\`;
+// ========== Xem trước ==========
+function updatePreview() {
+  const question = $("question").value;
+  const a = $("answer1").value;
+  const b = $("answer2").value;
+  const c = $("answer3").value;
+  const d = $("answer4").value;
+  const correct = $("correct_answer").value;
+  const showQ = $("toggle_preview_question").checked;
+  const showA = $("toggle_preview_answers").checked;
+  const showAll = $("toggle_preview_all").checked;
 
-const escapeHtml = str => str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+  let html = "";
 
-let mathTimer;
-function debounceRender(el) {
-  clearTimeout(mathTimer);
-  mathTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(el.innerHTML)) {
-      MathJax.typesetPromise([el]);
+  if (showAll || showQ) {
+    html += `<div><strong>Câu hỏi:</strong><br>${question}</div><br>`;
+  }
+  if (showAll || showA) {
+    html += `<div><strong>A:</strong> ${a}<br>`;
+    html += `<strong>B:</strong> ${b}<br>`;
+    html += `<strong>C:</strong> ${c}<br>`;
+    html += `<strong>D:</strong> ${d}<br></div><br>`;
+  }
+
+  if (showAll) {
+    html += `<div><strong>Đáp án đúng:</strong> <span style="color:green;">${correct}</span></div>`;
+  }
+
+  $("preview_area").innerHTML = html;
+  updateMathJax();
+}
+
+["question", "answer1", "answer2", "answer3", "answer4", "correct_answer"].forEach(id => {
+  $(id).addEventListener("input", updatePreview);
+});
+["toggle_preview_question", "toggle_preview_answers", "toggle_preview_all"].forEach(id => {
+  $(id).addEventListener("change", updatePreview);
+});
+
+// ========== Xử lý ảnh ==========
+$("select_image").addEventListener("click", () => $("image_input").click());
+
+$("image_input").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file || !file.type.startsWith("image/")) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    $("preview_image").src = e.target.result;
+    $("preview_image").style.display = "block";
+    $("delete_image").style.display = "inline-block";
+  };
+  reader.readAsDataURL(file);
+});
+
+$("delete_image").addEventListener("click", () => {
+  $("image_input").value = "";
+  $("image_url").value = "";
+  $("preview_image").src = "";
+  $("preview_image").style.display = "none";
+  $("delete_image").style.display = "none";
+  $("delete_image").dataset.delete = "1";
+});
+
+// ========== Gửi form ==========
+$("questionForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const id = formData.get("id");
+  const hasNewImage = $("image_input").files.length > 0;
+
+  // Nếu có ảnh mới => tải lên Cloudinary
+  if (hasNewImage) {
+    const uploadData = new FormData();
+    uploadData.append("file", $("image_input").files[0]);
+    uploadData.append("upload_preset", "ml_default");
+    uploadData.append("public_id", `pic_${id || "temp"}`);
+
+    const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+      method: "POST",
+      body: uploadData,
+    });
+    const json = await res.json();
+    if (json.secure_url) {
+      formData.set("image_url", json.secure_url);
     }
-  }, 300); 
-}
-  
-  
-
-function renderMathPage() {
-  if (window.MathJax && containsMath(document.body.innerText)) MathJax.typesetPromise();
-}
-
-// ========== Preview ==========
-function renderPreview(id) {
-  const val = $(id).value;
-  const preview = $("preview_" + id);
-  preview.innerHTML = wrapMath(val);
-  debounceRender(preview);
-  validateInput(id);  // <- thêm dòng này
-}
-
-let previewTimeout;
-function debounceFullPreview() {
-  clearTimeout(previewTimeout);
-  previewTimeout = setTimeout(() => {
-    updateFullPreview();
-    adjustFullPreviewHeight(); // ✅ Gọi thêm ở đây
-  }, 300);
-}
-
-function updateFullPreview() {
-  const topic = document.getElementById("topic").value;
-  const question = document.getElementById("question").value;
-  const a1 = document.getElementById("answer1").value;
-  const a2 = document.getElementById("answer2").value;
-  const a3 = document.getElementById("answer3").value;
-  const a4 = document.getElementById("answer4").value;
-  const correct = document.getElementById("correct_answer").value;
-
-  const escape = escapeHtml;
-  const content = `
-  <strong>Chủ đề:</strong> ${escape(topic)}<br>
-  <strong>Câu hỏi:</strong> ${escape(question)}<br>
-  <strong>Đáp án A:</strong> ${escape(a1)}<br>
-  <strong>Đáp án B:</strong> ${escape(a2)}<br>
-  <strong>Đáp án C:</strong> ${escape(a3)}<br>
-  <strong>Đáp án D:</strong> ${escape(a4)}<br>
-  <strong>Đáp án đúng:</strong> ${escape(correct)}
-`;
-
-
-  document.getElementById("fullPreview").innerHTML = content;
-  if (window.MathJax) MathJax.typesetPromise(["#fullPreview"]);
-}
-
-function togglePreview() {
-  const show = document.getElementById("togglePreview").checked;
-  document.querySelectorAll(".latex-preview").forEach(div => {
-    div.style.display = show ? "block" : "none";
-  });
-}
-
-function adjustFullPreviewHeight() {
-  const box = document.getElementById("fullPreviewBox");
-  if (box && box.style.display !== "none") {
-    box.style.height = "auto"; // Reset trước
-    box.style.height = box.scrollHeight + "px"; // Tự điều chỉnh theo nội dung
-  }
-}
-
-function togglePreviewBox(id, target) {
-  $(target).style.display = $(id).checked ? "block" : "none";
-}
-
-function resetPreview() {
-  const img = $("imagePreview"), url = $("image_url"), delLbl = $("deleteImageLabel"), delChk = $("delete_image");
-
-  if (url.value) {
-    img.src = url.value;
-    img.classList.add("show");
-    delLbl.style.display = "inline-block";
-  } else {
-    img.src = "";
-    img.classList.remove("show");
-    delLbl.style.display = "none";
   }
 
-  // Nếu người dùng đã chọn "xoá ảnh", thì ẩn luôn ảnh
-  if (delChk.checked) {
-    img.src = "";
-    img.style.display = "none";
+  if ($("delete_image").dataset.delete === "1") {
+    formData.append("delete_image", "1");
   }
 
-  url.value = "";
-  delChk.checked = false;
-  debounceFullPreview();
-}
-
-// ========== Save ==========
-function saveQuestion(action) {
-  if (action === 'add') {
-    // gọi hàm thêm mới
-  } else if (action === 'edit') {
-    // gọi hàm cập nhật
-  }
-}
-
-// ========== Delete ==========
-function deleteQuestion() {
-  const id = $("question_id").value.trim();
-  if (!id || !confirm("Bạn có chắc muốn xoá?")) return;
-
-  fetch("delete_question.php", {
+  const url = id ? "update_question.php" : "insert_question.php";
+  fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "id=" + encodeURIComponent(id)
+    body: formData,
   })
     .then(res => res.json())
     .then(data => {
       alert(data.message);
       if (data.status === "success") {
-        resetForm();
+        if (!id) $("question_id").value = data.id;
+        if (data.new_image_url) {
+          $("image_url").value = data.new_image_url;
+          $("preview_image").src = data.new_image_url;
+          $("preview_image").style.display = "block";
+          $("delete_image").style.display = "inline-block";
+        }
+        refreshIframe();
+        $("delete_image").dataset.delete = "0";
+      }
+    })
+    .catch(err => {
+      alert("❌ Lỗi khi lưu dữ liệu.");
+      console.error(err);
+    });
+});
+
+// ========== Làm mới form ==========
+$("resetBtn").addEventListener("click", () => {
+  $("questionForm").reset();
+  $("preview_area").innerHTML = "";
+  $("preview_image").src = "";
+  $("preview_image").style.display = "none";
+  $("image_url").value = "";
+  $("delete_image").style.display = "none";
+  $("delete_image").dataset.delete = "0";
+
+  // Khôi phục checkbox mặc định
+  $("toggle_preview_question").checked = true;
+  $("toggle_preview_answers").checked = true;
+  $("toggle_preview_all").checked = true;
+
+  updatePreview();
+});
+
+// ========== Xoá ==========
+$("deleteBtn").addEventListener("click", () => {
+  const id = $("question_id").value;
+  if (!id || !confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
+  fetch("delete_question.php", {
+    method: "POST",
+    body: new URLSearchParams({ id }),
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === "success") {
+        $("resetBtn").click();
         refreshIframe();
       }
     });
-}
-
-// ========== Excel Import/Export ==========
-function exportToExcel() {
-  const iframe = document.getElementById("questionIframe");
-  const table = iframe.contentWindow.document.querySelector("#questionTable");
-  if (!table) return alert("Không tìm thấy bảng.");
-
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.table_to_sheet(table);
-  XLSX.utils.book_append_sheet(wb, ws, "Danh sách câu hỏi");
-  XLSX.writeFile(wb, "danh_sach_cau_hoi.xlsx");
-}
-
-function importExcel(file) {
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    rows.slice(1).forEach(row => {
-      const [id, question, a1, a2, a3, a4, correct, topic] = row;
-      if (question && correct) {
-        fetch("insert_question.php", {
-          method: "POST",
-          body: new URLSearchParams({
-            id: id || "",
-            question, answer1: a1, answer2: a2, answer3: a3, answer4: a4,
-            correct_answer: correct, topic
-          })
-        });
-      }
-    });
-
-    alert("Đã nhập Excel. Hệ thống sẽ tự tải lại sau vài giây.");
-    setTimeout(refreshIframe, 2000);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-document.getElementById("image").addEventListener("change", function () {
-  const file = this.files[0];
-  const label = $("imageFileName");
-  label.textContent = file ? file.name : "";
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const preview = $("imagePreview");
-      preview.src = e.target.result;
-      preview.style.display = "block";
-      preview.style.maxWidth = "100%";
-    };
-    reader.readAsDataURL(file);
-  }
 });
 
-
-let formChanged = false;
-document.getElementById("questionForm").addEventListener("input", () => {
-  formChanged = true;
-});
-window.addEventListener("beforeunload", function (e) {
-  if (formChanged) {
-    e.preventDefault();
-    e.returnValue = "";
-  }
+// ========== Xuất PDF ==========
+$("exportPdfBtn").addEventListener("click", () => {
+  window.open("export_exam_pdf.php", "_blank");
 });
 
-function resetForm() {
-  // Reset toàn bộ form về trạng thái ban đầu
-  const form = $("questionForm");
-  form.reset();
+// ========== Đồng bộ với iframe ==========
+window.addEventListener("message", event => {
+  if (event.origin !== window.location.origin) return;
+  const { type, data } = event.data;
+  if (type === "fillForm") {
+    $("question_id").value = data.id;
+    $("topic").value = data.topic;
+    $("question").value = data.question;
+    $("answer1").value = data.answer1;
+    $("answer2").value = data.answer2;
+    $("answer3").value = data.answer3;
+    $("answer4").value = data.answer4;
+    $("correct_answer").value = data.correct_answer;
+    $("image_url").value = data.image;
 
-  // Reset ID để tránh nhầm lẫn giữa thêm và sửa
-  $("question_id").value = "";
-
-  // Ẩn ảnh xem trước
-  const img = $("imagePreview");
-  img.src = "";
-  img.style.display = "none";
-  img.classList.remove("show");
-
-  // Ẩn nhãn xoá ảnh nếu có
-  $("deleteImageLabel").style.display = "none";
-  $("delete_image").checked = false;
-
-  // Reset trường ảnh URL (ẩn)
-  $("image_url").value = "";
-  $("imageFileName").textContent = "";
-
-  // Làm mới xem trước công thức toàn bộ
-  debounceFullPreview();
-
-  // Đánh dấu form chưa thay đổi
-  formChanged = false;
-}
-
-function deleteImage() {
-  if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
-
-  const id = document.getElementById("question_id").value.trim();
-  if (!id) {
-    alert("Bạn cần chọn một câu hỏi đã có để xoá ảnh.");
-    return;
-  }
-
-  const publicId = `pic_${id}`;
-
-  // Gửi yêu cầu xoá ảnh trên Cloudinary
-  fetch("delete_cloudinary_image.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ public_id: publicId })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert("Đã xoá ảnh khỏi Cloudinary.");
-
-      // Xoá ảnh khỏi form
-      const imgPreview = document.getElementById("imagePreview");
-      const imageInput = document.getElementById("image");
-      const imageUrlInput = document.getElementById("image_url");
-      const deleteImageBtn = document.getElementById("deleteImageBtn");
-
-      imgPreview.style.display = "none";
-      imgPreview.src = "";
-      imageInput.value = "";
-      imageUrlInput.value = "";
-      imageInput.setAttribute("data-delete", "1");
-      deleteImageBtn.style.display = "none";
+    if (data.image) {
+      $("preview_image").src = data.image;
+      $("preview_image").style.display = "block";
+      $("delete_image").style.display = "inline-block";
     } else {
-      alert("Không thể xoá ảnh: " + data.message);
+      $("preview_image").style.display = "none";
+      $("delete_image").style.display = "none";
     }
-  })
-  .catch(err => {
-    alert("Lỗi khi xoá ảnh: " + err.message);
-  });
-}
 
-function isValidMath(text) {
-  if (!text.trim()) return true;
-  try {
-    MathJax.tex2chtml(text); // nếu sai cú pháp sẽ throw
-    return true;
-  } catch (e) {
-    console.warn("Math invalid:", text, e.message);
-    return false;
+    $("delete_image").dataset.delete = "0";
+    updatePreview();
   }
-}
-
-window.addEventListener("load", () => {
-  if (!window.MathJax || !MathJax.typesetPromise) {
-    console.error("❌ MathJax chưa sẵn sàng!");
-    return;
-  }
-
-  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
 });
 
-function validateInput(id) {
-  const el = $(id);
-  const preview = $("preview_" + id);
-
-  if (!isValidMath(el.value)) {
-    preview.classList.add("invalid-math");
-    preview.title = "Công thức không hợp lệ";
-  } else {
-    preview.classList.remove("invalid-math");
-    preview.title = "";
-  }
-  
-};
-
+// ========== Cập nhật iframe ==========
+function refreshIframe() {
+  const iframe = $("questionIframe");
+  iframe.src = iframe.src;
+}
