@@ -1,29 +1,26 @@
 <?php
 require 'db_connection.php';
+require_once 'dotenv.php'; // Tự viết hoặc tải từ nguồn nhẹ
+
 header('Content-Type: application/json; charset=utf-8');
 
-// ===== Tải biến môi trường từ file .env =====
-function loadEnv($file = '.env') {
-    if (!file_exists($file)) return;
-    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (trim($line) === '' || str_starts_with(trim($line), '#')) continue;
-        [$name, $value] = explode('=', $line, 2);
-        putenv(trim($name) . '=' . trim($value));
-        $_ENV[trim($name)] = trim($value);
-    }
-}
-loadEnv();
+// Đọc biến môi trường từ .env
+$env = parse_ini_file(__DIR__ . '/.env');
 
-// ===== Lấy ID =====
+$cloudName = $env['CLOUD_NAME'] ?? '';
+$apiKey = $env['API_KEY'] ?? '';
+$apiSecret = $env['API_SECRET'] ?? '';
+
+// Nhận ID
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
 if ($id <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
     exit;
 }
 
 try {
-    // ===== Lấy đường dẫn ảnh từ DB =====
+    // Lấy ảnh nếu có
     $stmt = $conn->prepare("SELECT image_url FROM questions WHERE id = ?");
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -35,18 +32,13 @@ try {
 
     $imageUrl = $row['image_url'];
 
-    // ===== Xoá câu hỏi =====
+    // Xoá câu hỏi
     $delStmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
     $delStmt->execute([$id]);
 
-    // ===== Nếu có ảnh thì xoá khỏi Cloudinary =====
-    if (!empty($imageUrl)) {
-        $parsedUrl = parse_url($imageUrl);
-        $publicId = pathinfo($parsedUrl['path'], PATHINFO_FILENAME);
-
-        $cloudName = getenv('CLOUDINARY_CLOUD_NAME');
-        $apiKey    = getenv('CLOUDINARY_API_KEY');
-        $apiSecret = getenv('CLOUDINARY_API_SECRET');
+    // Nếu có ảnh thì xoá trên Cloudinary
+    if (!empty($imageUrl) && $cloudName && $apiKey && $apiSecret) {
+        $publicId = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_FILENAME);
         $timestamp = time();
 
         $stringToSign = "public_id=$publicId&timestamp=$timestamp$apiSecret";
@@ -54,9 +46,9 @@ try {
 
         $postData = [
             'public_id' => $publicId,
-            'api_key'   => $apiKey,
+            'api_key' => $apiKey,
             'timestamp' => $timestamp,
-            'signature' => $signature,
+            'signature' => $signature
         ];
 
         $ch = curl_init("https://api.cloudinary.com/v1_1/$cloudName/image/destroy");
@@ -65,6 +57,9 @@ try {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         $response = curl_exec($ch);
         curl_close($ch);
+
+        // Ghi log nếu cần kiểm tra
+        // file_put_contents("cloudinary_delete.log", $response . "\n", FILE_APPEND);
     }
 
     echo json_encode(['status' => 'success', 'message' => '✅ Đã xoá câu hỏi']);
