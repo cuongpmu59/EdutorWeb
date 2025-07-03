@@ -96,9 +96,14 @@ try {
       <td><?= $q['correct_answer'] ?></td>
       <td><?= $q['topic'] ?></td>
       <td>
-        <?php if (!empty($q['image'])): ?>
-          <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
-        <?php endif; ?>
+      <?php if (!empty($q['image'])):
+              $cloudUrl = strpos($q['image'], 'http') === 0 
+              ? $q['image']
+              : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$q['image']}";
+?>
+  <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
+<?php endif; ?>
+
       </td>
     </tr>
     <?php endforeach; ?>
