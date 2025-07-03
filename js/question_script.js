@@ -183,7 +183,14 @@ window.addEventListener("message", event => {
     $("image_url").value = data.image;
 
     if (data.image) {
-      $("preview_image").src = data.image;
+      const publicId = data.image;
+      const cloudName = "dbdf2gwc9";
+
+      $("preview_image").src = publicId.startsWith("http")
+      ? publicId
+      :`https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+
+
       $("preview_image").style.display = "block";
       $("delete_image").style.display = "inline-block";
     } else {
