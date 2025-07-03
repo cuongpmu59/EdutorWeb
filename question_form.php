@@ -1,89 +1,81 @@
+<?php
+require 'dotenv.php';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Nhập câu hỏi trắc nghiệm</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/styles_question.css" />
+  <meta charset="UTF-8">
+  <title>Quản lý câu hỏi</title>
+  <link rel="stylesheet" href="css/styles_question.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 10px; max-width: 900px; margin: auto; }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input[type="text"], select, textarea {
+      width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 5px;
+    }
+    textarea { resize: vertical; }
+    button { margin-top: 12px; margin-right: 10px; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; }
+    .btn-primary { background-color: #007bff; color: white; }
+    .btn-danger { background-color: #dc3545; color: white; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+    #preview_image { max-height: 120px; margin-top: 10px; display: none; border: 1px solid #aaa; }
+    #delete_image { display: none; margin-top: 5px; }
+    #preview_area { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
+  </style>
 </head>
-<body class="light-mode">
-  <div class="container">
-    <h2>📘 Nhập câu hỏi trắc nghiệm</h2>
-    <form id="questionForm" enctype="multipart/form-data">
-      <input type="hidden" name="id" id="question_id" />
+<body>
 
-      <div class="form-group">
-        <label>Chủ đề:</label>
-        <input type="text" name="topic" id="topic" required />
-      </div>
+<h2>📋 Nhập câu hỏi trắc nghiệm</h2>
+<form id="questionForm">
+  <input type="hidden" name="id" id="question_id">
+  <label>Chủ đề:</label>
+  <input type="text" name="topic" id="topic">
 
-      <div class="form-group">
-        <label>Câu hỏi:</label>
-        <textarea name="question" id="question" rows="3" required></textarea>
-      </div>
+  <label>Câu hỏi:</label>
+  <textarea name="question" id="question" rows="3"></textarea>
 
-      <div class="form-group">
-        <label>Đáp án A:</label>
-        <input type="text" name="answer1" id="answer1" required />
-      </div>
+  <label>Đáp án A:</label>
+  <input type="text" name="answer1" id="answer1">
 
-      <div class="form-group">
-        <label>Đáp án B:</label>
-        <input type="text" name="answer2" id="answer2" required />
-      </div>
+  <label>Đáp án B:</label>
+  <input type="text" name="answer2" id="answer2">
 
-      <div class="form-group">
-        <label>Đáp án C:</label>
-        <input type="text" name="answer3" id="answer3" required />
-      </div>
+  <label>Đáp án C:</label>
+  <input type="text" name="answer3" id="answer3">
 
-      <div class="form-group">
-        <label>Đáp án D:</label>
-        <input type="text" name="answer4" id="answer4" required />
-      </div>
+  <label>Đáp án D:</label>
+  <input type="text" name="answer4" id="answer4">
 
-      <div class="form-group">
-        <label>Đáp án đúng:</label>
-        <select name="correct_answer" id="correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
+  <label>Đáp án đúng (A/B/C/D):</label>
+  <input type="text" name="correct_answer" id="correct_answer" maxlength="1">
 
-      <div class="form-group">
-        <label>Ảnh minh họa:</label><br />
-        <input type="hidden" name="image_url" id="image_url" />
-        <input type="file" id="image_input" accept="image/*" style="display:none;" />
-        <button type="button" id="select_image">📷 Chọn ảnh</button>
-        <button type="button" id="delete_image" style="display:none;">🗑️ Xoá ảnh</button>
-        <br />
-        <img id="preview_image" src="" style="max-width:150px; display:none; margin-top:10px; border:1px solid #ccc;" />
-      </div>
+  <label>Ảnh minh hoạ:</label>
+  <input type="hidden" name="image_url" id="image_url">
+  <input type="file" id="image_input" accept="image/*" style="display:none">
+  <button type="button" class="btn-secondary" id="select_image">📷 Chọn ảnh</button>
+  <img id="preview_image">
+  <button type="button" class="btn-danger" id="delete_image" data-delete="0">🗑️ Xoá ảnh</button>
 
-      <div class="form-group checkbox-group">
-        <label><input type="checkbox" id="toggle_preview_question" checked /> Hiện câu hỏi</label>
-        <label><input type="checkbox" id="toggle_preview_answers" checked /> Hiện đáp án</label>
-        <label><input type="checkbox" id="toggle_preview_all" checked /> Xem trước toàn bộ</label>
-      </div>
-
-      <div class="form-group button-group">
-        <button type="submit" id="saveBtn">💾 Lưu</button>
-        <button type="reset" id="resetBtn">🧹 Làm mới</button>
-        <button type="button" id="deleteBtn">❌ Xoá</button>
-        <button type="button" id="exportPdfBtn">📄 Xuất đề thi PDF</button>
-      </div>
-    </form>
-
-    <div id="preview_area" class="preview-box"></div>
-
-    <iframe src="get_question.php" id="questionIframe" style="width:100%; height:400px; border:1px solid #ccc; margin-top:20px;"></iframe>
+  <div style="margin-top:15px;">
+    <button type="submit" class="btn-primary">💾 Lưu</button>
+    <button type="button" class="btn-secondary" id="resetBtn">🔄 Làm mới</button>
+    <button type="button" class="btn-danger" id="deleteBtn">🗑️ Xoá</button>
+    <button type="button" class="btn-secondary" id="exportPdfBtn">📝 Xuất đề PDF</button>
   </div>
 
-  <script src="js/question_script.js"></script>
+  <div style="margin-top:15px">
+    <label><input type="checkbox" id="toggle_preview_question" checked> Xem trước câu hỏi</label>
+    <label><input type="checkbox" id="toggle_preview_answers" checked> Xem trước đáp án</label>
+    <label><input type="checkbox" id="toggle_preview_all" checked> Xem trước toàn bộ</label>
+  </div>
+
+  <div id="preview_area"><em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em></div>
+</form>
+
+<iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px;border:1px solid #aaa;"></iframe>
+
+<script src="js/question_script.js"></script>
 </body>
 </html>
