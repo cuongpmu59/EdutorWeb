@@ -1,102 +1,65 @@
 <?php
 require 'db_connection.php';
-header("Content-Type: application/json; charset=utf-8");
+require 'dotenv.php';
 
-// ===== Hàm lấy dữ liệu =====
-function get_post($key) {
-    return trim($_POST[$key] ?? '');
-}
+header('Content-Type: application/json');
 
-// ===== Nhận dữ liệu =====
-$id            = get_post('id');
-$topic         = get_post('topic');
-$question      = get_post('question');
-$answer1       = get_post('answer1');
-$answer2       = get_post('answer2');
-$answer3       = get_post('answer3');
-$answer4       = get_post('answer4');
-$correct       = get_post('correct_answer');
-$image_url     = get_post('image_url');
-$delete_image  = get_post('delete_image');
+$id = $_POST['id'] ?? '';
+$topic = $_POST['topic'] ?? '';
+$question = $_POST['question'] ?? '';
+$answer1 = $_POST['answer1'] ?? '';
+$answer2 = $_POST['answer2'] ?? '';
+$answer3 = $_POST['answer3'] ?? '';
+$answer4 = $_POST['answer4'] ?? '';
+$correct = $_POST['correct_answer'] ?? '';
+$imageUrl = $_POST['image_url'] ?? '';
+$deleteImage = isset($_POST['delete_image']);
 
-if ($delete_image === '1') {
-    // ==== Xóa ảnh khỏi Cloudinary ====
-    require 'vendor/autoload.php';
-
-    \Cloudinary\Configuration\Configuration::instance([
-      'cloud' => [
-        'cloud_name' => 'dbdf2gwc9',
-        'api_key'    => '451298475188791',
-        'api_secret' => 'PK2QC',
-      ]
-    ]);
-
-    try {
-        $publicId = "pic_$id";
-        $result = \Cloudinary\Api\Upload::destroy($publicId);
-
-        if (!isset($result['result']) || $result['result'] !== 'ok') {
-            error_log("Không xoá được ảnh hoặc ảnh không tồn tại.");
-        }
-        // Có thể ghi log nếu cần: $result['result'] === 'ok'
-    } catch (Exception $e) {
-        // Không dừng script nếu lỗi xoá ảnh
-        error_log("Lỗi xoá ảnh Cloudinary: " . $e->getMessage());
-    }
-
-    $image_url = '';
-}
-
-// ===== Kiểm tra hợp lệ =====
-$errors = [];
-if (!$id || !is_numeric($id)) $errors[] = "ID câu hỏi không hợp lệ.";
-if (!$question) $errors[] = "Câu hỏi không được để trống.";
-if (!$answer1 || !$answer2 || !$answer3 || !$answer4) $errors[] = "Tất cả đáp án đều phải điền.";
-if (!in_array($correct, ['A', 'B', 'C', 'D'])) $errors[] = "Đáp án đúng phải là A, B, C hoặc D.";
-if (!$topic) $errors[] = "Chủ đề không được để trống.";
-
-if (!empty($errors)) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'error',
-        'message' => implode(" ", $errors)
-    ], JSON_UNESCAPED_UNICODE);
+if (!$id) {
+    echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
     exit;
 }
 
-// ===== Xử lý CSDL =====
 try {
-    // ==== Kiểm tra trùng câu hỏi khác (trừ chính nó) ====
-    $stmt = $conn->prepare("SELECT id FROM questions WHERE question = ? AND id != ?");
-    $stmt->execute([$question, $id]);
+    // Nếu cần xóa ảnh cũ trên Cloudinary
+    if ($deleteImage) {
+        $publicId = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_FILENAME);
+        if ($publicId) {
+            $cloudName = getenv('CLOUDINARY_CLOUD_NAME');
+            $apiKey = getenv('CLOUDINARY_API_KEY');
+            $apiSecret = getenv('CLOUDINARY_API_SECRET');
+            $url = "https://api.cloudinary.com/v1_1/$cloudName/image/destroy";
 
-    if ($stmt->rowCount() > 0) {
-        http_response_code(409);
-        echo json_encode([
-            'status' => 'duplicate',
-            'message' => '⚠️ Câu hỏi đã tồn tại.'
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
+            $timestamp = time();
+            $signature = sha1("public_id=$publicId&timestamp=$timestamp$apiSecret");
+
+            $data = [
+                'public_id' => $publicId,
+                'api_key' => $apiKey,
+                'timestamp' => $timestamp,
+                'signature' => $signature
+            ];
+
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query($data)
+            ]);
+            curl_exec($ch);
+            curl_close($ch);
+        }
+        $imageUrl = '';
     }
 
-    // ==== Cập nhật dữ liệu ====
-    $stmt = $conn->prepare("UPDATE questions 
-        SET topic = ?, question = ?, image = ?, answer1 = ?, answer2 = ?, answer3 = ?, answer4 = ?, correct_answer = ?
-        WHERE id = ?");
-    $stmt->execute([$topic, $question, $image_url, $answer1, $answer2, $answer3, $answer4, $correct, $id]);
+    $stmt = $conn->prepare("UPDATE questions SET question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=?, topic=?, image=? WHERE id=?");
+    $stmt->execute([$question, $answer1, $answer2, $answer3, $answer4, $correct, $topic, $imageUrl, $id]);
 
-    http_response_code(200);
     echo json_encode([
         'status' => 'success',
-        'message' => '✅ Đã cập nhật thành công.',
-        'new_image_url' => $image_url
-    ], JSON_UNESCAPED_UNICODE);
-
-
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => '❌ Lỗi CSDL: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+        'message' => '✅ Cập nhật thành công!',
+        'new_image_url' => $imageUrl
+    ]);
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => '❌ Lỗi: ' . $e->getMessage()]);
 }
