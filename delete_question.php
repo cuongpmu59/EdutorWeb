@@ -1,9 +1,21 @@
 <?php
 require 'db_connection.php';
-require 'config.php'; // Load .env biến môi trường
 header('Content-Type: application/json; charset=utf-8');
 
-// Nhận ID từ POST
+// ===== Tải biến môi trường từ file .env =====
+function loadEnv($file = '.env') {
+    if (!file_exists($file)) return;
+    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (trim($line) === '' || str_starts_with(trim($line), '#')) continue;
+        [$name, $value] = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+        $_ENV[trim($name)] = trim($value);
+    }
+}
+loadEnv();
+
+// ===== Lấy ID =====
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 if ($id <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
@@ -11,7 +23,7 @@ if ($id <= 0) {
 }
 
 try {
-    // Lấy URL ảnh nếu có
+    // ===== Lấy đường dẫn ảnh từ DB =====
     $stmt = $conn->prepare("SELECT image_url FROM questions WHERE id = ?");
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,31 +35,31 @@ try {
 
     $imageUrl = $row['image_url'];
 
-    // Xoá câu hỏi khỏi DB
+    // ===== Xoá câu hỏi =====
     $delStmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
     $delStmt->execute([$id]);
 
-    // Nếu có ảnh => gọi API Cloudinary để xoá
+    // ===== Nếu có ảnh thì xoá khỏi Cloudinary =====
     if (!empty($imageUrl)) {
-        $publicId = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_FILENAME);
+        $parsedUrl = parse_url($imageUrl);
+        $publicId = pathinfo($parsedUrl['path'], PATHINFO_FILENAME);
+
+        $cloudName = getenv('CLOUDINARY_CLOUD_NAME');
+        $apiKey    = getenv('CLOUDINARY_API_KEY');
+        $apiSecret = getenv('CLOUDINARY_API_SECRET');
         $timestamp = time();
 
-        // Lấy thông tin từ biến môi trường
-        $cloudName = $_ENV['CLOUDINARY_CLOUD_NAME'];
-        $apiKey = $_ENV['CLOUDINARY_API_KEY'];
-        $apiSecret = $_ENV['CLOUDINARY_API_SECRET'];
-
-        $signatureString = "public_id=$publicId&timestamp=$timestamp$apiSecret";
-        $signature = sha1($signatureString);
+        $stringToSign = "public_id=$publicId&timestamp=$timestamp$apiSecret";
+        $signature = sha1($stringToSign);
 
         $postData = [
             'public_id' => $publicId,
-            'api_key' => $apiKey,
+            'api_key'   => $apiKey,
             'timestamp' => $timestamp,
-            'signature' => $signature
+            'signature' => $signature,
         ];
 
-        $ch = curl_init("https://api.cloudinary.com/v1_1/{$cloudName}/image/destroy");
+        $ch = curl_init("https://api.cloudinary.com/v1_1/$cloudName/image/destroy");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
