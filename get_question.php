@@ -97,7 +97,13 @@ try {
       <td><?= $q['topic'] ?></td>
       <td>
         <?php if (!empty($q['image'])): ?>
-          <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
+          <?php
+          $img = $q['image'];
+          $imgSrc = (str_starts_with($img, 'http') || str_starts_with($img, '//'))
+          ? $img
+          : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$img}";
+          ?>
+<img src="<?= htmlspecialchars($imgSrc) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
         <?php endif; ?>
       </td>
     </tr>
@@ -227,7 +233,11 @@ $(document).ready(() => {
       // Gửi lên server lưu vào CSDL
       $.post("get_question.php", { excelData: JSON.stringify(formatted) })
       .done(res => {
-      if (res.trim() === "OK") location.reload();
+      if (res.trim() === "OK") {
+        alert("✅ Nhập dữ liệu thành công!");
+        location.reload();
+        }
+
       else alert("Lỗi khi lưu dữ liệu:\n" + res);
       })
       .fail(err => alert("Không kết nối được đến máy chủ."));
