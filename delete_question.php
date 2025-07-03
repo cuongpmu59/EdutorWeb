@@ -1,17 +1,17 @@
 <?php
 require 'db_connection.php';
+require 'config.php'; // Load .env biến môi trường
 header('Content-Type: application/json; charset=utf-8');
 
-// Nhận ID
+// Nhận ID từ POST
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-
 if ($id <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
     exit;
 }
 
-// Lấy đường dẫn ảnh nếu có
 try {
+    // Lấy URL ảnh nếu có
     $stmt = $conn->prepare("SELECT image_url FROM questions WHERE id = ?");
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,22 +23,22 @@ try {
 
     $imageUrl = $row['image_url'];
 
-    // Xoá câu hỏi
+    // Xoá câu hỏi khỏi DB
     $delStmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
     $delStmt->execute([$id]);
 
-    // Xoá ảnh khỏi Cloudinary nếu có
+    // Nếu có ảnh => gọi API Cloudinary để xoá
     if (!empty($imageUrl)) {
         $publicId = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_FILENAME);
-
-        // Gọi API Cloudinary để xoá
         $timestamp = time();
-        $apiKey = '451298475188791';
-        $apiSecret = 'PK2QC';
-        $cloudName = 'dbdf2gwc9';
 
-        $stringToSign = "public_id=$publicId&timestamp=$timestamp$apiSecret";
-        $signature = sha1($stringToSign);
+        // Lấy thông tin từ biến môi trường
+        $cloudName = $_ENV['CLOUDINARY_CLOUD_NAME'];
+        $apiKey = $_ENV['CLOUDINARY_API_KEY'];
+        $apiSecret = $_ENV['CLOUDINARY_API_SECRET'];
+
+        $signatureString = "public_id=$publicId&timestamp=$timestamp$apiSecret";
+        $signature = sha1($signatureString);
 
         $postData = [
             'public_id' => $publicId,
@@ -47,7 +47,7 @@ try {
             'signature' => $signature
         ];
 
-        $ch = curl_init("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/destroy");
+        $ch = curl_init("https://api.cloudinary.com/v1_1/{$cloudName}/image/destroy");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
