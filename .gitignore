@@ -1,0 +1,39 @@
+# ==== PHP ====
+*.log
+*.cache
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+# ==== OS Generated Files ====
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# ==== Uploads, Images ====
+/uploads/
+/images/
+/storage/
+
+# ==== Sensitive config ====
+.env
+.env.local
+.env.*
+
+# ==== Composer ====
+/vendor/
+composer.lock
+
+# ==== Node.js (if applicable) ====
+node_modules/
+package-lock.json
+yarn.lock
+
+# ==== Editor Config ====
+.vscode/
+.idea/
+
+# ==== Git Merge Conflict ====
+*.orig
