@@ -1,72 +1,61 @@
 <?php
 require 'db_connection.php';
-require 'vendor/autoload.php'; // Gọi Cloudinary SDK
-header("Content-Type: application/json; charset=utf-8");
+header('Content-Type: application/json; charset=utf-8');
 
-// ===== Lấy ID =====
+// Nhận ID
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
 if ($id <= 0) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'ID không hợp lệ.'
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
     exit;
 }
 
-// ===== Lấy ảnh hiện tại từ DB =====
-$image_url = '';
+// Lấy đường dẫn ảnh nếu có
 try {
-    $stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
+    $stmt = $conn->prepare("SELECT image_url FROM questions WHERE id = ?");
     $stmt->execute([$id]);
-    $image_url = $stmt->fetchColumn();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$image_url) {
-        $image_url = '';
+    if (!$row) {
+        echo json_encode(['status' => 'error', 'message' => 'Không tìm thấy câu hỏi']);
+        exit;
     }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Lỗi khi truy vấn ảnh: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
-}
 
-// ===== Xoá ảnh trên Cloudinary nếu có =====
-if (!empty($image_url)) {
-    \Cloudinary\Configuration\Configuration::instance([
-        'cloud' => [
-            'cloud_name' => 'dbdf2gwc9',
-            'api_key'    => '451298475188791',
-            'api_secret' => 'PK2QC' 
-        ]
-    ]);
+    $imageUrl = $row['image_url'];
 
-    try {
-        $publicId = "pic_$id";
-        $result = \Cloudinary\Api\Upload::destroy($publicId);
-        if (($result['result'] ?? '') !== 'ok') {
-            error_log("⚠️ Không xoá được ảnh trên Cloudinary: pic_$id");
-        }
-    } catch (Exception $e) {
-        error_log("❌ Lỗi khi xoá ảnh Cloudinary: " . $e->getMessage());
+    // Xoá câu hỏi
+    $delStmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
+    $delStmt->execute([$id]);
+
+    // Xoá ảnh khỏi Cloudinary nếu có
+    if (!empty($imageUrl)) {
+        $publicId = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_FILENAME);
+
+        // Gọi API Cloudinary để xoá
+        $timestamp = time();
+        $apiKey = '451298475188791';
+        $apiSecret = 'PK2QC';
+        $cloudName = 'dbdf2gwc9';
+
+        $stringToSign = "public_id=$publicId&timestamp=$timestamp$apiSecret";
+        $signature = sha1($stringToSign);
+
+        $postData = [
+            'public_id' => $publicId,
+            'api_key' => $apiKey,
+            'timestamp' => $timestamp,
+            'signature' => $signature
+        ];
+
+        $ch = curl_init("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/destroy");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        $response = curl_exec($ch);
+        curl_close($ch);
     }
-}
 
-// ===== Xoá câu hỏi trong DB =====
-try {
-    $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
-    $stmt->execute([$id]);
-
-    echo json_encode([
-        'status' => 'success',
-        'message' => '✅ Đã xoá câu hỏi thành công.'
-    ], JSON_UNESCAPED_UNICODE);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => '❌ Lỗi khi xoá câu hỏi: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'success', 'message' => '✅ Đã xoá câu hỏi']);
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Lỗi: ' . $e->getMessage()]);
 }
