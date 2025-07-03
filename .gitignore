@@ -1,39 +1,56 @@
-# ==== PHP ====
+# Ignore environment file
+.env
+
+# Ignore config if it contains sensitive info
+config.php
+
+# Node & PHP package directories
+node_modules/
+vendor/
+
+# Composer files (nếu dùng)
+composer.lock
+composer.phar
+
+# IDE / Editor config files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# System / OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
 *.log
-*.cache
+
+# Cache / temp
 *.tmp
 *.bak
+.cache/
+.tmp/
+.phpunit.result.cache
+
+# Uploaded images (nếu lưu local)
+uploads/
+uploads_tmp/
+
+# Exported files
+*.pdf
+*.xlsx
+*.xls
+*.zip
+
+# Database dumps
+*.sql
+*.sqlite
+
+# Backup files
+*.old
 *.swp
-.DS_Store
-
-# ==== OS Generated Files ====
-Thumbs.db
-ehthumbs.db
-Icon?
-Desktop.ini
-
-# ==== Uploads, Images ====
-/uploads/
-/images/
-/storage/
-
-# ==== Sensitive config ====
-.env
-.env.local
-.env.*
-
-# ==== Composer ====
-/vendor/
-composer.lock
-
-# ==== Node.js (if applicable) ====
-node_modules/
-package-lock.json
-yarn.lock
-
-# ==== Editor Config ====
-.vscode/
-.idea/
-
-# ==== Git Merge Conflict ====
 *.orig
+
+# Ignore iframe temp files (if any)
+get_question_temp.php
