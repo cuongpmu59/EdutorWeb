@@ -1,14 +1,13 @@
-// ========== Tiện ích ==========
 const $ = id => document.getElementById(id);
 
-// ========== Xử lý MathJax ==========
+// ========== MathJax ==========
 function updateMathJax() {
   if (window.MathJax && MathJax.typesetPromise) {
     MathJax.typesetPromise();
   }
 }
 
-// ========== Xem trước ==========
+// ========== Preview ==========
 function updatePreview() {
   const question = $("question").value;
   const a = $("answer1").value;
@@ -21,20 +20,14 @@ function updatePreview() {
   const showAll = $("toggle_preview_all").checked;
 
   let html = "";
-
-  if (showAll || showQ) {
-    html += `<div><strong>Câu hỏi:</strong><br>${question}</div><br>`;
-  }
+  if (showAll || showQ) html += `<div><strong>Câu hỏi:</strong><br>${question}</div><br>`;
   if (showAll || showA) {
     html += `<div><strong>A:</strong> ${a}<br>`;
     html += `<strong>B:</strong> ${b}<br>`;
     html += `<strong>C:</strong> ${c}<br>`;
     html += `<strong>D:</strong> ${d}<br></div><br>`;
   }
-
-  if (showAll) {
-    html += `<div><strong>Đáp án đúng:</strong> <span style="color:green;">${correct}</span></div>`;
-  }
+  if (showAll) html += `<div><strong>Đáp án đúng:</strong> <span style="color:green;">${correct}</span></div>`;
 
   $("preview_area").innerHTML = html;
   updateMathJax();
@@ -76,32 +69,49 @@ $("delete_image").addEventListener("click", () => {
 $("questionForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
-  const id = formData.get("id");
+  const id = formData.get("id").trim();
   const hasNewImage = $("image_input").files.length > 0;
+  const isUpdate = id !== "";
 
-  // Nếu có ảnh mới => tải lên Cloudinary
-  if (hasNewImage) {
-    const uploadData = new FormData();
-    uploadData.append("file", $("image_input").files[0]);
-    uploadData.append("upload_preset", "ml_default");
-    uploadData.append("public_id", `pic_${id || "temp"}`);
-
-    const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+  // Nếu đang thêm mới thì chờ server trả về ID rồi mới upload ảnh
+  if (!isUpdate) {
+    fetch("insert_question.php", {
       method: "POST",
-      body: uploadData,
+      body: formData,
+    })
+    .then(res => res.json())
+    .then(async data => {
+      alert(data.message);
+      if (data.status === "success") {
+        $("question_id").value = data.id;
+        if (hasNewImage) {
+          await uploadImageToCloudinary(data.id, formData);
+        }
+        refreshIframe();
+      }
+    })
+    .catch(err => {
+      alert("❌ Lỗi khi thêm dữ liệu.");
+      console.error(err);
     });
-    const json = await res.json();
-    if (json.secure_url) {
-      formData.set("image_url", json.secure_url);
+    return;
+  }
+
+  // Nếu cập nhật và có ảnh => upload trước rồi gửi form
+  if (hasNewImage) {
+    const cloudResult = await uploadImageToCloudinary(id, formData);
+    if (!cloudResult.success) {
+      alert("❌ Lỗi upload ảnh lên Cloudinary.");
+      return;
     }
+    formData.set("image_url", cloudResult.secure_url);
   }
 
   if ($("delete_image").dataset.delete === "1") {
     formData.append("delete_image", "1");
   }
 
-  const url = id ? "update_question.php" : "insert_question.php";
-  fetch(url, {
+  fetch("update_question.php", {
     method: "POST",
     body: formData,
   })
@@ -109,7 +119,6 @@ $("questionForm").addEventListener("submit", async function (e) {
     .then(data => {
       alert(data.message);
       if (data.status === "success") {
-        if (!id) $("question_id").value = data.id;
         if (data.new_image_url) {
           $("image_url").value = data.new_image_url;
           $("preview_image").src = data.new_image_url;
@@ -121,12 +130,33 @@ $("questionForm").addEventListener("submit", async function (e) {
       }
     })
     .catch(err => {
-      alert("❌ Lỗi khi lưu dữ liệu.");
+      alert("❌ Lỗi khi cập nhật.");
       console.error(err);
     });
 });
 
-// ========== Làm mới form ==========
+// ========== Upload lên Cloudinary ==========
+async function uploadImageToCloudinary(id, formData) {
+  const uploadData = new FormData();
+  uploadData.append("file", $("image_input").files[0]);
+  uploadData.append("upload_preset", "ml_default");
+  uploadData.append("public_id", `pic_${id}`);
+
+  try {
+    const res = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
+      method: "POST",
+      body: uploadData,
+    });
+    const json = await res.json();
+    return json.secure_url
+      ? { success: true, secure_url: json.secure_url }
+      : { success: false };
+  } catch (err) {
+    return { success: false };
+  }
+}
+
+// ========== Reset ==========
 $("resetBtn").addEventListener("click", () => {
   $("questionForm").reset();
   $("preview_area").innerHTML = "";
@@ -136,7 +166,6 @@ $("resetBtn").addEventListener("click", () => {
   $("delete_image").style.display = "none";
   $("delete_image").dataset.delete = "0";
 
-  // Khôi phục checkbox mặc định
   $("toggle_preview_question").checked = true;
   $("toggle_preview_answers").checked = true;
   $("toggle_preview_all").checked = true;
@@ -162,12 +191,12 @@ $("deleteBtn").addEventListener("click", () => {
     });
 });
 
-// ========== Xuất PDF ==========
+// ========== Export PDF ==========
 $("exportPdfBtn").addEventListener("click", () => {
   window.open("export_exam_pdf.php", "_blank");
 });
 
-// ========== Đồng bộ với iframe ==========
+// ========== Nhận dữ liệu từ iframe ==========
 window.addEventListener("message", event => {
   if (event.origin !== window.location.origin) return;
   const { type, data } = event.data;
@@ -183,14 +212,7 @@ window.addEventListener("message", event => {
     $("image_url").value = data.image;
 
     if (data.image) {
-      const publicId = data.image;
-      const cloudName = "dbdf2gwc9";
-
-      $("preview_image").src = publicId.startsWith("http")
-      ? publicId
-      :`https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
-
-
+      $("preview_image").src = data.image;
       $("preview_image").style.display = "block";
       $("delete_image").style.display = "inline-block";
     } else {
@@ -203,7 +225,7 @@ window.addEventListener("message", event => {
   }
 });
 
-// ========== Cập nhật iframe ==========
+// ========== Refresh iframe ==========
 function refreshIframe() {
   const iframe = $("questionIframe");
   iframe.src = iframe.src;
