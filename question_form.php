@@ -1,549 +1,89 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Quản lý câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="css/styles_question.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-  <style>
-  /* ===== Reset & Base ===== */
-  * {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-
-  body {
-    margin: 20px;
-    background: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-  }
-
-  h2, h3 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-  }
-
-  label {
-    display: block;
-    margin-top: 12px;
-    font-weight: 500;
-  }
-
-  /* ===== Form Layout ===== */
-  .question-container {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-  }
-
-  .two-column .form-left {
-    flex: 2;
-  }
-
-  .two-column .form-right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ===== Input & Textarea ===== */
-  input[type="text"],
-  input[type="file"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    margin-top: 5px;
-    font-size: 14px;
-  }
-
-  textarea {
-    resize: vertical;
-  }
-
-  /* ===== Buttons ===== */
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  button {
-    padding: 10px 15px;
-    font-size: 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
-    background-color: #3498db;
-    color: white;
-  }
-
-  button:hover {
-    background-color: #2980b9;
-  }
-
-  .delete-btn {
-    background-color: #e74c3c;
-  }
-
-  .delete-btn:hover {
-    background-color: #c0392b;
-  }
-
-  .reset-btn {
-    background-color: #95a5a6;
-  }
-
-  .reset-btn:hover {
-    background-color: #7f8c8d;
-  }
-
-  /* ===== Preview Styles ===== */
-  .latex-preview {
-    margin-top: 5px;
-    background: #f0f4f8;
-    padding: 8px 12px;
-    border-left: 4px solid #3498db;
-    border-radius: 4px;
-    font-style: italic;
-    min-height: 24px;
-    color: #2c3e50;
-  }
-
-  #imagePreview {
-    display: none;
-    max-width: 100%;
-    margin-top: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-
-  /* ===== Full Preview Box ===== */
-  .full-preview {
-    background: #fcfcfc;
-    padding: 15px;
-    border: 1px dashed #aaa;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
-
-  .full-preview p {
-    margin: 5px 0;
-  }
-
-  /* ===== Dark Mode Support ===== */
-  @media (prefers-color-scheme: dark) {
-    body {
-      background: #1e1e1e;
-      color: #eee;
-    }
-
-    .question-container {
-      background: #2c2c2c;
-      border-color: #444;
-    }
-
-    input, textarea, select {
-      background: #333;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    .latex-preview,
-    .full-preview {
-      background: #2a2a2a;
-      color: #fff;
-    }
-
-    .latex-preview {
-      border-left-color: #6ab0f3;
-    }
-
-    #imagePreview {
-      border-color: #555;
-    }
-
-    button {
-      background-color: #3498db;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    .reset-btn {
-      background-color: #7f8c8d;
-    }
-
-    .reset-btn:hover {
-      background-color: #95a5a6;
-    }
-
-    .delete-btn {
-      background-color: #e74c3c;
-    }
-
-    .delete-btn:hover {
-      background-color: #c0392b;
-    }
-  }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Nhập câu hỏi trắc nghiệm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles_question.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
+<body class="light-mode">
+  <div class="container">
+    <h2>📘 Nhập câu hỏi trắc nghiệm</h2>
+    <form id="questionForm" enctype="multipart/form-data">
+      <input type="hidden" name="id" id="question_id" />
 
-<body>
-  <h2>Nhập câu hỏi</h2>
-  <label><input type="checkbox" id="togglePreview" checked onchange="togglePreview()"> Hiện xem trước công thức</label>
+      <div class="form-group">
+        <label>Chủ đề:</label>
+        <input type="text" name="topic" id="topic" required />
+      </div>
 
-  <form id="questionForm" enctype="multipart/form-data">
-    <div class="question-container two-column">
-      <div class="form-left">
-        <input type="hidden" name="id" id="question_id">
+      <div class="form-group">
+        <label>Câu hỏi:</label>
+        <textarea name="question" id="question" rows="3" required></textarea>
+      </div>
 
-        <label for="topic">Chủ đề:</label>
-        <input type="text" name="topic" id="topic" required>
+      <div class="form-group">
+        <label>Đáp án A:</label>
+        <input type="text" name="answer1" id="answer1" required />
+      </div>
 
-        <label for="question">Câu hỏi:</label>
-        <textarea name="question" id="question" rows="3" required oninput="renderPreview('question')"></textarea>
-        <div id="preview_question" class="latex-preview"></div>
+      <div class="form-group">
+        <label>Đáp án B:</label>
+        <input type="text" name="answer2" id="answer2" required />
+      </div>
 
-        <div id="answersContainer"></div>
+      <div class="form-group">
+        <label>Đáp án C:</label>
+        <input type="text" name="answer3" id="answer3" required />
+      </div>
 
-        <label for="correct_answer">Đáp án đúng:</label>
+      <div class="form-group">
+        <label>Đáp án D:</label>
+        <input type="text" name="answer4" id="answer4" required />
+      </div>
+
+      <div class="form-group">
+        <label>Đáp án đúng:</label>
         <select name="correct_answer" id="correct_answer" required>
-          <option value="">--Chọn--</option>
+          <option value="">-- Chọn --</option>
           <option value="A">A</option>
           <option value="B">B</option>
           <option value="C">C</option>
           <option value="D">D</option>
         </select>
-
-        <label for="image">Ảnh minh hoạ:</label>
-        <input type="file" name="image" id="image">
-        <small id="imageFileName" class="text-muted"></small>
-        <img id="imagePreview">
-        <input type="hidden" name="image_url" id="image_url">
-        <button type="button" id="deleteImageBtn" class="delete-btn" style="display:none;" onclick="deleteImage()">🗑️ Xoá ảnh minh hoạ</button>
-
       </div>
 
-      <div class="form-right">
-      <div class="button-group">
-        <button type="button" onclick="handleSaveQuestion(false)">➕ Thêm</button>
-        <button type="button" onclick="handleSaveQuestion(true)">✏️ Sửa</button>
-        <button type="button" class="delete-btn" onclick="deleteQuestion()">🗑️ Xoá</button>
-        <button type="reset" class="reset-btn" onclick="resetForm()">🔄 Làm mới</button>
-        <button type="button" onclick="exportToPDF()">📄 Xuất đề thi PDF</button>
+      <div class="form-group">
+        <label>Ảnh minh họa:</label><br />
+        <input type="hidden" name="image_url" id="image_url" />
+        <input type="file" id="image_input" accept="image/*" style="display:none;" />
+        <button type="button" id="select_image">📷 Chọn ảnh</button>
+        <button type="button" id="delete_image" style="display:none;">🗑️ Xoá ảnh</button>
+        <br />
+        <img id="preview_image" src="" style="max-width:150px; display:none; margin-top:10px; border:1px solid #ccc;" />
       </div>
 
+      <div class="form-group checkbox-group">
+        <label><input type="checkbox" id="toggle_preview_question" checked /> Hiện câu hỏi</label>
+        <label><input type="checkbox" id="toggle_preview_answers" checked /> Hiện đáp án</label>
+        <label><input type="checkbox" id="toggle_preview_all" checked /> Xem trước toàn bộ</label>
       </div>
-    </div>
 
-    <div style="margin-top:15px;">
-  <label style="display:inline-block;">
-    <input type="checkbox" id="showPreview"
-      onchange="togglePreviewBox('showPreview', 'fullPreviewBox'); debounceFullPreview()">
-    Xem trước toàn bộ
-  </label>
+      <div class="form-group button-group">
+        <button type="submit" id="saveBtn">💾 Lưu</button>
+        <button type="reset" id="resetBtn">🧹 Làm mới</button>
+        <button type="button" id="deleteBtn">❌ Xoá</button>
+        <button type="button" id="exportPdfBtn">📄 Xuất đề thi PDF</button>
+      </div>
+    </form>
 
-  <div id="fullPreviewBox" class="full-preview" style="display: none;">
-    <h5>Xem trước toàn bộ:</h5>
-    <div id="fullPreview" class="full-preview"></div>
+    <div id="preview_area" class="preview-box"></div>
+
+    <iframe src="get_question.php" id="questionIframe" style="width:100%; height:400px; border:1px solid #ccc; margin-top:20px;"></iframe>
   </div>
-  </div>
-
-
-  </form>
-
-  <h3>Danh sách câu hỏi</h3>
-
-  <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="border:1px solid #ccc; border-radius: 8px;"></iframe>
 
   <script src="js/question_script.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("answersContainer");
-      ["A", "B", "C", "D"].forEach((label, i) => {
-        const id = `answer${i + 1}`;
-        container.insertAdjacentHTML("beforeend", `
-          <label for="${id}">Đáp án ${label}:</label>
-          <input type="text" name="${id}" id="${id}" required oninput="renderPreview('${id}')">
-          <div id="preview_${id}" class="latex-preview"></div>
-        `);
-      });
-    });
-
-    window.addEventListener("message", function (event) {
-      if (event.origin !== window.location.origin) return;
-      if (event.data.type === "fillForm" && event.data.data) {
-        const d = event.data.data;
-        ["id", "topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "image_url"].forEach(id => {
-          const el = document.getElementById(id === "id" ? "question_id" : id);
-          if (el) el.value = d[id] || "";
-        });
-
-        const hasImg = d.image;
-        const imgPreview = document.getElementById("imagePreview");
-        imgPreview.style.display = hasImg ? "block" : "none";
-        imgPreview.src = hasImg || "";
-
-        document.getElementById("deleteImageBtn").style.display = hasImg ? "inline-block" : "none";
-        document.getElementById("image").removeAttribute("data-delete");
-
-        ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
-        formChanged = false;
-      }
-    });
-
-    function debounceFullPreview() {
-      clearTimeout(window._previewTimer);
-      window._previewTimer = setTimeout(() => {
-        const q = document.getElementById("question").value;
-        const a = ["answer1", "answer2", "answer3", "answer4"].map(id => document.getElementById(id).value);
-        const correct = document.getElementById("correct_answer").value;
-
-        const content = `
-          <p><strong>Chủ đề:</strong> ${document.getElementById("topic").value}</p>
-          <p><strong>Câu hỏi:</strong> ${q}</p>
-          ${a.map((text, i) => `<p><strong>Đáp án ${String.fromCharCode(65 + i)}:</strong> ${text}</p>`).join("")}
-          <p><strong>Đáp án đúng:</strong> ${correct}</p>
-        `;
-        document.getElementById("fullPreview").innerHTML = content;
-
-        if (window.MathJax?.typesetPromise) {
-          MathJax.typesetPromise([document.getElementById("fullPreview")]);
-        }
-      }, 300);
-    }
-
-    
-  function exportToPDF() {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "export_exam_pdf.php";
-  form.target = "_blank";
-
-  const fields = [
-    "question_id", "topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "image_url"
-  ];
-
-  fields.forEach(id => {
-    const input = document.getElementById(id);
-    if (input) {
-      const hidden = document.createElement("input");
-      hidden.type = "hidden";
-      hidden.name = id;
-      hidden.value = input.value || "";
-      form.appendChild(hidden);
-    }
-  });
-
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
-}
-function validateForm() {
-  const requiredFields = ["topic", "question", "answer1", "answer2", "answer3", "answer4", "correct_answer"];
-  for (const id of requiredFields) {
-    const el = document.getElementById(id);
-    if (!el.value.trim()) {
-      alert(`Vui lòng nhập đầy đủ thông tin: ${id}`);
-      el.focus();
-      return false;
-    }
-  }
-  return true;
-}
-function deleteQuestion() {
-  const id = document.getElementById("question_id").value;
-  if (!id) return alert("Vui lòng chọn câu hỏi để xoá.");
-  if (!confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
-
-  fetch("delete_question.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert("Đã xoá câu hỏi.");
-      resetForm();
-      refreshIframe();
-    } else {
-      alert("Lỗi khi xoá câu hỏi.");
-    }
-  });
-}
-function togglePreviewBox(checkboxId, previewId) {
-  const box = document.getElementById(previewId);
-  const checked = document.getElementById(checkboxId).checked;
-  box.style.display = checked ? "block" : "none";
-  if (checked) debounceFullPreview();
-}
-function togglePreview() {
-  const show = document.getElementById("togglePreview").checked;
-  document.querySelectorAll(".latex-preview").forEach(div => {
-    div.style.display = show ? "block" : "none";
-  });
-}
-function refreshIframe() {
-  const iframe = document.getElementById("questionIframe");
-  if (iframe && iframe.contentWindow) {
-    iframe.contentWindow.location.reload();
-  }
-}
-
-function resetForm() {
-  document.getElementById("questionForm").reset();
-  document.getElementById("question_id").value = "";
-  document.getElementById("imagePreview").style.display = "none";
-  document.getElementById("imagePreview").src = "";
-  document.getElementById("deleteImageBtn").style.display = "none";
-  togglePreview();
-  debounceFullPreview();
-  document.getElementById("image").removeAttribute("data-delete");
-}
-
-
-// Hàm chính để xử lý lưu thêm/sửa
-async function handleSaveQuestion(isEdit) {
-  const id = document.getElementById("question_id").value.trim();
-  const formData = new FormData(document.getElementById("questionForm"));
-  formData.set("delete_image", document.getElementById("image").getAttribute("data-delete") === "1" ? "1" : "0");
-
-  const requiredFields = ["question", "answer1", "answer2", "answer3", "answer4", "correct_answer", "topic"];
-  for (let field of requiredFields) {
-    if (!formData.get(field)?.trim()) {
-      alert(`Vui lòng nhập đầy đủ thông tin: ${field}`);
-      return;
-    }
-  }
-
-  const file = formData.get("image");
-  if (file?.size > 0) {
-    if (!file.type.startsWith("image/")) return alert("Chỉ chấp nhận ảnh.");
-    if (file.size > 2 * 1024 * 1024) return alert("Ảnh quá lớn. < 2MB thôi.");
-  }
-
-  const buttons = document.querySelectorAll(".form-right button");
-  buttons.forEach(btn => btn.disabled = true);
-
-  try {
-    let questionId = id;
-
-    // THÊM MỚI không có ảnh
-    if (!isEdit && (!file || file.size === 0)) {
-      const res = await fetch("insert_question.php", {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      if (!data.success || !data.id) throw new Error(data.message || "Lỗi tạo câu hỏi.");
-      questionId = data.id;
-    }
-
-    // SỬA không có ảnh
-    if (isEdit && (!file || file.size === 0)) {
-      const res = await fetch("update_question.php", {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Lỗi cập nhật câu hỏi.");
-    }
-
-    // CÓ ẢNH (thêm hoặc sửa đều dùng chung logic)
-    if (file?.size > 0) {
-      // Nếu thêm mới => insert trước để lấy ID
-      if (!isEdit) {
-        const res = await fetch("insert_question.php", {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
-        if (!data.success || !data.id) throw new Error(data.message || "Lỗi tạo câu hỏi.");
-        questionId = data.id;
-        formData.set("id", questionId);
-      }
-
-      // Upload ảnh lên Cloudinary
-      const uploadForm = new FormData();
-      uploadForm.append("file", file);
-      uploadForm.append("upload_preset", "quiz_photo");
-      uploadForm.append("public_id", `pic_${questionId}`);
-
-      const uploadRes = await fetch("https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload", {
-        method: "POST",
-        body: uploadForm
-      });
-      const uploadData = await uploadRes.json();
-      if (!uploadData.secure_url) throw new Error("Lỗi upload ảnh: " + (uploadData.error?.message || "Không rõ."));
-
-      const updateImageRes = await fetch("update_image_url.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: questionId, image_url: uploadData.secure_url })
-      });
-      const updateImageData = await updateImageRes.json();
-      if (!updateImageData.success) throw new Error("Không cập nhật được ảnh.");
-
-      formData.set("image_url", uploadData.secure_url);
-
-      // ✅ CẬP NHẬT lại toàn bộ nếu là chỉnh sửa
-      if (isEdit) {
-        const updateRes = await fetch("update_question.php", {
-          method: "POST",
-          body: formData
-        });
-        const updateData = await updateRes.json();
-        if (!updateData.success) throw new Error(updateData.message || "Lỗi cập nhật sau khi upload ảnh.");
-      }
-    }
-
-    alert(isEdit ? "Đã cập nhật câu hỏi." : "Đã thêm câu hỏi.");
-    resetForm();
-    refreshIframe();
-  } catch (err) {
-    alert("Lỗi: " + err.message);
-  } finally {
-    buttons.forEach(btn => btn.disabled = false);
-  }
-}
-
-function deleteImage() {
-  if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
-
-  // Xoá ảnh khỏi form
-  const imgPreview = document.getElementById("imagePreview");
-  const imageInput = document.getElementById("image");
-  const imageUrlInput = document.getElementById("image_url");
-  const deleteImageBtn = document.getElementById("deleteImageBtn");
-
-  imgPreview.style.display = "none";
-  imgPreview.src = "";
-  imageInput.value = "";
-  imageUrlInput.value = "";
-  imageInput.setAttribute("data-delete", "1");
-
-  deleteImageBtn.style.display = "none";
-
-  alert("Đã xoá ảnh khỏi biểu mẫu. Khi bạn lưu, ảnh sẽ được xoá khỏi hệ thống.");
-}
-
-  </script>
 </body>
 </html>
