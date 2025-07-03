@@ -34,6 +34,10 @@ if ($delete_image === '1') {
     try {
         $publicId = "pic_$id";
         $result = \Cloudinary\Api\Upload::destroy($publicId);
+
+        if (!isset($result['result']) || $result['result'] !== 'ok') {
+            error_log("Không xoá được ảnh hoặc ảnh không tồn tại.");
+        }
         // Có thể ghi log nếu cần: $result['result'] === 'ok'
     } catch (Exception $e) {
         // Không dừng script nếu lỗi xoá ảnh
