@@ -63,7 +63,8 @@ try {
     echo json_encode([
         'status' => 'success',
         'message' => '✅ Đã thêm câu hỏi mới.',
-        'id' => $newId
+        'id' => $newId,
+        'new_image_url' => $image_url  // ✅ Thêm dòng này
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
