@@ -1,74 +1,67 @@
 <?php
-ob_start();
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 require 'db_connection.php';
-header("Content-Type: application/json; charset=utf-8");
+require 'dotenv.php';
+require 'vendor/autoload.php';
 
-// Hàm tiện ích
+use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Configuration\Configuration;
+
+// Cấu hình Cloudinary
+Configuration::instance([
+    'cloud' => [
+        'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
+        'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
+        'api_secret' => $_ENV['CLOUDINARY_API_SECRET'],
+    ],
+    'url' => [
+        'secure' => true
+    ]
+]);
+
 function get_post($key) {
     return trim($_POST[$key] ?? '');
 }
 
-// Lấy dữ liệu POST
-$topic     = get_post('topic');
-$question  = get_post('question');
-$answer1   = get_post('answer1');
-$answer2   = get_post('answer2');
-$answer3   = get_post('answer3');
-$answer4   = get_post('answer4');
-$correct   = get_post('correct_answer');
+$question      = get_post('question');
+$answer1       = get_post('answer1');
+$answer2       = get_post('answer2');
+$answer3       = get_post('answer3');
+$answer4       = get_post('answer4');
+$correct       = get_post('correct_answer');
+$topic         = get_post('topic');
+$image_url     = get_post('image_url');
 
-// Kiểm tra dữ liệu
-$errors = [];
-if (!$topic)       $errors[] = "Chủ đề không được để trống.";
-if (!$question)    $errors[] = "Câu hỏi không được để trống.";
-if (!$answer1 || !$answer2 || !$answer3 || !$answer4) $errors[] = "Tất cả đáp án phải được điền.";
-if (!in_array($correct, ['A', 'B', 'C', 'D'])) $errors[] = "Đáp án đúng phải là A, B, C hoặc D.";
-
-if ($errors) {
-    http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => implode(" ", $errors)], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Kiểm tra trùng câu hỏi
-$stmt = $conn->prepare("SELECT id FROM questions WHERE question = ?");
-$stmt->bind_param("s", $question);
-$stmt->execute();
-$stmt->store_result();
-if ($stmt->num_rows > 0) {
-    http_response_code(409);
-    echo json_encode(['status' => 'duplicate', 'message' => '⚠️ Câu hỏi đã tồn tại trong cơ sở dữ liệu.']);
-    exit;
-}
-$stmt->close();
-
-// Thêm câu hỏi mới (chưa có ảnh)
 try {
-    $stmt = $conn->prepare("INSERT INTO questions (topic, question, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $topic, $question, $answer1, $answer2, $answer3, $answer4, $correct);
-    $stmt->execute();
+    // 1. Chèn câu hỏi mới
+    $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, '')");
+    $stmt->execute([$question, $answer1, $answer2, $answer3, $answer4, $correct, $topic]);
 
-    $new_id = $stmt->insert_id;
-    $stmt->close();
+    // 2. Lấy ID vừa chèn
+    $id = $conn->lastInsertId();
 
-    echo json_encode([
-        'status' => 'success',
-        'message' => '✅ Đã thêm câu hỏi mới.',
-        'id' => $new_id
-    ], JSON_UNESCAPED_UNICODE);
+    // 3. Nếu có ảnh tạm, đổi tên thành pic_ID
+    if ($image_url && preg_match('/\/([^\/]+)\.(jpg|jpeg|png|gif)$/i', $image_url, $m)) {
+        $old_public_id = pathinfo($m[1], PATHINFO_FILENAME); // temp_xxx
+        $ext = strtolower($m[2]);
+        $new_public_id = "pic_$id";
+
+        try {
+            $api = new AdminApi();
+            $api->rename($old_public_id, $new_public_id, ['overwrite' => true]);
+
+            // 4. Tạo URL mới theo chuẩn Cloudinary
+            $new_url = "https://res.cloudinary.com/{$_ENV['CLOUDINARY_CLOUD_NAME']}/image/upload/{$new_public_id}.{$ext}";
+
+            // 5. Cập nhật lại cột image
+            $stmt = $conn->prepare("UPDATE questions SET image = ? WHERE id = ?");
+            $stmt->execute([$new_url, $id]);
+        } catch (Exception $e) {
+            error_log("❌ Rename error: " . $e->getMessage());
+            // Nếu rename lỗi thì giữ nguyên không cập nhật image
+        }
+    }
+
+    echo json_encode(["status" => "success", "id" => $id]);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => '❌ Lỗi khi thêm câu hỏi: ' . $e->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
-}
-
-// Xoá bất kỳ nội dung không mong muốn trong buffer
-$output = ob_get_clean();
-if (strlen(trim($output)) > 0 && !str_starts_with(trim($output), '{')) {
-    http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Có nội dung ngoài JSON: ' . $output], JSON_UNESCAPED_UNICODE);
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }
