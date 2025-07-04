@@ -1,3 +1,4 @@
+
 // ========== Utility Functions ==========
 const $ = id => document.getElementById(id);
 const $$ = selector => document.querySelector(selector);
@@ -14,21 +15,20 @@ function refreshIframe() {
   }
 }
 
-const containsMath = text => /(\\\(.+?\\\)|\\\[.+?\\\]|\\begin\{.+?\\end\{.+?\})/.test(text);
+const containsMath = text => /(\(.+?\)|\[.+?\]|\begin\{.+?\end\{.+?\})/.test(text);
 
-// ✅ CHÍNH: Phân tích văn bản có cả công thức và text thường
+// ✅ Phân tích văn bản có cả công thức và text thường
 function processContent(raw) {
   if (!raw || typeof raw !== "string") return "";
-
   if (!containsMath(raw)) return raw;
 
-  const parts = raw.split(/(\\\(.+?\\\)|\\\[.+?\\\]|\\begin\{[\s\S]+?\\end\{[\s\S]+?\})/g);
+  const parts = raw.split(/(\(.+?\)|\[.+?\]|\begin\{[\s\S]+?\end\{[\s\S]+?\})/g);
 
   return parts.map(part => {
     if (!part) return "";
-    if (/^\\\(.+\\\)$/.test(part)) return part; // inline math
-    if (/^\\\[.+\\\]$/.test(part) || /^\\begin\{/.test(part)) return `<div>${part}</div>`; // display math
-    return part; // giữ nguyên text, không escape
+    if (/^\(.+\)$/.test(part)) return part;
+    if (/^\[.+\]$/.test(part) || /^\begin\{/.test(part)) return `<div>${part}</div>`;
+    return part;
   }).join("");
 }
 
@@ -300,7 +300,6 @@ window.addEventListener("load", () => {
 function validateInput(id) {
   const el = $(id);
   const preview = $("preview_" + id);
-
   if (!isValidMath(el.value)) {
     preview.classList.add("invalid-math");
     preview.title = "Công thức không hợp lệ";
@@ -309,3 +308,46 @@ function validateInput(id) {
     preview.title = "";
   }
 }
+
+// ========== Đồng bộ chọn dòng từ iframe ==========
+window.addEventListener("message", function (event) {
+  const data = event.data;
+  if (!data || typeof data !== "object" || !data.id) return;
+
+  $("question_id").value = data.id;
+  $("topic").value = data.topic || "";
+  $("question").value = data.question || "";
+  $("answer1").value = data.answer1 || "";
+  $("answer2").value = data.answer2 || "";
+  $("answer3").value = data.answer3 || "";
+  $("answer4").value = data.answer4 || "";
+  $("correct_answer").value = data.correct_answer || "";
+
+  if (data.image) {
+    $("image_url").value = data.image;
+    $("imagePreview").src = data.image;
+    $("imagePreview").style.display = "block";
+    $("imagePreview").classList.add("show");
+    $("deleteImageLabel").style.display = "inline-block";
+  } else {
+    $("image_url").value = "";
+    $("imagePreview").src = "";
+    $("imagePreview").style.display = "none";
+    $("imagePreview").classList.remove("show");
+    $("deleteImageLabel").style.display = "none";
+  }
+
+  ["question", "answer1", "answer2", "answer3", "answer4"].forEach(renderPreview);
+  debounceFullPreview();
+  formChanged = false;
+});
+
+// ========== Arrow Up / Down ==========
+document.addEventListener("keydown", function (e) {
+  if (["ArrowUp", "ArrowDown"].includes(e.key)) {
+    const iframe = $("questionIframe");
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ type: "navigate", direction: e.key }, "*");
+    e.preventDefault();
+  }
+});
