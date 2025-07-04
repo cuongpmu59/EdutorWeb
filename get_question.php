@@ -131,7 +131,7 @@ function selectRow(row, data) {
   if (currentRow) currentRow.classList.remove("selected-row");
   currentRow = row;
   row.classList.add("selected-row");
-  parent.postMessage({ type: "fillForm", data }, window.location.origin);
+  parent.postMessage({ ...data, type: "fillForm" }, "*");
   document.getElementById("previewArea").innerHTML = `
     <strong>Câu hỏi:</strong><br>${escapeHTML(data.question)}<br><br>
     <strong>A:</strong> ${escapeHTML(data.answer1)}<br>
