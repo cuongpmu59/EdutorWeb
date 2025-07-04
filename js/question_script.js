@@ -1,141 +1,66 @@
 
-// ========== Utility Functions ==========
 const $ = id => document.getElementById(id);
 const $$ = selector => document.querySelector(selector);
 
-function getFormData() {
-  return new FormData($("questionForm"));
-}
+// Upload ảnh tạm khi người dùng chọn
+$("image").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
 
-function refreshIframe() {
-  const iframe = $("questionIframe");
-  if (iframe) {
-    iframe.contentWindow.location.reload();
-    iframe.onload = () => iframe.contentWindow.MathJax?.typesetPromise();
-  }
-}
+  const formData = new FormData();
+  const tempName = "temp_" + Date.now();
+  formData.append("file", file);
+  formData.append("upload_preset", "your_unsigned_preset"); // nếu dùng unsigned preset
+  formData.append("public_id", tempName);
 
-const containsMath = text => /(\(.+?\)|\[.+?\]|\begin\{.+?\end\{.+?\})/.test(text);
+  fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.secure_url) {
+        $("imagePreview").src = data.secure_url;
+        $("imagePreview").style.display = "block";
+        $("imagePreview").classList.add("show");
+        $("image_url").value = data.secure_url;
+        $("imageFileName").textContent = file.name;
+        $("deleteImageLabel").style.display = "inline-block";
+      } else {
+        alert("Lỗi khi tải ảnh lên Cloudinary.");
+      }
+    })
+    .catch(err => {
+      console.error("Upload error:", err);
+      alert("Không thể tải ảnh lên.");
+    });
+});
 
-// ✅ Phân tích văn bản có cả công thức và text thường
-function processContent(raw) {
-  if (!raw || typeof raw !== "string") return "";
-  if (!containsMath(raw)) return raw;
-
-  const parts = raw.split(/(\(.+?\)|\[.+?\]|\begin\{[\s\S]+?\end\{[\s\S]+?\})/g);
-
-  return parts.map(part => {
-    if (!part) return "";
-    if (/^\(.+\)$/.test(part)) return part;
-    if (/^\[.+\]$/.test(part) || /^\begin\{/.test(part)) return `<div>${part}</div>`;
-    return part;
-  }).join("");
-}
-
-let mathTimer;
-function debounceRender(el) {
-  clearTimeout(mathTimer);
-  mathTimer = setTimeout(() => {
-    if (window.MathJax && containsMath(el.innerHTML)) {
-      MathJax.typesetPromise([el]);
-    }
-  }, 300);
-}
-
-function renderMathPage() {
-  if (window.MathJax && containsMath(document.body.innerText)) MathJax.typesetPromise();
-}
-
-// ========== Preview ==========
-function renderPreview(id) {
-  const val = $(id).value;
-  const preview = $("preview_" + id);
-  preview.innerHTML = processContent(val);
-  debounceRender(preview);
-  validateInput(id);
-}
-
-let previewTimeout;
-function debounceFullPreview() {
-  clearTimeout(previewTimeout);
-  previewTimeout = setTimeout(() => {
-    updateFullPreview();
-    adjustFullPreviewHeight();
-  }, 300);
-}
-
-function updateFullPreview() {
-  const topic = $("topic").value;
-  const question = $("question").value;
-  const a1 = $("answer1").value;
-  const a2 = $("answer2").value;
-  const a3 = $("answer3").value;
-  const a4 = $("answer4").value;
-  const correct = $("correct_answer").value;
-
-  const content = `
-    <strong>Chủ đề:</strong> ${topic}<br>
-    <strong>Câu hỏi:</strong> ${processContent(question)}<br>
-    <strong>Đáp án A:</strong> ${processContent(a1)}<br>
-    <strong>Đáp án B:</strong> ${processContent(a2)}<br>
-    <strong>Đáp án C:</strong> ${processContent(a3)}<br>
-    <strong>Đáp án D:</strong> ${processContent(a4)}<br>
-    <strong>Đáp án đúng:</strong> ${correct}
-  `;
-
-  $("fullPreview").innerHTML = content;
-  if (window.MathJax) MathJax.typesetPromise(["#fullPreview"]);
-}
-
-function togglePreview() {
-  const show = $("togglePreview").checked;
-  document.querySelectorAll(".latex-preview").forEach(div => {
-    div.style.display = show ? "block" : "none";
-  });
-}
-
-function adjustFullPreviewHeight() {
-  const box = $("fullPreviewBox");
-  if (box && box.style.display !== "none") {
-    box.style.height = "auto";
-    box.style.height = box.scrollHeight + "px";
-  }
-}
-
-function togglePreviewBox(id, target) {
-  $(target).style.display = $(id).checked ? "block" : "none";
-}
-
-function resetPreview() {
-  const img = $("imagePreview"), url = $("image_url"), delLbl = $("deleteImageLabel"), delChk = $("delete_image");
-
-  if (url.value) {
-    img.src = url.value;
-    img.classList.add("show");
-    delLbl.style.display = "inline-block";
-  } else {
-    img.src = "";
-    img.classList.remove("show");
-    delLbl.style.display = "none";
-  }
-
-  if (delChk.checked) {
-    img.src = "";
-    img.style.display = "none";
-  }
-
-  url.value = "";
-  delChk.checked = false;
-  debounceFullPreview();
-}
-
-// ========== Save ==========
+// Gửi form để thêm câu hỏi
 function saveQuestion(action) {
-  if (action === 'add') {
-    // Gọi hàm thêm mới
-  } else if (action === 'edit') {
-    // Gọi hàm cập nhật
-  }
+  if (action !== 'add') return; // chỉ xử lý thêm mới ở đây
+
+  const form = $("questionForm");
+  const formData = new FormData(form);
+
+  fetch("insert_question.php", {
+    method: "POST",
+    body: new URLSearchParams([...formData.entries()])
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert("✅ Đã thêm câu hỏi!");
+        resetForm();
+        refreshIframe();
+      } else {
+        alert("❌ Lỗi: " + data.message);
+      }
+    })
+    .catch(err => {
+      alert("Không thể kết nối máy chủ.");
+      console.error(err);
+    });
 }
 
 // ========== Delete ==========
