@@ -1,6 +1,4 @@
-<?php
-require 'dotenv.php';
-?>
+<?php require 'dotenv.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -66,12 +64,18 @@ require 'dotenv.php';
     <label>Đáp án D:</label>
     <input type="text" name="answer4" id="answer4">
 
-    <label>Đáp án đúng (A/B/C/D):</label>
-    <input type="text" name="correct_answer" id="correct_answer" maxlength="1">
+    <label>Đáp án đúng:</label>
+    <select name="correct_answer" id="correct_answer">
+      <option value="">-- Chọn đáp án đúng --</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
 
     <label>Ảnh minh hoạ:</label>
     <input type="hidden" name="image_url" id="image_url">
-    <input type="file" id="image_input" accept="image/*" style="display:none">
+    <input type="file" id="image" accept="image/*" style="display:none">
     <button type="button" class="btn-secondary" id="select_image">📷 Chọn ảnh</button>
     <img id="preview_image">
     <button type="button" class="btn-danger" id="delete_image" data-delete="0">🗑️ Xoá ảnh</button>
@@ -99,7 +103,7 @@ require 'dotenv.php';
 
 <script src="js/question_script.js"></script>
 <script>
-  // Tab handling
+  // Tab switching
   const tabButtons = document.querySelectorAll(".tab-btn");
   const tabForm = document.getElementById("tab-form");
   const tabPreview = document.getElementById("tab-preview");
