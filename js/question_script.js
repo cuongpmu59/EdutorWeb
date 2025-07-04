@@ -351,3 +351,7 @@ document.addEventListener("keydown", function (e) {
     e.preventDefault();
   }
 });
+// ========== Xử lý nút Chọn ảnh ==========
+$("select_image").addEventListener("click", () => {
+  $("image").click();
+});
