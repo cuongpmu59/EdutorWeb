@@ -78,7 +78,7 @@
     <input type="file" id="image" accept="image/*" style="display:none">
     <button type="button" class="btn-secondary" id="select_image">📷 Chọn ảnh</button>
     <span id="imageFileName" style="margin-left:10px; font-style: italic;"></span>
-    <img id="preview_image">
+    <img id="imagePreview">
     <button type="button" class="btn-danger" id="delete_image" data-delete="0">🗑️ Xoá ảnh</button>
 
     <div style="margin-top:15px;">
