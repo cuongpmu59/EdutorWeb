@@ -2,25 +2,27 @@
 require 'db_connection.php';
 header("X-Frame-Options: SAMEORIGIN");
 
-// ========== Nhập từ Excel ==========
+// ===== Nhập từ Excel =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excelData'])) {
     $data = json_decode($_POST['excelData'], true);
     if (is_array($data)) {
         $stmt = $conn->prepare("INSERT INTO questions (question, answer1, answer2, answer3, answer4, correct_answer, topic, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         foreach ($data as $row) {
             if (empty($row['question']) || empty($row['correct_answer'])) continue;
-            $stmt->execute([
-                $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '',
-                $row['answer3'] ?? '', $row['answer4'] ?? '', $row['correct_answer'] ?? '',
-                $row['topic'] ?? '', $row['image'] ?? ''
-            ]);
+            try {
+                $stmt->execute([
+                    $row['question'] ?? '', $row['answer1'] ?? '', $row['answer2'] ?? '',
+                    $row['answer3'] ?? '', $row['answer4'] ?? '', $row['correct_answer'] ?? '',
+                    $row['topic'] ?? '', $row['image'] ?? ''
+                ]);
+            } catch (Exception $e) {}
         }
         echo "OK";
         exit;
     }
 }
 
-// ========== Lấy danh sách câu hỏi ==========
+// ===== Lấy danh sách câu hỏi =====
 $topics = [];
 try {
     $stmtTopics = $conn->query("SELECT DISTINCT topic FROM questions WHERE topic IS NOT NULL AND topic != '' ORDER BY topic");
@@ -47,7 +49,7 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <style>
-    body { font-family: Arial; padding: 5px; }
+    body { font-family: Arial; padding: 10px; background-color: #fafafa; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     thead th {
       position: sticky; top: 0; z-index: 10;
@@ -61,23 +63,62 @@ try {
     #imageModal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
     #imageModal img { max-width: 90%; max-height: 90%; }
     #imageModal span { position: absolute; top: 10px; right: 20px; color: white; font-size: 28px; cursor: pointer; }
+
+    /* Tabs */
+    .tab-container { display: flex; margin-bottom: 10px; border-bottom: 2px solid #007bff; }
+    .tab-button {
+      padding: 8px 15px; border: none; cursor: pointer;
+      background: #f0f0f0; font-weight: bold; border-radius: 5px 5px 0 0;
+      margin-right: 5px;
+    }
+    .tab-button.active { background: #007bff; color: white; }
+    .tab-content { display: none; padding: 10px 0; }
+    .tab-content.active { display: block; }
+
+    /* Phân trang đẹp hơn */
+    .dataTables_paginate { margin-top: 10px !important; font-weight: bold; }
+    .dataTables_paginate .paginate_button {
+      padding: 5px 10px !important; margin: 2px;
+      background: #f1f1f1; border-radius: 4px; border: 1px solid #ccc;
+    }
+    .dataTables_paginate .paginate_button.current {
+      background: #007bff !important; color: white !important;
+    }
   </style>
 </head>
 <body>
 
-<div style="margin-bottom:10px">
-  <label><strong>Lọc chủ đề:</strong></label>
+<!-- Tabs -->
+<div class="tab-container">
+  <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
+  <button class="tab-button" data-tab="importTab">📁 Nhập / Xuất</button>
+  <button class="tab-button" data-tab="otherTab">⚙️ Khác</button>
+</div>
+
+<!-- Tab Content -->
+<div id="filterTab" class="tab-content active">
+  <label><strong>Lọc theo chủ đề:</strong></label>
   <select id="filterTopicInline">
     <option value="">-- Tất cả --</option>
     <?php foreach ($topics as $t): ?>
       <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>><?= htmlspecialchars($t) ?></option>
     <?php endforeach; ?>
   </select>
-
-  <label style="margin-left:20px;"><strong>📤 Nhập Excel:</strong></label>
-  <input type="file" id="excelInput" accept=".xlsx,.xls">
 </div>
 
+<div id="importTab" class="tab-content">
+  <label><strong>📤 Nhập từ Excel:</strong></label>
+  <input type="file" id="excelInput" accept=".xlsx,.xls">
+  <br><br>
+  <button onclick="$('.buttons-excel').click()">📥 Xuất Excel</button>
+  <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
+</div>
+
+<div id="otherTab" class="tab-content">
+  <em>Chức năng khác sẽ được cập nhật sau...</em>
+</div>
+
+<!-- Bảng câu hỏi -->
 <table id="questionTable">
   <thead>
     <tr>
@@ -96,14 +137,11 @@ try {
       <td><?= $q['correct_answer'] ?></td>
       <td><?= $q['topic'] ?></td>
       <td>
-      <?php if (!empty($q['image'])):
-              $cloudUrl = strpos($q['image'], 'http') === 0 
-              ? $q['image']
-              : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$q['image']}";
-?>
-  <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
-<?php endif; ?>
-
+        <?php if (!empty($q['image'])):
+          $cloudUrl = strpos($q['image'], 'http') === 0 ? $q['image'] : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$q['image']}";
+        ?>
+        <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
+        <?php endif; ?>
       </td>
     </tr>
     <?php endforeach; ?>
@@ -189,6 +227,7 @@ $(document).ready(() => {
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi' }
     ],
     pageLength: 20,
+    lengthMenu: [ [10, 20, 50, 100, -1], [10, 20, 50, 100, "Tất cả"] ],
     language: {
       search: "🔍 Tìm kiếm:", lengthMenu: "Hiển thị _MENU_ dòng",
       info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
@@ -211,12 +250,12 @@ $(document).ready(() => {
     selectRow(this, data);
   });
 
-  document.getElementById("filterTopicInline").addEventListener("change", function () {
+  $("#filterTopicInline").on("change", function () {
     const topic = this.value;
     location.href = topic ? `get_question.php?topic=${encodeURIComponent(topic)}` : "get_question.php";
   });
 
-  document.getElementById("excelInput").addEventListener("change", function (e) {
+  $("#excelInput").on("change", function (e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -231,7 +270,6 @@ $(document).ready(() => {
         answer4: r[5] || '', correct_answer: r[6] || '', topic: r[7] || '', image: r[8] || ''
       }));
 
-      // Gửi lên server lưu vào CSDL
       $.post("get_question.php", { excelData: JSON.stringify(formatted) })
         .done(res => {
           if (res.trim() === "OK") {
@@ -242,6 +280,14 @@ $(document).ready(() => {
         .fail(err => alert("Không kết nối được đến máy chủ."));
     };
     reader.readAsBinaryString(file);
+  });
+
+  $(".tab-button").click(function () {
+    $(".tab-button").removeClass("active");
+    $(this).addClass("active");
+    const tabId = $(this).data("tab");
+    $(".tab-content").removeClass("active");
+    $("#" + tabId).addClass("active");
   });
 });
 </script>
