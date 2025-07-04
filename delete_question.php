@@ -1,56 +1,70 @@
 <?php
+ob_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require 'db_connection.php';
 require 'dotenv.php';
+require 'vendor/autoload.php';
 
-header('Content-Type: application/json');
+header("Content-Type: application/json; charset=utf-8");
 
-$id = $_POST['id'] ?? '';
-if (!$id) {
-    echo json_encode(['status' => 'error', 'message' => 'ID không hợp lệ']);
+$id = trim($_POST['id'] ?? '');
+
+if (!$id || !is_numeric($id)) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Thiếu hoặc sai ID câu hỏi.']);
     exit;
 }
 
-try {
-    // Tìm ảnh trước khi xoá
-    $stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
-    $stmt->execute([$id]);
-    $image = $stmt->fetchColumn();
+// Lấy thông tin ảnh trước khi xoá
+$stmt = $conn->prepare("SELECT image FROM questions WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$stmt->bind_result($image_url);
+$stmt->fetch();
+$stmt->close();
 
-    // Xóa ảnh Cloudinary nếu có
-    if ($image) {
-        $publicId = pathinfo(parse_url($image, PHP_URL_PATH), PATHINFO_FILENAME);
-        if ($publicId) {
-            $cloudName = getenv('CLOUDINARY_CLOUD_NAME');
-            $apiKey = getenv('CLOUDINARY_API_KEY');
-            $apiSecret = getenv('CLOUDINARY_API_SECRET');
-            $url = "https://api.cloudinary.com/v1_1/$cloudName/image/destroy";
+// Xoá ảnh trên Cloudinary nếu có
+if (!empty($image_url)) {
+    \Cloudinary\Configuration\Configuration::instance([
+        'cloud' => [
+            'cloud_name' => getenv('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => getenv('CLOUDINARY_API_KEY'),
+            'api_secret' => getenv('CLOUDINARY_API_SECRET'),
+        ]
+    ]);
 
-            $timestamp = time();
-            $signature = sha1("public_id=$publicId&timestamp=$timestamp$apiSecret");
-
-            $data = [
-                'public_id' => $publicId,
-                'api_key' => $apiKey,
-                'timestamp' => $timestamp,
-                'signature' => $signature
-            ];
-
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query($data)
-            ]);
-            curl_exec($ch);
-            curl_close($ch);
+    try {
+        $publicId = "pic_$id";
+        $result = \Cloudinary\Api\Upload::destroy($publicId);
+        if (($result['result'] ?? '') !== 'ok') {
+            error_log("⚠️ Không xoá được ảnh Cloudinary: $publicId");
         }
+    } catch (Exception $e) {
+        error_log("❌ Lỗi khi xoá ảnh Cloudinary: " . $e->getMessage());
     }
+}
 
-    // Xoá câu hỏi
+// Xoá câu hỏi khỏi cơ sở dữ liệu
+try {
     $stmt = $conn->prepare("DELETE FROM questions WHERE id = ?");
-    $stmt->execute([$id]);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
 
-    echo json_encode(['status' => 'success', 'message' => '✅ Đã xoá câu hỏi']);
+    echo json_encode(['status' => 'success', 'message' => '✅ Đã xoá câu hỏi.']);
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => '❌ Lỗi: ' . $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => '❌ Lỗi xoá câu hỏi: ' . $e->getMessage()]);
+}
+
+// Dọn dẹp buffer
+$output = ob_get_clean();
+if (strlen(trim($output)) > 0 && !str_starts_with(trim($output), '{')) {
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Có nội dung ngoài JSON: ' . $output
+    ]);
 }
