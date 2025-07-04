@@ -63,8 +63,6 @@ try {
     #imageModal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
     #imageModal img { max-width: 90%; max-height: 90%; }
     #imageModal span { position: absolute; top: 10px; right: 20px; color: white; font-size: 28px; cursor: pointer; }
-
-    /* Tabs */
     .tab-container { display: flex; margin-bottom: 10px; border-bottom: 2px solid #007bff; }
     .tab-button {
       padding: 8px 15px; border: none; cursor: pointer;
@@ -74,8 +72,6 @@ try {
     .tab-button.active { background: #007bff; color: white; }
     .tab-content { display: none; padding: 10px 0; }
     .tab-content.active { display: block; }
-
-    /* Phân trang đẹp hơn */
     .dataTables_paginate { margin-top: 10px !important; font-weight: bold; }
     .dataTables_paginate .paginate_button {
       padding: 5px 10px !important; margin: 2px;
@@ -87,15 +83,13 @@ try {
   </style>
 </head>
 <body>
-
-<!-- Tabs -->
 <div class="tab-container">
   <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
   <button class="tab-button" data-tab="importTab">📁 Nhập / Xuất</button>
+  <button class="tab-button" data-tab="listTab">📄 Danh sách</button>
   <button class="tab-button" data-tab="otherTab">⚙️ Khác</button>
 </div>
 
-<!-- Tab Content -->
 <div id="filterTab" class="tab-content active">
   <label><strong>Lọc theo chủ đề:</strong></label>
   <select id="filterTopicInline">
@@ -114,44 +108,43 @@ try {
   <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
 </div>
 
+<div id="listTab" class="tab-content">
+  <table id="questionTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>Câu hỏi</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Đúng</th><th>Chủ đề</th><th>Ảnh</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($rows as $q): ?>
+      <tr>
+        <td><?= $q['id'] ?></td>
+        <td><?= htmlspecialchars($q['question']) ?></td>
+        <td><?= htmlspecialchars($q['answer1']) ?></td>
+        <td><?= htmlspecialchars($q['answer2']) ?></td>
+        <td><?= htmlspecialchars($q['answer3']) ?></td>
+        <td><?= htmlspecialchars($q['answer4']) ?></td>
+        <td><?= $q['correct_answer'] ?></td>
+        <td><?= $q['topic'] ?></td>
+        <td>
+          <?php if (!empty($q['image'])):
+            $cloudUrl = strpos($q['image'], 'http') === 0 ? $q['image'] : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$q['image']}";
+          ?>
+          <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
+          <?php endif; ?>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+  <div id="previewArea" style="margin-top:20px;"><em>Chọn một câu hỏi để xem trước nội dung...</em></div>
+</div>
+
 <div id="otherTab" class="tab-content">
   <em>Chức năng khác sẽ được cập nhật sau...</em>
 </div>
 
-<!-- Bảng câu hỏi -->
-<table id="questionTable">
-  <thead>
-    <tr>
-      <th>ID</th><th>Câu hỏi</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Đúng</th><th>Chủ đề</th><th>Ảnh</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php foreach ($rows as $q): ?>
-    <tr>
-      <td><?= $q['id'] ?></td>
-      <td><?= htmlspecialchars($q['question']) ?></td>
-      <td><?= htmlspecialchars($q['answer1']) ?></td>
-      <td><?= htmlspecialchars($q['answer2']) ?></td>
-      <td><?= htmlspecialchars($q['answer3']) ?></td>
-      <td><?= htmlspecialchars($q['answer4']) ?></td>
-      <td><?= $q['correct_answer'] ?></td>
-      <td><?= $q['topic'] ?></td>
-      <td>
-        <?php if (!empty($q['image'])):
-          $cloudUrl = strpos($q['image'], 'http') === 0 ? $q['image'] : "https://res.cloudinary.com/dbdf2gwc9/image/upload/{$q['image']}";
-        ?>
-        <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
-        <?php endif; ?>
-      </td>
-    </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
-
-<div id="previewArea" style="margin-top:20px;"><em>Chọn một câu hỏi để xem trước nội dung...</em></div>
 <div id="imageModal"><span onclick="closeModal()">&times;</span><img id="modalImage" /></div>
-
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -160,7 +153,6 @@ try {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
 <script>
 let table, currentRowIndex = null, currentRow = null;
 const escapeHTML = str => (str || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
