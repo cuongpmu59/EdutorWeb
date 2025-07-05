@@ -35,7 +35,6 @@ function updatePreview() {
   renderMath();
 }
 
-
 ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
   $(id).addEventListener("input", updatePreview);
 });
@@ -100,6 +99,15 @@ $("delete_image").addEventListener("click", async () => {
   }
 });
 
+function showMessage(msg, color = "green") {
+  const div = document.createElement("div");
+  div.textContent = msg;
+  div.style = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:${color};color:white;padding:10px 20px;border-radius:6px;z-index:9999;box-shadow:0 0 8px #0003`;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
 // ======= Save Question =======
 $("questionForm").addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -134,7 +142,7 @@ $("questionForm").addEventListener("submit", async function (e) {
       }
     }
 
-    alert("✅ Đã lưu thành công!");
+    showMessage("✅ Đã lưu thành công!");
     $("questionForm").reset();
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
