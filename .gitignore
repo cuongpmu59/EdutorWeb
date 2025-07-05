@@ -1,56 +1,44 @@
-# Ignore environment file
+# ========== ENVIRONMENT CONFIG ==========
 .env
-
-# Ignore config if it contains sensitive info
 config.php
 
-# Node & PHP package directories
-node_modules/
+# ========== DEPENDENCIES ==========
 vendor/
-
-# Composer files (nếu dùng)
+node_modules/
 composer.lock
 composer.phar
 
-# IDE / Editor config files
+# ========== IDE / EDITOR ==========
 .idea/
 .vscode/
 *.sublime-project
 *.sublime-workspace
 
-# System / OS junk
+# ========== SYSTEM FILES ==========
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Logs
+# ========== LOGS & CACHE ==========
 *.log
-
-# Cache / temp
 *.tmp
 *.bak
+*.old
+*.swp
+*.orig
 .cache/
 .tmp/
 .phpunit.result.cache
 
-# Uploaded images (nếu lưu local)
+# ========== UPLOADED / GENERATED FILES ==========
 uploads/
 uploads_tmp/
-
-# Exported files
 *.pdf
 *.xlsx
 *.xls
 *.zip
-
-# Database dumps
 *.sql
 *.sqlite
 
-# Backup files
-*.old
-*.swp
-*.orig
-
-# Ignore iframe temp files (if any)
+# ========== TEMP FILES ==========
 get_question_temp.php
