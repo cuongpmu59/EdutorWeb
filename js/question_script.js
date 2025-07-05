@@ -17,6 +17,7 @@ function updatePreview() {
   const showQuestion = $("toggle_preview_question").checked;
   const showAnswers = $("toggle_preview_answers").checked;
 
+  // Tự động hiển thị nội dung có thể chứa công thức
   let html = "";
 
   if (showAll || showQuestion) {
@@ -28,8 +29,9 @@ function updatePreview() {
   }
 
   previewArea.innerHTML = html || "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
-  renderMath();
+  renderMath();  // gọi MathJax để xử lý công thức
 }
+
 
 
 ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
