@@ -74,14 +74,6 @@
       <option value="D">D</option>
     </select>
 
-    <label>Ảnh minh hoạ:</label>
-    <input type="hidden" name="image_url" id="image_url">
-    <input type="file" id="image" accept="image/*" style="display:none">
-    <button type="button" class="btn-secondary" id="select_image">📷 Chọn ảnh</button>
-    <span id="imageFileName" style="margin-left:10px; font-style: italic;"></span>
-    <img id="imagePreview">
-    <button type="button" class="btn-danger" id="delete_image" style="display:none;">🗑️ Xoá ảnh</button>
-
     <div style="margin-top:15px;">
       <button type="submit" class="btn-primary">💾 Lưu</button>
       <button type="button" class="btn-secondary" id="resetBtn">🔄 Làm mới</button>
