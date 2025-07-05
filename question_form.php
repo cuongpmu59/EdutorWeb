@@ -40,6 +40,7 @@
 <div class="tabs">
   <div class="tab-btn active" data-tab="form">📝 Nhập câu hỏi</div>
   <div class="tab-btn" data-tab="preview">👁️ Xem trước</div>
+  <div class="tab-btn" data-tab="imageTab">🖼️ Ảnh minh hoạ</button>
 </div>
 
 <div class="tab-content" id="tab-form">
@@ -100,6 +101,13 @@
   <div id="preview_area"><em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em></div>
 </div>
 
+<div id="imageTab" class="tab-content">
+  <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
+  <img id="imageTabPreview" style="max-width: 100%; max-height: 200px; display: none; border: 1px solid #ccc; margin: 10px 0;">
+  <div id="imageTabFileName" style="color: gray; font-style: italic;"></div>
+  <button type="button" id="delete_image_tab" style="display:none; margin-top: 10px;">🗑️ Xoá ảnh</button>
+</div>
+
 <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px;border:1px solid #aaa;"></iframe>
 
 <script>
@@ -124,5 +132,20 @@
     });
   });
 </script>
+<script>
+document.querySelectorAll('.tab-button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tabId = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab-content').forEach(div => {
+      div.classList.remove('active');
+    });
+    document.getElementById(tabId).classList.add('active');
+  });
+});
+</script>
+
 </body>
 </html>
