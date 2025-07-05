@@ -88,12 +88,6 @@
       <button type="button" class="btn-danger" id="deleteBtn">🗑️ Xoá</button>
       <button type="button" class="btn-secondary" id="exportPdfBtn">📝 Xuất đề PDF</button>
     </div>
-
-    <div style="margin-top:15px">
-      <label><input type="checkbox" id="toggle_preview_question" checked> Xem trước câu hỏi</label>
-      <label><input type="checkbox" id="toggle_preview_answers" checked> Xem trước đáp án</label>
-      <label><input type="checkbox" id="toggle_preview_all"> Xem trước toàn bộ</label>
-    </div>
   </form>
 </div>
 
