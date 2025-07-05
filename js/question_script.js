@@ -216,7 +216,7 @@ $("exportPdfBtn").addEventListener("click", () => {
 // === Nhận dữ liệu từ iframe (click hàng) ===
 window.addEventListener("message", (event) => {
   const data = event.data;
-  if (!data || !data.id) return;
+  if (!data || data.type !== "fillForm") return;
 
   $("question_id").value = data.id;
   $("topic").value = data.topic || "";
