@@ -74,6 +74,11 @@ $("image").addEventListener("change", async function () {
     $("imagePreview").src = data.secure_url;
     $("imagePreview").style.display = "block";
     $("delete_image").style.display = "inline-block";
+
+    $("imageTabPreview").src = data.secure_url;
+    $("imageTabPreview").style.display = "block";
+    $("imageTabFileName").textContent = file.name;
+    $("delete_image_tab").style.display = "inline-block";
   }
 });
 
@@ -96,6 +101,12 @@ $("delete_image").addEventListener("click", async () => {
     $("imagePreview").src = "";
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
+
+    $("imageTabPreview").src = "";
+    $("imageTabPreview").style.display = "none";
+    $("imageTabFileName").textContent = "";
+    $("delete_image_tab").style.display = "none";
+
     tempPublicId = "";
   } else {
     alert("❌ Không thể xoá ảnh!");
@@ -142,6 +153,9 @@ $("questionForm").addEventListener("submit", async function (e) {
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
     $("imageFileName").textContent = "";
+    $("imageTabPreview").style.display = "none";
+    $("imageTabFileName").textContent = "";
+    $("delete_image_tab").style.display = "none";
     tempPublicId = "";
     updatePreview();
     $("questionIframe").contentWindow.location.reload();
@@ -169,6 +183,9 @@ $("deleteBtn").addEventListener("click", async () => {
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
     $("imageFileName").textContent = "";
+    $("imageTabPreview").style.display = "none";
+    $("imageTabFileName").textContent = "";
+    $("delete_image_tab").style.display = "none";
     $("preview_area").innerHTML = "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
     tempPublicId = "";
     $("questionIframe").contentWindow.location.reload();
@@ -183,6 +200,9 @@ $("resetBtn").addEventListener("click", () => {
   $("imagePreview").style.display = "none";
   $("delete_image").style.display = "none";
   $("imageFileName").textContent = "";
+  $("imageTabPreview").style.display = "none";
+  $("imageTabFileName").textContent = "";
+  $("delete_image_tab").style.display = "none";
   $("preview_area").innerHTML = "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
   tempPublicId = "";
   updatePreview();
@@ -211,15 +231,47 @@ window.addEventListener("message", (event) => {
   if (data.image) {
     $("imagePreview").src = data.image;
     $("imagePreview").style.display = "block";
-    $("delete_image").style.display = "inline-block";
     $("imageFileName").textContent = "(Đã có ảnh)";
+    $("delete_image").style.display = "inline-block";
+
+    $("imageTabPreview").src = data.image;
+    $("imageTabPreview").style.display = "block";
+    $("imageTabFileName").textContent = "(Đã có ảnh)";
+    $("delete_image_tab").style.display = "inline-block";
   } else {
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
     $("imageFileName").textContent = "";
+
+    $("imageTabPreview").style.display = "none";
+    $("imageTabFileName").textContent = "";
+    $("delete_image_tab").style.display = "none";
   }
 
   tempPublicId = "";
   updatePreview();
   window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// === Đồng bộ tab ảnh chọn ===
+$("select_image_tab")?.addEventListener("click", () => $("image").click());
+
+$("image").addEventListener("change", () => {
+  setTimeout(() => {
+    const url = $("image_url").value;
+    if (url) {
+      $("imageTabPreview").src = url;
+      $("imageTabPreview").style.display = "block";
+      $("imageTabFileName").textContent = $("imageFileName").textContent;
+      $("delete_image_tab").style.display = "inline-block";
+    }
+  }, 500);
+});
+
+$("delete_image_tab")?.addEventListener("click", () => {
+  $("delete_image").click();
+  $("imageTabPreview").src = "";
+  $("imageTabPreview").style.display = "none";
+  $("imageTabFileName").textContent = "";
+  $("delete_image_tab").style.display = "none";
 });
