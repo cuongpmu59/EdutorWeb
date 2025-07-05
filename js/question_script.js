@@ -99,15 +99,6 @@ $("delete_image").addEventListener("click", async () => {
   }
 });
 
-function showMessage(msg, color = "green") {
-  const div = document.createElement("div");
-  div.textContent = msg;
-  div.style = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    background:${color};color:white;padding:10px 20px;border-radius:6px;z-index:9999;box-shadow:0 0 8px #0003`;
-  document.body.appendChild(div);
-  setTimeout(() => div.remove(), 3000);
-}
-
 // ======= Save Question =======
 $("questionForm").addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -124,7 +115,6 @@ $("questionForm").addEventListener("submit", async function (e) {
   if (result.success) {
     const questionId = result.id || id;
 
-    // Nếu ảnh mới và là upload tạm → rename và cập nhật lại DB
     if (tempPublicId) {
       const renameRes = await fetch("rename_cloudinary_image.php", {
         method: "POST",
@@ -142,7 +132,7 @@ $("questionForm").addEventListener("submit", async function (e) {
       }
     }
 
-    showMessage("✅ Đã lưu thành công!");
+    alert("✅ Đã lưu thành công!");
     $("questionForm").reset();
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
@@ -167,7 +157,7 @@ $("deleteBtn").addEventListener("click", async () => {
   });
   const data = await res.json();
 
-  if (data.success) {
+  if (data.status === "success" || data.success) {
     alert("🗑️ Đã xoá câu hỏi!");
     $("questionForm").reset();
     $("imagePreview").style.display = "none";
@@ -176,6 +166,7 @@ $("deleteBtn").addEventListener("click", async () => {
     tempPublicId = "";
     updatePreview();
     $("questionIframe").contentWindow.location.reload();
+    $("preview_area").innerHTML = "<em>Chọn một câu hỏi để xem trước nội dung...</em>";
   } else {
     alert("❌ Không xoá được!");
   }
