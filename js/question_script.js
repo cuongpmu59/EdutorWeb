@@ -229,19 +229,19 @@ window.addEventListener("message", (event) => {
   $("image_url").value = data.image || "";
 
   if (data.image) {
-    // $("imagePreview").src = data.image;
-    // $("imagePreview").style.display = "block";
-    // $("imageFileName").textContent = "(Đã có ảnh)";
-    // $("delete_image").style.display = "inline-block";
+    $("imagePreview").src = data.image;
+    $("imagePreview").style.display = "block";
+    $("imageFileName").textContent = "(Đã có ảnh)";
+    $("delete_image").style.display = "inline-block";
 
     $("imageTabPreview").src = data.image;
     $("imageTabPreview").style.display = "block";
     $("imageTabFileName").textContent = "(Đã có ảnh)";
     $("delete_image_tab").style.display = "inline-block";
   } else {
-    // $("imagePreview").style.display = "none";
-    // $("delete_image").style.display = "none";
-    // $("imageFileName").textContent = "";
+    $("imagePreview").style.display = "none";
+    $("delete_image").style.display = "none";
+    $("imageFileName").textContent = "";
 
     $("imageTabPreview").style.display = "none";
     $("imageTabFileName").textContent = "";
