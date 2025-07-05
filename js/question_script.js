@@ -209,17 +209,48 @@ window.addEventListener("message", (event) => {
   $("image_url").value = data.image || "";
 
   if (data.image) {
-    $("imagePreview").src = data.image;
-    $("imagePreview").style.display = "block";
-    $("delete_image").style.display = "inline-block";
-    $("imageFileName").textContent = "(Đã có ảnh)";
+    $("imageTabPreview").src = data.image;
+    $("imageTabPreview").style.display = "block";
+    $("imageTabFileName").textContent = "(Đã có ảnh)";
+    $("delete_image_tab").style.display = "inline-block";
+
   } else {
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
     $("imageFileName").textContent = "";
+  
+    $("imageTabPreview").src = data.image;
+    $("imageTabPreview").style.display = "block";
+    $("imageTabFileName").textContent = "(Đã có ảnh)";
+    $("delete_image_tab").style.display = "inline-block";
   }
-
+  
   tempPublicId = "";
   updatePreview();
   window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Đồng bộ chọn ảnh trong tab
+$("select_image_tab").addEventListener("click", () => $("image").click());
+
+// Khi người dùng chọn ảnh → cập nhật cả tab
+$("image").addEventListener("change", () => {
+  setTimeout(() => {
+    const url = $("image_url").value;
+    if (url) {
+      $("imageTabPreview").src = url;
+      $("imageTabPreview").style.display = "block";
+      $("imageTabFileName").textContent = $("imageFileName").textContent;
+      $("delete_image_tab").style.display = "inline-block";
+    }
+  }, 500);
+});
+
+// Khi người dùng xoá ảnh từ tab
+$("delete_image_tab").addEventListener("click", () => {
+  $("delete_image").click(); // Gọi lại xoá chính từ form
+  $("imageTabPreview").src = "";
+  $("imageTabPreview").style.display = "none";
+  $("imageTabFileName").textContent = "";
+  $("delete_image_tab").style.display = "none";
 });
