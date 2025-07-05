@@ -1,12 +1,7 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+require_once 'dotenv.php';
 
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-// Giờ bạn có thể dùng biến môi trường:
-$cloudName = $_ENV['CLOUDINARY_CLOUD_NAME'];
-$apiKey    = $_ENV['CLOUDINARY_API_KEY'];
-$apiSecret = $_ENV['CLOUDINARY_API_SECRET'];
+define('CLOUDINARY_CLOUD_NAME', env('CLOUDINARY_CLOUD_NAME'));
+define('CLOUDINARY_API_KEY',    env('CLOUDINARY_API_KEY'));
+define('CLOUDINARY_API_SECRET', env('CLOUDINARY_API_SECRET'));
+define('CLOUDINARY_UPLOAD_PRESET', env('CLOUDINARY_UPLOAD_PRESET'));
