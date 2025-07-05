@@ -102,6 +102,10 @@
 
 <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px;border:1px solid #aaa;"></iframe>
 
+<script>
+  const CLOUDINARY_CLOUD_NAME = "<?= env('CLOUDINARY_CLOUD_NAME') ?>";
+  const CLOUDINARY_UPLOAD_PRESET = "<?= env('CLOUDINARY_UPLOAD_PRESET') ?>";
+</script>
 <script src="js/question_script.js"></script>
 <script>
   // Tab switching
