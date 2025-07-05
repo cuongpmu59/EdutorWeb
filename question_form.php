@@ -137,20 +137,5 @@
   });
 </script>
 
-<script>
-document.querySelectorAll('.tab-button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const tabId = btn.getAttribute('data-tab');
-    document.querySelectorAll('.tab-content').forEach(div => {
-      div.classList.remove('active');
-    });
-    document.getElementById(tabId).classList.add('active');
-  });
-});
-</script>
-
 </body>
 </html>
