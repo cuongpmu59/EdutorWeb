@@ -14,10 +14,12 @@ if (!$id || !$imageUrl) {
 
 try {
     $stmt = $conn->prepare("UPDATE questions SET image = ? WHERE id = ?");
-    $stmt->bind_param("si", $imageUrl, $id);
-    $success = $stmt->execute();
+    $success = $stmt->execute([$imageUrl, $id]);
 
     echo json_encode(['success' => $success]);
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+} catch (PDOException $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Lỗi SQL: ' . $e->getMessage()
+    ]);
 }
