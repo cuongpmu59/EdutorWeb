@@ -48,6 +48,13 @@
 <!-- Tab 1: Nhập -->
 <div class="tab-content active" id="tab-form">
   <form id="questionForm">
+
+    <input type="file" id="image" name="image" style="display:none;">
+    <span id="imageFileName" style="font-style: italic; color: gray;"></span>
+    <img id="imagePreview" style="display:none; max-height: 150px; margin-top:10px; border:1px solid #ccc;">
+    <button type="button" id="delete_image" class="btn-danger" style="display:none; margin-top:10px;">🗑️ Xoá ảnh</button>
+    <button type="button" id="select_image" class="btn-secondary">📂 Chọn ảnh</button>
+
     <input type="hidden" name="id" id="question_id">
     <input type="hidden" name="image_url" id="image_url">
 
