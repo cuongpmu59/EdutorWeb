@@ -51,8 +51,8 @@
 
     <input type="file" id="image" name="image" style="display:none;">
     <span id="imageFileName" style="font-style: italic; color: gray;"></span>
-    <img id="imagePreview" style="display:none; max-height: 150px; margin-top:10px; border:1px solid #ccc;">
-    <button type="button" id="delete_image" class="btn-danger" style="display:none; margin-top:10px;">🗑️ Xoá ảnh</button>
+    <img id="imagePreview">
+    <button type="button" id="delete_image" class="btn-danger" style="display:none;">🗑️ Xoá ảnh</button>
     <button type="button" id="select_image" class="btn-secondary">📂 Chọn ảnh</button>
 
     <input type="hidden" name="id" id="question_id">
@@ -102,6 +102,7 @@
   <img id="imageTabPreview">
   <div id="imageTabFileName" style="color: gray; font-style: italic;"></div>
   <button type="button" class="btn-danger" id="delete_image_tab" style="display:none;">🗑️ Xoá ảnh</button>
+  <button type="button" class="btn-secondary" id="select_image_tab">📂 Chọn ảnh</button>
 </div>
 
 <!-- Iframe hiển thị bảng -->
