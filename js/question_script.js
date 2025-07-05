@@ -13,11 +13,17 @@ function updatePreview() {
   const c = $("answer3").value.trim();
   const d = $("answer4").value.trim();
 
+  const showAll = $("toggle_preview_all").checked;
+  const showQuestion = $("toggle_preview_question").checked;
+  const showAnswers = $("toggle_preview_answers").checked;
+
   let html = "";
-  if ($("toggle_preview_all").checked || $("toggle_preview_question").checked) {
+
+  if (showAll || showQuestion) {
     html += `<div><strong>Câu hỏi:</strong><br>${q}</div>`;
   }
-  if ($("toggle_preview_all").checked || $("toggle_preview_answers").checked) {
+
+  if (showAll || showAnswers) {
     html += `<div style="margin-top:10px"><strong>Đáp án:</strong><br>`;
     html += `A. ${a}<br>B. ${b}<br>C. ${c}<br>D. ${d}</div>`;
   }
@@ -25,6 +31,7 @@ function updatePreview() {
   previewArea.innerHTML = html || "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
   renderMath();
 }
+
 
 ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
   $(id).addEventListener("input", updatePreview);
