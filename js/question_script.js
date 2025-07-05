@@ -12,16 +12,19 @@ function updatePreview() {
   const b = $("answer2").value.trim();
   const c = $("answer3").value.trim();
   const d = $("answer4").value.trim();
+  const img = $("image_url").value.trim();
 
   const showAll = $("toggle_preview_all").checked;
   const showQuestion = $("toggle_preview_question").checked;
   const showAnswers = $("toggle_preview_answers").checked;
 
-  // Tự động hiển thị nội dung có thể chứa công thức
   let html = "";
 
   if (showAll || showQuestion) {
     html += `<div><strong>Câu hỏi:</strong><br>${q}</div>`;
+    if (img) {
+      html += `<div style="margin-top:10px;"><img src="${img}" style="max-height:150px; border:1px solid #ccc; margin-top:5px;"></div>`;
+    }
   }
 
   if (showAll || showAnswers) {
@@ -29,9 +32,8 @@ function updatePreview() {
   }
 
   previewArea.innerHTML = html || "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
-  renderMath();  // gọi MathJax để xử lý công thức
+  renderMath();
 }
-
 
 
 ["question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
