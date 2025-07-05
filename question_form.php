@@ -49,6 +49,7 @@
 <div class="tab-content active" id="tab-form">
   <form id="questionForm">
     <input type="hidden" name="id" id="question_id">
+    <input type="hidden" name="image_url" id="image_url">
 
     <label>Chủ đề:</label>
     <input type="text" name="topic" id="topic">
