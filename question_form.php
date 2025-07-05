@@ -115,23 +115,28 @@
   const CLOUDINARY_UPLOAD_PRESET = "<?= env('CLOUDINARY_UPLOAD_PRESET') ?>";
 </script>
 <script src="js/question_script.js"></script>
+
 <script>
-  // Tab switching
   const tabButtons = document.querySelectorAll(".tab-btn");
-  const tabForm = document.getElementById("tab-form");
-  const tabPreview = document.getElementById("tab-preview");
+  const tabContents = document.querySelectorAll(".tab-content");
 
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
+      // Bỏ active ở tất cả nút
       tabButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      const tab = btn.dataset.tab;
-      tabForm.style.display = tab === "form" ? "block" : "none";
-      tabPreview.style.display = tab === "preview" ? "block" : "none";
+      // Ẩn tất cả nội dung tab
+      tabContents.forEach(div => div.style.display = "none");
+
+      // Hiện tab được chọn
+      const tabId = btn.getAttribute("data-tab");
+      const tabToShow = document.getElementById(tabId === "form" ? "tab-form" : tabId === "preview" ? "tab-preview" : "imageTab");
+      if (tabToShow) tabToShow.style.display = "block";
     });
   });
 </script>
+
 <script>
 document.querySelectorAll('.tab-button').forEach(btn => {
   btn.addEventListener('click', () => {
