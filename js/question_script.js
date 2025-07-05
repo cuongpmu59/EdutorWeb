@@ -24,7 +24,6 @@ function updatePreview() {
   }
 
   if (showAll || showAnswers) {
-    //html += `<div style="margin-top:10px"><strong>Đáp án:</strong><br>`;
     html += `A. ${a}<br>B. ${b}<br>C. ${c}<br>D. ${d}</div>`;
   }
 
