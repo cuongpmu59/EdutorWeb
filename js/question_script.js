@@ -1,7 +1,9 @@
 const $ = id => document.getElementById(id);
 const previewArea = $("preview_area");
 
-// ======= MathJax Preview =======
+let tempPublicId = "";
+
+// === MathJax Preview ===
 function renderMath() {
   if (window.MathJax) MathJax.typesetPromise();
 }
@@ -23,12 +25,16 @@ function updatePreview() {
   if (showAll || showQuestion) {
     html += `<div><strong>Câu hỏi:</strong><br>${q}</div>`;
     if (img) {
-      html += `<div style="margin-top:10px;"><img src="${img}" style="max-height:150px; border:1px solid #ccc; margin-top:5px;"></div>`;
+      html += `<div style="margin-top:10px;"><img src="${img}" style="max-height:150px; border:1px solid #ccc;"></div>`;
     }
   }
 
   if (showAll || showAnswers) {
-    html += `A. ${a}<br>B. ${b}<br>C. ${c}<br>D. ${d}</div>`;
+    html += `<div style="margin-top:10px;">
+      <strong>A:</strong> ${a}<br>
+      <strong>B:</strong> ${b}<br>
+      <strong>C:</strong> ${c}<br>
+      <strong>D:</strong> ${d}</div>`;
   }
 
   previewArea.innerHTML = html || "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
@@ -41,12 +47,9 @@ function updatePreview() {
 ["toggle_preview_question", "toggle_preview_answers", "toggle_preview_all"].forEach(id => {
   $(id).addEventListener("change", updatePreview);
 });
-
 updatePreview();
 
-// ======= Image Upload to Cloudinary =======
-let tempPublicId = "";
-
+// === Upload ảnh Cloudinary ===
 $("select_image").addEventListener("click", () => $("image").click());
 
 $("image").addEventListener("change", async function () {
@@ -74,7 +77,7 @@ $("image").addEventListener("change", async function () {
   }
 });
 
-// ======= Delete Image from Cloudinary =======
+// === Xoá ảnh Cloudinary ===
 $("delete_image").addEventListener("click", async () => {
   const imageUrl = $("image_url").value;
   if (!imageUrl) return;
@@ -84,8 +87,8 @@ $("delete_image").addEventListener("click", async () => {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: `image_url=${encodeURIComponent(imageUrl)}`
   });
-  const data = await res.json();
 
+  const data = await res.json();
   if (data.success) {
     $("image_url").value = "";
     $("image").value = "";
@@ -99,7 +102,7 @@ $("delete_image").addEventListener("click", async () => {
   }
 });
 
-// ======= Save Question =======
+// === Submit Form (Thêm / Cập nhật) ===
 $("questionForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
@@ -110,19 +113,21 @@ $("questionForm").addEventListener("submit", async function (e) {
     method: "POST",
     body: formData
   });
+
   const result = await response.json();
 
   if (result.success) {
     const questionId = result.id || id;
 
+    // Nếu có ảnh tạm → đổi tên và cập nhật DB
     if (tempPublicId) {
       const renameRes = await fetch("rename_cloudinary_image.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `temp_public_id=${tempPublicId}&new_public_id=pic_${questionId}`
       });
-      const renameData = await renameRes.json();
 
+      const renameData = await renameRes.json();
       if (renameData.success && renameData.url) {
         await fetch("update_image_url.php", {
           method: "POST",
@@ -145,7 +150,7 @@ $("questionForm").addEventListener("submit", async function (e) {
   }
 });
 
-// ======= Delete Question =======
+// === Xoá câu hỏi ===
 $("deleteBtn").addEventListener("click", async () => {
   const id = $("question_id").value;
   if (!id || !confirm("Bạn có chắc chắn muốn xoá?")) return;
@@ -155,39 +160,40 @@ $("deleteBtn").addEventListener("click", async () => {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: `id=${id}`
   });
+
   const data = await res.json();
 
-  if (data.status === "success" || data.success) {
+  if (data.success) {
     alert("🗑️ Đã xoá câu hỏi!");
     $("questionForm").reset();
     $("imagePreview").style.display = "none";
     $("delete_image").style.display = "none";
     $("imageFileName").textContent = "";
+    $("preview_area").innerHTML = "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
     tempPublicId = "";
-    updatePreview();
     $("questionIframe").contentWindow.location.reload();
-    $("preview_area").innerHTML = "<em>Chọn một câu hỏi để xem trước nội dung...</em>";
   } else {
-    alert("❌ Không xoá được!");
+    alert("❌ Không xoá được!\n" + (data.message || ""));
   }
 });
 
-// ======= Reset Form =======
+// === Reset Form ===
 $("resetBtn").addEventListener("click", () => {
   $("questionForm").reset();
   $("imagePreview").style.display = "none";
   $("delete_image").style.display = "none";
   $("imageFileName").textContent = "";
+  $("preview_area").innerHTML = "<em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em>";
   tempPublicId = "";
   updatePreview();
 });
 
-// ======= Export PDF =======
+// === Export PDF ===
 $("exportPdfBtn").addEventListener("click", () => {
   window.open("export_exam_pdf.php", "_blank");
 });
 
-// ======= Receive Data from Iframe =======
+// === Nhận dữ liệu từ iframe (click hàng) ===
 window.addEventListener("message", (event) => {
   const data = event.data;
   if (!data || !data.id) return;
