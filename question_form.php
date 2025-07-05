@@ -40,7 +40,7 @@
 <div class="tabs">
   <div class="tab-btn active" data-tab="form">📝 Nhập câu hỏi</div>
   <div class="tab-btn" data-tab="preview">👁️ Xem trước</div>
-  <div class="tab-btn" data-tab="imageTab">🖼️ Ảnh minh hoạ</button>
+  <div class="tab-btn" data-tab="imageTab">🖼️ Ảnh minh hoạ</div> 
 </div>
 
 <div class="tab-content" id="tab-form">
