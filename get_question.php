@@ -131,8 +131,6 @@ try {
           <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
           <?php endif; ?>
 
-          <img src="<?= htmlspecialchars($cloudUrl) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
-          <?php endif; ?>
         </td>
       </tr>
       <?php endforeach; ?>
