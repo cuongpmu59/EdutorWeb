@@ -1,54 +1,59 @@
 <?php
-require 'vendor/autoload.php'; // Đảm bảo bạn đã chạy: composer require cloudinary/cloudinary_php
+require 'dotenv.php';
 
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
+header('Content-Type: application/json');
 
-// Cấu hình Cloudinary
-Configuration::instance([
-  'cloud' => [
-    'cloud_name' => 'YOUR_CLOUD_NAME',
-    'api_key'    => 'YOUR_API_KEY',
-    'api_secret' => 'YOUR_API_SECRET'
-  ],
-  'url' => [
-    'secure' => true
-  ]
-]);
-
-// Kiểm tra yêu cầu POST và file ảnh
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
-  $id = $_POST['id'] ?? '';
-
-  if (!$id) {
-    echo json_encode(['success' => false, 'message' => 'Thiếu ID câu hỏi.']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_FILES['file'])) {
+    echo json_encode(['success' => false, 'message' => 'Thiếu tệp ảnh hoặc sai phương thức POST.']);
     exit;
-  }
+}
 
-  $tmpPath = $_FILES['image']['tmp_name'];
-  $publicId = "pic_" . $id;
+$file = $_FILES['file']['tmp_name'];
 
-  try {
-    // Tải ảnh lên Cloudinary, ghi đè nếu trùng
-    $result = (new UploadApi())->upload($tmpPath, [
-      'public_id' => $publicId,
-      'overwrite' => true,
-      'folder' => 'question_images' // Tùy chọn: thư mục lưu trên Cloudinary
-    ]);
+$cloud_name = getenv('CLOUDINARY_CLOUD_NAME');
+$api_key = getenv('CLOUDINARY_API_KEY');
+$api_secret = getenv('CLOUDINARY_API_SECRET');
+$upload_preset = getenv('CLOUDINARY_UPLOAD_PRESET');
 
-    echo json_encode([
-      'success' => true,
-      'url' => $result['secure_url']
-    ]);
-  } catch (Exception $e) {
-    echo json_encode([
-      'success' => false,
-      'message' => $e->getMessage()
-    ]);
-  }
+if (!$cloud_name || !$api_key || !$api_secret || !$upload_preset) {
+    echo json_encode(['success' => false, 'message' => 'Thiếu cấu hình môi trường.']);
+    exit;
+}
+
+// Tạo chữ ký bảo mật (signature)
+$timestamp = time();
+$params_to_sign = [
+    'timestamp' => $timestamp,
+    'upload_preset' => $upload_preset
+];
+ksort($params_to_sign);
+$signature_base = http_build_query($params_to_sign, '', '&', PHP_QUERY_RFC3986);
+$signature = hash_hmac('sha1', urldecode($signature_base), $api_secret);
+
+// Chuẩn bị dữ liệu gửi đi
+$postfields = [
+    'file' => new CURLFile($file),
+    'api_key' => $api_key,
+    'timestamp' => $timestamp,
+    'upload_preset' => $upload_preset,
+    'signature' => $signature
+];
+
+$upload_url = "https://api.cloudinary.com/v1_1/$cloud_name/image/upload";
+
+// Gửi yêu cầu tới Cloudinary
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $upload_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Optional: Bỏ xác thực SSL nếu máy chủ không hỗ trợ
+$response = curl_exec($ch);
+$error = curl_error($ch);
+curl_close($ch);
+
+if ($response !== false) {
+    echo $response;
 } else {
-  echo json_encode([
-    'success' => false,
-    'message' => 'Yêu cầu không hợp lệ.'
-  ]);
+    echo json_encode(['success' => false, 'message' => 'cURL Error: ' . $error]);
 }
