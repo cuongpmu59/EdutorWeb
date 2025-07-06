@@ -13,10 +13,10 @@
   <h2 style="text-align:center; padding: 10px;">🧠 Quản lý câu hỏi đúng/sai</h2>
 
   <div class="tabs">
-    <button class="tab-button active" onclick="loadTab(0)">📝 Nhập câu hỏi</button>
-    <button class="tab-button" onclick="loadTab(1)">🖼️ Ảnh minh hoạ</button>
-    <button class="tab-button" onclick="loadTab(2)">👁️ Xem trước</button>
-    <button class="tab-button" onclick="loadTab(3)">📋 Danh sách câu hỏi</button>
+    <button class="tab-button active" data-src="true_false_question_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-src="true_false_image_tab.php">🖼️ Ảnh minh hoạ</button>
+    <button class="tab-button" data-src="preview_true_false_question.php">👁️ Xem trước</button>
+    <button class="tab-button" data-src="get_true_false_questions.php">📋 Danh sách</button>
   </div>
 
   <div class="iframe-container">
