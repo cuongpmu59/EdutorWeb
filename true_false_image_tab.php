@@ -4,40 +4,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Ảnh minh hoạ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/styles_question.css">
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h2 {
+      margin-bottom: 20px;
     }
 
     input[type="file"] {
       margin-top: 10px;
     }
 
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .loading {
+      color: orange;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
     #preview {
       margin-top: 20px;
       max-width: 100%;
+      padding: 10px;
       border: 1px solid #ccc;
-      padding: 8px;
-      background-color: #f9f9f9;
+      background-color: #fff;
+      border-radius: 6px;
     }
 
     #preview img {
       max-width: 100%;
       height: auto;
-    }
-
-    .loading {
-      color: orange;
-      font-weight: bold;
+      display: block;
     }
   </style>
 </head>
 <body>
   <h2>🖼️ Ảnh minh hoạ cho câu hỏi</h2>
 
-  <input type="file" id="imageInput" accept="image/*"><br>
+  <input type="file" id="imageInput" accept="image/*">
   <div id="status" class="loading"></div>
   <div id="preview"></div>
 
@@ -51,6 +71,7 @@
       if (!file) return;
 
       status.textContent = "⏳ Đang tải ảnh lên...";
+      status.className = "loading";
       preview.innerHTML = "";
 
       const formData = new FormData();
@@ -68,27 +89,31 @@
         if (data.secure_url) {
           const imageUrl = data.secure_url;
 
-          // Lưu vào localStorage để các tab khác truy cập
+          // Lưu URL vào localStorage
           localStorage.setItem("true_false_image_url", imageUrl);
 
           status.textContent = "✅ Tải ảnh thành công";
+          status.className = "success";
           preview.innerHTML = `<img src="${imageUrl}" alt="Preview">`;
         } else {
           status.textContent = "❌ Lỗi khi tải ảnh lên Cloudinary.";
+          status.className = "error";
         }
 
       } catch (error) {
         console.error(error);
         status.textContent = "❌ Có lỗi xảy ra khi upload.";
+        status.className = "error";
       }
     });
 
-    // Hiển thị lại ảnh nếu đã có trong localStorage
+    // Hiển thị ảnh nếu đã có trong localStorage
     window.addEventListener("DOMContentLoaded", () => {
       const savedUrl = localStorage.getItem("true_false_image_url");
       if (savedUrl) {
         preview.innerHTML = `<img src="${savedUrl}" alt="Preview">`;
         status.textContent = "📌 Ảnh đã được chọn trước đó";
+        status.className = "success";
       }
     });
   </script>
