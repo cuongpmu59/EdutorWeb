@@ -18,15 +18,15 @@
       <input type="text" id="topic" placeholder="Nhập chủ đề..." required>
 
       <!-- Đề bài -->
-      <label>🧠 Đề bài chính:</label>
-      <textarea id="main_question" rows="3" placeholder="Nhập đề bài chính..." required></textarea>
+      <label>Câu hỏi:</label>
+      <textarea id="main_question" rows="3" placeholder="Nhập câu hỏi ..." required></textarea>
 
       <hr>
 
       <!-- 4 ý Đúng/Sai -->
       <?php for ($i = 1; $i <= 4; $i++): ?>
         <div class="statement-block">
-          <label>Ý <?= $i ?>:</label>
+          <label><?= $i ?>.</label>
           <textarea id="statement<?= $i ?>" rows="2" placeholder="Nhập nội dung ý <?= $i ?>" required></textarea>
 
           <div class="radio-group">
