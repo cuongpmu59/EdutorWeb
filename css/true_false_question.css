@@ -1,0 +1,55 @@
+/* css/true_false_question.css */
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background-color: var(--bg-light, #f9f9f9);
+  }
+  
+  h2 {
+    color: var(--accent, #3498db);
+  }
+  
+  table.radio-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  table.radio-table th,
+  table.radio-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    text-align: center;
+  }
+  
+  table.radio-table th {
+    background-color: #f0f0f0;
+  }
+  
+  textarea {
+    width: 100%;
+    resize: vertical;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--accent, #3498db);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #2980b9;
+  }
+  
+  input[type="file"] {
+    margin-top: 10px;
+  }
+  
