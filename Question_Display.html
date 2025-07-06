@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý câu hỏi trắc nghiệm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      max-width: 900px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    button {
+      padding: 5px 10px;
+      font-size: 14px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+    .add-button {
+      background-color: #007bff;
+      color: white;
+      margin-bottom: 10px;
+    }
+    .edit-button {
+      background-color: #ffc107;
+      color: black;
+    }
+    .delete-button {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Quản lý câu hỏi trắc nghiệm</h1>
+
+  <button class="add-button" onclick="location.href='nhap_cau_hoi.html'">+ Thêm câu hỏi mới</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Câu hỏi</th>
+        <th>Đáp án đúng</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="questionList">
+      <!-- Dữ liệu mẫu để minh họa -->
+      <tr>
+        <td>1</td>
+        <td>Là nghiệm của phương trình \(x^2 - 4 = 0\)?</td>
+        <td>Đáp án 2</td>
+        <td class="actions">
+          <button class="edit-button">Sửa</button>
+          <button class="delete-button" onclick="deleteRow(this)">Xoá</button>
+        </td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Đạo hàm của \(f(x) = x^2\) là gì?</td>
+        <td>Đáp án 1</td>
+        <td class="actions">
+          <button class="edit-button">Sửa</button>
+          <button class="delete-button" onclick="deleteRow(this)">Xoá</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script>
+    // Gọi MathJax để render công thức
+    MathJax.typesetPromise();
+
+    // Xoá dòng
+    function deleteRow(button) {
+      if (confirm("Bạn có chắc chắn muốn xoá câu hỏi này?")) {
+        const row = button.closest("tr");
+        row.remove();
+      }
+    }
+  </script>
+
+</body>
+</html>
