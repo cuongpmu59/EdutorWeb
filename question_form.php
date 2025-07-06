@@ -51,9 +51,9 @@
 
     <input type="file" id="image" name="image" style="display:none;">
     <span id="imageFileName" style="font-style: italic; color: gray;"></span>
-    <img id="imagePreview">
+    <!-- <img id="imagePreview">
     <button type="button" id="delete_image" class="btn-danger" style="display:none;">🗑️ Xoá ảnh</button>
-    <button type="button" id="select_image" class="btn-secondary">📂 Chọn ảnh</button>
+    <button type="button" id="select_image" class="btn-secondary">📂 Chọn ảnh</button> -->
 
     <input type="hidden" name="id" id="question_id">
     <input type="hidden" name="image_url" id="image_url">
