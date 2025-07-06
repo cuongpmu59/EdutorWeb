@@ -48,10 +48,14 @@ try {
   <title>Danh sách câu hỏi</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
   <style>
     body { font-family: Arial; padding: 10px; background-color: #fafafa; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th {
+      position: sticky; top: 0; z-index: 10;
+      background: linear-gradient(to right, #007bff, #3399ff);
+      color: white; padding: 10px; border: 1px solid #ccc;
+    }
     th, td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; }
     tr:hover { background-color: #f1f9ff; cursor: pointer; }
     .selected-row { background-color: #cceeff !important; }
@@ -105,7 +109,7 @@ try {
 </div>
 
 <div id="listTab" class="tab-content">
-  <table id="questionTable" class="display nowrap">
+  <table id="questionTable">
     <thead>
       <tr>
         <th>ID</th><th>Câu hỏi</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Đúng</th><th>Chủ đề</th><th>Ảnh</th>
@@ -126,6 +130,7 @@ try {
           <?php if (!empty($q['image'])): ?>
           <img src="<?= htmlspecialchars($q['image']) ?>" class="thumb" onclick="showImage(this.src)" onerror="this.style.display='none'">
           <?php endif; ?>
+
         </td>
       </tr>
       <?php endforeach; ?>
@@ -139,13 +144,11 @@ try {
 </div>
 
 <div id="imageModal"><span onclick="closeModal()">&times;</span><img id="modalImage" /></div>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -210,13 +213,12 @@ window.addEventListener("keydown", e => {
 $(document).ready(() => {
   table = $('#questionTable').DataTable({
     dom: 'Bfrtip',
-    fixedHeader: true,
     buttons: [
       { extend: 'excelHtml5', text: '📥 Xuất Excel', title: 'Danh sách câu hỏi' },
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi' }
     ],
     pageLength: 20,
-    lengthMenu: [[10, 20, 50, 100, -1], [10, 20, 50, 100, "Tất cả"]],
+    lengthMenu: [ [10, 20, 50, 100, -1], [10, 20, 50, 100, "Tất cả"] ],
     language: {
       search: "🔍 Tìm kiếm:", lengthMenu: "Hiển thị _MENU_ dòng",
       info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
@@ -252,6 +254,7 @@ $(document).ready(() => {
       const workbook = XLSX.read(evt.target.result, { type: "binary" });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
       const rows = rawRows.filter(row => row.length >= 8 && row[0] !== "ID");
       const formatted = rows.map(r => ({
         question: r[1] || '', answer1: r[2] || '', answer2: r[3] || '', answer3: r[4] || '',
