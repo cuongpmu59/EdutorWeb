@@ -1,4 +1,3 @@
-<?php require 'dotenv.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -10,78 +9,67 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: var(--bg-light, #f4f4f4);
     }
 
-    .tab-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    .tab-header {
+    .tabs {
       display: flex;
       background-color: #3498db;
       overflow-x: auto;
     }
 
-    .tab-header button {
+    .tab-button {
       flex: 1;
-      padding: 12px;
+      padding: 10px;
+      text-align: center;
       background: #3498db;
       color: white;
       border: none;
       cursor: pointer;
-      font-size: 16px;
       transition: background 0.3s;
-      white-space: nowrap;
     }
 
-    .tab-header button:hover,
-    .tab-header button.active {
-      background: #2980b9;
+    .tab-button:hover,
+    .tab-button.active {
+      background-color: #2980b9;
     }
 
     .tab-content {
-      flex: 1;
-      border-top: 1px solid #ccc;
+      display: none;
+      padding: 20px;
     }
 
-    .tab-content iframe {
+    .tab-content.active {
+      display: block;
+    }
+
+    iframe {
       width: 100%;
-      height: 100%;
+      height: 700px;
       border: none;
     }
   </style>
 </head>
 <body>
-  <div class="tab-container">
-    <div class="tab-header">
-      <button class="tab-button active" onclick="switchTab(0)">📝 Nhập câu hỏi</button>
-      <button class="tab-button" onclick="switchTab(1)">🖼️ Ảnh minh hoạ</button>
-      <button class="tab-button" onclick="switchTab(2)">👁️ Xem trước toàn bộ</button>
-      <button class="tab-button" onclick="switchTab(3)">📋 Danh sách câu hỏi</button>
-    </div>
+  <h2 style="text-align:center; padding: 10px;">🧠 Quản lý câu hỏi đúng/sai</h2>
 
-    <div class="tab-content">
-      <iframe id="tabFrame" src="true_false_question_form_inner.php"></iframe>
-    </div>
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab(0)">📝 Nhập câu hỏi</button>
+    <button class="tab-button" onclick="showTab(1)">🖼️ Ảnh minh hoạ</button>
+    <button class="tab-button" onclick="showTab(2)">👁️ Xem trước</button>
+    <button class="tab-button" onclick="showTab(3)">📋 Danh sách câu hỏi</button>
   </div>
 
-  <script>
-    const tabs = [
-      'true_false_question_form_inner.php',
-      'true_false_image_tab.php',
-      'true_false_preview.php',
-      'get_true_false_questions.php'
-    ];
+  <div class="tab-content active">
+    <?php include 'true_false_question_form_inner.php'; ?>
+  </div>
 
-    function switchTab(index) {
-      document.querySelectorAll('.tab-button').forEach((btn, i) => {
-        btn.classList.toggle('active', i === index);
-      });
-      document.getElementById('tabFrame').src = tabs[index];
-    }
-  </script>
-</body>
-</html>
+  <div class="tab-content">
+    <?php include 'true_false_image_tab.php'; ?>
+  </div>
+
+  <div class="tab-content">
+    <iframe src="preview_true_false_question.php"></iframe>
+  </div>
+
+  <div class="tab-content">
+    <i
