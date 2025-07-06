@@ -5,9 +5,10 @@
   </div>
 
   <div style="margin-top: 10px;">
-    <label>🧠 Đề bài chính:</label>
-    <textarea id="main_question" rows="3" placeholder="Nhập đề bài chính..." class="form-control" required></textarea>
-  </div>
+  <label>Câu hỏi:</label>
+  <textarea id="main_question" rows="3" placeholder="Nhập câu hỏi ..." class="form-control" required></textarea>
+
+</div>
 
   <hr>
   <?php for ($i = 1; $i <= 4; $i++): ?>
