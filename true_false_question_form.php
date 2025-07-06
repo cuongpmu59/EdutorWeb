@@ -1,63 +1,84 @@
-<?php
-require 'db_connection.php';
-header("Content-Type: text/html; charset=utf-8");
+<?php require 'dotenv.php'; ?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý câu hỏi đúng/sai</title>
+  <link rel="stylesheet" href="css/styles_question.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
 
-// Hàm lấy và làm sạch dữ liệu POST
-function post($key) {
-    return trim($_POST[$key] ?? '');
-}
+    .tabs {
+      display: flex;
+      background-color: #3498db;
+      overflow-x: auto;
+    }
 
-// ===== Lấy dữ liệu =====
-$topic = post('topic');
-$main_question = post('main_question');
+    .tab-button {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-$statement1 = post('statement1');
-$correct1   = intval($_POST['correct_answer1'] ?? 0);
+    .tab-button:hover,
+    .tab-button.active {
+      background-color: #2980b9;
+    }
 
-$statement2 = post('statement2');
-$correct2   = intval($_POST['correct_answer2'] ?? 0);
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background-color: var(--bg-light, #f9f9f9);
+    }
 
-$statement3 = post('statement3');
-$correct3   = intval($_POST['correct_answer3'] ?? 0);
+    .tab-content.active {
+      display: block;
+    }
 
-$statement4 = post('statement4');
-$correct4   = intval($_POST['correct_answer4'] ?? 0);
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center; padding: 10px;">🧠 Quản lý câu hỏi đúng/sai</h2>
 
-$image = post('image_url'); // hidden input lưu URL ảnh minh hoạ từ Cloudinary
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab(0)">📝 Nhập câu hỏi</button>
+    <button class="tab-button" onclick="showTab(1)">🖼️ Ảnh minh hoạ</button>
+    <button class="tab-button" onclick="showTab(2)">👁️ Xem trước</button>
+    <button class="tab-button" onclick="showTab(3)">📋 Danh sách câu hỏi</button>
+  </div>
 
-// ===== Kiểm tra hợp lệ =====
-if (!$topic || !$main_question || !$statement1 || !$statement2 || !$statement3 || !$statement4) {
-    exit("❌ Thiếu thông tin. Vui lòng nhập đầy đủ.");
-}
+  <!-- Tab content -->
+  <div class="tab-content active"><?php include 'true_false_question_form_inner.php'; ?></div>
+  <div class="tab-content"><?php include 'true_false_image_tab.php'; ?></div>
+  <div class="tab-content"><iframe src="preview_true_false_question.php"></iframe></div>
+  <div class="tab-content"><iframe src="get_true_false_questions.php"></iframe></div>
 
-// ===== Chuẩn bị câu truy vấn =====
-$stmt = $conn->prepare("
-  INSERT INTO true_false_questions (
-    topic, main_question,
-    statement1, answer1, correct_answer1,
-    statement2, answer2, correct_answer2,
-    statement3, answer3, correct_answer3,
-    statement4, answer4, correct_answer4,
-    image
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-");
-
-$null1 = $null2 = $null3 = $null4 = NULL;
-
-$stmt->bind_param(
-  "sssisiisiisiis",
-  $topic, $main_question,
-  $statement1, $null1, $correct1,
-  $statement2, $null2, $correct2,
-  $statement3, $null3, $correct3,
-  $statement4, $null4, $correct4,
-  $image
-);
-
-// ===== Thực thi =====
-if ($stmt->execute()) {
-    echo "<script>alert('✅ Đã lưu câu hỏi thành công!'); window.location.href='true_false_question_form.php';</script>";
-} else {
-    echo "❌ Lỗi khi lưu: " . $stmt->error;
-}
-?>
+  <!-- Tab logic -->
+  <script>
+    function showTab(index) {
+      const buttons = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+      buttons.forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+        contents[i].classList.toggle('active', i === index);
+      });
+    }
+  </script>
+</body>
+</html>
