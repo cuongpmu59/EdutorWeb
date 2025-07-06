@@ -10,7 +10,7 @@
 	--border: #ccc;
 }
 
-/* ===== Base Styles ===== */
+/* Base Styles */
 body {
 	font-family: 'Segoe UI', sans-serif;
 	background: var(--bg-light);
@@ -19,16 +19,13 @@ body {
 	padding: 20px;
 	line-height: 1.6;
 }
-h2, h3 {
-	margin-top: 0;
-	color: #2c3e50;
-}
+h2, h3 { margin-top: 0; color: #2c3e50; }
 
-/* ===== Layout ===== */
+/* Layout */
 .container, .preview-box, .modal-content, .full-preview {
 	background: #fff;
 	border-radius: 8px;
-	box-shadow: 0 0 5px rgba(0,0,0,0.1);
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	padding: 20px;
 	margin-top: 20px;
 }
@@ -47,7 +44,7 @@ h2, h3 {
 	align-items: flex-start;
 }
 
-/* ===== Form ===== */
+/* Form */
 label {
 	font-weight: 500;
 	display: block;
@@ -65,10 +62,10 @@ input[type="text"], input[type="file"], select, textarea {
 input:focus, textarea:focus, select:focus {
 	outline: none;
 	border-color: var(--accent);
-	box-shadow: 0 0 3px rgba(52,152,219,0.6);
+	box-shadow: 0 0 3px rgba(52, 152, 219, 0.6);
 }
 
-/* ===== Buttons ===== */
+/* Buttons */
 button {
 	padding: 6px 12px;
 	font-size: 14px;
@@ -87,21 +84,17 @@ button.search-btn:hover { background: #d68910; }
 button.reset-btn { background: var(--gray); }
 button.reset-btn:hover { background: #616a6b; }
 
-/* ===== Button Group ===== */
+/* Button Group */
 .button-group {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 	width: 100%;
 }
-.button-group button {
-	width: 100%;
-}
+.button-group button { width: 100%; }
 
-/* ===== Preview ===== */
-.preview-box,
-.latex-preview,
-.full-preview {
+/* Preview */
+.preview-box, .latex-preview, .full-preview {
 	background: #f4f4f4;
 	border-left: 3px solid var(--accent);
 	padding: 8px;
@@ -119,7 +112,7 @@ button.reset-btn:hover { background: #616a6b; }
 	box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
 }
 
-/* ===== Image Preview ===== */
+/* Image Preview */
 #imagePreview, #preview_image {
 	max-height: 120px;
 	margin-top: 10px;
@@ -132,7 +125,7 @@ button.reset-btn:hover { background: #616a6b; }
 }
 #imagePreview:hover { transform: scale(1.05); }
 
-/* ===== Modal ===== */
+/* Modal */
 .modal {
 	display: none;
 	position: fixed;
@@ -157,20 +150,19 @@ button.reset-btn:hover { background: #616a6b; }
 }
 .modal .close:hover { color: red; }
 
-/* ===== Table ===== */
+/* Table */
 #searchResultTable {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 10px;
 }
-#searchResultTable th,
-#searchResultTable td {
+#searchResultTable th, #searchResultTable td {
 	border: 1px solid var(--border);
 	padding: 6px;
 	text-align: left;
 }
 
-/* ===== Iframe ===== */
+/* Iframe */
 #questionIframe {
 	width: 100%;
 	height: 60vh;
@@ -178,7 +170,7 @@ button.reset-btn:hover { background: #616a6b; }
 	display: block;
 }
 
-/* ===== Tabs ===== */
+/* Tabs */
 .tab-buttons {
 	display: flex;
 	border-bottom: 1px solid #ccc;
@@ -206,11 +198,9 @@ button.reset-btn:hover { background: #616a6b; }
 	border-radius: 0 0 8px 8px;
 	background: #fff;
 }
-.tab-content.active {
-	display: block;
-}
+.tab-content.active { display: block; }
 
-/* ===== Tab Enhancements (Thêm mới) ===== */
+/* Tab Enhancements */
 .tab-container {
 	display: flex;
 	flex-wrap: wrap;
@@ -242,10 +232,10 @@ button.reset-btn:hover { background: #616a6b; }
 }
 @keyframes fadeIn {
 	from { opacity: 0; transform: translateY(10px); }
-	to   { opacity: 1; transform: translateY(0); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Full Preview Animation ===== */
+/* Full Preview Animation */
 #fullPreviewBox {
 	display: none;
 	overflow: hidden;
@@ -256,15 +246,13 @@ button.reset-btn:hover { background: #616a6b; }
 	max-height: 0;
 	transition: max-height 0.3s ease;
 }
-#fullPreviewBox.show {
-	max-height: 1000px;
-}
+#fullPreviewBox.show { max-height: 1000px; }
 #fullPreview {
 	white-space: pre-wrap;
 	line-height: 1.6;
 }
 
-/* ===== Dark Mode ===== */
+/* Dark Mode */
 body.dark-mode {
 	background: var(--bg-dark);
 	color: var(--color-light);
@@ -322,7 +310,7 @@ body.dark-mode .tab-content {
 	border-color: #444;
 }
 
-/* ===== Responsive ===== */
+/* Responsive */
 @media (max-width: 768px) {
 	.two-column { flex-direction: column; }
 	.form-left, .form-right {
