@@ -3,119 +3,27 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Ảnh minh hoạ</title>
+  <title>🖼️ Ảnh minh hoạ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/styles_question.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input[type="file"] {
-      margin-top: 10px;
-    }
-
-    #status {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    .loading {
-      color: orange;
-    }
-
-    .success {
-      color: green;
-    }
-
-    .error {
-      color: red;
-    }
-
-    #preview {
-      margin-top: 20px;
-      max-width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      border-radius: 6px;
-    }
-
-    #preview img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" href="css/true_false_image_tab.css">
 </head>
 <body>
   <h2>🖼️ Ảnh minh hoạ cho câu hỏi</h2>
 
-  <input type="file" id="imageInput" accept="image/*">
-  <div id="status" class="loading"></div>
+  <div class="button-group">
+    <label for="imageInput" class="btn choose-btn">📷 Chọn ảnh minh hoạ</label>
+    <button id="deleteImageBtn" class="btn delete-btn" style="display: none;">🗑️ Xoá ảnh</button>
+  </div>
+
+  <input type="file" id="imageInput" accept="image/*" style="display: none;">
+  <div id="status" class="loading">Chưa có ảnh được chọn.</div>
   <div id="preview"></div>
 
   <script>
-    const imageInput = document.getElementById("imageInput");
-    const status = document.getElementById("status");
-    const preview = document.getElementById("preview");
-
-    imageInput.addEventListener("change", async function () {
-      const file = this.files[0];
-      if (!file) return;
-
-      status.textContent = "⏳ Đang tải ảnh lên...";
-      status.className = "loading";
-      preview.innerHTML = "";
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "<?php echo getenv('CLOUDINARY_UPLOAD_PRESET'); ?>");
-
-      try {
-        const response = await fetch("https://api.cloudinary.com/v1_1/<?php echo getenv('CLOUDINARY_CLOUD_NAME'); ?>/image/upload", {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await response.json();
-
-        if (data.secure_url) {
-          const imageUrl = data.secure_url;
-
-          // Lưu URL vào localStorage
-          localStorage.setItem("true_false_image_url", imageUrl);
-
-          status.textContent = "✅ Tải ảnh thành công";
-          status.className = "success";
-          preview.innerHTML = `<img src="${imageUrl}" alt="Preview">`;
-        } else {
-          status.textContent = "❌ Lỗi khi tải ảnh lên Cloudinary.";
-          status.className = "error";
-        }
-
-      } catch (error) {
-        console.error(error);
-        status.textContent = "❌ Có lỗi xảy ra khi upload.";
-        status.className = "error";
-      }
-    });
-
-    // Hiển thị ảnh nếu đã có trong localStorage
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedUrl = localStorage.getItem("true_false_image_url");
-      if (savedUrl) {
-        preview.innerHTML = `<img src="${savedUrl}" alt="Preview">`;
-        status.textContent = "📌 Ảnh đã được chọn trước đó";
-        status.className = "success";
-      }
-    });
+    const CLOUDINARY_UPLOAD_PRESET = "<?php echo getenv('CLOUDINARY_UPLOAD_PRESET'); ?>";
+    const CLOUDINARY_CLOUD_NAME = "<?php echo getenv('CLOUDINARY_CLOUD_NAME'); ?>";
   </script>
+  <script src="js/true_false_image_tab.js"></script>
 </body>
 </html>
