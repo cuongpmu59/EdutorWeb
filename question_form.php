@@ -13,13 +13,13 @@
 <h2>📋 Quản lý câu hỏi trắc nghiệm</h2>
 
 <!-- Tabs -->
-<div class="tabs">
-  <div class="tab-btn active" data-tab="tab-form">📝 Nhập câu hỏi</div>
-  <div class="tab-btn" data-tab="tab-preview">👁️ Xem trước</div>
-  <div class="tab-btn" data-tab="tab-image">🖼️ Ảnh minh hoạ</div>
+<div class="tab-container">
+  <div class="tab-button active" data-tab="tab-form">📝 Nhập câu hỏi</div>
+  <div class="tab-button" data-tab="tab-preview">👁️ Xem trước</div>
+  <div class="tab-button" data-tab="tab-image">🖼️ Ảnh minh hoạ</div>
 </div>
 
-<!-- Tab 1: Nhập -->
+<!-- Tab 1: Nhập liệu -->
 <div class="tab-content active" id="tab-form">
   <form id="questionForm">
     <input type="file" id="image" name="image" style="display:none;">
@@ -65,7 +65,7 @@
   <img id="preview_image" style="display:none; max-height: 150px; margin-top: 10px; border: 1px solid #ccc;">
 </div>
 
-<!-- Tab 3: Ảnh -->
+<!-- Tab 3: Ảnh minh hoạ -->
 <div class="tab-content" id="tab-image">
   <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
   <img id="imageTabPreview" style="max-height: 150px; border: 1px solid #ccc; display: none;">
@@ -74,25 +74,26 @@
   <button type="button" class="btn-secondary" id="select_image_tab">📂 Chọn ảnh</button>
 </div>
 
-<!-- Iframe -->
+<!-- Iframe hiển thị bảng -->
 <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border: 1px solid #aaa;"></iframe>
 
-<!-- Biến môi trường -->
+<!-- Cloudinary credentials -->
 <script>
   const CLOUDINARY_CLOUD_NAME = "<?= env('CLOUDINARY_CLOUD_NAME') ?>";
   const CLOUDINARY_UPLOAD_PRESET = "<?= env('CLOUDINARY_UPLOAD_PRESET') ?>";
 </script>
 
+<!-- Script xử lý -->
 <script src="js/question_script.js"></script>
-
 <script>
-  // Tabs
-  document.querySelectorAll(".tab-btn").forEach(btn => {
+  // Chuyển tab
+  document.querySelectorAll(".tab-button").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
       btn.classList.add("active");
       const tabId = btn.getAttribute("data-tab");
-      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
       document.getElementById(tabId).classList.add("active");
     });
   });
