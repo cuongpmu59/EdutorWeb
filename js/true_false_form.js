@@ -1,16 +1,17 @@
-const urls = [
-    "true_false_question_form_inner.php",
-    "true_false_image_tab.php",
-    "preview_true_false_question.php",
-    "get_true_false_questions.php"
-  ];
-  
-  function loadTab(index) {
-    document.getElementById("contentFrame").src = urls[index];
-  
+document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll(".tab-button");
-    buttons.forEach((btn, i) => {
-      btn.classList.toggle("active", i === index);
+    const frame = document.getElementById("contentFrame");
+  
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // Đổi trạng thái tab
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+  
+        // Đổi nội dung iframe theo trang tương ứng
+        const targetSrc = btn.getAttribute("data-src");
+        frame.src = targetSrc;
+      });
     });
-  }
+  });
   
