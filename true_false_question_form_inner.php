@@ -27,8 +27,8 @@
         <textarea id="statement<?= $i ?>" rows="2" placeholder="Nhập nội dung ý <?= $i ?>" required></textarea>
 
         <div class="radio-group">
-          <label><input type="radio" name="correct_answer<?= $i ?>" value="1"> ✅ Đúng</label>
-          <label style="margin-left: 20px;"><input type="radio" name="correct_answer<?= $i ?>" value="0" checked> ❌ Sai</label>
+        <label><input type="radio" name="correct_answer<?= $i ?>" value="1"> ✅ Đúng</label>
+        <label><input type="radio" name="correct_answer<?= $i ?>" value="0" checked> ❌ Sai</label>
         </div>
       <?php endfor; ?>
 
