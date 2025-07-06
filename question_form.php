@@ -15,8 +15,8 @@
 <!-- Tabs -->
 <div class="tab-container">
   <div class="tab-button active" data-tab="tab-form">📝 Nhập câu hỏi</div>
-  <div class="tab-button" data-tab="tab-preview">👁️ Xem trước</div>
   <div class="tab-button" data-tab="tab-image">🖼️ Ảnh minh hoạ</div>
+  <div class="tab-button" data-tab="tab-preview">👁️ Xem trước</div>
 </div>
 
 <!-- Tab 1: Nhập liệu -->
