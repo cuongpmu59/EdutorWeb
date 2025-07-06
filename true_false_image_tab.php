@@ -3,22 +3,23 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🖼️ Ảnh minh hoạ</title>
+  <title>Ảnh minh hoạ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/styles_question.css">
   <link rel="stylesheet" href="css/true_false_image_tab.css">
 </head>
 <body>
-  <h2>🖼️ Ảnh minh hoạ cho câu hỏi</h2>
+  <div class="image-tab-container">
+    <h2>🖼️ Ảnh minh hoạ cho câu hỏi</h2>
 
-  <div class="button-group">
-    <label for="imageInput" class="btn choose-btn">📷 Chọn ảnh minh hoạ</label>
-    <button id="deleteImageBtn" class="btn delete-btn" style="display: none;">🗑️ Xoá ảnh</button>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="button-container">
+      <button id="deleteImageBtn" style="display: none;">🗑️ Xoá ảnh</button>
+    </div>
+
+    <div id="status" class="loading">Chưa có ảnh được chọn.</div>
+    <div id="preview"></div>
   </div>
-
-  <input type="file" id="imageInput" accept="image/*" style="display: none;">
-  <div id="status" class="loading">Chưa có ảnh được chọn.</div>
-  <div id="preview"></div>
 
   <script>
     const CLOUDINARY_UPLOAD_PRESET = "<?php echo getenv('CLOUDINARY_UPLOAD_PRESET'); ?>";
