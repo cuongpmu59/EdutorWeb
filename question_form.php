@@ -7,32 +7,6 @@
   <link rel="stylesheet" href="css/styles_question.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-  <style>
-    body { font-family: Arial; padding: 10px; max-width: 900px; margin: auto; }
-    .tabs { display: flex; margin-bottom: 10px; }
-    .tab-btn {
-      flex: 1; text-align: center; padding: 10px;
-      border: 1px solid #ccc; border-bottom: none; cursor: pointer;
-      background: #f0f0f0;
-    }
-    .tab-btn.active {
-      background: #fff; font-weight: bold; border-bottom: 1px solid #fff;
-    }
-    .tab-content { border: 1px solid #ccc; padding: 15px; display: none; }
-    .tab-content.active { display: block; }
-    label { font-weight: bold; display: block; margin-top: 10px; }
-    input[type="text"], select, textarea {
-      width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 5px;
-    }
-    textarea { resize: vertical; }
-    button { margin-top: 12px; margin-right: 10px; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; }
-    .btn-primary { background-color: #007bff; color: white; }
-    .btn-danger { background-color: #dc3545; color: white; }
-    .btn-secondary { background-color: #6c757d; color: white; }
-    #imagePreview, #imageTabPreview {
-      max-height: 150px; border: 1px solid #ccc; display: none; margin-top: 10px;
-    }
-  </style>
 </head>
 <body>
 
@@ -48,13 +22,7 @@
 <!-- Tab 1: Nhập -->
 <div class="tab-content active" id="tab-form">
   <form id="questionForm">
-
     <input type="file" id="image" name="image" style="display:none;">
-    <span id="imageFileName" style="font-style: italic; color: gray;"></span>
-    <!-- <img id="imagePreview">
-    <button type="button" id="delete_image" class="btn-danger" style="display:none;">🗑️ Xoá ảnh</button>
-    <button type="button" id="select_image" class="btn-secondary">📂 Chọn ảnh</button> -->
-
     <input type="hidden" name="id" id="question_id">
     <input type="hidden" name="image_url" id="image_url">
 
@@ -91,24 +59,25 @@
   </form>
 </div>
 
-<!-- Tab 2: Preview -->
+<!-- Tab 2: Xem trước -->
 <div class="tab-content" id="tab-preview">
   <div id="preview_area"><em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em></div>
+  <img id="preview_image" style="display:none; max-height: 150px; margin-top: 10px; border: 1px solid #ccc;">
 </div>
 
 <!-- Tab 3: Ảnh -->
 <div class="tab-content" id="tab-image">
   <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
-  <img id="imageTabPreview">
+  <img id="imageTabPreview" style="max-height: 150px; border: 1px solid #ccc; display: none;">
   <div id="imageTabFileName" style="color: gray; font-style: italic;"></div>
   <button type="button" class="btn-danger" id="delete_image_tab" style="display:none;">🗑️ Xoá ảnh</button>
   <button type="button" class="btn-secondary" id="select_image_tab">📂 Chọn ảnh</button>
 </div>
 
-<!-- Iframe hiển thị bảng -->
+<!-- Iframe -->
 <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border: 1px solid #aaa;"></iframe>
 
-<!-- Biến môi trường Cloudinary -->
+<!-- Biến môi trường -->
 <script>
   const CLOUDINARY_CLOUD_NAME = "<?= env('CLOUDINARY_CLOUD_NAME') ?>";
   const CLOUDINARY_UPLOAD_PRESET = "<?= env('CLOUDINARY_UPLOAD_PRESET') ?>";
@@ -117,16 +86,13 @@
 <script src="js/question_script.js"></script>
 
 <script>
-  // Tab switching
+  // Tabs
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-
       const tabId = btn.getAttribute("data-tab");
-      document.querySelectorAll(".tab-content").forEach(tab => {
-        tab.classList.remove("active");
-      });
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
       document.getElementById(tabId).classList.add("active");
     });
   });
