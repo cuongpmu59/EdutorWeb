@@ -82,7 +82,9 @@ deleteBtn.addEventListener("click", async () => {
 
 window.addEventListener("DOMContentLoaded", () => {
   const url = localStorage.getItem("true_false_image_url");
-  if (url) {
+  const publicId = localStorage.getItem("true_false_image_public_id");
+
+  if (url && publicId) {
     preview.innerHTML = `<img src="${url}" alt="Ảnh minh hoạ">`;
     status.textContent = "📌 Ảnh đã được chọn trước đó.";
     status.className = "success";
