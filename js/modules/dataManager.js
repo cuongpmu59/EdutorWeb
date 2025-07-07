@@ -1,17 +1,25 @@
-export async function saveQuestion(data) {
-    const res = await fetch(data.id ? "update_question.php" : "insert_question.php", {
+export async function submitFormData(formData, isNew, hasTempImage) {
+    const url = isNew ? "insert_question.php" : "update_question.php";
+  
+    const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      body: formData
     });
-    return await res.json(); // { success: true, id: ... }
+  
+    const result = await res.json();
+    alert(result.message || "Đã lưu!");
+    return result;
   }
   
-  export async function updateImageURL(id, imageUrl) {
-    return fetch("update_image_url.php", {
+  export async function deleteQuestion(id) {
+    const res = await fetch("delete_question.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, image: imageUrl })
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "id=" + id
     });
+  
+    const result = await res.json();
+    alert(result.message || "Đã xoá!");
+    return result;
   }
   
