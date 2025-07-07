@@ -1,11 +1,8 @@
 import { $ } from "./dom_utils.js";
 
-export function initPreviewListeners() {
-  ["topic", "question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
-    $(id).addEventListener("input", updatePreview);
-  });
-}
-
+/**
+ * Cập nhật khối xem trước với công thức MathJax
+ */
 export function updatePreview() {
   const content = `
     <strong>Chủ đề:</strong> ${$("topic").value}<br>
@@ -17,5 +14,14 @@ export function updatePreview() {
     D. ${$("answer4").value}
   `;
   $("preview_area").innerHTML = content;
-  MathJax.typesetPromise();
+  MathJax.typesetPromise?.();
+}
+
+/**
+ * Thiết lập lắng nghe các input để tự động cập nhật xem trước
+ */
+export function setupLivePreview() {
+  ["topic", "question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
+    $(id).addEventListener("input", updatePreview);
+  });
 }
