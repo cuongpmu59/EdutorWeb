@@ -27,6 +27,20 @@
     const preview = document.getElementById("preview");
     const deleteBtn = document.getElementById("deleteImageBtn");
 
+    function sendImageToParent(imageUrl, publicId) {
+      window.parent.postMessage({
+        type: "true_false_image_updated",
+        imageUrl,
+        publicId
+      }, "*");
+    }
+
+    function clearImageInParent() {
+      window.parent.postMessage({
+        type: "true_false_image_deleted"
+      }, "*");
+    }
+
     imageInput.addEventListener("change", async function () {
       const file = this.files[0];
       if (!file) return;
@@ -50,6 +64,7 @@
           const imageUrl = data.secure_url;
           const publicId = data.public_id;
 
+          // Lưu localStorage
           localStorage.setItem("true_false_image_url", imageUrl);
           localStorage.setItem("true_false_image_public_id", publicId);
 
@@ -57,6 +72,9 @@
           status.className = "status success";
           preview.innerHTML = `<img src="${imageUrl}" alt="Ảnh minh hoạ">`;
           deleteBtn.style.display = "inline-block";
+
+          // Gửi dữ liệu ảnh về form chính
+          sendImageToParent(imageUrl, publicId);
         } else {
           status.textContent = "❌ Lỗi khi tải ảnh.";
           status.className = "status error";
@@ -92,6 +110,9 @@
           deleteBtn.style.display = "none";
           status.textContent = "🗑️ Đã xoá ảnh thành công.";
           status.className = "status success";
+
+          // Gửi tín hiệu xoá về form chính
+          clearImageInParent();
         } else {
           status.textContent = "❌ Không thể xoá ảnh: " + result.message;
           status.className = "status error";
@@ -111,6 +132,9 @@
         status.textContent = "📌 Ảnh đã được chọn trước đó.";
         status.className = "status success";
         deleteBtn.style.display = "inline-block";
+
+        // Gửi lại dữ liệu đã lưu về form chính (nếu cần đồng bộ lại khi load tab)
+        sendImageToParent(url, publicId);
       }
     });
   </script>
