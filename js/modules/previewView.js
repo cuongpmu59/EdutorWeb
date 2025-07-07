@@ -1,29 +1,40 @@
-export function render(id, content) {
-    const box = document.getElementById(id);
-    box.innerHTML = content;
-    MathJax.typesetPromise([box]);
+const $ = id => document.getElementById(id);
+
+export function updatePreview() {
+  const content = `
+    <strong>Chủ đề:</strong> ${$("topic").value}<br>
+    <strong>Câu hỏi:</strong><br> ${$("question").value}<br>
+    <strong>Đáp án:</strong><br>
+    A. ${$("answer1").value}<br>
+    B. ${$("answer2").value}<br>
+    C. ${$("answer3").value}<br>
+    D. ${$("answer4").value}
+  `;
+  $("preview_area").innerHTML = content;
+  MathJax.typesetPromise();
+}
+
+export function showImageTab(imageUrl) {
+  const imageTab = $("imageTabPreview");
+  const preview = $("preview_image");
+
+  if (imageUrl) {
+    $("image_url").value = imageUrl;
+    imageTab.src = imageUrl;
+    imageTab.style.display = "block";
+    $("imageTabFileName").textContent = "Đã có ảnh";
+    $("delete_image_tab").style.display = "inline-block";
+
+    preview.src = imageUrl;
+    preview.style.display = "block";
+  } else {
+    clearImagePreview();
   }
-  
-  export function renderAll(data) {
-    render("questionPreview", data.question);
-    render("answer1Preview", data.answer1);
-    render("answer2Preview", data.answer2);
-    render("answer3Preview", data.answer3);
-    render("answer4Preview", data.answer4);
-  }
-  
-  export function initPreviewListeners() {
-    const fields = ["question", "answer1", "answer2", "answer3", "answer4"];
-    fields.forEach(id => {
-      document.getElementById(id).addEventListener("input", () => {
-        render(`${id}Preview`, document.getElementById(id).value);
-      });
-    });
-  }
-  
-  export function clearPreview() {
-    ["questionPreview", "answer1Preview", "answer2Preview", "answer3Preview", "answer4Preview"].forEach(id => {
-      document.getElementById(id).innerHTML = "";
-    });
-  }
-  
+}
+
+export function clearImagePreview() {
+  $("imageTabPreview").style.display = "none";
+  $("imageTabFileName").textContent = "";
+  $("delete_image_tab").style.display = "none";
+  $("preview_image").style.display = "none";
+}
