@@ -27,20 +27,7 @@
     const preview = document.getElementById("preview");
     const deleteBtn = document.getElementById("deleteImageBtn");
 
-    function sendImageToParent(imageUrl, publicId) {
-      window.parent.postMessage({
-        type: "true_false_image_updated",
-        imageUrl,
-        publicId
-      }, "*");
-    }
-
-    function clearImageInParent() {
-      window.parent.postMessage({
-        type: "true_false_image_deleted"
-      }, "*");
-    }
-
+    // Sự kiện khi chọn ảnh mới
     imageInput.addEventListener("change", async function () {
       const file = this.files[0];
       if (!file) return;
@@ -60,11 +47,11 @@
         });
 
         const data = await response.json();
-        if (data.secure_url && data.public_id) {
+        if (data.success && data.secure_url && data.public_id) {
           const imageUrl = data.secure_url;
           const publicId = data.public_id;
 
-          // Lưu localStorage
+          // Lưu vào localStorage để dùng trong form chính
           localStorage.setItem("true_false_image_url", imageUrl);
           localStorage.setItem("true_false_image_public_id", publicId);
 
@@ -72,14 +59,10 @@
           status.className = "status success";
           preview.innerHTML = `<img src="${imageUrl}" alt="Ảnh minh hoạ">`;
           deleteBtn.style.display = "inline-block";
-
-          // Gửi dữ liệu ảnh về form chính
-          sendImageToParent(imageUrl, publicId);
         } else {
           status.textContent = "❌ Lỗi khi tải ảnh.";
           status.className = "status error";
         }
-
       } catch (err) {
         console.error("Upload error:", err);
         status.textContent = "❌ Lỗi kết nối khi upload.";
@@ -87,19 +70,20 @@
       }
     });
 
+    // Xoá ảnh khỏi Cloudinary
     deleteBtn.addEventListener("click", async () => {
       const publicId = localStorage.getItem("true_false_image_public_id");
       const imageUrl = localStorage.getItem("true_false_image_url");
       if (!publicId) return;
 
-      const confirmDelete = confirm("Bạn có chắc muốn xoá ảnh khỏi Cloudinary và cơ sở dữ liệu?");
+      const confirmDelete = confirm("Bạn có chắc muốn xoá ảnh khỏi Cloudinary?");
       if (!confirmDelete) return;
 
       try {
         const response = await fetch("delete_cloudinary_image.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ public_id: publicId, image_url: imageUrl })
+          body: JSON.stringify({ public_id: publicId })
         });
 
         const result = await response.json();
@@ -110,9 +94,6 @@
           deleteBtn.style.display = "none";
           status.textContent = "🗑️ Đã xoá ảnh thành công.";
           status.className = "status success";
-
-          // Gửi tín hiệu xoá về form chính
-          clearImageInParent();
         } else {
           status.textContent = "❌ Không thể xoá ảnh: " + result.message;
           status.className = "status error";
@@ -124,6 +105,7 @@
       }
     });
 
+    // Tải ảnh cũ nếu đã có lưu
     window.addEventListener("DOMContentLoaded", () => {
       const url = localStorage.getItem("true_false_image_url");
       const publicId = localStorage.getItem("true_false_image_public_id");
@@ -132,9 +114,6 @@
         status.textContent = "📌 Ảnh đã được chọn trước đó.";
         status.className = "status success";
         deleteBtn.style.display = "inline-block";
-
-        // Gửi lại dữ liệu đã lưu về form chính (nếu cần đồng bộ lại khi load tab)
-        sendImageToParent(url, publicId);
       }
     });
   </script>
