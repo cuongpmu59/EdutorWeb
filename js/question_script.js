@@ -31,7 +31,6 @@ window.addEventListener("message", (event) => {
     $("delete_image_tab").style.display = "none";
     $("preview_image").style.display = "none";
   }
-
   updatePreview();
 });
 
