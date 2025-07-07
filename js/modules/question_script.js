@@ -1,13 +1,10 @@
-import { setupIframeListener } from "./modules/iframe_sync.js";
-import { initPreviewListeners } from "./modules/preview.js";
-import { setupImageHandlers } from "./modules/image_handler.js";
-import { setupFormHandlers } from "./modules/form_handler.js";
-
-// Cấu hình Cloudinary
-const CLOUDINARY_CLOUD_NAME = "ten_cloud";
-const CLOUDINARY_UPLOAD_PRESET = "ten_preset";
+import { $, $$ } from "./dom_utils.js";
+import { updatePreview, setupLivePreview } from "./preview.js";
+import { setupImageHandlers } from "./image_handler.js";
+import { setupFormHandlers } from "./form_handler.js";
+import { setupIframeListener } from "./iframe_sync.js";
 
 setupIframeListener();
-initPreviewListeners();
-setupImageHandlers(CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET);
+setupLivePreview();
+setupImageHandlers();
 setupFormHandlers();
