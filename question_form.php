@@ -84,7 +84,8 @@
 </script>
 
 <!-- Script xử lý -->
-<script type="module" src="js/modules/question_script.js"></script>
+<script type="module" src="js/modules/controller.js"></script>
+
 <script>
   // Chuyển tab
   document.querySelectorAll(".tab-button").forEach(btn => {
