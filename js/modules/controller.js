@@ -5,17 +5,31 @@ import * as imageManager from './imageManager.js';
 import * as dataManager from './dataManager.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  tableView.initListener(formView.populateForm);
+  tableView.initReceiveMessage(formView.populateForm, previewView.showImageTab);
 
-  formView.initEvents(async (formData, imageChanged) => {
-    const saved = await dataManager.saveQuestion(formData);
-    if (saved?.id && imageChanged) {
-      await imageManager.renameImage(formData.image, `pic_${saved.id}`);
-      await dataManager.updateImageURL(saved.id, `pic_${saved.id}`);
-    }
-    tableView.refresh();
-    formView.clear();
+  formView.initPreviewListeners(previewView.updatePreview);
+  imageManager.initImageSelection();
+  imageManager.initImageDeletion();
+
+  formView.initReset(() => {
+    previewView.clearImagePreview();
   });
 
-  previewView.initPreviewListeners();
+  formView.initSubmit(async (formData, isNew, hasTempImage) => {
+    const result = await dataManager.submitFormData(formData, isNew, hasTempImage);
+    if (result.success) {
+      if (isNew && hasTempImage) {
+        await imageManager.renameTempImage(formData.image_url, result.new_id);
+      }
+      tableView.reloadTable();
+    }
+  });
+
+  formView.initDelete(async (id) => {
+    const result = await dataManager.deleteQuestion(id);
+    if (result.success) {
+      formView.resetForm();
+      tableView.reloadTable();
+    }
+  });
 });
