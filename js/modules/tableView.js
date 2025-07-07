@@ -1,11 +1,16 @@
-export function initListener(callback) {
-    window.addEventListener("message", (event) => {
-      if (event.data?.question) callback(event.data);
-    });
-  }
-  
-  export function refresh() {
-    const iframe = document.getElementById("questionIframe");
-    if (iframe) iframe.contentWindow.location.reload();
-  }
-  
+const $ = id => document.getElementById(id);
+
+export function initReceiveMessage(fillFormCallback, updateImagePreview) {
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (!data || typeof data !== "object") return;
+
+    fillFormCallback(data);
+    updateImagePreview(data.image);
+  });
+}
+
+export function reloadTable() {
+  const iframe = $("questionIframe");
+  if (iframe) iframe.contentWindow.location.reload();
+}
