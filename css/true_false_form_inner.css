@@ -1,97 +1,98 @@
 /* === Cấu hình chung === */
 :root {
-    --bg-light: #f9f9f9;
-    --bg-dark: #1e1e1e;
-    --color-dark: #222;
-    --color-light: #f0f0f0;
-    --accent: #3498db;
-    --danger: #e74c3c;
-    --border: #ccc;
-    --radius: 10px;
-  }
-  
-  /* Dark mode */
-  body.dark {
-    background-color: var(--bg-dark);
-    color: var(--color-light);
-  }
-  
-  /* === Form chính === */
-  .true_false_form_inner {
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background-color: var(--bg-light);
-    color: var(--color-dark);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    box-sizing: border-box;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  body.dark .true_false_form_inner {
-    background-color: var(--bg-dark);
-    color: var(--color-light);
-  }
-  
-  /* === Input, textarea, radio === */
-  .true_false_form_inner input[type="text"],
-  .true_false_form_inner textarea {
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 16px;
-    background-color: #fff;
-    color: var(--color-dark);
-    box-sizing: border-box;
-  }
-  
-  body.dark .true_false_form_inner input[type="text"],
-  body.dark .true_false_form_inner textarea {
-    background-color: #2c2c2c;
-    color: var(--color-light);
-    border-color: #444;
-  }
-  
-  .true_false_form_inner textarea {
-    resize: vertical;
-  }
-  
-  /* Label */
-  .true_false_form_inner label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 6px;
-  }
-  
-  /* Radio */
-  .true_false_form_inner .radio-group {
-    margin: 6px 0 15px 0;
-  }
-  
-  .true_false_form_inner input[type="radio"] {
-    margin-right: 6px;
-    transform: scale(1.1);
-  }
-  
-  /* Nút */
-  .true_false_form_inner button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .true_false_form_inner button:hover {
-    background-color: #2b80c2;
-  
+  --bg-light: #f9f9f9;
+  --bg-dark: #1e1e1e;
+  --color-dark: #222;
+  --color-light: #f0f0f0;
+  --accent: #3498db;
+  --danger: #e74c3c;
+  --border: #ccc;
+  --radius: 10px;
+}
+
+/* Dark mode */
+body.dark {
+  background-color: var(--bg-dark);
+  color: var(--color-light);
+  margin: 0;
+  padding: 0;
+}
+
+/* === Form chính === */
+.true_false_form_inner {
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bg-light);
+  color: var(--color-dark);
+  border-radius: 0; /* hoặc giữ var(--radius) nếu muốn bo góc */
+  box-sizing: border-box;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode cho form */
+body.dark .true_false_form_inner {
+  background-color: var(--bg-dark);
+  color: var(--color-light);
+}
+
+/* === Input, textarea === */
+.true_false_form_inner input[type="text"],
+.true_false_form_inner textarea {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 16px;
+  background-color: #fff;
+  color: var(--color-dark);
+  box-sizing: border-box;
+}
+
+body.dark .true_false_form_inner input[type="text"],
+body.dark .true_false_form_inner textarea {
+  background-color: #2c2c2c;
+  color: var(--color-light);
+  border-color: #444;
+}
+
+.true_false_form_inner textarea {
+  resize: vertical;
+}
+
+/* Label */
+.true_false_form_inner label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Radio */
+.true_false_form_inner .radio-group {
+  margin: 6px 0 15px 0;
+}
+
+.true_false_form_inner input[type="radio"] {
+  margin-right: 6px;
+  transform: scale(1.1);
+}
+
+/* Nút */
+.true_false_form_inner button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.true_false_form_inner button:hover {
+  background-color: #2b80c2;
+}
