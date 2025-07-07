@@ -1,5 +1,9 @@
 import { $, updatePreview } from "./preview.js";
 
+/**
+ * Lắng nghe dữ liệu gửi từ iframe (get_question.php)
+ * và gán vào form để chỉnh sửa.
+ */
 export function setupIframeListener() {
   window.addEventListener("message", (event) => {
     const data = event.data;
@@ -16,7 +20,7 @@ export function setupIframeListener() {
     $("correct_answer").value = data.correct_answer || "";
     $("image_url").value = data.image || "";
 
-    // Hiển thị ảnh
+    // Hiển thị ảnh nếu có
     if (data.image) {
       $("imageTabPreview").src = data.image;
       $("imageTabPreview").style.display = "block";
@@ -32,6 +36,7 @@ export function setupIframeListener() {
       $("preview_image").style.display = "none";
     }
 
+    // Cập nhật nội dung xem trước với MathJax
     updatePreview();
   });
 }
