@@ -1,48 +1,56 @@
-import * as previewView from './previewView.js';
-
-export function initEvents(onSubmit) {
-  document.getElementById("saveBtn").addEventListener("click", () => {
-    const formData = getFormData();
-    const imageChanged = Boolean(document.getElementById("image").files.length);
-    onSubmit(formData, imageChanged);
-  });
-
-  document.getElementById("resetBtn").addEventListener("click", clear);
-}
-
-export function getFormData() {
-  return {
-    id: document.getElementById("questionId").value || null,
-    topic: document.getElementById("topic").value,
-    question: document.getElementById("question").value,
-    answers: [
-      document.getElementById("answer1").value,
-      document.getElementById("answer2").value,
-      document.getElementById("answer3").value,
-      document.getElementById("answer4").value
-    ],
-    correct: document.querySelector('input[name="correct"]:checked')?.value,
-    image: document.getElementById("imagePreview").src
-  };
-}
+const $ = id => document.getElementById(id);
 
 export function populateForm(data) {
-  document.getElementById("questionId").value = data.id || '';
-  document.getElementById("topic").value = data.topic || '';
-  document.getElementById("question").value = data.question || '';
-  document.getElementById("answer1").value = data.answer1 || '';
-  document.getElementById("answer2").value = data.answer2 || '';
-  document.getElementById("answer3").value = data.answer3 || '';
-  document.getElementById("answer4").value = data.answer4 || '';
-  if (data.correct) {
-    document.querySelector(`input[value="${data.correct}"]`).checked = true;
-  }
-  document.getElementById("imagePreview").src = data.image || '';
-  previewView.renderAll(data);
+  $("question_id").value = data.id;
+  $("topic").value = data.topic || "";
+  $("question").value = data.question || "";
+  $("answer1").value = data.answer1 || "";
+  $("answer2").value = data.answer2 || "";
+  $("answer3").value = data.answer3 || "";
+  $("answer4").value = data.answer4 || "";
+  $("correct_answer").value = data.correct_answer || "";
+  $("image_url").value = data.image || "";
 }
 
-export function clear() {
-  document.getElementById("questionForm").reset();
-  document.getElementById("imagePreview").src = '';
-  previewView.clearPreview();
+export function initPreviewListeners(updatePreview) {
+  ["topic", "question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
+    $(id).addEventListener("input", updatePreview);
+  });
+}
+
+export function initReset(afterReset = () => {}) {
+  $("resetBtn").addEventListener("click", () => {
+    $("questionForm").reset();
+    $("question_id").value = "";
+    $("image_url").value = "";
+    afterReset();
+  });
+}
+
+export function resetForm() {
+  $("resetBtn").click();
+}
+
+export function initSubmit(onSubmit) {
+  $("questionForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const isNew = !$("question_id").value;
+    const hasTempImage = $("image_url").value.includes("temp_");
+
+    const formData = new FormData(this);
+    if (isNew && hasTempImage) {
+      formData.append("temp_image", $("image_url").value);
+    }
+
+    await onSubmit(formData, isNew, hasTempImage);
+  });
+}
+
+export function initDelete(onDelete) {
+  $("deleteBtn").addEventListener("click", async () => {
+    const id = $("question_id").value;
+    if (id && confirm("Xác nhận xoá câu hỏi này?")) {
+      await onDelete(id);
+    }
+  });
 }
