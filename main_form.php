@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Quản lý câu hỏi</title>
-  <link rel="stylesheet" href="css/styles_question.css">
+  <link rel="stylesheet" href="css/main_ui.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </head>
