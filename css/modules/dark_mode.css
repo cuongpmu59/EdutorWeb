@@ -1,0 +1,54 @@
+body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--color-light);
+  }
+  body.dark-mode .container,
+  body.dark-mode .preview-box,
+  body.dark-mode .modal-content,
+  body.dark-mode .full-preview {
+    background: #242424;
+    color: #e0e0e0;
+    border: 1px solid #444;
+  }
+  body.dark-mode input,
+  body.dark-mode select,
+  body.dark-mode textarea {
+    background: #2b2b2b;
+    color: #fff;
+    border: 1px solid #555;
+  }
+  body.dark-mode button {
+    background: #333;
+    border: 1px solid #555;
+  }
+  body.dark-mode .preview-box.invalid-math {
+    background: #3a1f1f;
+    border-color: var(--danger);
+  }
+  body.dark-mode table,
+  body.dark-mode th,
+  body.dark-mode td {
+    background: #1e1e1e;
+    color: #ddd;
+    border-color: #555;
+  }
+  body.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  body.dark-mode .tab-button {
+    background: #2c2c2c;
+    color: #ccc;
+    border-color: #444;
+  }
+  body.dark-mode .tab-button:hover,
+  body.dark-mode .tab-button.active {
+    background: var(--accent);
+    color: white;
+    border-bottom: none;
+  }
+  body.dark-mode .tab-content {
+    background: #1e1e1e;
+    color: #eee;
+    border-color: #444;
+  }
+  
