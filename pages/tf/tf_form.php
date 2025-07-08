@@ -9,10 +9,10 @@
   <div class="subtab-button" data-subtab="tf_table">📋 Danh sách</div>
 </div>
 
-<div class="subtab-content active" id="tf_form_inner"><?php require __DIR__ . '/tf_form_inner.php'; ?></div>
-<div class="subtab-content" id="tf_image"><?php require __DIR__ . '/tf_image.php'; ?></div>
-<div class="subtab-content" id="tf_preview"><?php require __DIR__ . '/tf_preview.php'; ?></div>
-<div class="subtab-content" id="tf_table"><?php require __DIR__ . '/tf_table.php'; ?></div>
+<div class="subtab-content active" id="tf_form_inner"><?php require 'pages/tf/tf_form_inner.php'; ?></div>
+<div class="subtab-content" id="tf_image"><?php require 'pages/tf/tf_image.php'; ?></div>
+<div class="subtab-content" id="tf_preview"><?php require 'pages/tf/tf_preview.php'; ?></div>
+<div class="subtab-content" id="tf_table"><?php require 'pages/tf/tf_table.php'; ?></div>
 
 <script>
   document.querySelectorAll(".subtab-button").forEach(btn => {
