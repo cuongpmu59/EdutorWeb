@@ -1,0 +1,18 @@
+.preview-box, .latex-preview, .full-preview {
+    background: #f4f4f4;
+    border-left: 3px solid var(--accent);
+    padding: 8px;
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+  }
+  .full-preview {
+    background: #fafafa;
+    padding: 15px;
+    border-left: 4px solid var(--accent);
+  }
+  .preview-box.invalid-math {
+    border: 1px solid var(--danger);
+    background: #fff0f0;
+    box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
+  }
+  
