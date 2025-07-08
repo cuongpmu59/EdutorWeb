@@ -9,10 +9,10 @@
   <div class="subtab-button" data-subtab="mc_table">📋 Danh sách</div>
 </div>
 
-<div class="subtab-content active" id="mc_form_inner"><?php require __DIR__ . '/mc_form_inner.php'; ?></div>
-<div class="subtab-content" id="mc_image"><?php require __DIR__ . '/mc_image.php'; ?></div>
-<div class="subtab-content" id="mc_preview"><?php require __DIR__ . '/mc_preview.php'; ?></div>
-<div class="subtab-content" id="mc_table"><?php require __DIR__ . '/mc_table.php'; ?></div>
+<div class="subtab-content active" id="mc_form_inner"><?php require 'pages/mc_form_inner.php'; ?></div>
+<div class="subtab-content" id="mc_image"><?php require 'pages/mc_image.php'; ?></div>
+<div class="subtab-content" id="mc_preview"><?php require 'pagé/mc_preview.php'; ?></div>
+<div class="subtab-content" id="mc_table"><?php require 'pages/mc_table.php'; ?></div>
 
 <script>
   document.querySelectorAll(".subtab-button").forEach(btn => {
