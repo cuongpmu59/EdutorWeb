@@ -1,4 +1,4 @@
-<?php require 'dotenv.php'; ?>
+<?php require 'env/config.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
