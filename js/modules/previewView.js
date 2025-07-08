@@ -1,40 +1,59 @@
-const $ = id => document.getElementById(id);
+// previewView.js
 
-export function updatePreview() {
-  const content = `
-    <strong>Chủ đề:</strong> ${$("topic").value}<br>
-    <strong>Câu hỏi:</strong><br> ${$("question").value}<br>
-    <strong>Đáp án:</strong><br>
-    A. ${$("answer1").value}<br>
-    B. ${$("answer2").value}<br>
-    C. ${$("answer3").value}<br>
-    D. ${$("answer4").value}
-  `;
-  $("preview_area").innerHTML = content;
-  MathJax.typesetPromise();
-}
+export function renderPreview(prefix = "mc") {
+  const previewBox = document.getElementById(`${prefix}_preview_content`);
+  if (!previewBox) return;
 
-export function showImageTab(imageUrl) {
-  const imageTab = $("imageTabPreview");
-  const preview = $("preview_image");
+  let html = "";
 
-  if (imageUrl) {
-    $("image_url").value = imageUrl;
-    imageTab.src = imageUrl;
-    imageTab.style.display = "block";
-    $("imageTabFileName").textContent = "Đã có ảnh";
-    $("delete_image_tab").style.display = "inline-block";
+  if (prefix === "mc") {
+    const question = getValue(`${prefix}_question`);
+    const a1 = getValue(`${prefix}_answer1`);
+    const a2 = getValue(`${prefix}_answer2`);
+    const a3 = getValue(`${prefix}_answer3`);
+    const a4 = getValue(`${prefix}_answer4`);
+    html = `
+      <p><strong>📘 Câu hỏi:</strong> ${question}</p>
+      <ul>
+        <li>A. ${a1}</li>
+        <li>B. ${a2}</li>
+        <li>C. ${a3}</li>
+        <li>D. ${a4}</li>
+      </ul>
+    `;
 
-    preview.src = imageUrl;
-    preview.style.display = "block";
-  } else {
-    clearImagePreview();
+  } else if (prefix === "tf") {
+    const main = getValue(`${prefix}_question`);
+    const s1 = getValue(`${prefix}_statement1`);
+    const s2 = getValue(`${prefix}_statement2`);
+    const s3 = getValue(`${prefix}_statement3`);
+    const s4 = getValue(`${prefix}_statement4`);
+    html = `
+      <p><strong>🧠 Câu hỏi:</strong> ${main}</p>
+      <ol>
+        <li>1. ${s1}</li>
+        <li>2. ${s2}</li>
+        <li>3. ${s3}</li>
+        <li>4. ${s4}</li>
+      </ol>
+    `;
+
+  } else if (prefix === "sa") {
+    const question = getValue(`${prefix}_question`);
+    const b = getValue(`${prefix}_correct_answer`);
+    html = `
+      <p><strong>📝 Câu hỏi:</strong> ${question}</p>
+      <ol><li>1. ${b}</li></ol>
+    `;
   }
+
+  previewBox.innerHTML = html;
+
+  // Kích hoạt lại MathJax để hiển thị công thức
+  if (window.MathJax) MathJax.typesetPromise?.();
 }
 
-export function clearImagePreview() {
-  $("imageTabPreview").style.display = "none";
-  $("imageTabFileName").textContent = "";
-  $("delete_image_tab").style.display = "none";
-  $("preview_image").style.display = "none";
+function getValue(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : "";
 }
