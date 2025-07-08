@@ -1,0 +1,11 @@
+#searchResultTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  #searchResultTable th, #searchResultTable td {
+    border: 1px solid var(--border);
+    padding: 6px;
+    text-align: left;
+  }
+  
