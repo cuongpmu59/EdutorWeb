@@ -1,37 +1,35 @@
-/* =========================
-   CSS cho main_form.php
-   ========================= */
-
-/* Tabs container */
 .tab-container {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
   }
   
-  /* Tab buttons phủ đều chiều ngang */
   .tab-button {
-    flex: 1; /* 👈 mỗi tab chiếm 1 phần đều nhau */
-    padding: 14px;
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
     font-size: 16px;
     font-weight: bold;
-    text-align: center;
-    border: 2px solid var(--accent, #3498db);
+    text-decoration: none;
     border-radius: 8px;
+    border: 2px solid var(--accent, #3498db);
     background-color: var(--bg-light, #f5f5f5);
     color: var(--accent, #3498db);
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
+    transition: all 0.3s ease;
   }
   
   .tab-button:hover {
     background-color: var(--accent, #3498db);
-    color: #fff;
+    color: white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
   
-  /* Responsive: dưới 600px thì xuống dòng */
+  .tab-button.active {
+    background-color: var(--accent, #3498db);
+    color: white;
+    pointer-events: none;
+  }
+  
   @media (max-width: 600px) {
     .tab-container {
       flex-direction: column;
