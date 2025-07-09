@@ -8,7 +8,7 @@
 
 <div class="subtab-content active" id="mc_form_inner"><?php require 'pages/mc_form_inner.php'; ?></div>
 <div class="subtab-content" id="mc_image"><?php require 'pages/mc_image.php'; ?></div>
-<div class="subtab-content" id="mc_preview"><?php require 'pagé/mc_preview.php'; ?></div>
+<div class="subtab-content" id="mc_preview"><?php require 'pages/mc_preview.php'; ?></div>
 <div class="subtab-content" id="mc_table"><?php require 'pages/mc_table.php'; ?></div>
 
 <script>
