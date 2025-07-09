@@ -1,20 +1,28 @@
-label {
-    font-weight: 500;
-    display: block;
-    margin-top: 10px;
-  }
-  input[type="text"], input[type="file"], select, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    font-size: 15px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    resize: vertical;
-  }
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 3px rgba(52, 152, 219, 0.6);
-  }
-  
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+body.dark .form-control {
+  background-color: #444;
+  color: white;
+  border: 1px solid #666;
+}
+
+.form-actions button {
+  margin-right: 10px;
+}
