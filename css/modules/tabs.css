@@ -1,31 +1,123 @@
-.tab-buttons {
-    display: flex;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-  }
+/* ===== Tabs chính ===== */
+.tab-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 2px solid var(--accent);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-light);
+  color: var(--accent);
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.tab-button:hover {
+  background-color: var(--accent);
+  color: white;
+}
+
+.tab-button.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Dark mode cho tab chính */
+body.dark .tab-button {
+  background-color: var(--bg-dark);
+  color: var(--accent);
+  border-color: #555;
+}
+
+body.dark .tab-button.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* ===== Sub-tabs bên trong mỗi tab ===== */
+.subtab-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--accent);
+  flex-wrap: wrap;
+}
+
+.subtab-button {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: var(--bg-light);
+  color: var(--accent);
+  border: none;
+  border-right: 1px solid #ccc;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.subtab-button:last-child {
+  border-right: none;
+}
+
+.subtab-button.active {
+  background-color: var(--accent);
+  color: white;
+  border-bottom: 3px solid white;
+}
+
+.subtab-content {
+  display: none;
+}
+
+.subtab-content.active {
+  display: block;
+}
+
+/* Dark mode cho sub-tabs */
+body.dark .subtab-button {
+  background-color: var(--bg-dark);
+  color: var(--accent);
+  border-color: #444;
+}
+
+body.dark .subtab-button.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* ===== Responsive cho tab & sub-tab ===== */
+@media (max-width: 768px) {
   .tab-button {
-    padding: 10px 16px;
-    cursor: pointer;
-    background: #f0f0f0;
-    border: 1px solid #ccc;
-    border-bottom: none;
-    border-radius: 6px 6px 0 0;
-    margin-right: 4px;
-    font-weight: bold;
+    flex: 1 1 100%;
+    text-align: center;
   }
-  .tab-button.active {
-    background: #fff;
-    border-bottom: 1px solid #fff;
-    color: var(--accent);
+
+  .subtab-container {
+    flex-direction: column;
   }
-  .tab-content {
-    display: none;
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 0 0 8px 8px;
-    background: #fff;
+
+  .subtab-button {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
   }
-  .tab-content.active {
-    display: block;
+
+  .subtab-button.active {
+    border-bottom: 3px solid var(--accent);
   }
-  
+}
