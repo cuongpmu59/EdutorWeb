@@ -9,18 +9,12 @@
 
 .tab-button {
   padding: 10px 20px;
-  cursor: pointer;
   border: 2px solid var(--accent);
-  border-radius: var(--border-radius);
   background-color: var(--bg-light);
   color: var(--accent);
+  border-radius: 8px;
+  cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.tab-button:hover {
-  background-color: var(--accent);
-  color: white;
 }
 
 .tab-button.active {
@@ -31,21 +25,8 @@
 .tab-content {
   display: none;
 }
-
 .tab-content.active {
   display: block;
-}
-
-/* Dark mode cho tab chính */
-body.dark .tab-button {
-  background-color: var(--bg-dark);
-  color: var(--accent);
-  border-color: #555;
-}
-
-body.dark .tab-button.active {
-  background-color: var(--accent);
-  color: white;
 }
 
 /* ===== Sub-tabs bên trong mỗi tab ===== */
