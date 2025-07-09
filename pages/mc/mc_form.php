@@ -1,28 +1,32 @@
-<div class="subtab-container">
-  <div class="subtab-button active" data-subtab="mc_form_inner">📝 Nhập câu hỏi</div>
-  <div class="subtab-button" data-subtab="mc_image">🖼️ Ảnh minh hoạ</div>
-  <div class="subtab-button" data-subtab="mc_preview">👁️ Xem trước</div>
-  <div class="subtab-button" data-subtab="mc_table">📋 Danh sách</div>
-</div>
+<?php
+$current_page = basename($_SERVER['PHP_SELF']); // Xác định trang hiện tại
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>📝 Nhập câu hỏi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main_ui.css">
+  <link rel="stylesheet" href="css/main_form.css"> <!-- dùng chung nếu có -->
+  <link rel="stylesheet" href="css/mc_tabs.css">    <!-- nếu bạn muốn tách riêng phần tab MC -->
+</head>
+<body>
 
-<div class="subtab-content active" id="mc_form_inner">
-  <?php require 'pages/mc/mc_form_inner.php'; ?>
-</div>
+  <h2>📝 Nhập câu hỏi trắc nghiệm</h2>
 
-<div class="subtab-content" id="mc_image">
-  <?php require 'pages/mc/mc_image.php'; ?>
-</div>
+  <!-- Tabs chuyển trang -->
+  <div class="tab-container">
+    <a class="tab-button <?= $current_page === 'mc_form.php' ? 'active' : '' ?>" href="mc_form.php">📝 Nhập câu hỏi</a>
+    <a class="tab-button <?= $current_page === 'mc_image.php' ? 'active' : '' ?>" href="mc_image.php">🖼️ Ảnh minh hoạ</a>
+    <a class="tab-button <?= $current_page === 'mc_preview.php' ? 'active' : '' ?>" href="mc_preview.php">👁️ Xem trước</a>
+    <a class="tab-button <?= $current_page === 'mc_table.php' ? 'active' : '' ?>" href="mc_table.php">📋 Danh sách</a>
+  </div>
 
-<div class="subtab-content" id="mc_preview">
-  <?php require 'pages/mc/mc_preview.php'; ?>
-</div>
+  <!-- Nội dung chính của trang -->
+  <div class="form-section">
+    <?php require 'mc_form_inner.php'; ?>
+  </div>
 
-<div class="subtab-content" id="mc_table">
-  <?php require 'pages/mc/mc_table.php'; ?>
-</div>
-
-<script type="module">
-  // Nếu bạn dùng JS modules thì nên dùng import tab handler
-  import { initTabs } from 'js/modules/tab_handler.js';
-  initTabs(); 
-</script>
+</body>
+</html>
