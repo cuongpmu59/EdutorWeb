@@ -1,6 +1,3 @@
-// =======================
-// File: pages/mc/mc_form.php
-// =======================
 ?>
 <div class="subtab-container">
   <div class="subtab-button active" data-subtab="mc_form_inner">📝 Nhập câu hỏi</div>
