@@ -55,18 +55,19 @@ button {
   background-color: #616a6b;
 }
 
-/* ==== Button Group ==== */
+/* ==== Button Grouping ==== */
 .button-group {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
+  gap: 12px;
   width: 100%;
 }
 .button-group button {
   flex: 1;
+  min-width: 120px;
 }
 
-/* ==== Icon spacing (optional) ==== */
+/* ==== Icon spacing inside button ==== */
 button .icon {
   margin-right: 6px;
   vertical-align: middle;
