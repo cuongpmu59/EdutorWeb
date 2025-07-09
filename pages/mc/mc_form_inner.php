@@ -1,48 +1,64 @@
-<input type="hidden" id="mc_id">
+<form id="mcForm" class="question-form" method="POST" action="insert_question.php">
+  <!-- Hidden: ID câu hỏi khi sửa -->
+  <input type="hidden" id="question_id" name="id" value="">
 
-<div class="form-group">
-  <label for="mc_topic">📚 Chủ đề:</label>
-  <input type="text" id="mc_topic" class="form-control" placeholder="Nhập chủ đề...">
-</div>
+  <!-- Chủ đề -->
+  <div class="form-row">
+    <label for="topic">📚 Chủ đề:</label>
+    <input type="text" id="topic" name="topic" class="form-control" required>
+  </div>
 
-<div class="form-group">
-  <label for="mc_question">🧠 Câu hỏi:</label>
-  <textarea id="mc_question" rows="3" class="form-control" placeholder="Nhập nội dung câu hỏi..."></textarea>
-</div>
+  <!-- Câu hỏi -->
+  <div class="form-row">
+    <label for="question">🧠 Câu hỏi:</label>
+    <textarea id="question" name="question" rows="3" class="form-control" required></textarea>
+  </div>
 
-<div class="form-group">
-  <label for="mc_answer1">A:</label>
-  <input type="text" id="mc_answer1" class="form-control" placeholder="Đáp án A">
-</div>
+  <!-- Đáp án A -->
+  <div class="form-row">
+    <label for="optionA">🔠 A.</label>
+    <input type="text" id="optionA" name="optionA" class="form-control" required>
+  </div>
 
-<div class="form-group">
-  <label for="mc_answer2">B:</label>
-  <input type="text" id="mc_answer2" class="form-control" placeholder="Đáp án B">
-</div>
+  <!-- Đáp án B -->
+  <div class="form-row">
+    <label for="optionB">🔠 B.</label>
+    <input type="text" id="optionB" name="optionB" class="form-control" required>
+  </div>
 
-<div class="form-group">
-  <label for="mc_answer3">C:</label>
-  <input type="text" id="mc_answer3" class="form-control" placeholder="Đáp án C">
-</div>
+  <!-- Đáp án C -->
+  <div class="form-row">
+    <label for="optionC">🔠 C.</label>
+    <input type="text" id="optionC" name="optionC" class="form-control" required>
+  </div>
 
-<div class="form-group">
-  <label for="mc_answer4">D:</label>
-  <input type="text" id="mc_answer4" class="form-control" placeholder="Đáp án D">
-</div>
+  <!-- Đáp án D -->
+  <div class="form-row">
+    <label for="optionD">🔠 D.</label>
+    <input type="text" id="optionD" name="optionD" class="form-control" required>
+  </div>
 
-<div class="form-group">
-  <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-  <select id="mc_correct_answer" class="form-control">
-    <option value="">-- Chọn --</option>
-    <option value="A">A</option>
-    <option value="B">B</option>
-    <option value="C">C</option>
-    <option value="D">D</option>
-  </select>
-</div>
+  <!-- Đáp án đúng -->
+  <div class="form-row">
+    <label for="correctAnswer">✅ Đáp án đúng:</label>
+    <select id="correctAnswer" name="correctAnswer" class="form-control" required>
+      <option value="">-- Chọn đáp án đúng --</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+  </div>
 
-<div class="form-actions" style="margin-top: 20px;">
-  <button type="button" id="mc_saveBtn" class="btn-save">💾 Lưu</button>
-  <button type="button" id="mc_resetBtn" class="btn-reset">🔄 Làm mới</button>
-  <button type="button" id="mc_deleteBtn" class="btn-delete">🗑️ Xoá</button>
-</div>
+  <!-- Cảnh báo lỗi -->
+  <div id="formWarning" style="display: none; color: red; font-weight: bold; margin-top: 10px;">
+    ⚠️ Vui lòng nhập đầy đủ tất cả các trường trước khi lưu.
+  </div>
+
+  <!-- Nút hành động -->
+  <div class="form-actions">
+    <button type="submit" class="btn-primary">💾 Lưu</button>
+    <button type="reset" class="btn-secondary">🔄 Làm mới</button>
+    <button type="button" class="btn-danger" id="deleteBtn" style="display: none;">🗑️ Xoá</button>
+  </div>
+</form>
