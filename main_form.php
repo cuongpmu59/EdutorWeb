@@ -39,17 +39,5 @@
 <!-- Scripts -->
 <script type="module" src="js/modules/controller.js"></script>
 
-<script>
-  // Chuyển tab chính
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
-    });
-  });
-</script>
-
 </body>
 </html>
