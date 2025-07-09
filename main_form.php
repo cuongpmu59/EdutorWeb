@@ -15,8 +15,8 @@
 <!-- Tabs chính -->
 <div class="tab-container">
   <div class="tab-button active" data-tab="tab-mc">📝 Trắc nghiệm nhiều lựa chọn</div>
-  <div class="tab-button" data-tab="tab-tf">✅ Đúng/Sai</div>
-  <div class="tab-button" data-tab="tab-sa">✍️ Trả lời ngắn</div>
+  <div class="tab-button" data-tab="tab-tf">✅ Trắc nghiệm Đúng/Sai</div>
+  <div class="tab-button" data-tab="tab-sa">✍️ Trắc nghiệm Trả lời ngắn</div>
 </div>
 
 <!-- Nội dung từng tab -->
