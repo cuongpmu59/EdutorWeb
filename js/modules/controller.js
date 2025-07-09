@@ -3,7 +3,7 @@ import * as tableView from './tableView.js';
 import * as previewView from './previewView.js';
 import * as imageManager from './imageManager.js';
 import * as dataManager from './dataManager.js';
-import * as initTabs from './tab_handler.js';
+import { initTabs } from './tab_handler.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   tableView.initReceiveMessage(formView.populateForm, previewView.showImageTab);
