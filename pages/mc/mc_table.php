@@ -1,39 +1,64 @@
 <?php
-require 'db_connection.php';
-require 'dotenv.php';
-require 'includes/question_data.php'; // dùng chung
-$rows = getQuestions($conn, 'questions'); // bảng trắc nghiệm nhiều lựa chọn
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Danh sách câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  <link rel="stylesheet" href="css/table_view.css">
+  <title>📋 Danh sách câu hỏi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="css/main_ui.css">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="css/buttons.css">
+  <link rel="stylesheet" href="css/tabs.css">
+  <link rel="stylesheet" href="css/table.css">
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-light, #f9f9f9);
+      color: var(--color-dark, #333);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--accent, #3498db);
+      margin-bottom: 30px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="tab-container">
-  <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
-  <button class="tab-button" data-tab="importTab">📁 Nhập / Xuất</button>
-  <button class="tab-button" data-tab="listTab">📄 Danh sách</button>
-</div>
+  <div class="container">
+    <h2>📋 Danh sách câu hỏi</h2>
 
-<?php include 'includes/question_filter.php'; ?>
-<?php include 'includes/question_import.php'; ?>
-<?php include 'includes/question_table.php'; ?>
-<?php include 'includes/question_modal.php'; ?>
+    <div class="tab-container">
+      <a class="tab-button <?= $current_page === 'mc_form.php' ? 'active' : '' ?>" href="mc_form.php">📝 Nhập câu hỏi</a>
+      <a class="tab-button <?= $current_page === 'mc_image.php' ? 'active' : '' ?>" href="mc_image.php">🖼️ Ảnh minh hoạ</a>
+      <a class="tab-button <?= $current_page === 'mc_preview.php' ? 'active' : '' ?>" href="mc_preview.php">👁️ Xem trước</a>
+      <a class="tab-button <?= $current_page === 'mc_table.php' ? 'active' : '' ?>" href="mc_table.php">📋 Danh sách</a>
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="js/table/table.js"></script>
+    <div class="form-section">
+      <?php require 'mc_table_inner.php'; ?>
+    </div>
+  </div>
+
 </body>
 </html>
