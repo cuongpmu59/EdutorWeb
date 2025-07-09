@@ -201,3 +201,63 @@
     }
   }
   
+  /* Sub-tab ngang toàn chiều rộng */
+.subtab-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--accent);
+    flex-wrap: wrap;
+  }
+  
+  .subtab-button {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: var(--bg-light);
+    color: var(--accent);
+    border: none;
+    border-right: 1px solid #ccc;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .subtab-button:last-child {
+    border-right: none;
+  }
+  
+  .subtab-button.active {
+    background-color: var(--accent);
+    color: white;
+    border-bottom: 3px solid white;
+  }
+  
+  body.dark .subtab-button {
+    background-color: var(--bg-dark);
+    color: var(--accent);
+    border-color: #444;
+  }
+  
+  body.dark .subtab-button.active {
+    background-color: var(--accent);
+    color: white;
+  }
+  
+  /* Responsive mobile: subtab xếp hàng dọc */
+  @media (max-width: 600px) {
+    .subtab-container {
+      flex-direction: column;
+    }
+  
+    .subtab-button {
+      border-right: none;
+      border-bottom: 1px solid #ccc;
+    }
+  
+    .subtab-button.active {
+      border-bottom: 3px solid var(--accent);
+    }
+  }
+  
