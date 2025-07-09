@@ -9,7 +9,6 @@ $current_page = basename($_SERVER['PHP_SELF']); // Xác định trang hiện t�
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/main_ui.css">
   <link rel="stylesheet" href="css/main_form.css"> <!-- dùng chung nếu có -->
-  <link rel="stylesheet" href="css/mc_tabs.css">    <!-- nếu bạn muốn tách riêng phần tab MC -->
 </head>
 <body>
 
