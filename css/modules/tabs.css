@@ -1,24 +1,35 @@
 /* ===== Tabs chính ===== */
 .tab-container {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  width: 100%;
   margin-bottom: 20px;
+  background: var(--bg-light, #f4f4f4);
+  border-radius: 6px;
+  overflow: hidden;
   flex-wrap: wrap;
 }
 
 .tab-button {
-  padding: 10px 20px;
-  border: 2px solid var(--accent);
-  background-color: var(--bg-light);
-  color: var(--accent);
-  border-radius: 8px;
-  cursor: pointer;
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
   font-weight: bold;
+  color: #444;
+  background-color: #eee;
+  border-right: 1px solid #ccc;
+  transition: background-color 0.3s;
+}
+.tab-button:last-child {
+  border-right: none;
+}
+
+.tab-button:hover {
+  background-color: #ddd;
 }
 
 .tab-button.active {
-  background-color: var(--accent);
+  background-color: var(--accent, #3498db);
   color: white;
 }
 
@@ -29,10 +40,9 @@
   display: block;
 }
 
-/* ===== Sub-tabs bên trong mỗi tab ===== */
+/* ===== Sub-tabs ===== */
 .subtab-container {
   display: flex;
-  justify-content: space-between;
   width: 100%;
   margin-bottom: 20px;
   border-bottom: 2px solid var(--accent);
@@ -51,7 +61,6 @@
   border-right: 1px solid #ccc;
   transition: background-color 0.3s, color 0.3s;
 }
-
 .subtab-button:last-child {
   border-right: none;
 }
@@ -65,12 +74,11 @@
 .subtab-content {
   display: none;
 }
-
 .subtab-content.active {
   display: block;
 }
 
-/* Dark mode cho sub-tabs */
+/* ===== Dark Mode Support ===== */
 body.dark .subtab-button {
   background-color: var(--bg-dark);
   color: var(--accent);
@@ -82,11 +90,17 @@ body.dark .subtab-button.active {
   color: white;
 }
 
-/* ===== Responsive cho tab & sub-tab ===== */
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .tab-button {
     flex: 1 1 100%;
     text-align: center;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .tab-button:last-child {
+    border-bottom: none;
   }
 
   .subtab-container {
