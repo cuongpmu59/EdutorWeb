@@ -5,15 +5,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>👁️ Xem trước</title>
+  <title>👁️ Xem trước câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="css/main_ui.css">
-  <link rel="stylesheet" href="css/form.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/tabs.css">
-  <link rel="stylesheet" href="css/preview.css">
+  <!-- Đường dẫn tương đối từ pages/mc/ -->
+  <link rel="stylesheet" href="../../css/main_ui.css">
+  <link rel="stylesheet" href="../../css/form.css">
+  <link rel="stylesheet" href="../../css/buttons.css">
+  <link rel="stylesheet" href="../../css/tabs.css">
+  <link rel="stylesheet" href="../../css/preview.css">
 
+  <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
@@ -47,6 +49,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
   <div class="container">
     <h2>👁️ Xem trước câu hỏi</h2>
 
+    <!-- Tabs điều hướng -->
     <div class="tab-container">
       <a class="tab-button <?= $current_page === 'mc_form.php' ? 'active' : '' ?>" href="mc_form.php">📝 Nhập câu hỏi</a>
       <a class="tab-button <?= $current_page === 'mc_image.php' ? 'active' : '' ?>" href="mc_image.php">🖼️ Ảnh minh hoạ</a>
@@ -54,6 +57,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       <a class="tab-button <?= $current_page === 'mc_table.php' ? 'active' : '' ?>" href="mc_table.php">📋 Danh sách</a>
     </div>
 
+    <!-- Nội dung xem trước -->
     <div class="form-section">
       <?php require 'mc_preview_inner.php'; ?>
     </div>
