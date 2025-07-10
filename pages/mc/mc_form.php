@@ -9,9 +9,14 @@ require_once __DIR__ . '/../../dotenv.php';
   <meta charset="UTF-8">
   <title>❓ Câu hỏi nhiều lựa chọn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- ✅ Import CSS gộp -->
   <link rel="stylesheet" href="../../css/main_ui.css">
+
   <style>
-    :root { --accent: #3498db; } /* Xanh dương */
+    :root {
+      --accent: #3498db;
+    }
   </style>
 </head>
 <body class="main-layout">
@@ -23,12 +28,14 @@ require_once __DIR__ . '/../../dotenv.php';
     <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
     <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
   </div>
-  
-  <div class="tab-content">
-    <?php require_once __DIR__ . '/mc_form_inner.php'; ?>
+
+  <!-- Vùng hiển thị nội dung động -->
+  <div class="tab-content" id="tabContent">
+    <!-- Nội dung của từng tab sẽ được controller.js fetch vào đây -->
   </div>
 
-</body>
+  <!-- ✅ Import controller module -->
+  <script type="module" src="../../js/modules/controller.js"></script>
 
 </body>
 </html>
