@@ -1,40 +1,39 @@
-import * as formView from './formView.js';
-import * as tableView from './tableView.js';
-import * as previewView from './previewView.js';
-import * as imageManager from './imageManager.js';
-import * as dataManager from './dataManager.js';
-import { initTabs } from './tab_handler.js';
+// js/modules/controller.js
 
-document.addEventListener("DOMContentLoaded", () => {
-  tableView.initReceiveMessage(formView.populateForm, previewView.showImageTab);
+import * as formView from "./formView.js";
+import * as imageManager from "./imageManager.js";
+import * as previewView from "./previewView.js";
+import * as tableView from "./tableView.js";
 
-  formView.initPreviewListeners(previewView.updatePreview);
-  imageManager.initImageSelection();
-  imageManager.initImageDeletion();
+const container = document.getElementById("tabContent");
+const buttons = document.querySelectorAll(".tab-button");
 
-  formView.initReset(() => {
-    previewView.clearImagePreview();
-  });
+const views = {
+  "mc_form_inner.php": formView,
+  "mc_image.php": imageManager,
+  "mc_preview.php": previewView,
+  "mc_table.php": tableView
+};
 
-  formView.initSubmit(async (formData, isNew, hasTempImage) => {
-    const result = await dataManager.submitFormData(formData, isNew, hasTempImage);
-    if (result.success) {
-      if (isNew && hasTempImage) {
-        await imageManager.renameTempImage(formData.image_url, result.new_id);
-      }
-      tableView.reloadTable();
-    }
-  });
+// Gắn sự kiện click cho từng tab
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const url = btn.dataset.url;
+    if (!url || !views[url]) return;
 
-  formView.initDelete(async (id) => {
-    const result = await dataManager.deleteQuestion(id);
-    if (result.success) {
-      formView.resetForm();
-      tableView.reloadTable();
-    }
+    // Cập nhật trạng thái active
+    buttons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Gọi render của view tương ứng
+    views[url].render(container);
   });
 });
 
+// Tự động kích hoạt tab đầu tiên khi trang load
 document.addEventListener("DOMContentLoaded", () => {
-  initTabs(); 
+  const firstTab = document.querySelector(".tab-button.active") || buttons[0];
+  if (firstTab) {
+    firstTab.click(); // Giả lập click để kích hoạt
+  }
 });
