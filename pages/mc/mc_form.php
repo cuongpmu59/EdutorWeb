@@ -16,16 +16,29 @@ require_once __DIR__ . '/../../dotenv.php';
 </head>
 <body class="main-layout">
 
+  <!-- Tabs điều hướng -->
   <div class="tab-bar inner-tabs">
-    <a class="tab-button active" href="mc_form_inner.php">📝 Nhập câu hỏi</a>
-    <a class="tab-button" href="mc_image.php">🖼️ Chọn ảnh minh hoạ</a>
-    <a class="tab-button" href="mc_preview.php">👁️ Xem trước</a>
-    <a class="tab-button" href="mc_table.php">📋 Danh sách</a>
+    <button class="tab-button active" data-url="mc_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-url="mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
+    <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
+    <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
   </div>
 
-  <div class="tab-content">
-    <?php require_once __DIR__ . '/mc_form_inner.php'; ?>
-  </div>
+  <!-- Khu vực hiển thị nội dung từng tab qua iframe -->
+  <iframe id="innerFrame" class="form-iframe" src="mc_form_inner.php" allowfullscreen></iframe>
+
+  <script>
+    const buttons = document.querySelectorAll(".tab-button");
+    const iframe = document.getElementById("innerFrame");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        buttons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        iframe.src = button.getAttribute("data-url");
+      });
+    });
+  </script>
 
 </body>
 </html>
