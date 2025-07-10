@@ -1,118 +1,17 @@
-/* ===== Tabs chính ===== */
-.tab-container {
+.tab-bar {
   display: flex;
-  width: 100%;
-  margin-bottom: 20px;
-  background: var(--bg-light, #f4f4f4);
-  border-radius: 6px;
-  overflow: hidden;
-  flex-wrap: wrap;
+  background: var(--accent, #3498db);
 }
-
 .tab-button {
   flex: 1;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-  font-weight: bold;
-  color: #444;
-  background-color: #eee;
-  border-right: 1px solid #ccc;
-  transition: background-color 0.3s;
-}
-.tab-button:last-child {
-  border-right: none;
-}
-
-.tab-button:hover {
-  background-color: #ddd;
-}
-
-.tab-button.active {
-  background-color: var(--accent, #3498db);
+  padding: 12px 16px;
+  background: transparent;
   color: white;
-}
-
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-
-/* ===== Sub-tabs ===== */
-.subtab-container {
-  display: flex;
-  width: 100%;
-  margin-bottom: 20px;
-  border-bottom: 2px solid var(--accent);
-  flex-wrap: wrap;
-}
-
-.subtab-button {
-  flex: 1;
-  text-align: center;
-  padding: 12px 0;
-  cursor: pointer;
-  font-weight: bold;
-  background-color: var(--bg-light);
-  color: var(--accent);
   border: none;
-  border-right: 1px solid #ccc;
-  transition: background-color 0.3s, color 0.3s;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
-.subtab-button:last-child {
-  border-right: none;
-}
-
-.subtab-button.active {
-  background-color: var(--accent);
-  color: white;
-  border-bottom: 3px solid white;
-}
-
-.subtab-content {
-  display: none;
-}
-.subtab-content.active {
-  display: block;
-}
-
-/* ===== Dark Mode Support ===== */
-body.dark .subtab-button {
-  background-color: var(--bg-dark);
-  color: var(--accent);
-  border-color: #444;
-}
-
-body.dark .subtab-button.active {
-  background-color: var(--accent);
-  color: white;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .tab-button {
-    flex: 1 1 100%;
-    text-align: center;
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .tab-button:last-child {
-    border-bottom: none;
-  }
-
-  .subtab-container {
-    flex-direction: column;
-  }
-
-  .subtab-button {
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .subtab-button.active {
-    border-bottom: 3px solid var(--accent);
-  }
+.tab-button.active {
+  background: var(--accent-dark, #2874a6);
 }
