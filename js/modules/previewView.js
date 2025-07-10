@@ -1,59 +1,72 @@
-// previewView.js
+// js/modules/previewView.js
 
-export function renderPreview(prefix = "mc") {
-  const previewBox = document.getElementById(`${prefix}_preview_content`);
-  if (!previewBox) return;
-
-  let html = "";
-
-  if (prefix === "mc") {
-    const question = getValue(`${prefix}_question`);
-    const a1 = getValue(`${prefix}_answer1`);
-    const a2 = getValue(`${prefix}_answer2`);
-    const a3 = getValue(`${prefix}_answer3`);
-    const a4 = getValue(`${prefix}_answer4`);
-    html = `
-      <p><strong>📘 Câu hỏi:</strong> ${question}</p>
-      <ul>
-        <li>A. ${a1}</li>
-        <li>B. ${a2}</li>
-        <li>C. ${a3}</li>
-        <li>D. ${a4}</li>
-      </ul>
-    `;
-
-  } else if (prefix === "tf") {
-    const main = getValue(`${prefix}_question`);
-    const s1 = getValue(`${prefix}_statement1`);
-    const s2 = getValue(`${prefix}_statement2`);
-    const s3 = getValue(`${prefix}_statement3`);
-    const s4 = getValue(`${prefix}_statement4`);
-    html = `
-      <p><strong>🧠 Câu hỏi:</strong> ${main}</p>
-      <ol>
-        <li>1. ${s1}</li>
-        <li>2. ${s2}</li>
-        <li>3. ${s3}</li>
-        <li>4. ${s4}</li>
-      </ol>
-    `;
-
-  } else if (prefix === "sa") {
-    const question = getValue(`${prefix}_question`);
-    const b = getValue(`${prefix}_correct_answer`);
-    html = `
-      <p><strong>📝 Câu hỏi:</strong> ${question}</p>
-      <ol><li>1. ${b}</li></ol>
-    `;
-  }
-
-  previewBox.innerHTML = html;
-
-  // Kích hoạt lại MathJax để hiển thị công thức
-  if (window.MathJax) MathJax.typesetPromise?.();
+/**
+ * Tải nội dung xem trước từ mc_preview.php
+ * và hiển thị vào vùng container
+ * @param {HTMLElement} container
+ */
+export function render(container) {
+  fetch("mc_preview.php")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Không thể tải xem trước (${response.status})`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      container.innerHTML = html;
+      renderMath();
+      initPreviewEvents();
+    })
+    .catch(error => {
+      container.innerHTML = `<div class="error-box">❌ ${error.message}</div>`;
+    });
 }
 
-function getValue(id) {
-  const el = document.getElementById(id);
-  return el ? el.value : "";
+/**
+ * Kích hoạt MathJax sau khi render
+ */
+function renderMath() {
+  if (window.MathJax && typeof MathJax.typeset === "function") {
+    MathJax.typeset();
+  }
+}
+
+/**
+ * Gắn các sự kiện sau khi xem trước được render
+ */
+function initPreviewEvents() {
+  const refreshBtn = document.getElementById("refreshPreviewBtn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      render(document.getElementById("tabContent"));
+    });
+  }
+
+  // Nếu bạn có modal ảnh hoặc preview nâng cao, khởi động ở đây
+  const images = document.querySelectorAll(".preview-image");
+  images.forEach(img => {
+    img.addEventListener("click", () => {
+      openModal(img.src);
+    });
+  });
+}
+
+/**
+ * Hiển thị ảnh ở dạng modal (nếu có chức năng này)
+ * @param {string} src - URL ảnh
+ */
+function openModal(src) {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  if (modal && modalImg) {
+    modalImg.src = src;
+    modal.style.display = "block";
+
+    modal.addEventListener("click", () => {
+      modal.style.display = "none";
+      modalImg.src = "";
+    });
+  }
 }
