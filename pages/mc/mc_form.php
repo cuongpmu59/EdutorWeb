@@ -23,22 +23,12 @@ require_once __DIR__ . '/../../dotenv.php';
     <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
     <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
   </div>
+  
+  <div class="tab-content">
+    <?php require_once __DIR__ . '/mc_form_inner.php'; ?>
+  </div>
 
-  <!-- Khu vực hiển thị nội dung từng tab qua iframe -->
-  <iframe id="innerFrame" class="form-iframe" src="mc_form_inner.php" allowfullscreen></iframe>
-
-  <script>
-    const buttons = document.querySelectorAll(".tab-button");
-    const iframe = document.getElementById("innerFrame");
-
-    buttons.forEach(button => {
-      button.addEventListener("click", () => {
-        buttons.forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
-        iframe.src = button.getAttribute("data-url");
-      });
-    });
-  </script>
+</body>
 
 </body>
 </html>
