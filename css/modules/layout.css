@@ -42,4 +42,13 @@
     justify-content: center;
     align-items: flex-start;
   }
+
+  body.main-layout {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-light, #f9f9f9);
+    color: var(--color-dark, #333);
+  }
+  
   
