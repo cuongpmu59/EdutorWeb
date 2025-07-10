@@ -1,7 +1,5 @@
-#questionIframe {
-    width: 100%;
-    height: 60vh;
-    border: 1px solid var(--border);
-    display: block;
-  }
-  
+.form-iframe {
+  width: 100%;
+  height: calc(100vh - 50px); /* Tùy chỉnh theo chiều cao tab-bar */
+  border: none;
+}
