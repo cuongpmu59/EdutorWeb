@@ -1,4 +1,8 @@
-<?php require 'dotenv.php'; ?>
+<?php 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once __DIR__ . '/../../dotenv.php'; 
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -7,31 +11,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../css/main_ui.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </head>
 <body class="main-layout">
 
+  <!-- Tabs điều hướng -->
   <div class="tab-bar inner-tabs">
-    <button class="tab-button active" data-url="tf_form_inner.php">📝 Nhập câu hỏi</button>
-    <button class="tab-button" data-url="tf_image.php">🖼️ Chọn ảnh minh hoạ</button>
-    <button class="tab-button" data-url="tf_preview.php">👁️ Xem trước</button>
-    <button class="tab-button" data-url="tf_table.php">📋 Danh sách</button>
+    <a class="tab-button active" href="tf_form.php">📝 Nhập câu hỏi</a>
+    <a class="tab-button" href="tf_image.php">🖼️ Chọn ảnh minh hoạ</a>
+    <a class="tab-button" href="tf_preview.php">👁️ Xem trước</a>
+    <a class="tab-button" href="tf_table.php">📋 Danh sách</a>
   </div>
 
-  <iframe id="innerFrame" class="form-iframe" src="tf_form_inner.php" allowfullscreen></iframe>
-
-  <script>
-    const buttons = document.querySelectorAll(".inner-tabs .tab-button");
-    const iframe = document.getElementById("innerFrame");
-
-    buttons.forEach(button => {
-      button.addEventListener("click", () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        iframe.src = button.getAttribute("data-url");
-      });
-    });
-  </script>
+  <!-- Nội dung form nhúng trực tiếp -->
+  <div class="tab-content">
+    <?php require_once __DIR__ . '/tf_form_inner.php'; ?>
+  </div>
 
 </body>
 </html>
