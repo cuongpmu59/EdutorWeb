@@ -1,11 +1,172 @@
+/* ===============================
+   TABLE STYLES - Quản lý Câu hỏi
+================================= */
+
+/* ==== Container chứa bảng ==== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* ==== Bảng chính và bảng phụ ==== */
+table,
 #searchResultTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+}
+
+/* ==== Header và ô dữ liệu ==== */
+th, td,
+#searchResultTable th,
+#searchResultTable td {
+  padding: 10px 14px;
+  border: 1px solid var(--border, #ddd);
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+th,
+#searchResultTable th {
+  background-color: var(--accent, #3498db);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ==== Hover và Zebra Stripes ==== */
+table tbody tr:hover,
+#searchResultTable tbody tr:hover {
+  background-color: #f1f9ff;
+}
+
+table tbody tr:nth-child(even),
+#searchResultTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ==== Ảnh trong bảng ==== */
+td img,
+#searchResultTable td img {
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ==== DataTables fix ==== */
+.dataTables_wrapper {
+  margin-top: 12px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* ==== Pagination buttons ==== */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  margin: 2px;
+  border-radius: 6px;
+  color: var(--accent, #3498db);
+  font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: var(--accent, #3498db);
+  color: white !important;
+}
+
+/* ======================
+   Dark Mode
+====================== */
+body.dark-mode table,
+body.dark-mode #searchResultTable {
+  background-color: #2c2c2c;
+  color: #f0f0f0;
+}
+
+body.dark-mode th,
+body.dark-mode #searchResultTable th {
+  background-color: #2980b9;
+  color: white;
+}
+
+body.dark-mode td,
+body.dark-mode #searchResultTable td {
+  border-color: #444;
+}
+
+body.dark-mode table tbody tr:hover,
+body.dark-mode #searchResultTable tbody tr:hover {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .dataTables_filter input {
+  background-color: #444;
+  color: white;
+  border: 1px solid #666;
+}
+
+body.dark-mode .dataTables_paginate .paginate_button.current {
+  background-color: #2980b9;
+  color: white;
+}
+
+/* ======================
+   Responsive
+====================== */
+@media (max-width: 768px) {
+  table,
+  #searchResultTable {
+    font-size: 0.95rem;
+  }
+
+  th, td,
+  #searchResultTable th,
+  #searchResultTable td {
+    padding: 8px 10px;
+  }
+
+  td img,
+  #searchResultTable td img {
+    max-width: 60px;
+    max-height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  table,
+  #searchResultTable {
+    font-size: 0.9rem;
+  }
+
+  td,
+  #searchResultTable td {
+    display: block;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
   }
-  #searchResultTable th, #searchResultTable td {
-    border: 1px solid var(--border);
-    padding: 6px;
-    text-align: left;
+
+  tr,
+  #searchResultTable tr {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ccc;
   }
-  
+
+  th,
+  #searchResultTable th {
+    display: none;
+  }
+}
