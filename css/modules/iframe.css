@@ -1,5 +1,6 @@
 .form-iframe {
   width: 100%;
-  height: calc(100vh - 50px); /* Tùy chỉnh theo chiều cao tab-bar */
+  height: calc(100vh - 50px); /* Giảm trừ chiều cao thanh tab */
   border: none;
+  overflow: hidden;
 }
