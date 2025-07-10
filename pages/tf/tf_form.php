@@ -1,38 +1,37 @@
-<div class="subtab-container">
-  <div class="subtab-button active" data-subtab="tf_form_inner">✅ Nhập câu hỏi</div>
-  <div class="subtab-button" data-subtab="tf_image">🖼️ Ảnh minh hoạ</div>
-  <div class="subtab-button" data-subtab="tf_preview">👁️ Xem trước</div>
-  <div class="subtab-button" data-subtab="tf_table">📋 Danh sách</div>
-</div>
+<?php require 'dotenv.php'; ?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>✔️ Câu hỏi Đúng/Sai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/main_ui.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="main-layout">
 
-<div class="subtab-content active" id="tf_form_inner">
-  <?php require 'pages/tf/tf_form_inner.php'; ?>
-</div>
-<div class="subtab-content" id="tf_image">
-  <?php require 'pages/tf/tf_image.php'; ?>
-</div>
-<div class="subtab-content" id="tf_preview">
-  <?php require 'pages/tf/tf_preview.php'; ?>
-</div>
-<div class="subtab-content" id="tf_table">
-  <?php require 'pages/tf/tf_table.php'; ?>
-</div>
+  <div class="tab-bar inner-tabs">
+    <button class="tab-button active" data-url="tf_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-url="tf_image.php">🖼️ Chọn ảnh minh hoạ</button>
+    <button class="tab-button" data-url="tf_preview.php">👁️ Xem trước</button>
+    <button class="tab-button" data-url="tf_table.php">📋 Danh sách</button>
+  </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const subtabButtons = document.querySelectorAll(".subtab-button");
-    const subtabContents = document.querySelectorAll(".subtab-content");
+  <iframe id="innerFrame" class="form-iframe" src="tf_form_inner.php" allowfullscreen></iframe>
 
-    subtabButtons.forEach(button => {
+  <script>
+    const buttons = document.querySelectorAll(".inner-tabs .tab-button");
+    const iframe = document.getElementById("innerFrame");
+
+    buttons.forEach(button => {
       button.addEventListener("click", () => {
-        const targetId = button.dataset.subtab;
-
-        subtabButtons.forEach(btn => btn.classList.remove("active"));
-        subtabContents.forEach(content => content.classList.remove("active"));
-
+        buttons.forEach(b => b.classList.remove("active"));
         button.classList.add("active");
-        document.getElementById(targetId).classList.add("active");
+        iframe.src = button.getAttribute("data-url");
       });
     });
-  });
-</script>
+  </script>
+
+</body>
+</html>
