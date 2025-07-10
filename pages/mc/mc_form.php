@@ -17,10 +17,10 @@ require_once __DIR__ . '/../../dotenv.php';
 <body class="main-layout">
 
   <div class="tab-bar inner-tabs">
-    <a class="tab-button active" href="pages/mc/mc_form_inner.php">📝 Nhập câu hỏi</a>
-    <a class="tab-button" href="pages/mc/mc_image.php">🖼️ Chọn ảnh minh hoạ</a>
-    <a class="tab-button" href="pages/mc/mc_preview.php">👁️ Xem trước</a>
-    <a class="tab-button" href="pages/mc/mc_table.php">📋 Danh sách</a>
+    <a class="tab-button active" href="mc_form_inner.php">📝 Nhập câu hỏi</a>
+    <a class="tab-button" href="mc_image.php">🖼️ Chọn ảnh minh hoạ</a>
+    <a class="tab-button" href="mc_preview.php">👁️ Xem trước</a>
+    <a class="tab-button" href="mc_table.php">📋 Danh sách</a>
   </div>
 
   <div class="tab-content">
