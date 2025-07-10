@@ -1,4 +1,22 @@
+/* ================================
+   RESPONSIVE LAYOUT TOÀN HỆ THỐNG
+==================================*/
+
+/* ===== 1. Màn hình nhỏ hơn 1024px ===== */
+@media (max-width: 1024px) {
+  .container,
+  .form-section,
+  .question-form,
+  .tabs,
+  .table-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ===== 2. Màn hình nhỏ hơn 768px ===== */
 @media (max-width: 768px) {
+  /* Bố cục 2 cột chuyển thành 1 cột */
   .two-column {
     flex-direction: column;
   }
@@ -11,32 +29,106 @@
   .form-right {
     justify-content: center;
     border-left: none;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border, #ccc);
     padding-left: 0;
     margin-top: 10px;
   }
 
+  /* Tabs co giãn */
+  .tab-buttons {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .tab-button {
+    flex: 1 1 auto;
+    min-width: 120px;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  /* Nhóm nút dọc */
+  .form-actions,
+  .btn-group,
   .button-group {
+    flex-direction: column;
     justify-content: center;
     align-items: center;
   }
 
-  #questionIframe {
-    height: 320px;
+  .form-actions button,
+  .btn-group button,
+  .button-group button {
+    width: 100%;
   }
 
+  /* Iframe nhỏ hơn */
+  iframe,
+  #questionIframe,
+  .form-iframe {
+    width: 100% !important;
+    height: 320px;
+    min-height: 320px;
+  }
+
+  /* Padding chung */
   .container,
   .preview-box,
   .modal-content {
     padding: 10px;
   }
+}
 
-  .tab-button {
-    font-size: 14px;
-    padding: 10px;
+/* ===== 3. Màn hình nhỏ hơn 600px ===== */
+@media (max-width: 600px) {
+  .form-control {
+    font-size: 0.95rem;
+    padding: 8px 12px;
   }
 
-  .form-iframe {
-    height: calc(100vh - 45px);
+  .form-section,
+  .question-form {
+    padding: 16px;
+  }
+
+  label {
+    font-size: 0.95rem;
+  }
+
+  .preview-box,
+  .preview-content {
+    font-size: 0.95rem;
+    padding: 12px;
+    word-wrap: break-word;
+  }
+}
+
+/* ===== 4. Modal nhỏ hơn 480px ===== */
+@media (max-width: 480px) {
+  .modal {
+    width: 95%;
+    max-height: 90vh;
+    padding: 16px;
+  }
+
+  .modal img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ===== 5. DataTable nhỏ gọn ===== */
+@media (max-width: 768px) {
+  table.dataTable {
+    font-size: 0.95rem;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    float: none;
+    text-align: center;
+    margin: 10px 0;
   }
 }
