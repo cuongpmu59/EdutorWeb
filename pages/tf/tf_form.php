@@ -10,12 +10,12 @@ require_once __DIR__ . '/../../dotenv.php';
   <title>✔️ Câu hỏi Đúng/Sai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    :root { --accent: #27ae60; } /* Xanh lá */
+  </style>
 </head>
 <body class="main-layout">
 
-  <!-- Tabs điều hướng -->
   <div class="tab-bar inner-tabs">
     <a class="tab-button active" href="tf_form.php">📝 Nhập câu hỏi</a>
     <a class="tab-button" href="tf_image.php">🖼️ Chọn ảnh minh hoạ</a>
@@ -23,7 +23,6 @@ require_once __DIR__ . '/../../dotenv.php';
     <a class="tab-button" href="tf_table.php">📋 Danh sách</a>
   </div>
 
-  <!-- Nội dung form nhúng trực tiếp -->
   <div class="tab-content">
     <?php require_once __DIR__ . '/tf_form_inner.php'; ?>
   </div>
