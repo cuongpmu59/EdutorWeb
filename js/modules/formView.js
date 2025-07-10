@@ -1,63 +1,84 @@
 // js/modules/formView.js
 
-/**
- * Tải nội dung của form nhập câu hỏi (mc_form_inner.php)
- * và hiển thị vào phần tử container
- * @param {HTMLElement} container - phần tử DOM để hiển thị nội dung
- */
 export function render(container) {
-  fetch("mc_form_inner.php")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Lỗi tải mc_form_inner.php: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(html => {
-      container.innerHTML = html;
-      renderMath(); // nếu có công thức toán
-      initFormEvents(); // gắn sự kiện sau khi nội dung được load
-    })
-    .catch(error => {
-      container.innerHTML = `<div class="error-box">❌ ${error.message}</div>`;
-    });
+  // Không cần fetch vì form đã được load sẵn từ ban đầu
+  initPostMessageListener();
+  initDeleteImageButton();
 }
 
 /**
- * Kích hoạt MathJax nếu có công thức
+ * Lắng nghe dữ liệu từ bảng (mc_table.php) gửi sang để sửa
  */
-function renderMath() {
-  if (window.MathJax && typeof MathJax.typeset === "function") {
-    MathJax.typeset(); // dùng MathJax v3
-  }
-}
+function initPostMessageListener() {
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (!data || typeof data !== "object") return;
 
-/**
- * Gắn sự kiện cần thiết sau khi nội dung được render
- */
-function initFormEvents() {
-  const form = document.getElementById("mcForm");
-  const warningBox = document.getElementById("formWarning");
+    // Gán dữ liệu vào form
+    document.getElementById("mc_id").value = data.id || "";
+    document.getElementById("mc_topic").value = data.topic || "";
+    document.getElementById("mc_question").value = data.question || "";
+    document.getElementById("mc_answer1").value = data.answer1 || "";
+    document.getElementById("mc_answer2").value = data.answer2 || "";
+    document.getElementById("mc_answer3").value = data.answer3 || "";
+    document.getElementById("mc_answer4").value = data.answer4 || "";
+    document.getElementById("mc_correct_answer").value = data.correct || "";
 
-  if (!form) return;
+    const imageUrl = data.image || "";
+    const imageField = document.getElementById("mc_image_url");
+    const imagePreview = document.getElementById("mc_image_preview");
+    const deleteBtn = document.getElementById("deleteImageBtn");
 
-  form.addEventListener("submit", function (e) {
-    const requiredFields = ["topic", "question", "optionA", "optionB", "optionC", "optionD", "correctAnswer"];
-    let isValid = true;
+    imageField.value = imageUrl;
 
-    for (const id of requiredFields) {
-      const el = document.getElementById(id);
-      if (!el || !el.value.trim()) {
-        isValid = false;
-        break;
-      }
-    }
-
-    if (!isValid) {
-      e.preventDefault();
-      if (warningBox) warningBox.style.display = "block";
+    if (imageUrl) {
+      imagePreview.src = imageUrl;
+      imagePreview.style.display = "block";
+      deleteBtn.style.display = "inline-block";
     } else {
-      if (warningBox) warningBox.style.display = "none";
+      imagePreview.style.display = "none";
+      deleteBtn.style.display = "none";
     }
+
+    // Hiện nút xoá khi đang ở chế độ sửa
+    const deleteBtnMain = document.getElementById("deleteBtn");
+    if (deleteBtnMain) {
+      deleteBtnMain.style.display = "inline-block";
+    }
+
+    // Scroll tới form
+    document.getElementById("mcForm").scrollIntoView({ behavior: "smooth" });
   });
+}
+
+/**
+ * Gắn sự kiện nút xoá ảnh minh hoạ
+ */
+function initDeleteImageButton() {
+  const deleteBtn = document.getElementById("deleteImageBtn");
+  const imagePreview = document.getElementById("mc_image_preview");
+  const imageUrlInput = document.getElementById("mc_image_url");
+
+  if (deleteBtn && imagePreview && imageUrlInput) {
+    deleteBtn.addEventListener("click", () => {
+      const imageUrl = imageUrlInput.value;
+      if (imageUrl) {
+        // Gọi API xóa ảnh Cloudinary nếu có URL
+        fetch("../../cloudinary/delete_cloudinary_image.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image_url: imageUrl })
+        }).then(res => res.json())
+          .then(resp => {
+            console.log("Image deleted:", resp);
+          }).catch(err => console.error("Delete image failed:", err));
+      }
+
+      // Reset preview
+      imagePreview.src = "";
+      imagePreview.style.display = "none";
+      imageUrlInput.value = "";
+      deleteBtn.style.display = "none";
+    });
+  }
 }
