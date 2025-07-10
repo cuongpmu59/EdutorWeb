@@ -1,17 +1,28 @@
+/* ==== Tab Bar ==== */
 .tab-bar {
   display: flex;
-  background: var(--accent, #3498db);
+  justify-content: space-around;
+  background-color: var(--accent, #3498db);
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
 }
+
+/* ==== Tab Button ==== */
 .tab-button {
   flex: 1;
   padding: 12px 16px;
+  border: none;
   background: transparent;
   color: white;
-  border: none;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
+  white-space: nowrap;
 }
+
+.tab-button:hover,
 .tab-button.active {
-  background: var(--accent-dark, #2874a6);
+  background-color: var(--accent-dark, #2874a6);
+  font-weight: bold;
 }
