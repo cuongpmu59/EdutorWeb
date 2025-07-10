@@ -1,6 +1,63 @@
+/* ======================================
+   IFRAME STYLES FOR QUESTION MANAGER
+====================================== */
+
+/* ====== Iframe chính ====== */
+iframe,
 .form-iframe {
   width: 100%;
-  height: calc(100vh - 50px); /* Giảm trừ chiều cao thanh tab */
   border: none;
+  border-radius: 8px;
+  background-color: #fff;
   overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+/* Ưu tiên chiều cao theo chế độ tự động */
+.form-iframe {
+  height: calc(100vh - 50px); /* Giảm trừ chiều cao thanh tab */
+}
+
+/* ====== Wrapper nếu cần bao ngoài ====== */
+.iframe-wrapper {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 12px;
+  transition: height 0.3s ease;
+}
+
+/* ====== Tiêu đề iframe ====== */
+.iframe-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: var(--color-dark, #333);
+}
+
+/* ====== Dark mode ====== */
+body.dark-mode iframe,
+body.dark iframe,
+body.dark-mode .form-iframe,
+body.dark .form-iframe {
+  background-color: #1e1e1e;
+}
+
+body.dark-mode .iframe-title,
+body.dark .iframe-title {
+  color: var(--color-light, #f0f0f0);
+}
+
+/* ====== Responsive height adjustment ====== */
+@media (max-width: 768px) {
+  iframe,
+  .form-iframe {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  iframe,
+  .form-iframe {
+    min-height: 400px;
+  }
 }
