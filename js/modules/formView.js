@@ -1,56 +1,63 @@
-const $ = id => document.getElementById(id);
+// js/modules/formView.js
 
-export function populateForm(data) {
-  $("question_id").value = data.id;
-  $("topic").value = data.topic || "";
-  $("question").value = data.question || "";
-  $("answer1").value = data.answer1 || "";
-  $("answer2").value = data.answer2 || "";
-  $("answer3").value = data.answer3 || "";
-  $("answer4").value = data.answer4 || "";
-  $("correct_answer").value = data.correct_answer || "";
-  $("image_url").value = data.image || "";
+/**
+ * Tải nội dung của form nhập câu hỏi (mc_form_inner.php)
+ * và hiển thị vào phần tử container
+ * @param {HTMLElement} container - phần tử DOM để hiển thị nội dung
+ */
+export function render(container) {
+  fetch("mc_form_inner.php")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Lỗi tải mc_form_inner.php: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      container.innerHTML = html;
+      renderMath(); // nếu có công thức toán
+      initFormEvents(); // gắn sự kiện sau khi nội dung được load
+    })
+    .catch(error => {
+      container.innerHTML = `<div class="error-box">❌ ${error.message}</div>`;
+    });
 }
 
-export function initPreviewListeners(updatePreview) {
-  ["topic", "question", "answer1", "answer2", "answer3", "answer4"].forEach(id => {
-    $(id).addEventListener("input", updatePreview);
-  });
+/**
+ * Kích hoạt MathJax nếu có công thức
+ */
+function renderMath() {
+  if (window.MathJax && typeof MathJax.typeset === "function") {
+    MathJax.typeset(); // dùng MathJax v3
+  }
 }
 
-export function initReset(afterReset = () => {}) {
-  $("resetBtn").addEventListener("click", () => {
-    $("questionForm").reset();
-    $("question_id").value = "";
-    $("image_url").value = "";
-    afterReset();
-  });
-}
+/**
+ * Gắn sự kiện cần thiết sau khi nội dung được render
+ */
+function initFormEvents() {
+  const form = document.getElementById("mcForm");
+  const warningBox = document.getElementById("formWarning");
 
-export function resetForm() {
-  $("resetBtn").click();
-}
+  if (!form) return;
 
-export function initSubmit(onSubmit) {
-  $("questionForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const isNew = !$("question_id").value;
-    const hasTempImage = $("image_url").value.includes("temp_");
+  form.addEventListener("submit", function (e) {
+    const requiredFields = ["topic", "question", "optionA", "optionB", "optionC", "optionD", "correctAnswer"];
+    let isValid = true;
 
-    const formData = new FormData(this);
-    if (isNew && hasTempImage) {
-      formData.append("temp_image", $("image_url").value);
+    for (const id of requiredFields) {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) {
+        isValid = false;
+        break;
+      }
     }
 
-    await onSubmit(formData, isNew, hasTempImage);
-  });
-}
-
-export function initDelete(onDelete) {
-  $("deleteBtn").addEventListener("click", async () => {
-    const id = $("question_id").value;
-    if (id && confirm("Xác nhận xoá câu hỏi này?")) {
-      await onDelete(id);
+    if (!isValid) {
+      e.preventDefault();
+      if (warningBox) warningBox.style.display = "block";
+    } else {
+      if (warningBox) warningBox.style.display = "none";
     }
   });
 }
