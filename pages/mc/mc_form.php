@@ -1,96 +1,39 @@
-<?php
-$current_page = basename($_SERVER['PHP_SELF']);
-?>
+<?php require 'dotenv.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📝 Câu hỏi trắc nghiệm</title>
+  <title>❓ Câu hỏi nhiều lựa chọn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Giao diện -->
   <link rel="stylesheet" href="css/main_ui.css">
-  <link rel="stylesheet" href="css/form.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/tabs.css">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-light, #f4f4f4);
-      margin: 0;
-      padding: 0;
-      color: var(--color-dark, #333);
-    }
-
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    h2 {
-      text-align: center;
-      color: var(--accent, #3498db);
-      margin: 20px 0;
-    }
-
-    .tab-container {
-      display: flex;
-      width: 100%;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    .tab-button {
-      flex: 1;
-      text-align: center;
-      padding: 14px 0;
-      text-decoration: none;
-      font-weight: bold;
-      border: none;
-      background-color: #e0e0e0;
-      color: #444;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .tab-button:hover {
-      background-color: #d0d0d0;
-    }
-
-    .tab-button.active {
-      background-color: var(--accent, #3498db);
-      color: white;
-    }
-
-    .tab-content {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
-    }
-  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body>
+<body class="main-layout">
 
-  <div class="container">
-    <h2>📝 Câu hỏi trắc nghiệm</h2>
-
-    <!-- Tabs -->
-    <div class="tab-container">
-      <a class="tab-button <?= $current_page === 'mc_form.php' ? 'active' : '' ?>" href="mc_form.php">📝 Nhập số liệu</a>
-      <a class="tab-button <?= $current_page === 'mc_image.php' ? 'active' : '' ?>" href="mc_image.php">🖼️ Ảnh minh hoạ</a>
-      <a class="tab-button <?= $current_page === 'mc_preview.php' ? 'active' : '' ?>" href="mc_preview.php">👁️ Xem trước</a>
-      <a class="tab-button <?= $current_page === 'mc_table.php' ? 'active' : '' ?>" href="mc_table.php">📋 Danh sách</a>
-    </div>
-
-    <!-- Nội dung chính -->
-    <div class="tab-content">
-      <?php require 'mc_form_inner.php'; ?>
-    </div>
+  <!-- Tabs điều hướng -->
+  <div class="tab-bar inner-tabs">
+    <button class="tab-button active" data-url="mc_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-url="mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
+    <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
+    <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
   </div>
+
+  <!-- Khu vực hiển thị nội dung từng tab qua iframe -->
+  <iframe id="innerFrame" class="form-iframe" src="mc_form_inner.php" allowfullscreen></iframe>
+
+  <script>
+    const buttons = document.querySelectorAll(".inner-tabs .tab-button");
+    const iframe = document.getElementById("innerFrame");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        iframe.src = button.getAttribute("data-url");
+      });
+    });
+  </script>
 
 </body>
 </html>
