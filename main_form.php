@@ -20,7 +20,6 @@
 
   <!-- Iframe chứa form tương ứng -->
   <iframe id="formFrame" class="form-iframe" src="pages/mc/mc_form.php" allowfullscreen></iframe>
-
   <!-- Script chuyển tab và đổi iframe -->
   <script>
     const tabs = document.querySelectorAll(".tab-button");
