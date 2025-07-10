@@ -1,4 +1,4 @@
-<!-- mc_form_inner.php -->
+<!-- pages/mc/mc_form_inner.php -->
 <div class="mc-form-container">
   <form id="mcForm" class="question-form" method="POST" action="mc_insert.php" enctype="multipart/form-data">
     <!-- ID (ẩn khi sửa) -->
@@ -19,7 +19,10 @@
     <!-- Ảnh minh hoạ -->
     <div class="form-group">
       <label for="mc_image_url">🖼️ Ảnh minh hoạ (tuỳ chọn):</label>
-      <input type="file" id="mc_image_url" name="mc_image_url" accept="image/*" class="form-control">
+      <input type="file" id="mc_image_input" accept="image/*" class="form-control">
+      <input type="hidden" id="mc_image_url" name="mc_image_url">
+      <img id="mc_image_preview" src="" style="display:none; max-height: 150px; margin-top:10px;">
+      <button type="button" id="deleteImageBtn" class="btn-danger" style="display:none;">🗑️ Xoá ảnh</button>
     </div>
 
     <!-- Các đáp án -->
@@ -54,24 +57,21 @@
   </form>
 </div>
 
+<!-- Script xử lý validation -->
 <script>
-  // Kiểm tra form trước khi submit
   document.getElementById("mcForm").addEventListener("submit", function (e) {
-    const fields = [
-      "mc_topic", "mc_question", "mc_answer1",
-      "mc_answer2", "mc_answer3", "mc_answer4",
-      "mc_correct_answer"
+    const requiredFields = [
+      "mc_topic", "mc_question", "mc_answer1", "mc_answer2",
+      "mc_answer3", "mc_answer4", "mc_correct_answer"
     ];
     let isValid = true;
-
-    for (const id of fields) {
+    for (const id of requiredFields) {
       const el = document.getElementById(id);
       if (!el || !el.value.trim()) {
         isValid = false;
         break;
       }
     }
-
     if (!isValid) {
       e.preventDefault();
       document.getElementById("formWarning").style.display = "block";
