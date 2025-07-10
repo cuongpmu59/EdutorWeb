@@ -1,26 +1,42 @@
 @media (max-width: 768px) {
-    .two-column {
-      flex-direction: column;
-    }
-    .form-left, .form-right {
-      flex: 1 1 100%;
-    }
-    .form-right {
-      justify-content: center;
-      border-left: none;
-      border-top: 1px solid var(--border);
-      padding-left: 0;
-      margin-top: 10px;
-    }
-    .button-group {
-      justify-content: center;
-      align-items: center;
-    }
-    #questionIframe {
-      height: 320px;
-    }
-    .container, .preview-box, .modal-content {
-      padding: 10px;
-    }
+  .two-column {
+    flex-direction: column;
   }
-  
+
+  .form-left,
+  .form-right {
+    flex: 1 1 100%;
+  }
+
+  .form-right {
+    justify-content: center;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-left: 0;
+    margin-top: 10px;
+  }
+
+  .button-group {
+    justify-content: center;
+    align-items: center;
+  }
+
+  #questionIframe {
+    height: 320px;
+  }
+
+  .container,
+  .preview-box,
+  .modal-content {
+    padding: 10px;
+  }
+
+  .tab-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .form-iframe {
+    height: calc(100vh - 45px);
+  }
+}
