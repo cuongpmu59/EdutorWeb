@@ -1,18 +1,123 @@
-.preview-box, .latex-preview, .full-preview {
-    background: #f4f4f4;
-    border-left: 3px solid var(--accent);
-    padding: 8px;
-    white-space: pre-wrap;
-    margin-bottom: 10px;
+/* ===============================
+   PREVIEW STYLES - Xem trước nội dung
+================================= */
+
+/* ==== Box dùng chung: preview, latex, full ==== */
+.preview-box,
+.latex-preview,
+.full-preview {
+  background-color: #f4f4f4;
+  border-left: 3px solid var(--accent, #3498db);
+  padding: 12px 16px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* ==== Full preview riêng ==== */
+.full-preview {
+  background-color: #fafafa;
+  border-left-width: 4px;
+  padding: 16px 20px;
+}
+
+/* ==== Khi công thức sai ==== */
+.preview-box.invalid-math {
+  border: 1px solid var(--danger, #e74c3c);
+  background-color: #fff0f0;
+  box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
+}
+
+/* ==== Nội dung bên trong preview ==== */
+.preview-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.preview-content .question,
+.preview-content .answer,
+.preview-content .full-preview {
+  margin-bottom: 10px;
+}
+
+.preview-content .answer.correct {
+  font-weight: bold;
+  color: var(--accent, #3498db);
+}
+
+/* ==== Hình ảnh minh hoạ ==== */
+.preview-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 12px auto;
+  border-radius: 6px;
+}
+
+/* ==== MathJax container ==== */
+.preview-content mjx-container {
+  font-size: 1.1em !important;
+  overflow-x: auto;
+}
+
+/* ==== Hiệu ứng khi xuất hiện ==== */
+.preview-box.fade-in {
+  animation: fadeInPreview 0.3s ease-in-out;
+}
+
+@keyframes fadeInPreview {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==== Dark mode ==== */
+body.dark-mode .preview-box,
+body.dark-mode .latex-preview,
+body.dark-mode .full-preview {
+  background-color: #2e2e2e;
+  border-color: var(--accent, #3498db);
+  color: #f0f0f0;
+}
+
+body.dark-mode .preview-content {
+  color: #f0f0f0;
+}
+
+body.dark-mode .preview-content .answer.correct {
+  color: #6bb9f0;
+}
+
+body.dark-mode .preview-box.invalid-math {
+  background-color: #5a1e1e;
+  border-color: #e74c3c;
+}
+
+body.dark-mode .mjx-container {
+  filter: brightness(1.2);
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 768px) {
+  .preview-box,
+  .latex-preview,
   .full-preview {
-    background: #fafafa;
-    padding: 15px;
-    border-left: 4px solid var(--accent);
+    padding: 12px 14px;
+    font-size: 0.95rem;
   }
-  .preview-box.invalid-math {
-    border: 1px solid var(--danger);
-    background: #fff0f0;
-    box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
+
+  .preview-content img {
+    max-width: 100%;
+    height: auto;
   }
-  
+}
