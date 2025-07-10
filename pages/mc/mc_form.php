@@ -13,14 +13,14 @@
 
   <!-- Tabs điều hướng -->
   <div class="tab-bar inner-tabs">
-    <button class="tab-button active" data-url="mc_form_inner.php">📝 Nhập câu hỏi</button>
-    <button class="tab-button" data-url="mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
-    <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
-    <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
+    <button class="tab-button active" data-url="pages/mc/mc_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-url="pages/mc/mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
+    <button class="tab-button" data-url="pages/mc_preview.php">👁️ Xem trước</button>
+    <button class="tab-button" data-url="pages/mc/mc_table.php">📋 Danh sách</button>
   </div>
 
   <!-- Khu vực hiển thị nội dung từng tab qua iframe -->
-  <iframe id="innerFrame" class="form-iframe" src="mc_form_inner.php" allowfullscreen></iframe>
+  <iframe id="innerFrame" class="form-iframe" src="pages/mc/mc_form_inner.php" allowfullscreen></iframe>
 
   <script>
     const buttons = document.querySelectorAll(".inner-tabs .tab-button");
