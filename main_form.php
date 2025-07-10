@@ -19,7 +19,7 @@
   </div>
 
   <!-- Iframe chứa form tương ứng -->
-  <iframe id="formFrame" class="form-iframe" src="pages/tf/tf_form.php" allowfullscreen></iframe>
+  <iframe id="formFrame" class="form-iframe" src="main_form.php" allowfullscreen></iframe>
 
   <!-- Script chuyển tab và đổi iframe -->
   <script>
