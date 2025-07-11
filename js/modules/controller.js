@@ -9,10 +9,10 @@ const container = document.getElementById("tabContent");
 const buttons = document.querySelectorAll(".tab-button");
 
 const views = {
-  "pages/mc/mc_form_inner.php": formView,
-  "pages/mc/mc_image.php": imageManager,
-  "pages/mc/mc_preview.php": previewView,
-  "pages/mc/mc_table.php": tableView
+  "mc_form_inner.php": formView,
+  "mc_image.php": imageManager,
+  "mc_preview.php": previewView,
+  "mc_table.php": tableView
 };
 
 // Gắn sự kiện click cho từng tab
