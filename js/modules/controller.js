@@ -1,5 +1,4 @@
 // js/modules/controller.js
-
 import * as formView from "./formView.js";
 import * as imageManager from "./imageManager.js";
 import * as previewView from "./previewView.js";
