@@ -6,8 +6,11 @@
   <title>🧾 Quản lý Ngân hàng Câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Giao diện tổng hợp từ nhiều CSS modules -->
+  <!-- Giao diện tổng hợp -->
   <link rel="stylesheet" href="css/main_ui.css">
+
+  <!-- MathJax (Toán học) -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
 </head>
 <body class="main-layout">
 
@@ -20,16 +23,17 @@
 
   <!-- Iframe chứa form tương ứng -->
   <iframe id="formFrame" class="form-iframe" src="pages/mc/mc_form.php" allowfullscreen></iframe>
-  <!-- Script chuyển tab và đổi iframe -->
+
+  <!-- Script điều khiển chuyển tab -->
   <script>
     const tabs = document.querySelectorAll(".tab-button");
     const iframe = document.getElementById("formFrame");
 
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active")); // Xoá active
-        tab.classList.add("active");                    // Thêm active mới
-        iframe.src = tab.getAttribute("data-url");      // Đổi URL iframe
+        tabs.forEach(t => t.classList.remove("active"));  // Xóa trạng thái active cũ
+        tab.classList.add("active");                     // Kích hoạt tab mới
+        iframe.src = tab.getAttribute("data-url");       // Đổi URL trong iframe
       });
     });
   </script>
