@@ -1,5 +1,7 @@
 // js/modules/previewView.js
 
+import { updateLivePreview } from "./mathPreview.js";
+
 /**
  * Tải nội dung xem trước từ mc_preview.php
  * và hiển thị vào vùng container
@@ -15,8 +17,8 @@ export function render(container) {
     })
     .then(html => {
       container.innerHTML = html;
-      renderMath();
-      initPreviewEvents();
+      renderMath(container);
+      initPreviewEvents(container);
     })
     .catch(error => {
       container.innerHTML = `<div class="error-box">❌ ${error.message}</div>`;
@@ -25,36 +27,50 @@ export function render(container) {
 
 /**
  * Kích hoạt MathJax sau khi render
+ * @param {HTMLElement} scope - vùng cần render Math
  */
-function renderMath() {
-  if (window.MathJax && typeof MathJax.typeset === "function") {
-    MathJax.typeset();
+function renderMath(scope = document.body) {
+  if (window.MathJax && typeof MathJax.typesetPromise === "function") {
+    MathJax.typesetPromise([scope]).catch(err => {
+      console.error("MathJax render error:", err);
+    });
   }
 }
 
 /**
  * Gắn các sự kiện sau khi xem trước được render
+ * @param {HTMLElement} container
  */
-function initPreviewEvents() {
-  const refreshBtn = document.getElementById("refreshPreviewBtn");
+function initPreviewEvents(container) {
+  const refreshBtn = container.querySelector("#refreshPreviewBtn");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", () => {
-      render(document.getElementById("tabContent"));
+      render(container);
     });
   }
 
-  // Nếu bạn có modal ảnh hoặc preview nâng cao, khởi động ở đây
-  const images = document.querySelectorAll(".preview-image");
+  // Nếu có modal ảnh
+  const images = container.querySelectorAll(".preview-image");
   images.forEach(img => {
     img.addEventListener("click", () => {
       openModal(img.src);
     });
   });
+
+  // Nếu có input live preview
+  const formulaInput = container.querySelector("#previewFormulaInput");
+  const previewOutput = container.querySelector("#previewFormulaOutput");
+  if (formulaInput && previewOutput) {
+    formulaInput.addEventListener("input", () => {
+      updateLivePreview(formulaInput, previewOutput);
+    });
+    updateLivePreview(formulaInput, previewOutput); // Khởi tạo ban đầu
+  }
 }
 
 /**
- * Hiển thị ảnh ở dạng modal (nếu có chức năng này)
- * @param {string} src - URL ảnh
+ * Hiển thị ảnh ở dạng modal
+ * @param {string} src
  */
 function openModal(src) {
   const modal = document.getElementById("imageModal");
@@ -68,5 +84,7 @@ function openModal(src) {
       modal.style.display = "none";
       modalImg.src = "";
     });
+  } else {
+    console.warn("Modal ảnh chưa được khai báo trong DOM.");
   }
 }
