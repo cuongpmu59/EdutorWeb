@@ -9,10 +9,11 @@ require_once __DIR__ . '/../../dotenv.php';
   <meta charset="UTF-8">
   <title>❓ Câu hỏi nhiều lựa chọn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ✅ Import CSS gộp -->
+
+  <!-- CSS tổng hợp -->
   <link rel="stylesheet" href="../../css/main_ui.css">
 
+  <!-- Accent tùy biến -->
   <style>
     :root {
       --accent: #3498db;
@@ -21,7 +22,7 @@ require_once __DIR__ . '/../../dotenv.php';
 </head>
 <body class="main-layout">
 
-  <!-- Tabs điều hướng -->
+  <!-- Tabs điều hướng bên trong -->
   <div class="tab-bar inner-tabs">
     <button class="tab-button active" data-url="pages/mc/mc_form_inner.php">📝 Nhập câu hỏi</button>
     <button class="tab-button" data-url="pages/mc/mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
@@ -29,13 +30,15 @@ require_once __DIR__ . '/../../dotenv.php';
     <button class="tab-button" data-url="pages/mc/mc_table.php">📋 Danh sách</button>
   </div>
 
-  <!-- Vùng hiển thị nội dung động -->
+  <!-- Nội dung từng tab sẽ hiển thị ở đây -->
   <div class="tab-content" id="tabContent">
-    <!-- Nội dung của từng tab sẽ được controller.js fetch vào đây -->
+    <!-- Dữ liệu sẽ được nạp động qua JS -->
   </div>
 
-  <!-- ✅ Import controller module -->
-  <script type="module" src="../../js/modules/controller.js"></script>
+  <!-- MathJax cho công thức Toán học -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
 
+  <!-- Bộ điều khiển tải nội dung -->
+  <script type="module" src="../../js/modules/controller.js"></script>
 </body>
 </html>
