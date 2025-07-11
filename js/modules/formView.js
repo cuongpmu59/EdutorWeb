@@ -2,7 +2,7 @@
 import { updateLivePreview } from "./mathPreview.js";
 
 export async function render(container) {
-  const res = await fetch("pages/mc/mc_form_inner.php"); // ✅ sửa đường dẫn
+  const res = await fetch("mc_form_inner.php"); 
   const html = await res.text();
   container.innerHTML = html;
 
