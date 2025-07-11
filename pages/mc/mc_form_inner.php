@@ -16,15 +16,6 @@
       <textarea id="mc_question" name="mc_question" rows="3" class="form-control" required></textarea>
     </div>
 
-    <!-- Ảnh minh hoạ -->
-    <div class="form-group">
-      <label for="mc_image_url">🖼️ Ảnh minh hoạ (tuỳ chọn):</label>
-      <input type="file" id="mc_image_input" accept="image/*" class="form-control">
-      <input type="hidden" id="mc_image_url" name="mc_image_url">
-      <img id="mc_image_preview" src="" style="display:none; max-height: 150px; margin-top:10px;">
-      <button type="button" id="deleteImageBtn" class="btn-danger" style="display:none;">🗑️ Xoá ảnh</button>
-    </div>
-
     <!-- Các đáp án -->
     <div class="form-group"><label for="mc_answer1">🔠 Đáp án 1 (A):</label><input type="text" id="mc_answer1" name="mc_answer1" class="form-control" required></div>
     <div class="form-group"><label for="mc_answer2">🔠 Đáp án 2 (B):</label><input type="text" id="mc_answer2" name="mc_answer2" class="form-control" required></div>
