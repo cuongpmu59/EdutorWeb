@@ -24,10 +24,10 @@ require_once __DIR__ . '/../../dotenv.php';
 
   <!-- Tabs điều hướng bên trong -->
   <div class="tab-bar inner-tabs">
-    <button class="tab-button active" data-url="pages/mc/mc_form_inner.php">📝 Nhập câu hỏi</button>
-    <button class="tab-button" data-url="pages/mc/mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
-    <button class="tab-button" data-url="pages/mc/mc_preview.php">👁️ Xem trước</button>
-    <button class="tab-button" data-url="pages/mc/mc_table.php">📋 Danh sách</button>
+    <button class="tab-button active" data-url="mc_form_inner.php">📝 Nhập câu hỏi</button>
+    <button class="tab-button" data-url="mc_image.php">🖼️ Chọn ảnh minh hoạ</button>
+    <button class="tab-button" data-url="mc_preview.php">👁️ Xem trước</button>
+    <button class="tab-button" data-url="mc_table.php">📋 Danh sách</button>
   </div>
 
   <!-- Nội dung từng tab sẽ hiển thị ở đây -->
