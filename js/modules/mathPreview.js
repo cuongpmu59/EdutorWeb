@@ -1,45 +1,31 @@
 // js/modules/mathPreview.js
 
 /**
- * Gọi MathJax để render lại toàn bộ hoặc vùng cụ thể.
- * @param {HTMLElement} [container=document.body] - Phần tử cần render MathJax.
+ * Cập nhật xem trước công thức LaTeX trong 1 vùng HTML
+ * Gán vào `window` để dùng trực tiếp trong <script> thường (không cần import)
+ * 
+ * @param {HTMLTextAreaElement} inputEl - Ô nhập LaTeX
+ * @param {HTMLElement} outputEl - Vùng hiển thị kết quả
  */
-export function renderMath(container = document.body) {
-    if (window.MathJax) {
-      MathJax.typesetPromise([container]);
-    } else {
-      console.warn("⚠️ MathJax chưa được tải.");
+window.updateLivePreview = function (inputEl, outputEl) {
+    if (!inputEl || !outputEl) return;
+  
+    const latex = inputEl.value.trim();
+  
+    // Nếu không có nội dung thì làm trống kết quả
+    if (!latex) {
+      outputEl.innerHTML = "<em>Không có công thức để hiển thị.</em>";
+      return;
     }
-  }
   
-  /**
-   * Tạo bản xem trước công thức từ input text, hỗ trợ LaTeX giữa \( ... \) hoặc \[ ... \]
-   * @param {string} input - Chuỗi văn bản có chứa công thức LaTeX
-   * @returns {string} - Chuỗi HTML đã format sẵn
-   */
-  export function formatMathPreview(input) {
-    // Escape HTML đơn giản (tránh <script>)
-    const escaped = input
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    // Đặt nội dung vào vùng hiển thị (MathJax sẽ xử lý)
+    outputEl.textContent = latex;
   
-    // Có thể thêm logic highlight công thức ở đây nếu muốn
-  
-    return escaped;
-  }
-  
-  /**
-   * Cập nhật bản xem trước công thức từ ô nhập liệu vào vùng preview
-   * @param {HTMLTextAreaElement} textarea - Vùng nhập
-   * @param {HTMLElement} previewBox - Vùng hiển thị kết quả
-   */
-  export function updateLivePreview(textarea, previewBox) {
-    if (!textarea || !previewBox) return;
-    const raw = textarea.value || "";
-    const html = formatMathPreview(raw);
-  
-    previewBox.innerHTML = html;
-    renderMath(previewBox);
-  }
+    // Gọi MathJax để render lại nội dung
+    if (window.MathJax && typeof MathJax.typesetPromise === "function") {
+      MathJax.typesetPromise([outputEl]).catch(err => {
+        outputEl.innerHTML = `<span style="color:red;">⚠️ Lỗi công thức: ${err.message}</span>`;
+      });
+    }
+  };
   
