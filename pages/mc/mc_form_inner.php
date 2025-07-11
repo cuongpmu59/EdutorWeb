@@ -23,22 +23,10 @@
     </div>
 
     <!-- Đáp án -->
-    <div class="form-group">
-      <label for="mc_answer1">🔠 Đáp án 1 (A):</label>
-      <input type="text" id="mc_answer1" name="mc_answer1" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="mc_answer2">🔠 Đáp án 2 (B):</label>
-      <input type="text" id="mc_answer2" name="mc_answer2" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="mc_answer3">🔠 Đáp án 3 (C):</label>
-      <input type="text" id="mc_answer3" name="mc_answer3" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="mc_answer4">🔠 Đáp án 4 (D):</label>
-      <input type="text" id="mc_answer4" name="mc_answer4" class="form-control" required>
-    </div>
+    <div class="form-group"><label for="mc_answer1">🔠 Đáp án 1 (A):</label><input type="text" id="mc_answer1" name="mc_answer1" class="form-control" required></div>
+    <div class="form-group"><label for="mc_answer2">🔠 Đáp án 2 (B):</label><input type="text" id="mc_answer2" name="mc_answer2" class="form-control" required></div>
+    <div class="form-group"><label for="mc_answer3">🔠 Đáp án 3 (C):</label><input type="text" id="mc_answer3" name="mc_answer3" class="form-control" required></div>
+    <div class="form-group"><label for="mc_answer4">🔠 Đáp án 4 (D):</label><input type="text" id="mc_answer4" name="mc_answer4" class="form-control" required></div>
 
     <!-- Đáp án đúng -->
     <div class="form-group">
@@ -66,40 +54,33 @@
   </form>
 </div>
 
-<!-- Script xử lý -->
-<script type="module">
-  import { updateLivePreview } from "../../js/modules/mathPreview.js";
-
+<!-- Gắn Math Preview -->
+<script src="../../js/modules/mathPreview.js"></script>
+<script>
   const form = document.getElementById("mcForm");
 
   form.addEventListener("submit", function (e) {
-    const fields = [
-      "mc_topic", "mc_question", "mc_answer1", "mc_answer2",
-      "mc_answer3", "mc_answer4", "mc_correct_answer"
-    ];
-    let valid = true;
+    const fields = ["mc_topic", "mc_question", "mc_answer1", "mc_answer2", "mc_answer3", "mc_answer4", "mc_correct_answer"];
+    let isValid = true;
+
     for (const id of fields) {
       const el = document.getElementById(id);
       if (!el || !el.value.trim()) {
-        valid = false;
+        isValid = false;
         break;
       }
     }
-    if (!valid) {
-      e.preventDefault();
-      document.getElementById("formWarning").style.display = "block";
-    } else {
-      document.getElementById("formWarning").style.display = "none";
-    }
+
+    document.getElementById("formWarning").style.display = isValid ? "none" : "block";
+    if (!isValid) e.preventDefault();
   });
 
-  // Xem trước công thức toán
+  // Kích hoạt xem trước công thức LaTeX
   const formulaInput = document.getElementById("previewFormulaInput");
   const formulaOutput = document.getElementById("previewFormulaOutput");
 
-  if (formulaInput && formulaOutput) {
-    formulaInput.addEventListener("input", () => {
-      updateLivePreview(formulaInput, formulaOutput);
-    });
+  if (formulaInput && formulaOutput && typeof updateLivePreview === "function") {
+    formulaInput.addEventListener("input", () => updateLivePreview(formulaInput, formulaOutput));
+    updateLivePreview(formulaInput, formulaOutput); // lần đầu
   }
 </script>
