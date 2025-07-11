@@ -1,3 +1,13 @@
+<!-- pages/tf/tf_form_inner.php -->
+<style>
+  /* Ghi đè giới hạn chiều rộng */
+  form#tf_form {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+</style>
+
 <form id="tf_form">
   <!-- ID ẩn -->
   <input type="hidden" id="tf_id">
@@ -13,7 +23,6 @@
   <!-- Mệnh đề 1 -->
   <label for="tf_statement1">➊ Mệnh đề 1:</label>
   <input type="text" id="tf_statement1" class="form-control" placeholder="Nhập mệnh đề 1">
-
   <label for="tf_correct_answer1">Đáp án đúng 1:</label>
   <select id="tf_correct_answer1" class="form-control">
     <option value="">-- Chọn --</option>
@@ -24,7 +33,6 @@
   <!-- Mệnh đề 2 -->
   <label for="tf_statement2">➋ Mệnh đề 2:</label>
   <input type="text" id="tf_statement2" class="form-control" placeholder="Nhập mệnh đề 2">
-
   <label for="tf_correct_answer2">Đáp án đúng 2:</label>
   <select id="tf_correct_answer2" class="form-control">
     <option value="">-- Chọn --</option>
@@ -35,7 +43,6 @@
   <!-- Mệnh đề 3 -->
   <label for="tf_statement3">➌ Mệnh đề 3:</label>
   <input type="text" id="tf_statement3" class="form-control" placeholder="Nhập mệnh đề 3">
-
   <label for="tf_correct_answer3">Đáp án đúng 3:</label>
   <select id="tf_correct_answer3" class="form-control">
     <option value="">-- Chọn --</option>
@@ -43,7 +50,7 @@
     <option value="Sai">Sai</option>
   </select>
 
-  <!-- Đáp án đúng bổ sung (nếu có) -->
+  <!-- Đáp án bổ sung -->
   <label for="tf_correct_answer4">🔎 Đáp án đúng bổ sung (nếu có):</label>
   <input type="text" id="tf_correct_answer4" class="form-control" placeholder="Nhập đáp án đúng khác nếu cần">
 
@@ -119,7 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Gửi dữ liệu AJAX (tuỳ bạn xử lý)
     console.log("Dữ liệu cần lưu:", data);
   });
 
