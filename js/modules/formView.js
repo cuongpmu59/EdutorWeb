@@ -1,9 +1,18 @@
 // js/modules/formView.js
+import { updateLivePreview } from "./mathPreview.js";
 
-export function render(container) {
-  // Không cần fetch vì form đã được load sẵn từ ban đầu
+export async function render(container) {
+  const res = await fetch("mc_form_inner.php");
+  const html = await res.text();
+  container.innerHTML = html;
+
+  // Khởi tạo các tính năng sau khi DOM đã gắn vào container
   initPostMessageListener();
   initDeleteImageButton();
+  initMathPreview(); // ← Gắn sự kiện xem trước công thức
+
+  // Optional: render lại MathJax nếu có trong nội dung HTML
+  if (window.MathJax) MathJax.typesetPromise();
 }
 
 /**
@@ -81,4 +90,20 @@ function initDeleteImageButton() {
       deleteBtn.style.display = "none";
     });
   }
+}
+
+/**
+ * Gắn sự kiện input để xem trước công thức Toán học trong câu hỏi
+ */
+function initMathPreview() {
+  const textarea = document.getElementById("mc_question");
+  const previewBox = document.getElementById("mc_preview_box");
+  if (!textarea || !previewBox) return;
+
+  textarea.addEventListener("input", () => {
+    updateLivePreview(textarea, previewBox);
+  });
+
+  // Khởi tạo lần đầu nếu đã có nội dung
+  updateLivePreview(textarea, previewBox);
 }
