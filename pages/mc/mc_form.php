@@ -88,7 +88,7 @@ require_once __DIR__ . '/../../env/dotenv.php';
 </div>
 
 <!-- Danh sách câu hỏi -->
-<iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border:1px solid #aaa;"></iframe>
+<iframe id="questionIframe" src="mc_table.php" width="100%" height="500" style="margin-top:30px; border:1px solid #aaa;"></iframe>
 
 <!-- Cloudinary từ env -->
 <script>
