@@ -18,9 +18,7 @@ $(document).ready(function () {
       },
     },
     initComplete: function () {
-      // Đảm bảo các nút Excel / Print ẩn khỏi giao diện nếu không cần
-      $('.buttons-excel').hide();
-      $('.buttons-print').hide();
+      $('.buttons-excel, .buttons-print').hide(); // Ẩn nút export mặc định
     }
   });
 
@@ -35,8 +33,7 @@ $(document).ready(function () {
       url.searchParams.delete('topic');
     }
 
-    // Tải lại trang với chủ đề đã lọc
-    window.location.href = url.toString();
+    window.location.href = url.toString(); // Tải lại với filter mới
   });
 
   // === 3. Chuyển tab giao diện ===
@@ -48,18 +45,26 @@ $(document).ready(function () {
     $('#' + tabId).addClass('active');
   });
 
-  // === 4. Xem ảnh lớn (nếu muốn mở modal sau này) ===
+  // === 4. Xem ảnh lớn khi click ảnh ===
   $('.thumb').on('click', function () {
     const src = $(this).attr('src');
-    if (!src) return;
-    window.open(src, '_blank');
+    if (src) window.open(src, '_blank');
   });
 
-  // === 5. Điều hướng bằng phím ↑ và ↓ (nếu dùng iframe) ===
+  // === 5. Click chọn dòng để gửi dữ liệu ===
+  $('#mcTable tbody').on('click', 'tr', function () {
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+    const rowData = table.row(this).data();
+    sendRowDataToParent(rowData);
+  });
+
+  // === 6. Di chuyển bằng bàn phím ↑ / ↓ ===
   $(document).on('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       const current = $('#mcTable tbody tr.selected');
       let next;
+
       if (e.key === 'ArrowDown') {
         next = current.length ? current.next() : $('#mcTable tbody tr').first();
       } else {
@@ -71,23 +76,32 @@ $(document).ready(function () {
         next.addClass('selected');
         next[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // Gửi dữ liệu dòng được chọn cho form cha (qua postMessage nếu có)
         const rowData = table.row(next).data();
-        if (window.parent !== window) {
-          window.parent.postMessage({ type: 'mc_selected_row', data: rowData }, '*');
-        }
+        sendRowDataToParent(rowData);
       }
     }
   });
 
-  // === 6. Click chọn dòng để gửi dữ liệu về form cha ===
-  $('#mcTable tbody').on('click', 'tr', function () {
-    $('#mcTable tbody tr').removeClass('selected');
-    $(this).addClass('selected');
+  // === 7. Gửi dữ liệu dòng được chọn về parent ===
+  function sendRowDataToParent(rowData) {
+    if (!rowData || window.parent === window) return;
 
-    const rowData = table.row(this).data();
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'mc_selected_row', data: rowData }, '*');
-    }
-  });
+    // Tách ảnh từ cột 8
+    const imageSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
+
+    window.parent.postMessage({
+      type: 'mc_selected_row',
+      data: {
+        mc_id: rowData[0],
+        mc_topic: rowData[1],
+        mc_question: rowData[2],
+        mc_answer1: rowData[3],
+        mc_answer2: rowData[4],
+        mc_answer3: rowData[5],
+        mc_answer4: rowData[6],
+        mc_correct_answer: rowData[7],
+        mc_image_url: imageSrc
+      }
+    }, '*');
+  }
 });
