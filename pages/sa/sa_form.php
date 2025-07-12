@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../env/config.php';
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📝 Câu hỏi tự luận / ngắn</title>
+  <title>📝 Câu hỏi trắc nghiệm trả lời ngắn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../css/main_ui.css">
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
