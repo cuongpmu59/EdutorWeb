@@ -127,6 +127,37 @@ try {
   </div>
 </div>
 
+<!-- Toolbar đẹp đầu bảng -->
+<div class="toolbar-wrapper">
+  <!-- Nhóm lọc -->
+  <div class="toolbar-group">
+    <label for="filterTopic">🔍 Chủ đề:</label>
+    <select id="filterTopic">
+      <option value="">-- Tất cả --</option>
+      <?php foreach ($topics as $t): ?>
+        <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
+          <?= htmlspecialchars($t) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+  <!-- Nhóm tìm kiếm -->
+  <div class="toolbar-group">
+    <label for="mcTable_filter">🔎 Tìm kiếm:</label>
+    <!-- DataTables sẽ auto gắn input filter nên không cần tạo -->
+  </div>
+
+  <!-- Nhóm nhập / xuất -->
+  <div class="toolbar-group">
+    <label>📁 Tệp Excel:</label>
+    <input type="file" id="excelInput" accept=".xlsx,.xls">
+    <button onclick="$('.buttons-excel').click()">📥 Xuất Excel</button>
+    <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
+  </div>
+</div>
+
+
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
