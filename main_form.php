@@ -1,4 +1,10 @@
-<?php require 'dotenv.php'; ?>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once __DIR__ . '/../../dotenv.php'; // nếu dùng dotenv
+?>
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
