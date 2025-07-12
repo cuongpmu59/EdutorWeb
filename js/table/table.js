@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  // === 1. Khởi tạo bảng DataTable ===
+  // === 1. Khởi tạo DataTable ===
   const table = $('#mcTable').DataTable({
     dom: 'Bfrtip',
     buttons: ['excel', 'print'],
@@ -18,7 +18,7 @@ $(document).ready(function () {
       },
     },
     initComplete: function () {
-      $('.buttons-excel, .buttons-print').hide(); // Ẩn nút export mặc định
+      $('.buttons-excel, .buttons-print').hide(); // Ẩn export mặc định
     }
   });
 
@@ -26,17 +26,11 @@ $(document).ready(function () {
   $('#filterTopic').on('change', function () {
     const topic = $(this).val();
     const url = new URL(window.location.href);
-
-    if (topic) {
-      url.searchParams.set('topic', topic);
-    } else {
-      url.searchParams.delete('topic');
-    }
-
-    window.location.href = url.toString(); // Tải lại với filter mới
+    topic ? url.searchParams.set('topic', topic) : url.searchParams.delete('topic');
+    window.location.href = url.toString();
   });
 
-  // === 3. Chuyển tab giao diện ===
+  // === 3. Tab giao diện ===
   $('.tab-button').on('click', function () {
     const tabId = $(this).data('tab');
     $('.tab-button').removeClass('active');
@@ -51,7 +45,7 @@ $(document).ready(function () {
     if (src) window.open(src, '_blank');
   });
 
-  // === 5. Click chọn dòng để gửi dữ liệu ===
+  // === 5. Click dòng → chọn + gửi dữ liệu ===
   $('#mcTable tbody').on('click', 'tr', function () {
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
@@ -59,7 +53,7 @@ $(document).ready(function () {
     sendRowDataToParent(rowData);
   });
 
-  // === 6. Di chuyển bằng bàn phím ↑ / ↓ ===
+  // === 6. Di chuyển bằng phím ↑ / ↓ ===
   $(document).on('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       const current = $('#mcTable tbody tr.selected');
@@ -82,11 +76,10 @@ $(document).ready(function () {
     }
   });
 
-  // === 7. Gửi dữ liệu dòng được chọn về parent ===
+  // === 7. Gửi dữ liệu dòng được chọn về form cha ===
   function sendRowDataToParent(rowData) {
     if (!rowData || window.parent === window) return;
 
-    // Tách ảnh từ cột 8
     const imageSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
 
     window.parent.postMessage({
