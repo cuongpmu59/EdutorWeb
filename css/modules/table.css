@@ -1,67 +1,139 @@
 /* ===============================
-   TABLE STYLES - Quản lý Câu hỏi
-================================= */
+   TABLE UI - Quản lý Câu hỏi
+=============================== */
 
-/* ==== Container chứa bảng ==== */
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-  margin-bottom: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+/* ==== Layout chính ==== */
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+  background-color: #fefefe;
 }
 
-/* ==== Bảng chính và bảng phụ ==== */
-table,
-#searchResultTable {
+h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #007bff;
+}
+
+/* ==== Table ==== */
+table, #searchResultTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
   background-color: white;
 }
 
-/* ==== Header và ô dữ liệu ==== */
-th, td,
-#searchResultTable th,
-#searchResultTable td {
+th, td {
   padding: 10px 14px;
-  border: 1px solid var(--border, #ddd);
+  border: 1px solid #ddd;
   text-align: left;
   vertical-align: top;
-  word-wrap: break-word;
   word-break: break-word;
 }
 
-th,
-#searchResultTable th {
-  background-color: var(--accent, #3498db);
+th {
+  background: linear-gradient(to right, #007bff, #3399ff);
   color: white;
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-/* ==== Hover và Zebra Stripes ==== */
-table tbody tr:hover,
-#searchResultTable tbody tr:hover {
-  background-color: #f1f9ff;
-}
-
-table tbody tr:nth-child(even),
-#searchResultTable tbody tr:nth-child(even) {
+tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-/* ==== Ảnh trong bảng ==== */
-td img,
-#searchResultTable td img {
-  max-width: 80px;
-  max-height: 80px;
+tbody tr:hover {
+  background-color: #f1f9ff;
+}
+
+/* ==== Ảnh thumbnail ==== */
+td img.thumb {
+  max-width: 60px;
+  max-height: 60px;
+  display: block;
+  margin: auto;
   border-radius: 4px;
+  border: 1px solid #aaa;
+  cursor: zoom-in;
+}
+
+/* ==== Modal ảnh ==== */
+#imageModal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+}
+
+#imageModal img {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+#imageModal span {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: white;
+  font-size: 28px;
   cursor: pointer;
 }
 
-/* ==== DataTables fix ==== */
+/* ===============================
+   TOOLBAR - Bộ lọc / Xuất / Nhập
+=============================== */
+.toolbar-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar-group label {
+  font-weight: bold;
+  color: #333;
+}
+
+.toolbar-wrapper select,
+.toolbar-wrapper input[type="file"],
+.toolbar-wrapper button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.toolbar-wrapper button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toolbar-wrapper button:hover {
+  background-color: #2980b9;
+}
+
+/* ===============================
+   DATATABLES: Tìm kiếm, Phân trang
+=============================== */
 .dataTables_wrapper {
   margin-top: 12px;
 }
@@ -72,51 +144,79 @@ td img,
   border-radius: 6px;
 }
 
-/* ==== Pagination buttons ==== */
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 18px;
+  text-align: center;
+}
+
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  background: transparent;
-  border: none;
-  padding: 6px 10px;
-  margin: 2px;
-  border-radius: 6px;
-  color: var(--accent, #3498db);
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #3498db;
   font-weight: bold;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-  background-color: var(--accent, #3498db);
-  color: white !important;
+  background: #3498db;
+  color: #fff !important;
+  border-color: #2980b9;
 }
 
-/* ======================
-   Dark Mode
-====================== */
+/* ===============================
+   DARK MODE SUPPORT
+=============================== */
+body.dark-mode {
+  background: #1e1e1e;
+  color: #eee;
+}
+
 body.dark-mode table,
 body.dark-mode #searchResultTable {
   background-color: #2c2c2c;
   color: #f0f0f0;
 }
 
-body.dark-mode th,
-body.dark-mode #searchResultTable th {
+body.dark-mode th {
   background-color: #2980b9;
   color: white;
 }
 
-body.dark-mode td,
-body.dark-mode #searchResultTable td {
+body.dark-mode td {
   border-color: #444;
 }
 
-body.dark-mode table tbody tr:hover,
-body.dark-mode #searchResultTable tbody tr:hover {
+body.dark-mode tr:hover {
   background-color: #3a3a3a;
+}
+
+body.dark-mode .toolbar-wrapper {
+  background: #2a2a2a;
+}
+
+body.dark-mode .toolbar-group label {
+  color: #ddd;
+}
+
+body.dark-mode .toolbar-wrapper select,
+body.dark-mode .toolbar-wrapper input[type="file"] {
+  background: #333;
+  color: #eee;
+  border-color: #555;
+}
+
+body.dark-mode .toolbar-wrapper button {
+  background: #2980b9;
 }
 
 body.dark-mode .dataTables_filter input {
   background-color: #444;
   color: white;
-  border: 1px solid #666;
+  border-color: #666;
 }
 
 body.dark-mode .dataTables_paginate .paginate_button.current {
@@ -124,156 +224,35 @@ body.dark-mode .dataTables_paginate .paginate_button.current {
   color: white;
 }
 
-/* ======================
-   Responsive
-====================== */
+/* ===============================
+   RESPONSIVE
+=============================== */
 @media (max-width: 768px) {
-  table,
-  #searchResultTable {
+  table, #searchResultTable {
     font-size: 0.95rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
-  th, td,
-  #searchResultTable th,
-  #searchResultTable td {
-    padding: 8px 10px;
-  }
-
-  td img,
-  #searchResultTable td img {
-    max-width: 60px;
-    max-height: 60px;
+  td img.thumb {
+    max-width: 50px;
+    max-height: 50px;
   }
 }
 
 @media (max-width: 480px) {
-  table,
-  #searchResultTable {
+  .toolbar-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbar-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  table, #searchResultTable {
     font-size: 0.9rem;
-  }
-
-  td,
-  #searchResultTable td {
-    display: block;
-    width: 100%;
-  }body {
-    font-family: Arial, sans-serif;
-    padding: 10px;
-    background-color: #fefefe;
-  }
-  
-  h2 {
-    margin-bottom: 15px;
-    font-size: 20px;
-    color: #007bff;
-  }
-  
-  /* Bộ lọc chủ đề */
-  label {
-    font-weight: bold;
-    margin-right: 8px;
-  }
-  #filterTopic {
-    padding: 5px;
-    font-size: 14px;
-    margin-bottom: 15px;
-  }
-  
-  /* Bảng câu hỏi */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  
-  th {
-    background: linear-gradient(to right, #007bff, #3399ff);
-    color: white;
-    padding: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  td {
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    vertical-align: top;
-  }
-  
-  tr:hover {
-    background-color: #f1f9ff;
-  }
-  
-  img.thumb {
-    max-width: 50px;
-    max-height: 50px;
-    display: block;
-    margin: auto;
-    border: 1px solid #aaa;
-    cursor: zoom-in;
-  }
-  
-  /* Modal hiển thị ảnh */
-  #imageModal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    justify-content: center;
-    align-items: center;
-  }
-  
-  #imageModal img {
-    max-width: 90%;
-    max-height: 90%;
-  }
-  
-  #imageModal span {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-  }
-  
-  /* Phân trang */
-  .dataTables_paginate {
-    margin-top: 10px !important;
-    font-weight: bold;
-  }
-  .dataTables_paginate .paginate_button {
-    padding: 5px 10px !important;
-    margin: 2px;
-    background: #f1f1f1;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-  .dataTables_paginate .paginate_button.current {
-    background: #007bff !important;
-    color: white !important;
-  }
-  
-  /* Responsive - cuộn ngang */
-  @media (max-width: 768px) {
-    table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-  }
-  
-
-  tr,
-  #searchResultTable tr {
-    display: block;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #ccc;
-  }
-
-  th,
-  #searchResultTable th {
-    display: none;
   }
 }
