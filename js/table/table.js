@@ -1,76 +1,93 @@
 $(document).ready(function () {
-  // Khởi tạo DataTable
+  // === 1. Khởi tạo bảng DataTable ===
   const table = $('#mcTable').DataTable({
     dom: 'Bfrtip',
-    buttons: [
-      { extend: 'excelHtml5', text: '📥 Xuất Excel', title: 'Danh sách câu hỏi' },
-      { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi' }
-    ],
-    pageLength: 20,
-    lengthMenu: [[10, 20, 50, 100, -1], [10, 20, 50, 100, "Tất cả"]],
+    buttons: ['excel', 'print'],
+    pageLength: 10,
     language: {
       search: "🔍 Tìm kiếm:",
-      lengthMenu: "Hiển thị _MENU_ dòng",
-      info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
-      zeroRecords: "Không có dữ liệu",
+      lengthMenu: "Hiển thị _MENU_ mục",
+      info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
       infoEmpty: "Không có dữ liệu",
-      paginate: { first: "«", last: "»", next: "›", previous: "‹" }
+      zeroRecords: "Không tìm thấy kết quả phù hợp",
+      paginate: {
+        first: "Đầu",
+        last: "Cuối",
+        next: "▶",
+        previous: "◀"
+      },
     },
-    order: [[0, 'desc']]
+    initComplete: function () {
+      // Đảm bảo các nút Excel / Print ẩn khỏi giao diện nếu không cần
+      $('.buttons-excel').hide();
+      $('.buttons-print').hide();
+    }
   });
 
-  // Lọc theo chủ đề
+  // === 2. Bộ lọc chủ đề ===
   $('#filterTopic').on('change', function () {
-    const topic = this.value;
-    const url = topic ? `mc_table.php?topic=${encodeURIComponent(topic)}` : 'mc_table.php';
-    location.href = url;
+    const topic = $(this).val();
+    const url = new URL(window.location.href);
+
+    if (topic) {
+      url.searchParams.set('topic', topic);
+    } else {
+      url.searchParams.delete('topic');
+    }
+
+    // Tải lại trang với chủ đề đã lọc
+    window.location.href = url.toString();
   });
 
-  // Tabs
-  $(".tab-button").click(function () {
-    $(".tab-button").removeClass("active");
-    $(this).addClass("active");
-    const tabId = $(this).data("tab");
-    $(".tab-content").removeClass("active");
-    $("#" + tabId).addClass("active");
+  // === 3. Chuyển tab giao diện ===
+  $('.tab-button').on('click', function () {
+    const tabId = $(this).data('tab');
+    $('.tab-button').removeClass('active');
+    $(this).addClass('active');
+    $('.tab-content').removeClass('active');
+    $('#' + tabId).addClass('active');
   });
 
-  // Nhập từ Excel
-  $("#excelInput").on("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  // === 4. Xem ảnh lớn (nếu muốn mở modal sau này) ===
+  $('.thumb').on('click', function () {
+    const src = $(this).attr('src');
+    if (!src) return;
+    window.open(src, '_blank');
+  });
 
-    const reader = new FileReader();
-    reader.onload = function (evt) {
-      const workbook = XLSX.read(evt.target.result, { type: "binary" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  // === 5. Điều hướng bằng phím ↑ và ↓ (nếu dùng iframe) ===
+  $(document).on('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      const current = $('#mcTable tbody tr.selected');
+      let next;
+      if (e.key === 'ArrowDown') {
+        next = current.length ? current.next() : $('#mcTable tbody tr').first();
+      } else {
+        next = current.length ? current.prev() : $('#mcTable tbody tr').last();
+      }
 
-      const rows = rawRows.filter(r => r.length >= 8 && r[0] !== "ID");
-      const formatted = rows.map(r => ({
-        mc_question: r[2] || '',
-        mc_answer1: r[3] || '',
-        mc_answer2: r[4] || '',
-        mc_answer3: r[5] || '',
-        mc_answer4: r[6] || '',
-        mc_correct_answer: r[7] || '',
-        mc_topic: r[1] || '',
-        mc_image_url: r[8] || ''
-      }));
+      if (next.length) {
+        current.removeClass('selected');
+        next.addClass('selected');
+        next[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      $.post("mc_table.php", { excelData: JSON.stringify(formatted) })
-        .done(res => {
-          if (res.trim() === "OK") {
-            alert("✅ Nhập dữ liệu thành công!");
-            location.reload();
-          } else {
-            alert("❌ Lỗi khi lưu dữ liệu:\n" + res);
-          }
-        })
-        .fail(() => {
-          alert("❌ Không kết nối được đến máy chủ.");
-        });
-    };
-    reader.readAsBinaryString(file);
+        // Gửi dữ liệu dòng được chọn cho form cha (qua postMessage nếu có)
+        const rowData = table.row(next).data();
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'mc_selected_row', data: rowData }, '*');
+        }
+      }
+    }
+  });
+
+  // === 6. Click chọn dòng để gửi dữ liệu về form cha ===
+  $('#mcTable tbody').on('click', 'tr', function () {
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+
+    const rowData = table.row(this).data();
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'mc_selected_row', data: rowData }, '*');
+    }
   });
 });
