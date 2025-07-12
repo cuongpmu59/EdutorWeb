@@ -127,13 +127,15 @@ try {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="js/table/mc_table.js"></script>
 
-<script>
+
+<!-- <script>
   // Nếu không mở trong iframe, hiển thị cảnh báo
 if (window.top === window.self) {
      document.getElementById("directWarning").style.display = "block";
   } else {
     document.getElementById("mcTableWrapper").style.display = "block";
   }
-</script> 
+</script>  -->
+
 </body>
 </html>
