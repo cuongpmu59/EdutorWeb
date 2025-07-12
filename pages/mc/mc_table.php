@@ -185,9 +185,16 @@ if (window.top === window.self) {
 
   console.log("📤 Gửi dữ liệu về form cha:", message);
   window.parent.postMessage(message, '*');
+  });
 });
-
-});
+</script>
+<script>
+  // Khi thay đổi chủ đề trong bộ lọc
+  $('#filterTopic').on('change', function () {
+    const selectedTopic = $(this).val();
+    const newUrl = selectedTopic ? '?topic=' + encodeURIComponent(selectedTopic) : window.location.pathname;
+    window.location.href = newUrl;
+  });
 </script>
 
 </body>
