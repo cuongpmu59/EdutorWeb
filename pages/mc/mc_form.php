@@ -1,16 +1,25 @@
-<?php require 'dotenv.php'; ?>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once __DIR__ . '/../../env/config.php';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Quản lý câu hỏi</title>
-  <link rel="stylesheet" href="css/styles_question.css">
+  <title>❓ Câu hỏi nhiều lựa chọn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Giao diện -->
+  <link rel="stylesheet" href="../../css/main_ui.css">
+
+  <!-- MathJax (Toán học) -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </head>
 <body>
 
-<h2>📋 Quản lý câu hỏi trắc nghiệm</h2>
+<h2>📋 Nhập câu hỏi trắc nghiệm</h2>
 
 <!-- Tabs -->
 <div class="tab-container">
@@ -42,25 +51,31 @@
       <!-- Xem trước công thức -->
       <div class="form-group">
         <label for="previewFormulaInput">📌 Xem trước công thức (LaTeX):</label>
-        <textarea id="previewFormulaInput" rows="2" class="form-control" placeholder="Ví dụ: \\( a^2 + b^2 = c^2 \\)"></textarea>
+        <textarea id="previewFormulaInput" rows="2" class="form-control" placeholder="\\( a^2 + b^2 = c^2 \\)"></textarea>
         <div id="previewFormulaOutput" class="preview-box mt-2 p-3 border border-dashed bg-white dark:bg-gray-800 rounded shadow-sm"></div>
       </div>
 
-      <!-- Đáp án -->
-      <div class="form-group"><label for="mc_answer1">🔠 Đáp án 1 (A):</label><input type="text" id="mc_answer1" name="mc_answer1" class="form-control" required></div>
-      <div class="form-group"><label for="mc_answer2">🔠 Đáp án 2 (B):</label><input type="text" id="mc_answer2" name="mc_answer2" class="form-control" required></div>
-      <div class="form-group"><label for="mc_answer3">🔠 Đáp án 3 (C):</label><input type="text" id="mc_answer3" name="mc_answer3" class="form-control" required></div>
-      <div class="form-group"><label for="mc_answer4">🔠 Đáp án 4 (D):</label><input type="text" id="mc_answer4" name="mc_answer4" class="form-control" required></div>
+      <!-- Các đáp án -->
+      <?php
+        $answers = ['A', 'B', 'C', 'D'];
+        foreach ($answers as $i => $label) {
+          echo <<<HTML
+          <div class="form-group">
+            <label for="mc_answer{$i}">🔠 Đáp án " . $label . ":</label>
+            <input type="text" id="mc_answer{$i}" name="mc_answer{$i}" class="form-control" required>
+          </div>
+          HTML;
+        }
+      ?>
 
       <!-- Đáp án đúng -->
       <div class="form-group">
         <label for="mc_correct_answer">✅ Đáp án đúng:</label>
         <select id="mc_correct_answer" name="mc_correct_answer" class="form-control" required>
           <option value="">-- Chọn đáp án đúng --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
+          <?php foreach ($answers as $a): ?>
+            <option value="<?= $a ?>"><?= $a ?></option>
+          <?php endforeach; ?>
         </select>
       </div>
 
@@ -80,7 +95,7 @@
   </div>
 </div>
 
-<!-- Tab 2: Quản lý ảnh minh hoạ -->
+<!-- Tab 2: Ảnh minh hoạ -->
 <div class="tab-content" id="tab-image">
   <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
   <img id="imageTabPreview" style="max-height: 150px; border: 1px solid #ccc; display: none;">
@@ -95,42 +110,32 @@
   <img id="preview_image" style="display:none; max-height: 150px; margin-top: 10px; border: 1px solid #ccc;">
 </div>
 
-<!-- Iframe hiển thị bảng -->
+<!-- Iframe danh sách câu hỏi -->
 <iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border: 1px solid #aaa;"></iframe>
 
-<!-- Cloudinary credentials -->
+<!-- Cloudinary config -->
 <script>
-  const CLOUDINARY_CLOUD_NAME = "<?= env('CLOUDINARY_CLOUD_NAME') ?>";
-  const CLOUDINARY_UPLOAD_PRESET = "<?= env('CLOUDINARY_UPLOAD_PRESET') ?>";
+  const CLOUDINARY_CLOUD_NAME = "<?= CLOUDINARY_CLOUD_NAME ?>";
+  const CLOUDINARY_UPLOAD_PRESET = "<?= CLOUDINARY_UPLOAD_PRESET ?>";
 </script>
 
 <!-- Module xử lý -->
 <script src="../../js/modules/mathPreview.js"></script>
-<script type="module" src="js/modules/controller.js"></script>
+<script type="module" src="../../js/modules/controller.js"></script>
 
-<!-- Validate và chuyển tab -->
+<!-- Tab + Validate -->
 <script>
   // Validate trước khi submit
   document.getElementById("mcForm").addEventListener("submit", function (e) {
-    const fields = ["mc_topic", "mc_question", "mc_answer1", "mc_answer2", "mc_answer3", "mc_answer4", "mc_correct_answer"];
-    let isValid = true;
-
-    for (const id of fields) {
-      const el = document.getElementById(id);
-      if (!el || !el.value.trim()) {
-        isValid = false;
-        break;
-      }
-    }
-
+    const fields = ["mc_topic", "mc_question", "mc_answer0", "mc_answer1", "mc_answer2", "mc_answer3", "mc_correct_answer"];
+    let isValid = fields.every(id => document.getElementById(id)?.value.trim());
     document.getElementById("formWarning").style.display = isValid ? "none" : "block";
     if (!isValid) e.preventDefault();
   });
 
-  // Xem trước công thức toán
+  // Live preview
   const formulaInput = document.getElementById("previewFormulaInput");
   const formulaOutput = document.getElementById("previewFormulaOutput");
-
   if (formulaInput && formulaOutput && typeof updateLivePreview === "function") {
     formulaInput.addEventListener("input", () => updateLivePreview(formulaInput, formulaOutput));
     updateLivePreview(formulaInput, formulaOutput);
@@ -141,7 +146,6 @@
     btn.addEventListener("click", () => {
       document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-
       btn.classList.add("active");
       const tabId = btn.getAttribute("data-tab");
       document.getElementById(tabId).classList.add("active");
