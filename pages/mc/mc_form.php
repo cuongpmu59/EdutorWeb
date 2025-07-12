@@ -101,8 +101,7 @@ window.addEventListener('message', function (event) {
 function scrollToListTabInIframe() {
   const iframe = document.getElementById('mcIframe');
   if (iframe?.contentWindow) {
-    iframe.contentWindow.postMessage({ type: 'scrollToListTab' }, window.parent.postMessage(data, window.location.origin);
-  );
+    iframe.contentWindow.postMessage({ type: 'scrollToListTab' }, '*');
   }
 }
 </script>
