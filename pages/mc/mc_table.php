@@ -138,5 +138,33 @@ if (window.top === window.self) {
 }
 </script>
 
+<script>
+window.addEventListener('message', function (event) {
+  if (event.data?.type === 'mc_selected_row') {
+    const d = event.data.data;
+
+    // Điền dữ liệu vào form
+    document.getElementById('question_id').value = d.mc_id || '';
+    document.getElementById('topic').value = d.mc_topic || '';
+    document.getElementById('question').value = d.mc_question || '';
+    document.getElementById('answer1').value = d.mc_answer1 || '';
+    document.getElementById('answer2').value = d.mc_answer2 || '';
+    document.getElementById('answer3').value = d.mc_answer3 || '';
+    document.getElementById('answer4').value = d.mc_answer4 || '';
+    document.getElementById('correct_answer').value = d.mc_correct_answer || '';
+
+    // Ảnh minh hoạ
+    if (d.mc_image_url) {
+      document.getElementById('imagePreview').src = d.mc_image_url;
+      document.getElementById('imagePreview').style.display = 'block';
+    } else {
+      document.getElementById('imagePreview').style.display = 'none';
+    }
+
+    // Kích hoạt nút cập nhật nếu cần
+  }
+});
+</script>
+
 </body>
 </html>
