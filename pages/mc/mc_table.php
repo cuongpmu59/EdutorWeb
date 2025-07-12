@@ -1,5 +1,5 @@
 <?php
-require 'db_connection.php';
+require __DIR__ . '/../../db_connection.php';
 header("X-Frame-Options: SAMEORIGIN");
 
 // Lấy danh sách chủ đề
