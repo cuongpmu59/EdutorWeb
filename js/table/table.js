@@ -1,92 +1,76 @@
-document.addEventListener("DOMContentLoaded", () => {
+$(document).ready(function () {
+  // Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+      { extend: 'excelHtml5', text: '📥 Xuất Excel', title: 'Danh sách câu hỏi' },
+      { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi' }
+    ],
     pageLength: 20,
+    lengthMenu: [[10, 20, 50, 100, -1], [10, 20, 50, 100, "Tất cả"]],
     language: {
       search: "🔍 Tìm kiếm:",
       lengthMenu: "Hiển thị _MENU_ dòng",
       info: "Hiển thị _START_ đến _END_ trong _TOTAL_ dòng",
       zeroRecords: "Không có dữ liệu",
       infoEmpty: "Không có dữ liệu",
-      paginate: {
-        first: "«", last: "»", next: "›", previous: "‹"
-      }
+      paginate: { first: "«", last: "»", next: "›", previous: "‹" }
     },
     order: [[0, 'desc']]
   });
 
-  // Bộ lọc theo chủ đề
-  const topicSelect = document.getElementById("filterTopic");
-  if (topicSelect) {
-    topicSelect.addEventListener("change", () => {
-      const topic = topicSelect.value;
-      location.href = topic ? `mc_table.php?topic=${encodeURIComponent(topic)}` : 'mc_table.php';
-    });
-  }
-
-  // Hiển thị modal ảnh nếu cần
-  const modal = document.createElement("div");
-  modal.id = "imageModal";
-  modal.style.cssText = `
-    display:none; position:fixed; z-index:9999; top:0; left:0;
-    width:100%; height:100%; background:rgba(0,0,0,0.85);
-    justify-content:center; align-items:center;
-  `;
-  modal.innerHTML = `<span style="position:absolute;top:10px;right:20px;font-size:28px;color:#fff;cursor:pointer;">&times;</span>
-    <img id="modalImage" style="max-width:90%;max-height:90%;">`;
-  document.body.appendChild(modal);
-
-  modal.querySelector("span").onclick = () => (modal.style.display = "none");
-
-  document.querySelectorAll("img.thumb").forEach(img => {
-    img.addEventListener("click", () => {
-      const modalImg = document.getElementById("modalImage");
-      modalImg.src = img.src;
-      modal.style.display = "flex";
-    });
+  // Lọc theo chủ đề
+  $('#filterTopic').on('change', function () {
+    const topic = this.value;
+    const url = topic ? `mc_table.php?topic=${encodeURIComponent(topic)}` : 'mc_table.php';
+    location.href = url;
   });
 
-  // Nhập Excel (nếu có input)
-  const excelInput = document.getElementById("excelInput");
-  if (excelInput) {
-    excelInput.addEventListener("change", function () {
-      const file = this.files[0];
-      if (!file) return;
+  // Tabs
+  $(".tab-button").click(function () {
+    $(".tab-button").removeClass("active");
+    $(this).addClass("active");
+    const tabId = $(this).data("tab");
+    $(".tab-content").removeClass("active");
+    $("#" + tabId).addClass("active");
+  });
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const workbook = XLSX.read(e.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  // Nhập từ Excel
+  $("#excelInput").on("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        const rows = rawRows.filter(row => row.length >= 8 && row[0] !== "ID");
-        const formatted = rows.map(r => ({
-          mc_question: r[2] || '',
-          mc_answer1: r[3] || '',
-          mc_answer2: r[4] || '',
-          mc_answer3: r[5] || '',
-          mc_answer4: r[6] || '',
-          mc_correct_answer: r[7] || '',
-          mc_topic: r[1] || '',
-          mc_image_url: r[8] || ''
-        }));
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      const workbook = XLSX.read(evt.target.result, { type: "binary" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        fetch("mc_table.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "excelData=" + encodeURIComponent(JSON.stringify(formatted))
-        })
-        .then(res => res.text())
-        .then(res => {
+      const rows = rawRows.filter(r => r.length >= 8 && r[0] !== "ID");
+      const formatted = rows.map(r => ({
+        mc_question: r[2] || '',
+        mc_answer1: r[3] || '',
+        mc_answer2: r[4] || '',
+        mc_answer3: r[5] || '',
+        mc_answer4: r[6] || '',
+        mc_correct_answer: r[7] || '',
+        mc_topic: r[1] || '',
+        mc_image_url: r[8] || ''
+      }));
+
+      $.post("mc_table.php", { excelData: JSON.stringify(formatted) })
+        .done(res => {
           if (res.trim() === "OK") {
             alert("✅ Nhập dữ liệu thành công!");
             location.reload();
           } else {
-            alert("Lỗi khi lưu dữ liệu:\n" + res);
+            alert("❌ Lỗi khi lưu dữ liệu:\n" + res);
           }
         })
-        .catch(err => alert("Không kết nối được đến máy chủ."));
-      };
-      reader.readAsBinaryString(file);
-    });
-  }
+        .fail(() => {
+          alert("❌ Không kết nối được đến máy chủ.");
+        });
+    };
+    reader.readAsBinaryString(file);
+  });
 });
