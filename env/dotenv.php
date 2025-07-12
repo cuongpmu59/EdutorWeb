@@ -1,9 +1,7 @@
 <?php
 /**
  * dotenv.php - Tải biến môi trường từ file .env đơn giản
- * Cách dùng: gọi env('KEY') để lấy giá trị
  */
-
 function env($key, $default = null) {
     static $env = null;
 
@@ -21,7 +19,7 @@ function env($key, $default = null) {
                     $name = trim($parts[0]);
                     $value = trim($parts[1]);
 
-                    // Bỏ dấu ngoặc nếu có (hỗ trợ PHP 7.x)
+                    // Bỏ dấu ngoặc nếu có
                     if ((substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
                         (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
                         $value = substr($value, 1, -1);
