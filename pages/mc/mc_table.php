@@ -9,15 +9,15 @@ header("X-Frame-Options: SAMEORIGIN");
 // Lấy danh sách chủ đề
 $topics = [];
 try {
-    $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
+    $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
     $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 
 $topicFilter = $_GET['topic'] ?? '';
 try {
     $sql = $topicFilter !== ''
-        ? "SELECT * FROM questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
-        : "SELECT * FROM questions ORDER BY mc_id DESC";
+        ? "SELECT * FROM mc_questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
+        : "SELECT * FROM mc_questions ORDER BY mc_id DESC";
     $stmt = $conn->prepare($sql);
     $topicFilter !== '' ? $stmt->execute(['topic' => $topicFilter]) : $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -34,9 +34,7 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="../../css/modules/table.css">
 
-
   <style>
-    /* Hiển thị cảnh báo nếu truy cập trực tiếp */
     #directWarning {
       display: none;
       padding: 60px;
@@ -133,13 +131,12 @@ try {
 <script src="../../js/table/mc_table.js"></script>
 
 <script>
-  // Nếu không mở trong iframe, hiển thị cảnh báo
 if (window.top === window.self) {
-     document.getElementById("directWarning").style.display = "block";
-  } else {
-    document.getElementById("mcTableWrapper").style.display = "block";
-  }
-</script> 
+  document.getElementById("directWarning").style.display = "block";
+} else {
+  document.getElementById("mcTableWrapper").style.display = "block";
+}
+</script>
 
 </body>
 </html>
