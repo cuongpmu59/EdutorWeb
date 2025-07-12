@@ -143,6 +143,13 @@ if (window.top === window.self) {
 } else {
   document.getElementById("mcTableWrapper").style.display = "block";
 }
+
+// Lắng nghe tín hiệu từ parent yêu cầu chuyển tab
+window.addEventListener('message', function (event) {
+  if (event.data?.type === 'scrollToListTab') {
+    document.querySelector('.tab-button[data-tab="listTab"]').click();
+  }
+});
 </script>
 
 </body>
