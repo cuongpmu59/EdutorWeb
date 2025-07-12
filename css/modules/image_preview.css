@@ -1,38 +1,44 @@
 /* ======================================
-   IMAGE PREVIEW - Ảnh minh hoạ & Modal
+   IMAGE PREVIEW & MODAL (Tối ưu hoá)
 ====================================== */
 
-/* ==== Ảnh trong khung xem trước ==== */
+/* ==== Ảnh trong khung xem trước (form) ==== */
+#mc_imagePreview,
 img.preview-image {
   display: block;
-  margin: 12px auto;
+  margin: 12px auto 0;
   max-width: 100%;
   max-height: 300px;
   border-radius: 8px;
-  cursor: pointer;
+  border: 1px solid #ccc;
+  object-fit: contain;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
+/* ==== Hiệu ứng hover/active (áp dụng chung) ==== */
+#mc_imagePreview:hover,
 img.preview-image:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+#mc_imagePreview:active,
 img.preview-image:active {
   transform: scale(0.97);
   opacity: 0.95;
 }
 
-/* ==== Modal toàn màn hình ==== */
+/* ==== Modal hiển thị toàn màn hình ==== */
 .image-modal {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 999;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(2px);
+  overflow: auto;
 }
 
 /* ==== Nội dung ảnh trong modal ==== */
@@ -65,6 +71,7 @@ img.preview-image:active {
 }
 
 /* ==== Dark mode ==== */
+body.dark-mode #mc_imagePreview,
 body.dark-mode img.preview-image {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
 }
@@ -73,7 +80,7 @@ body.dark-mode .image-modal-content {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
 }
 
-/* ==== Animation ==== */
+/* ==== Hiệu ứng chuyển động ==== */
 @keyframes fadeInImage {
   from {
     opacity: 0;
@@ -87,6 +94,7 @@ body.dark-mode .image-modal-content {
 
 /* ==== Responsive ==== */
 @media (max-width: 600px) {
+  #mc_imagePreview,
   img.preview-image {
     max-height: 200px;
   }
