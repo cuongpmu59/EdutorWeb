@@ -1,64 +1,125 @@
 <?php
-$current_page = basename($_SERVER['PHP_SELF']);
+require 'db_connection.php';
+header("X-Frame-Options: SAMEORIGIN");
+
+// Lấy danh sách chủ đề
+$topics = [];
+try {
+    $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
+    $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
+} catch (Exception $e) {}
+
+$topicFilter = $_GET['topic'] ?? '';
+try {
+    $sql = $topicFilter !== ''
+        ? "SELECT * FROM questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
+        : "SELECT * FROM questions ORDER BY mc_id DESC";
+    $stmt = $conn->prepare($sql);
+    $topicFilter !== '' ? $stmt->execute(['topic' => $topicFilter]) : $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $rows = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📋 Danh sách câu hỏi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="css/main_ui.css">
-  <link rel="stylesheet" href="css/form.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/tabs.css">
-  <link rel="stylesheet" href="css/table.css">
-
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+  <title>Bảng Câu hỏi Nhiều lựa chọn</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="css/modules/table.css"> 
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-light, #f9f9f9);
-      color: var(--color-dark, #333);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    h2 {
-      text-align: center;
-      color: var(--accent, #3498db);
-      margin-bottom: 30px;
-    }
+    /* Nếu cần có style backup inline */
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>📋 Danh sách câu hỏi</h2>
+<h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
-    <div class="tab-container">
-      <a class="tab-button <?= $current_page === 'mc_form.php' ? 'active' : '' ?>" href="mc_form.php">📝 Nhập câu hỏi</a>
-      <a class="tab-button <?= $current_page === 'mc_image.php' ? 'active' : '' ?>" href="mc_image.php">🖼️ Ảnh minh hoạ</a>
-      <a class="tab-button <?= $current_page === 'mc_preview.php' ? 'active' : '' ?>" href="mc_preview.php">👁️ Xem trước</a>
-      <a class="tab-button <?= $current_page === 'mc_table.php' ? 'active' : '' ?>" href="mc_table.php">📋 Danh sách</a>
-    </div>
+<!-- Tabs -->
+<div class="tab-container">
+  <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
+  <button class="tab-button" data-tab="importTab">📁 Nhập / Xuất</button>
+  <button class="tab-button" data-tab="listTab">📄 Danh sách</button>
+  <button class="tab-button" data-tab="otherTab">⚙️ Khác</button>
+</div>
 
-    <div class="form-section">
-      <?php require 'mc_table_inner.php'; ?>
-    </div>
-  </div>
+<!-- Tab: Bộ lọc -->
+<div id="filterTab" class="tab-content active">
+  <label><strong>🔍 Lọc theo chủ đề:</strong></label>
+  <select id="filterTopic">
+    <option value="">-- Tất cả --</option>
+    <?php foreach ($topics as $t): ?>
+      <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
+        <?= htmlspecialchars($t) ?>
+      </option>
+    <?php endforeach; ?>
+  </select>
+</div>
+
+<!-- Tab: Nhập / Xuất -->
+<div id="importTab" class="tab-content">
+  <label><strong>📤 Nhập từ Excel:</strong></label>
+  <input type="file" id="excelInput" accept=".xlsx,.xls">
+  <br><br>
+  <button onclick="$('.buttons-excel').click()">📥 Xuất Excel</button>
+  <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
+</div>
+
+<!-- Tab: Danh sách -->
+<div id="listTab" class="tab-content">
+  <table id="mcTable" class="display">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Chủ đề</th>
+        <th>Câu hỏi</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+        <th>D</th>
+        <th>Đáp án đúng</th>
+        <th>Ảnh</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($rows as $q): ?>
+      <tr>
+        <td><?= $q['mc_id'] ?></td>
+        <td><?= htmlspecialchars($q['mc_topic']) ?></td>
+        <td><?= htmlspecialchars($q['mc_question']) ?></td>
+        <td><?= htmlspecialchars($q['mc_answer1']) ?></td>
+        <td><?= htmlspecialchars($q['mc_answer2']) ?></td>
+        <td><?= htmlspecialchars($q['mc_answer3']) ?></td>
+        <td><?= htmlspecialchars($q['mc_answer4']) ?></td>
+        <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
+        <td>
+          <?php if (!empty($q['mc_image_url'])): ?>
+            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+          <?php endif; ?>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
+<!-- Tab: Khác -->
+<div id="otherTab" class="tab-content">
+  <em>🔧 Các chức năng bổ sung sẽ cập nhật sau...</em>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/table/mc_table.js"></script> <!-- ✅ Tách JS riêng -->
 
 </body>
 </html>
