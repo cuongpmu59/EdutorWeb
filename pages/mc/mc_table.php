@@ -1,5 +1,9 @@
 <?php
 require __DIR__ . '/../../db_connection.php';
+if (!isset($conn)) {
+  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
+}
+
 header("X-Frame-Options: SAMEORIGIN");
 
 // Lấy danh sách chủ đề
