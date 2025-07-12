@@ -11,8 +11,6 @@
 <body>
 
 <div class="form-container">
-  <h2>📝 Thêm / Sửa câu hỏi</h2>
-
   <form id="mcForm" class="question-form" method="POST" enctype="multipart/form-data">
     <!-- ID ẩn để cập nhật -->
     <input type="hidden" id="mc_id" name="mc_id">
