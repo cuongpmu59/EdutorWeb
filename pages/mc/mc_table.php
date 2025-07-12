@@ -145,10 +145,43 @@ if (window.top === window.self) {
 }
 
 // Lắng nghe tín hiệu từ parent yêu cầu chuyển tab
-window.addEventListener('message', function (event) {
+  window.addEventListener('message', function (event) {
   if (event.data?.type === 'scrollToListTab') {
-    document.querySelector('.tab-button[data-tab="listTab"]').click();
+    document.querySelector('.tab-button[data-tab="listTab"]')?.click();
+    document.getElementById('listTab')?.scrollIntoView({ behavior: 'smooth' });
   }
+});
+</script>
+<script>
+  $(document).ready(function () {
+  const table = $('#mcTable').DataTable();
+
+  $('#mcTable tbody').on('click', 'tr', function () {
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+
+    const cells = $(this).find('td');
+    if (cells.length < 8) return;
+
+    const img = $(this).find('img.thumb');
+    const imgSrc = img.length > 0 ? img.attr('src') : '';
+
+    // Gửi dữ liệu về form cha
+    window.parent.postMessage({
+      type: 'mc_selected_row',
+      data: {
+        mc_id: cells.eq(0).text().trim(),
+        mc_topic: cells.eq(1).text().trim(),
+        mc_question: cells.eq(2).text().trim(),
+        mc_answer1: cells.eq(3).text().trim(),
+        mc_answer2: cells.eq(4).text().trim(),
+        mc_answer3: cells.eq(5).text().trim(),
+        mc_answer4: cells.eq(6).text().trim(),
+        mc_correct_answer: cells.eq(7).text().trim(),
+        mc_image_url: imgSrc
+      }
+    }, '*');
+  });
 });
 </script>
 
