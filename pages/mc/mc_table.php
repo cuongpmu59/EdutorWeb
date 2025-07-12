@@ -32,7 +32,8 @@ try {
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  <link rel="stylesheet" href="css/modules/table.css"> <!-- ✅ CSS riêng -->
+  <link rel="stylesheet" href="../../css/modules/table.css">
+
 
   <style>
     /* Hiển thị cảnh báo nếu truy cập trực tiếp */
@@ -129,8 +130,7 @@ try {
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="js/table/mc_table.js"></script>
-
+<script src="../../js/table/mc_table.js"></script>
 
 <!-- <script>
   // Nếu không mở trong iframe, hiển thị cảnh báo
