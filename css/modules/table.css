@@ -156,7 +156,114 @@ body.dark-mode .dataTables_paginate .paginate_button.current {
   #searchResultTable td {
     display: block;
     width: 100%;
+  }body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    background-color: #fefefe;
   }
+  
+  h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #007bff;
+  }
+  
+  /* Bộ lọc chủ đề */
+  label {
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  #filterTopic {
+    padding: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  /* Bảng câu hỏi */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  
+  th {
+    background: linear-gradient(to right, #007bff, #3399ff);
+    color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  td {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+  
+  tr:hover {
+    background-color: #f1f9ff;
+  }
+  
+  img.thumb {
+    max-width: 50px;
+    max-height: 50px;
+    display: block;
+    margin: auto;
+    border: 1px solid #aaa;
+    cursor: zoom-in;
+  }
+  
+  /* Modal hiển thị ảnh */
+  #imageModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #imageModal img {
+    max-width: 90%;
+    max-height: 90%;
+  }
+  
+  #imageModal span {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+  }
+  
+  /* Phân trang */
+  .dataTables_paginate {
+    margin-top: 10px !important;
+    font-weight: bold;
+  }
+  .dataTables_paginate .paginate_button {
+    padding: 5px 10px !important;
+    margin: 2px;
+    background: #f1f1f1;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  .dataTables_paginate .paginate_button.current {
+    background: #007bff !important;
+    color: white !important;
+  }
+  
+  /* Responsive - cuộn ngang */
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
+  
 
   tr,
   #searchResultTable tr {
