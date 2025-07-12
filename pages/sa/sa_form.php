@@ -13,7 +13,6 @@ require_once __DIR__ . '/../../env/config.php';
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
 </head>
 <body>
-<h2>✏️ Câu hỏi tự luận / ngắn</h2>
 
 <!-- Tabs -->
 <div class="tab-container">
