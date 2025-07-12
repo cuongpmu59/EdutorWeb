@@ -157,31 +157,36 @@ if (window.top === window.self) {
   const table = $('#mcTable').DataTable();
 
   $('#mcTable tbody').on('click', 'tr', function () {
-    $('#mcTable tbody tr').removeClass('selected');
-    $(this).addClass('selected');
+  $('#mcTable tbody tr').removeClass('selected');
+  $(this).addClass('selected');
 
-    const cells = $(this).find('td');
-    if (cells.length < 8) return;
+  const cells = $(this).find('td');
+  const mc_id = cells.eq(0).text().trim();
 
-    const img = $(this).find('img.thumb');
-    const imgSrc = img.length > 0 ? img.attr('src') : '';
+  if (!mc_id) return; // tránh dòng rỗng
 
-    // Gửi dữ liệu về form cha
-    window.parent.postMessage({
-      type: 'mc_selected_row',
-      data: {
-        mc_id: cells.eq(0).text().trim(),
-        mc_topic: cells.eq(1).text().trim(),
-        mc_question: cells.eq(2).text().trim(),
-        mc_answer1: cells.eq(3).text().trim(),
-        mc_answer2: cells.eq(4).text().trim(),
-        mc_answer3: cells.eq(5).text().trim(),
-        mc_answer4: cells.eq(6).text().trim(),
-        mc_correct_answer: cells.eq(7).text().trim(),
-        mc_image_url: imgSrc
-      }
-    }, '*');
-  });
+  const img = $(this).find('img.thumb');
+  const imgSrc = img.length > 0 ? img.attr('src') : '';
+
+  const message = {
+    type: 'mc_selected_row',
+    data: {
+      mc_id: mc_id,
+      mc_topic: cells.eq(1).text().trim(),
+      mc_question: cells.eq(2).text().trim(),
+      mc_answer1: cells.eq(3).text().trim(),
+      mc_answer2: cells.eq(4).text().trim(),
+      mc_answer3: cells.eq(5).text().trim(),
+      mc_answer4: cells.eq(6).text().trim(),
+      mc_correct_answer: cells.eq(7).text().trim(),
+      mc_image_url: imgSrc
+    }
+  };
+
+  console.log("📤 Gửi dữ liệu về form cha:", message);
+  window.parent.postMessage(message, '*');
+});
+
 });
 </script>
 
