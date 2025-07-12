@@ -73,6 +73,7 @@
 <script>
 window.addEventListener('message', function (event) {
   if (event.data?.type === 'mc_selected_row') {
+    console.log('✅ Đã nhận từ iframe:', event.data.data);
     const d = event.data.data;
 
     document.getElementById('mc_id').value = d.mc_id || '';
@@ -100,7 +101,8 @@ window.addEventListener('message', function (event) {
 function scrollToListTabInIframe() {
   const iframe = document.getElementById('mcIframe');
   if (iframe?.contentWindow) {
-    iframe.contentWindow.postMessage({ type: 'scrollToListTab' }, '*');
+    iframe.contentWindow.postMessage({ type: 'scrollToListTab' }, window.parent.postMessage(data, window.location.origin);
+  );
   }
 }
 </script>
