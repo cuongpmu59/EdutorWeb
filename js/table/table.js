@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  // === 1. Khởi tạo DataTable ===
   const table = $('#mcTable').DataTable({
     dom: 'Bfrtip',
     buttons: ['excelHtml5', 'print'],
@@ -19,11 +18,11 @@ $(document).ready(function () {
       },
     },
     initComplete: function () {
-      $('.buttons-excel, .buttons-print').hide(); // Ẩn nút export mặc định nếu cần
+      $('.buttons-excel, .buttons-print').hide(); // Ẩn export mặc định nếu không dùng
     }
   });
 
-  // === 2. Bộ lọc theo chủ đề ===
+  // === Lọc chủ đề ===
   $('#filterTopic').on('change', function () {
     const topic = $(this).val();
     const url = new URL(window.location.href);
@@ -31,7 +30,7 @@ $(document).ready(function () {
     window.location.href = url.toString();
   });
 
-  // === 3. Tab giao diện ===
+  // === Tab chuyển giao diện (nếu dùng) ===
   $('.tab-button').on('click', function () {
     const tabId = $(this).data('tab');
     $('.tab-button').removeClass('active');
@@ -40,13 +39,13 @@ $(document).ready(function () {
     $('#' + tabId).addClass('active');
   });
 
-  // === 4. Xem ảnh lớn khi click ảnh ===
+  // === Click ảnh để xem lớn ===
   $('#mcTable').on('click', 'img.thumb', function () {
     const src = $(this).attr('src');
     if (src) window.open(src, '_blank');
   });
 
-  // === 5. Click dòng → chọn + gửi dữ liệu ===
+  // === Click dòng → gửi dữ liệu về form cha ===
   $('#mcTable tbody').on('click', 'tr', function () {
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
@@ -54,17 +53,13 @@ $(document).ready(function () {
     sendRowDataToParent(rowData);
   });
 
-  // === 6. Di chuyển bằng phím ↑ / ↓ ===
+  // === Điều hướng bằng phím ↑ ↓ ===
   $(document).on('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       const current = $('#mcTable tbody tr.selected');
-      let nextRow;
-
-      if (e.key === 'ArrowDown') {
-        nextRow = current.length ? current.next() : $('#mcTable tbody tr').first();
-      } else {
-        nextRow = current.length ? current.prev() : $('#mcTable tbody tr').last();
-      }
+      let nextRow = e.key === 'ArrowDown'
+        ? (current.length ? current.next() : $('#mcTable tbody tr').first())
+        : (current.length ? current.prev() : $('#mcTable tbody tr').last());
 
       if (nextRow.length) {
         current.removeClass('selected');
@@ -77,12 +72,11 @@ $(document).ready(function () {
     }
   });
 
-  // === 7. Gửi dữ liệu về form cha ===
+  // === Gửi dòng được chọn về form cha ===
   function sendRowDataToParent(rowData) {
     if (!rowData || window.parent === window) return;
 
     const imageSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
-
     window.parent.postMessage({
       type: 'mc_selected_row',
       data: {
@@ -98,4 +92,12 @@ $(document).ready(function () {
       }
     }, '*');
   }
+
+  // === Nhận yêu cầu từ form cha (cuộn tab danh sách) ===
+  window.addEventListener('message', function (event) {
+    if (event.data?.type === 'scrollToListTab') {
+      document.querySelector('.tab-button[data-tab="listTab"]')?.click();
+      document.getElementById('listTab')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 });
