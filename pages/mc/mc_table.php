@@ -9,20 +9,20 @@ header("X-Frame-Options: SAMEORIGIN");
 // Lấy danh sách chủ đề
 $topics = [];
 try {
-    $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
-    $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
+  $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
+  $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 
 $topicFilter = $_GET['topic'] ?? '';
 try {
-    $sql = $topicFilter !== ''
-        ? "SELECT * FROM mc_questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
-        : "SELECT * FROM mc_questions ORDER BY mc_id DESC";
-    $stmt = $conn->prepare($sql);
-    $topicFilter !== '' ? $stmt->execute(['topic' => $topicFilter]) : $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $sql = $topicFilter !== ''
+    ? "SELECT * FROM mc_questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
+    : "SELECT * FROM mc_questions ORDER BY mc_id DESC";
+  $stmt = $conn->prepare($sql);
+  $topicFilter !== '' ? $stmt->execute(['topic' => $topicFilter]) : $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
-    $rows = [];
+  $rows = [];
 }
 ?>
 <!DOCTYPE html>
@@ -33,7 +33,6 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="../../css/modules/table.css">
-
   <style>
     #directWarning {
       display: none;
@@ -42,6 +41,14 @@ try {
       font-size: 18px;
       color: #c0392b;
       font-weight: bold;
+    }
+    #mcTable tbody tr.selected {
+      background-color: #e0f7fa !important;
+    }
+    .thumb {
+      max-width: 50px;
+      max-height: 50px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -84,7 +91,7 @@ try {
 
   <!-- Tab: Danh sách -->
   <div id="listTab" class="tab-content">
-    <table id="mcTable" class="display">
+    <table id="mcTable" class="display" style="width:100%">
       <thead>
         <tr>
           <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
@@ -136,34 +143,6 @@ if (window.top === window.self) {
 } else {
   document.getElementById("mcTableWrapper").style.display = "block";
 }
-</script>
-
-<script>
-window.addEventListener('message', function (event) {
-  if (event.data?.type === 'mc_selected_row') {
-    const d = event.data.data;
-
-    // Điền dữ liệu vào form
-    document.getElementById('question_id').value = d.mc_id || '';
-    document.getElementById('topic').value = d.mc_topic || '';
-    document.getElementById('question').value = d.mc_question || '';
-    document.getElementById('answer1').value = d.mc_answer1 || '';
-    document.getElementById('answer2').value = d.mc_answer2 || '';
-    document.getElementById('answer3').value = d.mc_answer3 || '';
-    document.getElementById('answer4').value = d.mc_answer4 || '';
-    document.getElementById('correct_answer').value = d.mc_correct_answer || '';
-
-    // Ảnh minh hoạ
-    if (d.mc_image_url) {
-      document.getElementById('imagePreview').src = d.mc_image_url;
-      document.getElementById('imagePreview').style.display = 'block';
-    } else {
-      document.getElementById('imagePreview').style.display = 'none';
-    }
-
-    // Kích hoạt nút cập nhật nếu cần
-  }
-});
 </script>
 
 </body>
