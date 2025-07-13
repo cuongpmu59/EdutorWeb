@@ -35,12 +35,7 @@ $(document).ready(function () {
   });
 
     addTopicFilterToTable(table, 1); // Cột 1 là chủ đề
-  // === Lọc chủ đề bằng column search (cột 1 là Chủ đề) ===
-  $('#filterTopic').on('change', function () {
-    const topic = $(this).val();
-    table.column(1).search(topic).draw();
-  });
-
+  
   // === Chuyển tab giao diện (nếu có) ===
   $('.tab-button').on('click', function () {
     const tabId = $(this).data('tab');
