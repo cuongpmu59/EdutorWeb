@@ -32,3 +32,47 @@
   overflow-y: auto;
   border: 1px solid #ddd;
 }
+
+/* 📌 Làm đẹp khối filter và length */
+.dataTables_filter,
+.dataTables_length {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.dataTables_filter label,
+.dataTables_length label {
+  font-weight: bold;
+  color: var(--accent, #3498db);
+}
+
+.dataTables_filter input[type="search"],
+.dataTables_length select,
+select.topic-filter {
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+select.topic-filter {
+  background-color: #f4f9ff;
+  border-color: #007bff;
+}
+
+/* 📋 Tăng độ nổi bật cho thanh tìm kiếm */
+#mcTable_filter {
+  justify-content: flex-end;
+}
+
+/* 📋 Gộp vùng tìm kiếm + lọc theo chủ đề vào một hàng */
+#mcTable_wrapper > .dataTables_filter {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+}
