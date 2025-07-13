@@ -34,6 +34,7 @@ $(document).ready(function () {
     }
   });
 
+    addTopicFilterToTable(table, 1); // Cột 1 là chủ đề
   // === Lọc chủ đề bằng column search (cột 1 là Chủ đề) ===
   $('#filterTopic').on('change', function () {
     const topic = $(this).val();
