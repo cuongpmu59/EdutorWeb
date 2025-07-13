@@ -2,7 +2,7 @@
    PREVIEW STYLES - Xem trước nội dung
 ================================= */
 
-/* ==== Box dùng chung: preview, latex, full ==== */
+/* ==== Box chung cho preview ==== */
 .preview-box,
 .latex-preview,
 .full-preview {
@@ -12,25 +12,25 @@
   border-radius: 6px;
   white-space: pre-wrap;
   margin-bottom: 12px;
-  transition: background-color 0.3s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* ==== Full preview riêng ==== */
+/* Full preview riêng */
 .full-preview {
   background-color: #fafafa;
   border-left-width: 4px;
   padding: 16px 20px;
 }
 
-/* ==== Khi công thức sai ==== */
+/* Khi công thức sai */
 .preview-box.invalid-math {
   border: 1px solid var(--danger, #e74c3c);
   background-color: #fff0f0;
   box-shadow: 0 0 4px rgba(231, 76, 60, 0.4);
 }
 
-/* ==== Nội dung bên trong preview ==== */
+/* Nội dung trong preview */
 .preview-content {
   font-size: 1rem;
   line-height: 1.6;
@@ -42,15 +42,21 @@
 .preview-content .question,
 .preview-content .answer,
 .preview-content .full-preview {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .preview-content .answer.correct {
   font-weight: bold;
   color: var(--accent, #3498db);
+  transition: color 0.3s ease;
 }
 
-/* ==== Hình ảnh minh hoạ ==== */
+.preview-content .answer.correct:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Hình ảnh minh hoạ */
 .preview-content img {
   max-width: 100%;
   height: auto;
@@ -59,14 +65,18 @@
   border-radius: 6px;
 }
 
-/* ==== MathJax container ==== */
+/* MathJax container */
 .preview-content mjx-container {
   font-size: 1.1em !important;
   overflow-x: auto;
+  display: block;
+  padding-bottom: 6px;
 }
 
-/* ==== Hiệu ứng khi xuất hiện ==== */
-.preview-box.fade-in {
+/* Hiệu ứng xuất hiện */
+.preview-box.fade-in,
+.latex-preview.fade-in,
+.full-preview.fade-in {
   animation: fadeInPreview 0.3s ease-in-out;
 }
 
@@ -107,7 +117,7 @@ body.dark-mode .mjx-container {
   filter: brightness(1.2);
 }
 
-/* ==== Responsive ==== */
+/* Responsive */
 @media (max-width: 768px) {
   .preview-box,
   .latex-preview,
