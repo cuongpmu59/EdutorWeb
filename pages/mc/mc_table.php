@@ -78,9 +78,7 @@ try {
 
   <!-- Tabs giao diện -->
   <div class="tab-container">
-    <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
     <button class="tab-button" data-tab="importTab">📁 Nhập Excel</button>
-    <button class="tab-button" data-tab="otherTab">⚙️ Khác</button>
   </div>
 
   <!-- Tab: Bộ lọc -->
