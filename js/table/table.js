@@ -105,3 +105,21 @@ $(document).ready(function () {
     }
   });
 });
+
+$(document).ready(function () {
+  const table = $('#mcTable').DataTable({
+    // Các cấu hình khác của bảng
+    fixedHeader: true,
+    drawCallback: function () {
+      if (window.MathJax) {
+        MathJax.typeset();
+      }
+    }
+  });
+
+  // Kích hoạt lần đầu khi tải trang
+  if (window.MathJax) {
+    MathJax.typeset();
+  }
+});
+
