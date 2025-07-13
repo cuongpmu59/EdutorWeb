@@ -77,19 +77,6 @@ try {
   <input type="file" id="excelInput" accept=".xlsx,.xls" style="display: none;">
 <br>
 
-  <!-- Tab: Bộ lọc -->
-  <div id="filterTab" class="tab-content active">
-    <label><strong>🔍 Lọc theo chủ đề:</strong></label>
-    <select id="filterTopic">
-      <option value="">-- Tất cả --</option>
-      <?php foreach ($topics as $t): ?>
-        <option value="<?= htmlspecialchars($t) ?>" <?= $topicFilter === $t ? 'selected' : '' ?>>
-          <?= htmlspecialchars($t) ?>
-        </option>
-      <?php endforeach; ?>
-    </select>
-  </div>
-
   <!-- Tab: Danh sách câu hỏi -->
   <div id="listTab" class="tab-content">
   <div class="table-wrapper">
@@ -143,7 +130,7 @@ try {
 <script src="../../js/table/table.js"></script>
 <script src="../../js/table/button.js"></script>
 <script src="../../js/table/excel_io.js"></script>
-
+<script src="../../js/table/filter.js"></script>
 
 <script>
   if (window.top === window.self) {
