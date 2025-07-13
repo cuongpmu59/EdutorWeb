@@ -94,21 +94,22 @@ try {
       </thead>
       <tbody>
         <?php foreach ($rows as $q): ?>
-        <tr>
-          <td><?= $q['mc_id'] ?></td>
-          <td><?= htmlspecialchars($q['mc_topic']) ?></td>
-          <td><?= htmlspecialchars($q['mc_question']) ?></td>
-          <td><?= htmlspecialchars($q['mc_answer1']) ?></td>
-          <td><?= htmlspecialchars($q['mc_answer2']) ?></td>
-          <td><?= htmlspecialchars($q['mc_answer3']) ?></td>
-          <td><?= htmlspecialchars($q['mc_answer4']) ?></td>
-          <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
-          <td>
-            <?php if (!empty($q['mc_image_url'])): ?>
+          <tr>
+            <td><?= $q['mc_id'] ?></td>
+            <td><?= htmlspecialchars($q['mc_topic']) ?></td>
+            <td class="math-cell"><?= $q['mc_question'] ?></td>
+            <td class="math-cell"><?= $q['mc_answer1'] ?></td>
+            <td class="math-cell"><?= $q['mc_answer2'] ?></td>
+            <td class="math-cell"><?= $q['mc_answer3'] ?></td>
+            <td class="math-cell"><?= $q['mc_answer4'] ?></td>
+            <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
+            <td>
+              <?php if (!empty($q['mc_image_url'])): ?>
               <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
-            <?php endif; ?>
-          </td>
-        </tr>
+              <?php endif; ?>
+            </td>
+            </tr>
+
         <?php endforeach; ?>
       </tbody>
     </table>
