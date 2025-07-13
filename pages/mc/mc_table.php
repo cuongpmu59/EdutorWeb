@@ -114,36 +114,5 @@ try {
 <script src="../../js/table/table.js"></script>
 <script src="../../js/table/filter.js"></script>
 
-<script>
-  $(document).ready(function () {
-    console.log("✅ Số dòng: <?= count($rows) ?>");
-
-    const table = $('#mcTable').DataTable({
-      dom: 'Bfrtip',
-      buttons: ['excelHtml5', 'print'],
-      pageLength: 10,
-      lengthMenu: [5, 10, 25, 50, 100],
-      fixedHeader: true,
-      drawCallback: function () {
-        if (window.MathJax) MathJax.typeset();
-      },
-      language: {
-        search: "🔍 Tìm kiếm:",
-        lengthMenu: "Hiển thị _MENU_ dòng",
-        info: "Trang _PAGE_ / _PAGES_ (_TOTAL_ dòng)",
-        infoEmpty: "Không có dữ liệu",
-        zeroRecords: "Không tìm thấy kết quả phù hợp",
-        paginate: {
-          first: "«", last: "»", next: "▶", previous: "◀"
-        }
-      },
-      initComplete: function () {
-        $('.buttons-excel, .buttons-print').hide();
-        addTopicFilterToTable(this.api(), 1);
-        if (window.MathJax) MathJax.typeset();
-      }
-    });
-  });
-</script>
 </body>
 </html>
