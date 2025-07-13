@@ -10,7 +10,7 @@
 <body>
 
 <div class="form-container">
-    <form id="mcForm" class="question-form" method="POST" action="pages/utils/mc_insert.php" enctype="multipart/form-data">
+    <form id="mcForm" class="question-form" enctype="multipart/form-data">
     <!-- ID ẩn để cập nhật -->
     <input type="hidden" id="mc_id" name="mc_id">
 
