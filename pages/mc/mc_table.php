@@ -69,17 +69,13 @@ try {
     <button id="btnReloadTable">🔄 Làm mới</button>
   </div>
   <div class="right-tools">
-    <button id="btnExportExcel" title="Xuất Excel">⬇️ Xuất Excel</button>
-    <button id="btnPrintTable" title="In bảng">🖨️ In bảng</button>
+    <button id="btnImportExcel" title="Nhập Excel">📁 Nhập Excel</button>
+    <button id="btnExportExcel" title="Xuất Excel">⬇️ Xuất Excel</button>
+    <button id="btnPrintTable" title="In bảng">🖨️ In bảng</button>
   </div>
 </div>
 
   <br>
-
-  <!-- Tabs giao diện -->
-  <div class="tab-container">
-    <button class="tab-button" data-tab="importTab">📁 Nhập Excel</button>
-  </div>
 
   <!-- Tab: Bộ lọc -->
   <div id="filterTab" class="tab-content active">
@@ -92,15 +88,6 @@ try {
         </option>
       <?php endforeach; ?>
     </select>
-  </div>
-
-  <!-- Tab: Nhập / Xuất -->
-  <div id="importTab" class="tab-content">
-    <label><strong>📄 Từ Excel:</strong></label>
-    <input type="file" id="excelInput" accept=".xlsx,.xls">
-    <br><br>
-    <button onclick="$('.buttons-excel').click()">📅 Xuất Excel</button>
-    <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
   </div>
 
   <!-- Tab: Danh sách câu hỏi -->
