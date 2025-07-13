@@ -34,6 +34,8 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" />
   <link rel="stylesheet" href="../../css/modules/table.css">
+  <link rel="stylesheet" href="../../css/modules/toolbar.css">
+
   <style>
     #directWarning {
       display: none;
@@ -60,12 +62,18 @@ try {
 
 <div id="mcTableWrapper" style="display:none">
   <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+
   <div class="toolbar">
-  <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
-  <button id="btnReloadTable">🔄 Làm mới</button>
-  <button onclick="$('.buttons-excel').click()">⬇️ Xuất Excel</button>
-  <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
+  <div class="left-tools">
+    <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
+    <button id="btnReloadTable">🔄 Làm mới</button>
   </div>
+  <div class="right-tools">
+    <button id="btnExportExcel" title="Xuất Excel">⬇️ Excel</button>
+    <button id="btnPrintTable" title="In bảng">🖨️ In</button>
+  </div>
+</div>
+
   <br>
 
   <!-- Tabs giao diện -->
@@ -150,6 +158,7 @@ try {
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="../../js/table/table.js"></script>
 <script src="../../js/table/button.js"></script>
+
 <script>
   if (window.top === window.self) {
     document.getElementById("directWarning").style.display = "block";
