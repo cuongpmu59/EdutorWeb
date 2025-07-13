@@ -1,0 +1,19 @@
+.toolbar {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toolbar button {
+    padding: 6px 12px;
+    background-color: var(--accent, #3498db);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .toolbar button:hover {
+    background-color: #2980b9;
+  }
+  
