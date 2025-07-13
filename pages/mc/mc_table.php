@@ -100,7 +100,9 @@ try {
 
   <!-- Tab: Danh sách câu hỏi -->
   <div id="listTab" class="tab-content">
-    <table id="mcTable" class="display" style="width:100%">
+  <div class="table-wrapper">
+  <table id="mcTable" class="display" style="width:100%">
+
       <thead>
         <tr>
           <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
@@ -128,6 +130,7 @@ try {
         <?php endforeach; ?>
       </tbody>
     </table>
+    </div>
   </div>
 
   <!-- Tab: Khác -->
