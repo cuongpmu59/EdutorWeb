@@ -63,7 +63,7 @@ try {
 <div id="directWarning">⛔ Trang này chỉ hoạt động trong hệ thống quản lý. Vui lòng không truy cập trực tiếp.
 </div>
 
-<div id="mcTableWrapper" style="display:none">
+<div id="mcTableWrapper" style="display:block">
   <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
   <div class="toolbar">
