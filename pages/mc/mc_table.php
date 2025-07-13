@@ -34,7 +34,10 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" />
   <link rel="stylesheet" href="../../css/modules/table.css">
-  <link rel="stylesheet" href="../../css/modules/toolbar.css">
+  <link rel="stylesheet" href="../../css/main_ui.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <style>
     #directWarning {
