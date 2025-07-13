@@ -256,3 +256,22 @@ body.dark-mode .dataTables_paginate .paginate_button.current {
     font-size: 0.9rem;
   }
 }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.toolbar button {
+  padding: 6px 12px;
+  background-color: var(--accent, #3498db);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.toolbar button:hover {
+  background-color: #2980b9;
+}
