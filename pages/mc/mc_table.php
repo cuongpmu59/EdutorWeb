@@ -37,88 +37,68 @@ try {
   <link rel="stylesheet" href="../../css/main_ui.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    #directWarning {
-      display: none;
-      padding: 60px;
-      text-align: center;
-      font-size: 18px;
-      color: #c0392b;
-      font-weight: bold;
-    }
-    #mcTable tbody tr.selected {
-      background-color: #e0f7fa !important;
-    }
     .thumb {
       max-width: 50px;
       max-height: 50px;
       cursor: pointer;
     }
+    #mcTable tbody tr.selected {
+      background-color: #e0f7fa !important;
+    }
   </style>
 </head>
 <body>
 
-<div id="directWarning">⛔ Trang này chỉ hoạt động trong hệ thống quản lý. Vui lòng không truy cập trực tiếp.
-</div>
+<h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
-<div id="mcTableWrapper" style="display:block">
-  <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-
-  <div class="toolbar">
+<div class="toolbar">
   <div class="left-tools">
     <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
     <button id="btnReloadTable">🔄 Làm mới</button>
   </div>
   <div class="right-tools">
-    <button id="btnImportExcel" title="Nhập Excel">📁 Nhập Excel</button>
-    <button id="btnExportExcel" title="Xuất Excel">⬇️ Xuất Excel</button>
-    <button id="btnPrintTable" title="In bảng">🖨️ In bảng</button>
+    <button id="btnImportExcel">📁 Nhập Excel</button>
+    <button id="btnExportExcel">⬇️ Xuất Excel</button>
+    <button id="btnPrintTable">🖨️ In bảng</button>
   </div>
 </div>
-  <input type="file" id="excelInput" accept=".xlsx,.xls" style="display: none;">
-<br>
 
-  <!-- Tab: Danh sách câu hỏi -->
-  <div id="listTab" class="tab-content">
-  <div class="table-wrapper">
+<input type="file" id="excelInput" accept=".xlsx,.xls" style="display:none;">
+
+<div class="table-wrapper">
   <table id="mcTable" class="display" style="width:100%">
-
-      <thead>
+    <thead>
+      <tr>
+        <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
+        <th>A</th><th>B</th><th>C</th><th>D</th>
+        <th>Đáp án đúng</th><th>Ảnh</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($rows as $q): ?>
         <tr>
-          <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
-          <th>A</th><th>B</th><th>C</th><th>D</th>
-          <th>Đáp án đúng</th><th>Ảnh</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($rows as $q): ?>
-          <tr>
-            <td><?= $q['mc_id'] ?></td>
-            <td><?= htmlspecialchars($q['mc_topic']) ?></td>
-            <td class="math-cell"><?= $q['mc_question'] ?></td>
-            <td class="math-cell"><?= $q['mc_answer1'] ?></td>
-            <td class="math-cell"><?= $q['mc_answer2'] ?></td>
-            <td class="math-cell"><?= $q['mc_answer3'] ?></td>
-            <td class="math-cell"><?= $q['mc_answer4'] ?></td>
-            <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
-            <td>
-              <?php if (!empty($q['mc_image_url'])): ?>
+          <td><?= $q['mc_id'] ?></td>
+          <td><?= htmlspecialchars($q['mc_topic']) ?></td>
+          <td><?= $q['mc_question'] ?></td>
+          <td><?= $q['mc_answer1'] ?></td>
+          <td><?= $q['mc_answer2'] ?></td>
+          <td><?= $q['mc_answer3'] ?></td>
+          <td><?= $q['mc_answer4'] ?></td>
+          <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
+          <td>
+            <?php if (!empty($q['mc_image_url'])): ?>
               <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
-              <?php endif; ?>
-            </td>
-            </tr>
-
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-    </div>
-  </div>
-
+            <?php endif; ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 </div>
 
-<!-- JS CDN & table.js -->
+<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -135,11 +115,35 @@ try {
 <script src="../../js/table/filter.js"></script>
 
 <script>
-  if (window.top === window.self) {
-    document.getElementById("directWarning").style.display = "block";
-  } else {
-    document.getElementById("mcTableWrapper").style.display = "block";
-  }
+  $(document).ready(function () {
+    console.log("✅ Số dòng: <?= count($rows) ?>");
+
+    const table = $('#mcTable').DataTable({
+      dom: 'Bfrtip',
+      buttons: ['excelHtml5', 'print'],
+      pageLength: 10,
+      lengthMenu: [5, 10, 25, 50, 100],
+      fixedHeader: true,
+      drawCallback: function () {
+        if (window.MathJax) MathJax.typeset();
+      },
+      language: {
+        search: "🔍 Tìm kiếm:",
+        lengthMenu: "Hiển thị _MENU_ dòng",
+        info: "Trang _PAGE_ / _PAGES_ (_TOTAL_ dòng)",
+        infoEmpty: "Không có dữ liệu",
+        zeroRecords: "Không tìm thấy kết quả phù hợp",
+        paginate: {
+          first: "«", last: "»", next: "▶", previous: "◀"
+        }
+      },
+      initComplete: function () {
+        $('.buttons-excel, .buttons-print').hide();
+        addTopicFilterToTable(this.api(), 1);
+        if (window.MathJax) MathJax.typeset();
+      }
+    });
+  });
 </script>
 </body>
 </html>
