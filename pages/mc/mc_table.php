@@ -112,10 +112,6 @@ try {
     </div>
   </div>
 
-  <!-- Tab: Khác -->
-  <div id="otherTab" class="tab-content">
-    <em>🔧 Tính năng bổ sung sẽ được cập nhật sau...</em>
-  </div>
 </div>
 
 <!-- JS CDN & table.js -->
