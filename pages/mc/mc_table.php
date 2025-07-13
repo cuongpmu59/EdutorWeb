@@ -74,8 +74,8 @@ try {
     <button id="btnPrintTable" title="In bảng">🖨️ In bảng</button>
   </div>
 </div>
-
-  <br>
+  <input type="file" id="excelInput" accept=".xlsx,.xls" style="display: none;">
+<br>
 
   <!-- Tab: Bộ lọc -->
   <div id="filterTab" class="tab-content active">
