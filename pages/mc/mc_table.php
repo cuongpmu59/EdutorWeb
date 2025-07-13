@@ -59,6 +59,13 @@ try {
 
 <div id="mcTableWrapper" style="display:none">
   <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+  <div class="toolbar">
+  <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
+  <button id="btnReloadTable">🔄 Làm mới</button>
+  <button onclick="$('.buttons-excel').click()">⬇️ Xuất Excel</button>
+  <button onclick="$('.buttons-print').click()">🖨️ In bảng</button>
+  </div>
+  <br>
 
   <!-- Tabs giao diện -->
   <div class="tab-container">
@@ -137,7 +144,7 @@ try {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="../../js/table/table.js"></script>
-
+<script src="../../js/table/button.js"></script>
 <script>
   if (window.top === window.self) {
     document.getElementById("directWarning").style.display = "block";
