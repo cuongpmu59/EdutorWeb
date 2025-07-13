@@ -4,6 +4,7 @@ $(document).ready(function () {
     buttons: ['excelHtml5', 'print'],
     pageLength: 10,
     lengthMenu: [5, 10, 25, 50, 100],
+    fixedHeader: true, // ⬅️ Dòng này là để cố định tiêu đề bảng
     language: {
       search: "🔍 Tìm kiếm:",
       lengthMenu: "Hiển thị _MENU_ dòng",
