@@ -1,5 +1,3 @@
-// js/modules/previewView.js
-
 import { updateLivePreview } from "./mathPreview.js";
 
 /**
@@ -88,3 +86,30 @@ function openModal(src) {
     console.warn("Modal ảnh chưa được khai báo trong DOM.");
   }
 }
+
+function renderMathPreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input && preview) {
+    preview.innerHTML = '\\(' + input.value.trim() + '\\)';
+    MathJax.typesetPromise([preview]);
+  }
+}
+
+function renderMathPreviewAll() {
+  ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'].forEach(id =>
+    renderMathPreview(id, 'preview_' + id)
+  );
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => {
+        renderMathPreview(id, 'preview_' + id);
+      });
+    }
+  });
+});
+
