@@ -12,10 +12,11 @@ function addTopicFilterToTable(table, columnIndex = 1, label = '📚 Chủ đề
   // Thêm vào DOM trước ô tìm kiếm
   $wrapper.prepend($label.append($select));
 
-  // Thêm các giá trị duy nhất vào dropdown
-  column.data().unique().sort().each(function (d) {
-    const clean = $('<div>').html(d).text().trim(); // loại bỏ HTML và khoảng trắng
-    if (clean !== '') {
+  // Thêm các giá trị duy nhất vào dropdown từ dữ liệu hàng
+  table.rows().every(function () {
+    const cell = this.data()[columnIndex];
+    const clean = $('<div>').html(cell).text().trim();
+    if (clean && !$select.find(`option[value="${clean}"]`).length) {
       $select.append(`<option value="${clean}">${clean}</option>`);
     }
   });
