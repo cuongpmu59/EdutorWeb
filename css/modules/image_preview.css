@@ -2,9 +2,10 @@
    IMAGE PREVIEW & MODAL (Tối ưu hoá)
 ====================================== */
 
-/* ==== Ảnh trong khung xem trước (form) ==== */
+/* ==== Ảnh xem trước (form, bảng) ==== */
 #mc_imagePreview,
-img.preview-image {
+img.preview-image,
+img.thumb {
   display: block;
   margin: 12px auto 0;
   max-width: 100%;
@@ -17,15 +18,22 @@ img.preview-image {
   cursor: pointer;
 }
 
-/* ==== Hiệu ứng hover/active (áp dụng chung) ==== */
+img.thumb {
+  max-width: 50px;
+  max-height: 50px;
+}
+
+/* ==== Hover & Active ==== */
 #mc_imagePreview:hover,
-img.preview-image:hover {
+img.preview-image:hover,
+img.thumb:hover {
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 #mc_imagePreview:active,
-img.preview-image:active {
+img.preview-image:active,
+img.thumb:active {
   transform: scale(0.97);
   opacity: 0.95;
 }
@@ -72,7 +80,8 @@ img.preview-image:active {
 
 /* ==== Dark mode ==== */
 body.dark-mode #mc_imagePreview,
-body.dark-mode img.preview-image {
+body.dark-mode img.preview-image,
+body.dark-mode img.thumb {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
 }
 
