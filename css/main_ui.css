@@ -12,6 +12,7 @@
 @import url('modules/dark_mode.css');
 @import url('modules/responsive.css');
 @import url('modules/toolbar.css');
+@import url('modules/fontview.css');
 
 /* ===== Biến màu nền và màu chữ ===== */
 :root {
