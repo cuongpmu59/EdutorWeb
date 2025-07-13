@@ -30,12 +30,11 @@ $(document).ready(function () {
       },
     },
     initComplete: function () {
-      $('.buttons-excel, .buttons-print').hide(); // Ẩn nút mặc định nếu dùng tùy chỉnh
+      $('.buttons-excel, .buttons-print').hide();
+      addTopicFilterToTable(this.api(), 1);
     }
   });
 
-    addTopicFilterToTable(table, 1); // Cột 1 là chủ đề
-  
   // === Chuyển tab giao diện (nếu có) ===
   $('.tab-button').on('click', function () {
     const tabId = $(this).data('tab');
