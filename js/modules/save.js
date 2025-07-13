@@ -1,48 +1,53 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('mcForm');
+    const imageInput = document.getElementById('mc_image');
   
-    if (!form) return;
-  
-    form.addEventListener('submit', function (e) {
-      e.preventDefault(); // Ngăn form gửi mặc định
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
   
       const formData = new FormData(form);
-      const mc_id = formData.get('mc_id').trim();
+      const id = formData.get('mc_id');
+      const isUpdate = id !== '';
   
-      // Gửi tới file PHP thích hợp
-      const endpoint = mc_id ? 'mc_update.php' : 'mc_insert.php';
+      const url = isUpdate ? 'pages/utils/mc_update.php' : 'pages/utils/mc_insert.php';
   
-      fetch(endpoint, {
-        method: 'POST',
-        body: formData
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert(mc_id ? '✅ Cập nhật câu hỏi thành công!' : '✅ Đã thêm câu hỏi mới!');
-            form.reset();
-  
-            // Ẩn ảnh xem trước nếu có
-            const img = document.getElementById('mc_imagePreview');
-            if (img) {
-              img.src = '';
-              img.style.display = 'none';
-            }
-  
-            // Làm mới bảng trong iframe
-            const iframe = document.getElementById('mcIframe');
-            if (iframe?.contentWindow) {
-              iframe.contentWindow.location.reload();
-            }
-  
-          } else {
-            alert('❌ Lỗi: ' + (data.message || 'Không thể lưu câu hỏi.'));
-          }
-        })
-        .catch(error => {
-          alert('❌ Lỗi khi gửi yêu cầu đến máy chủ.');
-          console.error(error);
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData
         });
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          alert(isUpdate ? '✅ Cập nhật thành công!' : '✅ Đã thêm mới!');
+          // 👉 Làm mới toàn bộ trang
+          window.location.reload();
+        } else {
+          alert('❌ ' + (result.message || 'Lỗi không xác định'));
+        }
+  
+      } catch (err) {
+        alert('❌ Lỗi kết nối: ' + err.message);
+      }
+    });
+  
+    // Hiển thị ảnh minh hoạ
+    imageInput.addEventListener('change', function () {
+      const file = this.files?.[0];
+      const preview = document.getElementById('mc_imagePreview');
+  
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = '';
+        preview.style.display = 'none';
+      }
     });
   });
   
