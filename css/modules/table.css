@@ -220,3 +220,10 @@ body.dark .dataTables_paginate .paginate_button.current {
 #scrollTopBtn:hover {
   background-color: #2980b9;
 }
+
+.table-wrapper {
+  max-height: 500px;      /* Chiều cao tối đa vùng hiển thị */
+  overflow-y: auto;       /* Cuộn dọc nếu nội dung vượt quá */
+  border: 1px solid #ccc; /* (tùy chọn) Viền nhẹ cho rõ ràng */
+}
+
