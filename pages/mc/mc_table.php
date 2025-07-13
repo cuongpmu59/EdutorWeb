@@ -128,6 +128,7 @@ try {
 <script src="../../js/table/filter.js"></script>
 <script src="../../js/table/excel_io.js"></script>
 <script src="../../js/table/table.js"></script>
+<script src="../../js/table/image_modal.js"></script>
 
 
 <script>
