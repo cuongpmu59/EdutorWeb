@@ -16,6 +16,11 @@ $(document).ready(function () {
     pageLength: 10,
     lengthMenu: [5, 10, 25, 50, 100],
     fixedHeader: true,
+    drawCallback: function () {
+      if (window.MathJax) {
+        MathJax.typeset();
+      }
+    },
     language: {
       search: "🔍 Tìm kiếm:",
       lengthMenu: "Hiển thị _MENU_ dòng",
@@ -32,8 +37,14 @@ $(document).ready(function () {
     initComplete: function () {
       $('.buttons-excel, .buttons-print').hide();
       addTopicFilterToTable(this.api(), 1);
+  
+      // MathJax lúc vừa load xong
+      if (window.MathJax) {
+        MathJax.typeset();
+      }
     }
   });
+  
 
   // === Chuyển tab giao diện (nếu có) ===
   $('.tab-button').on('click', function () {
@@ -104,22 +115,5 @@ $(document).ready(function () {
       document.getElementById('listTab')?.scrollIntoView({ behavior: 'smooth' });
     }
   });
-});
-
-$(document).ready(function () {
-  const table = $('#mcTable').DataTable({
-    // Các cấu hình khác của bảng
-    fixedHeader: true,
-    drawCallback: function () {
-      if (window.MathJax) {
-        MathJax.typeset();
-      }
-    }
-  });
-
-  // Kích hoạt lần đầu khi tải trang
-  if (window.MathJax) {
-    MathJax.typeset();
-  }
 });
 
