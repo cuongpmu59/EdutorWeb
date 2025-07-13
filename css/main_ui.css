@@ -4,12 +4,14 @@
 @import url('modules/preview.css');
 @import url('modules/image_preview.css');
 @import url('modules/modal.css');
+@import url('modules/images_modal.css');
 @import url('modules/table.css');
 @import url('modules/iframe.css');
 @import url('modules/tabs.css');
 @import url('modules/animation.css');
 @import url('modules/dark_mode.css');
 @import url('modules/responsive.css');
+@import url('modules/toolbar.css');
 
 /* ===== Biến màu nền và màu chữ ===== */
 :root {
