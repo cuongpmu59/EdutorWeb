@@ -125,11 +125,10 @@ try {
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
 <script src="../../js/table/button.js"></script>
-<script src="../../js/table/filter.js"></script>
 <script src="../../js/table/excel_io.js"></script>
-<script src="../../js/table/table.js"></script>
 <script src="../../js/table/image_modal.js"></script>
-
+<script src="../../js/table/table.js"></script>
+<script src="../../js/table/filter.js"></script>
 
 <script>
   if (window.top === window.self) {
