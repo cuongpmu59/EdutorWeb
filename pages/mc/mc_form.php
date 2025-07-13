@@ -105,7 +105,7 @@ function scrollToListTabInIframe() {
   }
 }
 </script>
-<script src="pages/js/modules/save.js"></script>
+<script src="js/modules/save.js"></script>
 
 
 </body>
