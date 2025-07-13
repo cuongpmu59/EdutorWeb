@@ -69,8 +69,8 @@ try {
     <button id="btnReloadTable">🔄 Làm mới</button>
   </div>
   <div class="right-tools">
-    <button id="btnExportExcel" title="Xuất Excel">⬇️ Excel</button>
-    <button id="btnPrintTable" title="In bảng">🖨️ In</button>
+    <button id="btnExportExcel" title="Xuất Excel">⬇️ Xuất Excel</button>
+    <button id="btnPrintTable" title="In bảng">🖨️ In bảng</button>
   </div>
 </div>
 
@@ -79,8 +79,7 @@ try {
   <!-- Tabs giao diện -->
   <div class="tab-container">
     <button class="tab-button active" data-tab="filterTab">🔍 Bộ lọc</button>
-    <button class="tab-button" data-tab="importTab">📁 Nhập / Xuất</button>
-    <button class="tab-button" data-tab="listTab">📄 Danh sách</button>
+    <button class="tab-button" data-tab="importTab">📁 Nhập Excel</button>
     <button class="tab-button" data-tab="otherTab">⚙️ Khác</button>
   </div>
 
