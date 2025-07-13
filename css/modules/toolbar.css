@@ -83,3 +83,33 @@ select.topic-filter {
   color: #ecf0f1;
   border-color: #555;
 }
+
+#mcTable thead th {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+}
+#mcTable tbody td {
+  vertical-align: top;
+  padding: 6px;
+  font-size: 13px;
+}
+#mcTable {
+  border-collapse: collapse;
+}
+#mcTable th, #mcTable td {
+  border: 1px solid #ddd;
+  text-align: left;
+}
+#mcTable td:nth-child(3) { /* Cột Câu hỏi */
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#mcTable tbody tr.selected {
+  background-color: #d1ecf1 !important;
+  font-weight: bold;
+}
