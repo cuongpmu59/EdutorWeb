@@ -131,3 +131,13 @@ body.dark-mode .mjx-container {
     height: auto;
   }
 }
+
+.preview-box {
+  background-color: #f9f9f9;
+  border: 1px dashed #ccc;
+  padding: 8px;
+  margin-top: 6px;
+  font-style: italic;
+  min-height: 40px;
+  font-size: 15px;
+}
