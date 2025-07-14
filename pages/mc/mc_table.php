@@ -2,13 +2,12 @@
 require __DIR__ . '/../../db_connection.php';
 require_once __DIR__ . '/../utils/filter.php';
 if (!isset($conn)) {
-  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
+  die("❌ Không thể kết nối CSDL.");
 }
 header("X-Frame-Options: SAMEORIGIN");
 
 try {
-  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
-  $stmt->execute();
+  $stmt = $conn->query("SELECT * FROM mc_questions ORDER BY mc_id DESC");
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
   $rows = [];
@@ -33,19 +32,13 @@ try {
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    .thumb {
-      max-width: 50px;
-      max-height: 50px;
-      cursor: pointer;
-    }
-    #mcTable tbody tr.selected {
-      background-color: #e0f7fa !important;
-    }
+    .thumb { max-width: 50px; max-height: 50px; cursor: pointer; }
+    #mcTable tbody tr.selected { background-color: #e0f7fa !important; }
   </style>
 </head>
 <body>
 
-<h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+<h2>📋 Bảng câu hỏi Nhiều lựa chọn</h2>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -79,10 +72,10 @@ try {
 </div>
 
 <div id="imgModal" style="display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#000000bb;align-items:center;justify-content:center;z-index:1000;">
-  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
+  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;">
 </div>
 
-<input type="file" id="excelFile" accept=".xlsx" style="display: none;">
+<input type="file" id="excelFile" accept=".xlsx" style="display: none;" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -93,6 +86,10 @@ try {
 
 <script>
 $(document).ready(function () {
+  $.fn.dataTable.ext.type.search.string = function (data) {
+    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
   const table = $('#mcTable').DataTable({
     scrollX: true,
     dom: '<"top-controls"Bf>rtip',
@@ -125,11 +122,9 @@ $(document).ready(function () {
   });
 
   $('#mcTable_filter').html(`<?= getFilterHTML($topics, 'mc') ?>`);
-
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
-
   $('#mcTable_filter input[type="search"]').on('keyup change', function () {
     table.search(this.value).draw();
   });
@@ -170,19 +165,13 @@ $(document).ready(function () {
   $(document).on('keydown', function (e) {
     const selected = $('#mcTable tbody tr.selected');
     if (!selected.length) return;
-    if (e.key === 'ArrowUp') {
-      const prev = selected.prev('tr');
-      if (prev.length) prev.click();
-    } else if (e.key === 'ArrowDown') {
-      const next = selected.next('tr');
-      if (next.length) next.click();
-    }
+    if (e.key === 'ArrowUp') selected.prev('tr').click();
+    else if (e.key === 'ArrowDown') selected.next('tr').click();
   });
 
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = function (e) {
       const data = new Uint8Array(e.target.result);
@@ -190,10 +179,7 @@ $(document).ready(function () {
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-      if (jsonData.length === 0) {
-        alert("❌ File Excel rỗng hoặc không hợp lệ.");
-        return;
-      }
+      if (jsonData.length === 0) return alert("❌ File Excel rỗng hoặc không hợp lệ.");
 
       $.ajax({
         url: 'import_excel.php?type=mc',
@@ -201,8 +187,12 @@ $(document).ready(function () {
         contentType: 'application/json',
         data: JSON.stringify(jsonData),
         success: function (res) {
-          alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
-          location.reload();
+          if (res.inserted !== undefined) {
+            alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
+            location.reload();
+          } else {
+            alert("⚠️ Không có phản hồi hợp lệ từ server.");
+          }
         },
         error: function () {
           alert("❌ Lỗi khi nhập file Excel.");
