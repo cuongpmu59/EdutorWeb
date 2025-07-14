@@ -29,6 +29,8 @@ $(document).ready(function () {
   
     // Nhận yêu cầu từ form cha: chuyển tab nếu cần
     window.addEventListener('message', function (event) {
+        console.log("📥 Đã nhận từ iframe:", event.data);
+
       if (event.data?.type === 'scrollToListTab') {
         document.querySelector('.tab-button[data-tab="listTab"]')?.click();
         document.getElementById('listTab')?.scrollIntoView({ behavior: 'smooth' });
