@@ -12,7 +12,6 @@ try {
   $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 
-// Lấy tất cả câu hỏi
 try {
   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
   $stmt->execute();
@@ -64,6 +63,20 @@ try {
       max-height: 90%;
       border: 4px solid #fff;
       box-shadow: 0 0 10px #fff;
+    }
+
+    /* ✅ Căn cùng dòng cho ô lọc + tìm kiếm */
+    div.dataTables_filter {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    #mcTable_filter label {
+      margin: 0;
+      white-space: nowrap;
+    }
+    #filter-topic {
+      margin-left: 5px;
     }
   </style>
 </head>
@@ -136,24 +149,24 @@ $(document).ready(function () {
     lengthMenu: [10, 25, 50, 100]
   });
 
-  // ✅ Thêm dropdown lọc chủ đề bên cạnh ô tìm kiếm
-  $('<div style="margin-top: 5px;">📚 Chủ đề: <select id="filter-topic" style="margin-left: 5px;"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></div>')
-      .insertAfter('#mcTable_filter');
-      .on('change', '#filter-topic', function () {
+  // ✅ Lọc chủ đề nằm cùng hàng với ô tìm kiếm
+  $('<label>📚 Chủ đề: <select id="filter-topic"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></label>')
+    .prependTo('#mcTable_filter')
+    .on('change', '#filter-topic', function () {
       table.column(1).search(this.value).draw();
     });
 
-  // Accent-neutralize nếu cần tìm kiếm tiếng Việt
+  // Tìm kiếm tiếng Việt không dấu
   $.fn.dataTable.ext.type.search.string = function (data) {
     return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
-  // MathJax render lại sau mỗi lần vẽ bảng
+  // Render lại MathJax khi vẽ bảng
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
-  // Modal xem ảnh lớn
+  // Modal ảnh lớn
   $(document).on('click', '.thumb', function () {
     $('#imgModalContent').attr('src', $(this).attr('src'));
     $('#imgModal').fadeIn();
@@ -162,7 +175,7 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
-  // Gửi dữ liệu hàng về mc_form.php
+  // Gửi dữ liệu hàng về form
   $('#mcTable tbody').on('click', 'tr', function () {
     const row = table.row(this).data();
     $('#mcTable tbody tr').removeClass('selected');
