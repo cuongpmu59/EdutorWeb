@@ -84,7 +84,9 @@
 
   <div id="contents">
     <!-- MC -->
-    <div class="content" id="mc-input">📘 Nhập liệu: Form nhập câu hỏi nhiều lựa chọn.</div>
+    <div class="content" id="mc-input">
+    <iframe src="pages/mc/mc_form.php" width="100%" height="600" style="border: none;"></iframe>
+    </div>
     <div class="content" id="mc-image">🖼️ Ảnh minh hoạ: Xem ảnh hoặc chọn ảnh từ máy.</div>
     <div class="content" id="mc-preview">👀 Xem trước: Hiển thị đầy đủ câu hỏi MC.</div>
 
