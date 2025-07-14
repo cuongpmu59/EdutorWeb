@@ -6,8 +6,6 @@
   <title>Nhập câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/main_ui.css">
   <link rel="stylesheet" href="../../css/modules/preview.css">
-
-  <!-- MathJax hỗ trợ công thức -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
@@ -17,32 +15,29 @@
   <form id="mcForm" class="question-form" enctype="multipart/form-data">
     <input type="hidden" id="mc_id" name="mc_id">
 
-    <!-- Chủ đề -->
     <div class="form-group">
       <label for="mc_topic">📚 Chủ đề:</label>
       <input type="text" id="mc_topic" name="mc_topic" required>
     </div>
 
-    <!-- Câu hỏi và các đáp án -->
     <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
+    $fields = [
+      'mc_question' => '❓ Câu hỏi',
+      'mc_answer1' => '🔸 A',
+      'mc_answer2' => '🔸 B',
+      'mc_answer3' => '🔸 C',
+      'mc_answer4' => '🔸 D'
+    ];
+    foreach ($fields as $id => $label):
+      $isTextarea = $id === 'mc_question';
     ?>
-    <div class="form-group">
-      <label for="<?= $id ?>"><?= $label ?>:</label>
-      <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-      <div id="preview_<?= $id ?>" class="preview-box"></div>
-    </div>
+      <div class="form-group">
+        <label for="<?= $id ?>"><?= $label ?>:</label>
+        <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
+        <div id="preview_<?= $id ?>" class="preview-box"></div>
+      </div>
     <?php endforeach; ?>
 
-    <!-- Đáp án đúng -->
     <div class="form-group">
       <label for="mc_correct_answer">✅ Đáp án đúng:</label>
       <select id="mc_correct_answer" name="mc_correct_answer" required>
@@ -54,7 +49,6 @@
       </select>
     </div>
 
-    <!-- Ảnh minh hoạ -->
     <div class="form-group">
       <label for="mc_image">🖼️ Ảnh minh hoạ:</label>
       <input type="file" id="mc_image" name="mc_image" accept="image/*">
@@ -62,7 +56,6 @@
       <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
     </div>
 
-    <!-- Nút thao tác -->
     <div class="form-actions">
       <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
       <button type="reset" id="resetBtn">🔄 Làm lại</button>
@@ -71,29 +64,25 @@
   </form>
 </div>
 
-<!-- Iframe danh sách -->
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500" style="border:1px solid #ccc; margin-top:20px;"></iframe>
 
-<!-- Script xem trước công thức MathJax -->
 <script src="js/modules/previewView.js"></script>
 
-<!-- Script xử lý gửi form đến utils/mc_save.php -->
 <script>
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-  const form = document.getElementById("mcForm");
-  const formData = new FormData(form);
+  const formData = new FormData(this);
 
   try {
     const response = await fetch("utils/mc_save.php", {
       method: "POST",
       body: formData
     });
-    const text = await response.text();
+    const result = await response.text();
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     document.body.appendChild(iframe);
-    iframe.contentDocument.write(text);
+    iframe.contentDocument.write(result);
     iframe.contentDocument.close();
     setTimeout(() => iframe.remove(), 1000);
   } catch (error) {
@@ -101,7 +90,6 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   }
 });
 
-// Nhận phản hồi từ mc_save.php
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
     alert("✅ Đã lưu thành công!");
@@ -111,12 +99,38 @@ window.addEventListener("message", function (event) {
   } else if (event.data.type === "error") {
     alert("❌ Lỗi: " + event.data.message);
   }
+
+  // 🔁 Nhận dữ liệu từ bảng mc_table.php
+  if (event.data.type === "mc_select_row") {
+    const d = event.data.data;
+    document.getElementById("mc_id").value = d.id || "";
+    document.getElementById("mc_topic").value = d.topic || "";
+    document.getElementById("mc_question").value = d.question || "";
+    document.getElementById("mc_answer1").value = d.answer1 || "";
+    document.getElementById("mc_answer2").value = d.answer2 || "";
+    document.getElementById("mc_answer3").value = d.answer3 || "";
+    document.getElementById("mc_answer4").value = d.answer4 || "";
+    document.getElementById("mc_correct_answer").value = d.correct || "";
+
+    if (d.image) {
+      const img = document.getElementById("mc_imagePreview");
+      img.src = d.image;
+      img.style.display = "block";
+    } else {
+      document.getElementById("mc_imagePreview").style.display = "none";
+    }
+
+    // Tự động scroll đến đầu form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Gọi lại previewView nếu có
+    if (typeof updatePreviews === "function") updatePreviews();
+  }
 });
 
-// Xem trước ảnh minh hoạ
 document.getElementById("mc_image").addEventListener("change", function (e) {
-  const img = document.getElementById("mc_imagePreview");
   const file = e.target.files[0];
+  const img = document.getElementById("mc_imagePreview");
   if (file) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -129,14 +143,9 @@ document.getElementById("mc_image").addEventListener("change", function (e) {
   }
 });
 
-// Cuộn đến bảng bên dưới
 function scrollToListTabInIframe() {
   document.getElementById("mcIframe").scrollIntoView({ behavior: 'smooth' });
 }
 </script>
-
-<!-- Script nhận dữ liệu từ bảng mc_table -->
-<script src="js/modules/listener.js"></script>
-
 </body>
 </html>
