@@ -87,17 +87,6 @@ try {
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
-<div class="toolbar-top">
-  <div class="left-tools">
-    <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
-    <button id="btnReloadTable" onclick="location.reload()">🔄 Làm mới</button>
-  </div>
-  <div class="right-tools">
-    <button id="btnExportExcel">⬇️ Xuất Excel</button>
-    <button id="btnPrintTable">🖨️ In bảng</button>
-  </div>
-</div>
-
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
@@ -155,7 +144,7 @@ $(document).ready(function () {
   // ✅ Tách chủ đề bên trái - tìm kiếm bên phải
   $('#mcTable_filter').html(`
     <div class="filter-left">
-      📚 Chủ đề: 
+      📚 Lọc chủ đề: 
       <select id="filter-topic">
         <option value="">-- Tất cả --</option>
         <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
