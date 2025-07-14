@@ -5,7 +5,7 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
-// Danh sách chủ đề
+// Chủ đề
 $topics = [];
 try {
   $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
@@ -28,70 +28,42 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <style>
-    .table-toolbar {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    .toolbar-left select {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #fff;
-    }
-    .toolbar-right .btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .btn.blue { background-color: #2196F3; }
-    .btn.green { background-color: #4CAF50; }
-    .btn.gray { background-color: #9E9E9E; }
-    .btn:hover { opacity: 0.85; }
-    .thumb { max-width: 50px; max-height: 50px; cursor: pointer; }
-    #imgModal {
-      display: none; position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);
-      align-items: center; justify-content: center; z-index: 1000;
-    }
-    #imgModal img {
-      max-width: 90%; max-height: 90%; border: 4px solid white;
-      box-shadow: 0 0 10px white;
-    }
-  </style>
+  <link rel="stylesheet" href="../../css/modules/table.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    .thumb {
+      max-width: 50px;
+      max-height: 50px;
+      cursor: pointer;
+    }
+    #mcTable tbody tr.selected {
+      background-color: #e0f7fa !important;
+    }
+    div.dataTables_filter {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #mcTable_filter .filter-left,
+    #mcTable_filter .filter-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #mcTable_filter select {
+      padding: 4px 8px;
+    }
+    #excelFile {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-
-<div class="table-toolbar">
-  <div class="toolbar-left">
-    📚 Chủ đề:
-    <select id="filter-topic">
-      <option value="">-- Tất cả --</option>
-      <?php foreach ($topics as $tp): ?>
-        <option value="<?= htmlspecialchars($tp) ?>"><?= htmlspecialchars($tp) ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
-  <div class="toolbar-right">
-    <button class="btn blue" id="btnImportExcel">📅 Nhập Excel</button>
-    <button class="btn green" id="btnExportExcel">⬇️ Xuất Excel</button>
-    <button class="btn gray" id="btnPrintTable">🖨️ In bảng</button>
-    <input type="file" id="excelFile" accept=".xlsx" style="display: none;">
-  </div>
-</div>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -113,14 +85,23 @@ try {
           <td><?= $q['mc_answer3'] ?></td>
           <td><?= $q['mc_answer4'] ?></td>
           <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
-          <td><?php if (!empty($q['mc_image_url'])): ?><img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb"><?php endif; ?></td>
+          <td>
+            <?php if (!empty($q['mc_image_url'])): ?>
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+            <?php endif; ?>
+          </td>
         </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
 </div>
 
-<div id="imgModal"><img id="imgModalContent" src=""></div>
+<!-- Modal ảnh -->
+<div id="imgModal" style="display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#000000bb;align-items:center;justify-content:center;z-index:1000;">
+  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
+</div>
+
+<input type="file" id="excelFile" accept=".xlsx" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -133,21 +114,99 @@ try {
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
     scrollX: true,
-    dom: 'Bfrtip',
+    dom: '<"top-controls"Bf>rtip',
+    fixedHeader: true,
+    pageLength: 10,
+    lengthMenu: [10, 25, 50, 100],
     buttons: [
-      { extend: 'excelHtml5', className: 'd-none', title: 'mc_questions' },
-      { extend: 'print', className: 'd-none' }
+      {
+        extend: 'excelHtml5',
+        text: '⬇️ Xuất Excel',
+        title: 'mc_questions',
+        exportOptions: {
+          columns: ':visible'
+        }
+      },
+      {
+        extend: 'print',
+        text: '🖨️ In bảng',
+        exportOptions: {
+          columns: ':visible'
+        }
+      },
+      {
+        text: '📥 Nhập Excel',
+        action: function () {
+          $('#excelFile').click();
+        }
+      }
     ]
   });
+
+  // Tìm kiếm + Lọc chủ đề
+  $('#mcTable_filter').html(`
+    <div class="filter-left">
+      📚 Chủ đề:
+      <select id="filter-topic">
+        <option value="">-- Tất cả --</option>
+        <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
+      </select>
+    </div>
+    <div class="filter-right">
+      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
+    </div>
+  `);
 
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
 
-  $('#btnExportExcel').click(() => table.button('.buttons-excel').trigger());
-  $('#btnPrintTable').click(() => table.button('.buttons-print').trigger());
-  $('#btnImportExcel').click(() => $('#excelFile').click());
+  $('#mcTable_filter input[type="search"]').on('keyup change', function () {
+    table.search(this.value).draw();
+  });
 
+  // Accent-neutralize
+  $.fn.dataTable.ext.type.search.string = function (data) {
+    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
+  // MathJax re-render
+  table.on('draw', function () {
+    if (window.MathJax) MathJax.typesetPromise();
+  });
+
+  // Modal ảnh
+  $(document).on('click', '.thumb', function () {
+    $('#imgModalContent').attr('src', $(this).attr('src'));
+    $('#imgModal').fadeIn();
+  });
+  $('#imgModal').on('click', function () {
+    $(this).fadeOut();
+  });
+
+  // Gửi dữ liệu về form cha
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const row = table.row(this).data();
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+    const imageSrc = $(this).find('img.thumb').attr('src') || '';
+    window.parent.postMessage({
+      type: 'mc_select_row',
+      data: {
+        id: row[0],
+        topic: row[1],
+        question: row[2],
+        answer1: row[3],
+        answer2: row[4],
+        answer3: row[5],
+        answer4: row[6],
+        correct: row[7],
+        image: imageSrc
+      }
+    }, '*');
+  });
+
+  // Nhập Excel
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -155,26 +214,29 @@ $(document).ready(function () {
     reader.onload = function (e) {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-      if (jsonData.length === 0) return alert("❌ File rỗng hoặc lỗi.");
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+      if (jsonData.length === 0) {
+        alert("❌ File Excel rỗng hoặc không hợp lệ.");
+        return;
+      }
+
       $.ajax({
-        url: 'import_mc_excel.php', method: 'POST', contentType: 'application/json',
+        url: 'import_mc_excel.php',
+        method: 'POST',
+        contentType: 'application/json',
         data: JSON.stringify(jsonData),
-        success: res => { alert(`✅ Đã nhập ${res.inserted} câu!`); location.reload(); },
-        error: () => alert("❌ Lỗi khi nhập.")
+        success: function (res) {
+          alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
+          location.reload();
+        },
+        error: function () {
+          alert("❌ Lỗi khi nhập file Excel.");
+        }
       });
     };
     reader.readAsArrayBuffer(file);
-  });
-
-  // Modal Ảnh
-  $(document).on('click', '.thumb', function () {
-    $('#imgModalContent').attr('src', $(this).attr('src'));
-    $('#imgModal').fadeIn();
-  });
-  $('#imgModal').on('click', function () {
-    $(this).fadeOut();
   });
 });
 </script>
