@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <link rel="stylesheet" href="css/modules/preview.css">
+  <link rel="stylesheet" href="../../css/modules/preview.css">
 
   <!-- MathJax hỗ trợ công thức -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -74,11 +74,66 @@
 <!-- Iframe danh sách -->
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500" style="border:1px solid #ccc; margin-top:20px;"></iframe>
 
-<!-- Các script chức năng -->
+<!-- Script xem trước công thức MathJax -->
 <script src="js/modules/previewView.js"></script>
-<script src="js/modules/save.js"></script>
-<script src="js/table/transfer.js"></script>
 
+<!-- Script xử lý gửi form đến utils/mc_save.php -->
+<script>
+document.getElementById("mcForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const form = document.getElementById("mcForm");
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch("utils/mc_save.php", {
+      method: "POST",
+      body: formData
+    });
+    const text = await response.text();
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+    iframe.contentDocument.write(text);
+    iframe.contentDocument.close();
+    setTimeout(() => iframe.remove(), 1000);
+  } catch (error) {
+    alert("❌ Lỗi khi gửi dữ liệu: " + error.message);
+  }
+});
+
+// Nhận phản hồi từ iframe (postMessage)
+window.addEventListener("message", function (event) {
+  if (event.data.type === "saved") {
+    alert("✅ Đã lưu thành công!");
+    document.getElementById("mcIframe").contentWindow.location.reload();
+    document.getElementById("mcForm").reset();
+    document.getElementById("mc_imagePreview").style.display = "none";
+  } else if (event.data.type === "error") {
+    alert("❌ Lỗi: " + event.data.message);
+  }
+});
+
+// Xem trước ảnh
+document.getElementById("mc_image").addEventListener("change", function (e) {
+  const img = document.getElementById("mc_imagePreview");
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      img.src = e.target.result;
+      img.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    img.style.display = "none";
+  }
+});
+
+// Cuộn đến bảng bên dưới
+function scrollToListTabInIframe() {
+  document.getElementById("mcIframe").scrollIntoView({ behavior: 'smooth' });
+}
+</script>
 
 </body>
 </html>
