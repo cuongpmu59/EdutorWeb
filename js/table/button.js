@@ -1,5 +1,3 @@
-// js/table/button.js
-
 document.addEventListener("DOMContentLoaded", () => {
     const addBtn = document.getElementById("btnAddQuestion");
     const reloadBtn = document.getElementById("btnReloadTable");
