@@ -78,37 +78,5 @@
 <script src="js/modules/previewView.js"></script>
 <script src="js/modules/save.js"></script>
 
-<!-- Nhận dữ liệu từ bảng (iframe) -->
-<script>
-window.addEventListener('message', function (event) {
-  if (event.data?.type === 'mc_selected_row') {
-    const d = event.data.data;
-    ['mc_id','mc_topic','mc_question','mc_answer1','mc_answer2','mc_answer3','mc_answer4','mc_correct_answer'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = d[id] || '';
-    });
-
-    const img = document.getElementById('mc_imagePreview');
-    if (d.mc_image_url) {
-      img.src = d.mc_image_url;
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none';
-    }
-
-    renderMathPreviewAll();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-});
-
-// Yêu cầu iframe chuyển sang tab danh sách
-function scrollToListTabInIframe() {
-  const iframe = document.getElementById('mcIframe');
-  if (iframe?.contentWindow) {
-    iframe.contentWindow.postMessage({ type: 'scrollToListTab' }, '*');
-  }
-}
-</script>
-
 </body>
 </html>
