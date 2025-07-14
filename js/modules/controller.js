@@ -4,6 +4,7 @@ import * as imageManager from "./imageManager.js";
 import * as previewView from "./previewView.js";
 import * as tableView from "./tableView.js";
 
+
 const container = document.getElementById("tabContent");
 const buttons = document.querySelectorAll(".tab-button");
 
