@@ -1,23 +1,18 @@
 <?php
 require __DIR__ . '/../../db_connection.php';
-require_once __DIR__ . '/../utils/filter.php';
 if (!isset($conn)) {
-  die("❌ Không thể kết nối CSDL.");
+  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
 }
 header("X-Frame-Options: SAMEORIGIN");
 
+// Lấy toàn bộ câu hỏi
 try {
-  $stmt = $conn->query("SELECT * FROM mc_questions ORDER BY mc_id DESC");
+  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
+  $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
   $rows = [];
 }
-
-$topics = [];
-try {
-  $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
-  $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
-} catch (Exception $e) {}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -32,13 +27,37 @@ try {
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    .thumb { max-width: 50px; max-height: 50px; cursor: pointer; }
-    #mcTable tbody tr.selected { background-color: #e0f7fa !important; }
+    .thumb {
+      max-width: 50px;
+      max-height: 50px;
+      cursor: pointer;
+    }
+    #mcTable tbody tr.selected {
+      background-color: #e0f7fa !important;
+    }
+    div.dataTables_filter {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #mcTable_filter .filter-left,
+    #mcTable_filter .filter-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #mcTable_filter select {
+      padding: 4px 8px;
+    }
+    #excelFile {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-<h2>📋 Bảng câu hỏi Nhiều lựa chọn</h2>
+<h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -71,11 +90,12 @@ try {
   </table>
 </div>
 
+<!-- Modal ảnh -->
 <div id="imgModal" style="display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#000000bb;align-items:center;justify-content:center;z-index:1000;">
-  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;">
+  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
 </div>
 
-<input type="file" id="excelFile" accept=".xlsx" style="display: none;" />
+<input type="file" id="excelFile" accept=".xlsx" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -86,10 +106,6 @@ try {
 
 <script>
 $(document).ready(function () {
-  $.fn.dataTable.ext.type.search.string = function (data) {
-    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  };
-
   const table = $('#mcTable').DataTable({
     scrollX: true,
     dom: '<"top-controls"Bf>rtip',
@@ -111,28 +127,41 @@ $(document).ready(function () {
       {
         text: '📥 Nhập Excel',
         action: function () { $('#excelFile').click(); }
-      },
-      {
-        text: '📄 Tải mẫu Excel',
-        action: function () {
-          window.open('../../templates/question_template.xlsx', '_blank');
-        }
       }
     ]
   });
 
-  $('#mcTable_filter').html(`<?= getFilterHTML($topics, 'mc') ?>`);
+  // Lọc và tìm kiếm
+  $('#mcTable_filter').html(`
+    <div class="filter-left">
+      📚 Chủ đề:
+      <select id="filter-topic">
+        <option value="">-- Tất cả --</option>
+        <?php include __DIR__ . '/utils/filter.php'; ?>
+      </select>
+    </div>
+    <div class="filter-right">
+      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
+    </div>
+  `);
+
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
+
   $('#mcTable_filter input[type="search"]').on('keyup change', function () {
     table.search(this.value).draw();
   });
+
+  $.fn.dataTable.ext.type.search.string = function (data) {
+    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
 
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
+  // Modal ảnh
   $(document).on('click', '.thumb', function () {
     $('#imgModalContent').attr('src', $(this).attr('src'));
     $('#imgModal').fadeIn();
@@ -141,34 +170,46 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
-  $('#mcTable tbody').on('click', 'tr', function () {
-    const row = table.row(this).data();
-    $('#mcTable tbody tr').removeClass('selected');
-    $(this).addClass('selected');
-    const imageSrc = $(this).find('img.thumb').attr('src') || '';
+  // Gửi dữ liệu về form cha
+  function sendRowData(row) {
+    const imageSrc = $(row.node()).find('img.thumb').attr('src') || '';
+    const data = row.data();
     window.parent.postMessage({
       type: 'mc_select_row',
       data: {
-        id: row[0],
-        topic: row[1],
-        question: row[2],
-        answer1: row[3],
-        answer2: row[4],
-        answer3: row[5],
-        answer4: row[6],
-        correct: row[7],
-        image: imageSrc
+        id: data[0], topic: data[1], question: data[2],
+        answer1: data[3], answer2: data[4], answer3: data[5], answer4: data[6],
+        correct: data[7], image: imageSrc
       }
     }, '*');
+  }
+
+  $('#mcTable tbody').on('click', 'tr', function () {
+    table.$('tr.selected').removeClass('selected');
+    $(this).addClass('selected');
+    sendRowData(table.row(this));
   });
 
+  // Mũi tên lên/xuống
   $(document).on('keydown', function (e) {
-    const selected = $('#mcTable tbody tr.selected');
-    if (!selected.length) return;
-    if (e.key === 'ArrowUp') selected.prev('tr').click();
-    else if (e.key === 'ArrowDown') selected.next('tr').click();
+    const selected = table.row('.selected');
+    if (!selected.node()) return;
+    let index = selected.index();
+    if (e.key === 'ArrowUp' && index > 0) {
+      index--;
+    } else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) {
+      index++;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    table.$('tr.selected').removeClass('selected');
+    const nextRow = table.row(index);
+    $(nextRow.node()).addClass('selected')[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    sendRowData(nextRow);
   });
 
+  // Nhập Excel
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -179,20 +220,19 @@ $(document).ready(function () {
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-      if (jsonData.length === 0) return alert("❌ File Excel rỗng hoặc không hợp lệ.");
+      if (jsonData.length === 0) {
+        alert("❌ File Excel rỗng hoặc không hợp lệ.");
+        return;
+      }
 
       $.ajax({
-        url: 'import_excel.php?type=mc',
+        url: 'import_mc_excel.php',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(jsonData),
         success: function (res) {
-          if (res.inserted !== undefined) {
-            alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
-            location.reload();
-          } else {
-            alert("⚠️ Không có phản hồi hợp lệ từ server.");
-          }
+          alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
+          location.reload();
         },
         error: function () {
           alert("❌ Lỗi khi nhập file Excel.");
