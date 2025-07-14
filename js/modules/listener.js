@@ -1,5 +1,6 @@
 // Nhận dữ liệu từ iframe (mc_table.php) và đổ vào form
 window.addEventListener("message", function (event) {
+    console.log("Đã nhận được message:", event.data); // ✅ THÊM DÒNG NÀY
     if (event.data?.type !== "mc_selected_row") return;
   
     const d = event.data.data;
