@@ -1,5 +1,4 @@
 // js/modules/listener.js
-
 window.addEventListener("message", function (event) {
     if (event.data.type === "mc_selected_row") {
       const d = event.data.data;
@@ -12,16 +11,17 @@ window.addEventListener("message", function (event) {
       document.getElementById("mc_answer4").value = d.mc_answer4;
       document.getElementById("mc_correct_answer").value = d.mc_correct_answer;
   
-      const img = document.getElementById("mc_imagePreview");
+      const imgPreview = document.getElementById("mc_imagePreview");
       if (d.mc_image_url) {
-        img.src = d.mc_image_url;
-        img.style.display = "block";
+        imgPreview.src = d.mc_image_url;
+        imgPreview.style.display = "block";
+        document.getElementById("mc_old_image").value = d.mc_image_url;
       } else {
-        img.src = "";
-        img.style.display = "none";
+        imgPreview.style.display = "none";
+        imgPreview.src = "";
+        document.getElementById("mc_old_image").value = "";
       }
   
-      // Cuộn form lên đầu trang
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   });
