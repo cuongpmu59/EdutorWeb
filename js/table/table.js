@@ -71,7 +71,8 @@ $(document).ready(function () {
   function sendRowDataToParent(rowData) {
     if (!rowData || window.parent === window) return;
     const imgSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
-    window.parent.postMessage({
+
+    const dataToSend = {
       type: 'mc_selected_row',
       data: {
         mc_id: rowData[0],
@@ -84,9 +85,10 @@ $(document).ready(function () {
         mc_correct_answer: rowData[7],
         mc_image_url: imgSrc
       }
-    })
-    console.log("📤 Gửi dữ liệu lên form cha:", dataToSend); // ✅ THÊM DÒNG NÀY
-  window.parent.postMessage(dataToSend, '*');
+    };
+
+    console.log("📤 Gửi dữ liệu lên form cha:", dataToSend);
+    window.parent.postMessage(dataToSend, '*');
   }
 
   // 📚 Lọc chủ đề (chuyển trang để filter qua server)
