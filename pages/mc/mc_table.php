@@ -144,14 +144,14 @@ $(document).ready(function () {
   // ✅ Tách chủ đề bên trái - tìm kiếm bên phải
   $('#mcTable_filter').html(`
     <div class="filter-left">
-      📚 Lọc: 
+      Lọc: 
       <select id="filter-topic">
         <option value="">-- Tất cả --</option>
         <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
       </select>
     </div>
     <div class="filter-right">
-      🔍 Tìm: <input type="search" class="form-control input-sm" placeholder="" aria-controls="mcTable">
+      Tìm: <input type="search" class="form-control input-sm" placeholder="" aria-controls="mcTable">
     </div>
   `);
 
