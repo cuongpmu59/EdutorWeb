@@ -77,7 +77,7 @@
 <!-- Các script chức năng -->
 <script src="js/modules/previewView.js"></script>
 <script src="js/modules/save.js"></script>
-<script src="js/modules/transfer.js"></script>
+<script src="js/table/transfer.js"></script>
 
 
 </body>
