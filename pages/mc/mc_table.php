@@ -53,6 +53,22 @@ try {
       margin-bottom: 10px;
       gap: 10px;
     }
+    #imgModal {
+      position: fixed;
+      display: none;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #imgModal img {
+      max-width: 90%;
+      max-height: 90%;
+      border: 4px solid #fff;
+      box-shadow: 0 0 10px #fff;
+    }
   </style>
 </head>
 <body>
@@ -102,7 +118,8 @@ try {
           <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb"
+                   onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
@@ -110,6 +127,9 @@ try {
     </tbody>
   </table>
 </div>
+
+<!-- Modal ảnh -->
+<div id="imgModal"><img id="imgModalContent" src=""></div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -120,7 +140,69 @@ try {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
-<!-- File table.js gộp cả chuyển dòng và lọc -->
-<script src="../../js/table/table.js"></script>
+<script>
+$(document).ready(function () {
+  const table = $('#mcTable').DataTable({
+    scrollX: true,
+    dom: 'Bfrtip',
+    buttons: ['excelHtml5', 'print'],
+    fixedHeader: true,
+    pageLength: 10,
+    lengthMenu: [10, 25, 50, 100]
+  });
+
+  // MathJax render lại sau mỗi lần vẽ bảng
+  table.on('draw', function () {
+    if (window.MathJax) MathJax.typesetPromise();
+  });
+
+  // Lọc chủ đề
+  $('#topicSelect').on('change', function () {
+    const selectedTopic = $(this).val();
+    const url = selectedTopic ? '?topic=' + encodeURIComponent(selectedTopic) : location.pathname;
+    location.href = url;
+  });
+
+  // Modal xem ảnh lớn
+  $(document).on('click', '.thumb', function () {
+    $('#imgModalContent').attr('src', $(this).attr('src'));
+    $('#imgModal').fadeIn();
+  });
+  $('#imgModal').on('click', function () {
+    $(this).fadeOut();
+  });
+
+  // Gửi dữ liệu hàng về mc_form.php
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const row = table.row(this).data();
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+    const imageSrc = $(this).find('img.thumb').attr('src') || '';
+    window.parent.postMessage({
+      type: 'mc_select_row',
+      data: {
+        id: row[0],
+        topic: row[1],
+        question: row[2],
+        answer1: row[3],
+        answer2: row[4],
+        answer3: row[5],
+        answer4: row[6],
+        correct: row[7],
+        image: imageSrc
+      }
+    }, '*');
+  });
+
+  // Nút thêm câu hỏi
+  $('#btnAddQuestion').click(() => {
+    window.parent.postMessage({ type: 'mc_add_new' }, '*');
+  });
+
+  // Nút export
+  $('#btnExportExcel').click(() => $('.buttons-excel').click());
+  $('#btnPrintTable').click(() => $('.buttons-print').click());
+});
+</script>
 </body>
 </html>
