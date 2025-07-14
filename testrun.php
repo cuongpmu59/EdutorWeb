@@ -84,19 +84,19 @@
 
   <div id="contents">
     <!-- MC -->
-    <div class="content" id="mc-input">📘 MC - Nhập liệu: Form nhập câu hỏi nhiều lựa chọn.</div>
-    <div class="content" id="mc-image">🖼️ MC - Ảnh minh hoạ: Xem ảnh hoặc chọn ảnh từ máy.</div>
-    <div class="content" id="mc-preview">👀 MC - Xem trước: Hiển thị đầy đủ câu hỏi MC.</div>
+    <div class="content" id="mc-input">📘 Nhập liệu: Form nhập câu hỏi nhiều lựa chọn.</div>
+    <div class="content" id="mc-image">🖼️ Ảnh minh hoạ: Xem ảnh hoặc chọn ảnh từ máy.</div>
+    <div class="content" id="mc-preview">👀 Xem trước: Hiển thị đầy đủ câu hỏi MC.</div>
 
     <!-- TF -->
-    <div class="content" id="tf-input">📘 TF - Nhập liệu: Câu hỏi đúng/sai đơn giản.</div>
-    <div class="content" id="tf-image">🖼️ TF - Ảnh minh hoạ: Chọn ảnh cho câu đúng/sai.</div>
-    <div class="content" id="tf-preview">👀 TF - Xem trước: Hiển thị câu đúng/sai hoàn chỉnh.</div>
+    <div class="content" id="tf-input">📘 Nhập liệu: Câu hỏi đúng/sai đơn giản.</div>
+    <div class="content" id="tf-image">🖼️ Ảnh minh hoạ: Chọn ảnh cho câu đúng/sai.</div>
+    <div class="content" id="tf-preview">👀 Xem trước: Hiển thị câu đúng/sai hoàn chỉnh.</div>
 
     <!-- SA -->
-    <div class="content" id="sa-input">📘 SA - Nhập liệu: Gõ câu hỏi và đáp án ngắn.</div>
-    <div class="content" id="sa-image">🖼️ SA - Ảnh minh hoạ: Thêm ảnh hỗ trợ câu hỏi ngắn.</div>
-    <div class="content" id="sa-preview">👀 SA - Xem trước: Tổng quan câu hỏi ngắn.</div>
+    <div class="content" id="sa-input">📘 Nhập liệu: Gõ câu hỏi và đáp án ngắn.</div>
+    <div class="content" id="sa-image">🖼️ Ảnh minh hoạ: Thêm ảnh hỗ trợ câu hỏi ngắn.</div>
+    <div class="content" id="sa-preview">👀 Xem trước: Tổng quan câu hỏi ngắn.</div>
   </div>
 
   <script>
