@@ -116,7 +116,5 @@ try {
 <script src="../../js/table/filter.js"></script>
 <script src="../../js/table/transfer_table.js"></script>
 
-
-
 </body>
 </html>
