@@ -65,18 +65,21 @@ try {
       box-shadow: 0 0 10px #fff;
     }
 
-    /* ✅ Căn cùng dòng cho ô lọc + tìm kiếm */
+    /* ✅ Bố cục dropdown trái - search phải */
     div.dataTables_filter {
       display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 20px;
     }
-    #mcTable_filter label {
-      margin: 0;
-      white-space: nowrap;
+    #mcTable_filter .filter-left,
+    #mcTable_filter .filter-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    #filter-topic {
-      margin-left: 5px;
+    #mcTable_filter select {
+      padding: 4px 8px;
     }
   </style>
 </head>
@@ -149,24 +152,41 @@ $(document).ready(function () {
     lengthMenu: [10, 25, 50, 100]
   });
 
-  // ✅ Lọc chủ đề nằm cùng hàng với ô tìm kiếm
-  $('<label>📚 Chủ đề: <select id="filter-topic"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></label>')
-    .prependTo('#mcTable_filter')
-    .on('change', '#filter-topic', function () {
-      table.column(1).search(this.value).draw();
-    });
+  // ✅ Tách chủ đề bên trái - tìm kiếm bên phải
+  $('#mcTable_filter').html(`
+    <div class="filter-left">
+      📚 Chủ đề: 
+      <select id="filter-topic">
+        <option value="">-- Tất cả --</option>
+        <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
+      </select>
+    </div>
+    <div class="filter-right">
+      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="" aria-controls="mcTable">
+    </div>
+  `);
 
-  // Tìm kiếm tiếng Việt không dấu
+  // Tìm kiếm
+  $('#mcTable_filter input[type="search"]').on('keyup change', function () {
+    table.search(this.value).draw();
+  });
+
+  // Lọc chủ đề
+  $('#filter-topic').on('change', function () {
+    table.column(1).search(this.value).draw();
+  });
+
+  // Accent-neutralize tìm kiếm tiếng Việt
   $.fn.dataTable.ext.type.search.string = function (data) {
     return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
-  // Render lại MathJax khi vẽ bảng
+  // MathJax
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
-  // Modal ảnh lớn
+  // Modal ảnh
   $(document).on('click', '.thumb', function () {
     $('#imgModalContent').attr('src', $(this).attr('src'));
     $('#imgModal').fadeIn();
@@ -175,7 +195,7 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
-  // Gửi dữ liệu hàng về form
+  // Gửi dữ liệu về form
   $('#mcTable tbody').on('click', 'tr', function () {
     const row = table.row(this).data();
     $('#mcTable tbody tr').removeClass('selected');
@@ -197,7 +217,7 @@ $(document).ready(function () {
     }, '*');
   });
 
-  // Nút thêm, export, in
+  // Nút thao tác
   $('#btnAddQuestion').click(() => {
     window.parent.postMessage({ type: 'mc_add_new' }, '*');
   });
