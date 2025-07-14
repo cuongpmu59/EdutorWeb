@@ -126,6 +126,12 @@ $(document).ready(function () {
       {
         text: '📥 Nhập Excel',
         action: function () { $('#excelFile').click(); }
+      },
+      {
+        text: '📄 Tải mẫu Excel',
+        action: function () {
+          window.open('../../templates/question_template.xlsx', '_blank');
+        }
       }
     ]
   });
