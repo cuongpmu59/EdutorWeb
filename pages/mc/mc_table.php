@@ -35,7 +35,7 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" />
   <link rel="stylesheet" href="../../css/modules/table.css">
   <link rel="stylesheet" href="../../css/main_ui.css">
-  
+
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -56,6 +56,16 @@ try {
 
 <div class="toolbar">
   <div class="left-tools">
+    <label for="topicSelect">📚 Chủ đề:</label>
+    <select id="topicSelect">
+      <option value="">-- Tất cả --</option>
+      <?php foreach ($topics as $t): ?>
+        <option value="<?= htmlspecialchars($t) ?>" <?= ($t === $topicFilter) ? 'selected' : '' ?>>
+          <?= htmlspecialchars($t) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+
     <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
     <button id="btnReloadTable">🔄 Làm mới</button>
   </div>
@@ -112,9 +122,63 @@ try {
 <script src="../../js/table/button.js"></script>
 <script src="../../js/table/excel_io.js"></script>
 <script src="../../js/table/image_modal.js"></script>
-<script src="../../js/table/table.js"></script>
-<script src="../../js/table/filter.js"></script>
 <script src="../../js/table/transfer_table.js"></script>
+<script src="../../js/table/filter.js"></script>
 
+<script>
+  $(document).ready(function () {
+    const table = $('#mcTable').DataTable({
+      dom: 'Bfrtip',
+      buttons: ['excelHtml5', 'print'],
+      fixedHeader: true,
+      pageLength: 10,
+      drawCallback: function () {
+        if (window.MathJax) MathJax.typeset();
+      },
+      language: {
+        search: "🔍 Tìm kiếm:",
+        lengthMenu: "Hiển thị _MENU_ dòng",
+        info: "Trang _PAGE_ / _PAGES_ (_TOTAL_ dòng)",
+        infoEmpty: "Không có dữ liệu",
+        zeroRecords: "Không tìm thấy kết quả phù hợp",
+        paginate: {
+          first: "«", last: "»", next: "▶", previous: "◀"
+        },
+      }
+    });
+
+    // Khi chọn chủ đề → lọc server
+    $('#topicSelect').on('change', function () {
+      const topic = $(this).val();
+      const url = new URL(window.location.href);
+      if (topic) url.searchParams.set('topic', topic);
+      else url.searchParams.delete('topic');
+      window.location.href = url.toString(); // Tải lại trang
+    });
+
+    // Gửi dữ liệu về form cha khi chọn dòng
+    $('#mcTable tbody').on('click', 'tr', function () {
+      $('#mcTable tbody tr').removeClass('selected');
+      $(this).addClass('selected');
+      const rowData = table.row(this).data();
+      if (!rowData || window.parent === window) return;
+      const imageSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
+      window.parent.postMessage({
+        type: 'mc_selected_row',
+        data: {
+          mc_id: rowData[0],
+          mc_topic: rowData[1],
+          mc_question: rowData[2],
+          mc_answer1: rowData[3],
+          mc_answer2: rowData[4],
+          mc_answer3: rowData[5],
+          mc_answer4: rowData[6],
+          mc_correct_answer: rowData[7],
+          mc_image_url: imageSrc
+        }
+      }, '*');
+    });
+  });
+</script>
 </body>
 </html>
