@@ -12,14 +12,10 @@ try {
   $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 
-// Lọc chủ đề nếu có
-$topicFilter = $_GET['topic'] ?? '';
+// Lấy tất cả câu hỏi
 try {
-  $sql = $topicFilter !== ''
-    ? "SELECT * FROM mc_questions WHERE mc_topic = :topic ORDER BY mc_id DESC"
-    : "SELECT * FROM mc_questions ORDER BY mc_id DESC";
-  $stmt = $conn->prepare($sql);
-  $topicFilter !== '' ? $stmt->execute(['topic' => $topicFilter]) : $stmt->execute();
+  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
+  $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
   $rows = [];
@@ -81,16 +77,6 @@ try {
     <button id="btnReloadTable" onclick="location.reload()">🔄 Làm mới</button>
   </div>
   <div class="right-tools">
-    <label>📚 Chủ đề:
-      <select id="topicSelect">
-        <option value="">-- Tất cả --</option>
-        <?php foreach ($topics as $tp): ?>
-          <option value="<?= htmlspecialchars($tp) ?>" <?= $tp === $topicFilter ? 'selected' : '' ?>>
-            <?= htmlspecialchars($tp) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-    </label>
     <button id="btnExportExcel">⬇️ Xuất Excel</button>
     <button id="btnPrintTable">🖨️ In bảng</button>
   </div>
@@ -103,6 +89,18 @@ try {
         <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
         <th>A</th><th>B</th><th>C</th><th>D</th>
         <th>Đáp án đúng</th><th>Ảnh</th>
+      </tr>
+      <tr class="filters">
+        <th></th>
+        <th>
+          <select id="filter-topic" style="width: 100%">
+            <option value="">-- Tất cả --</option>
+            <?php foreach ($topics as $tp): ?>
+              <option value="<?= htmlspecialchars($tp) ?>"><?= htmlspecialchars($tp) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </th>
+        <th colspan="7"></th>
       </tr>
     </thead>
     <tbody>
@@ -151,16 +149,24 @@ $(document).ready(function () {
     lengthMenu: [10, 25, 50, 100]
   });
 
+  // Accent-neutralize (nếu cần tìm kiếm tiếng Việt)
+  $.fn.dataTable.ext.type.search.string = function (data) {
+    return !data
+      ? ''
+      : data
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+  };
+
   // MathJax render lại sau mỗi lần vẽ bảng
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
-  // Lọc chủ đề
-  $('#topicSelect').on('change', function () {
-    const selectedTopic = $(this).val();
-    const url = selectedTopic ? '?topic=' + encodeURIComponent(selectedTopic) : location.pathname;
-    location.href = url;
+  // Lọc chủ đề ngay trong bảng
+  $('#filter-topic').on('change', function () {
+    table.column(1).search(this.value).draw(); // Cột 1 = Chủ đề
   });
 
   // Modal xem ảnh lớn
@@ -194,12 +200,10 @@ $(document).ready(function () {
     }, '*');
   });
 
-  // Nút thêm câu hỏi
+  // Nút thêm, export, in
   $('#btnAddQuestion').click(() => {
     window.parent.postMessage({ type: 'mc_add_new' }, '*');
   });
-
-  // Nút export
   $('#btnExportExcel').click(() => $('.buttons-excel').click());
   $('#btnPrintTable').click(() => $('.buttons-print').click());
 });
