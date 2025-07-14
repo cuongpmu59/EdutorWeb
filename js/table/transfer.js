@@ -1,5 +1,7 @@
 // Nhận dữ liệu từ iframe để điền vào form
 window.addEventListener('message', function (event) {
+  console.log("📥 Đã nhận từ iframe:", event.data);
+  
   if (event.data?.type === 'mc_selected_row') {
     const d = event.data.data;
     const fields = [
