@@ -26,12 +26,12 @@ try {
   <meta charset="UTF-8">
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
   <link rel="stylesheet" href="../../css/main_ui.css">
   <link rel="stylesheet" href="../../css/modules/table.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     .thumb {
       max-width: 50px;
@@ -40,13 +40,6 @@ try {
     }
     #mcTable tbody tr.selected {
       background-color: #e0f7fa !important;
-    }
-    .toolbar-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      gap: 10px;
     }
     #imgModal {
       position: fixed;
@@ -64,8 +57,6 @@ try {
       border: 4px solid #fff;
       box-shadow: 0 0 10px #fff;
     }
-
-    /* ✅ Bố cục dropdown trái - search phải */
     div.dataTables_filter {
       display: flex;
       justify-content: space-between;
@@ -81,11 +72,19 @@ try {
     #mcTable_filter select {
       padding: 4px 8px;
     }
+    .excel-import {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+
+<div class="excel-import">
+  📥 Nhập từ Excel: <input type="file" id="excelFile" accept=".xlsx" />
+</div>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -121,56 +120,48 @@ try {
 <!-- Modal ảnh -->
 <div id="imgModal"><img id="imgModalContent" src=""></div>
 
-<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
 <script>
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
     scrollX: true,
-    dom: 'Bfrtip',
-    buttons: ['excelHtml5', 'print'],
+    dom: 'frtip',
     fixedHeader: true,
     pageLength: 10,
     lengthMenu: [10, 25, 50, 100]
   });
 
-  // ✅ Tách chủ đề bên trái - tìm kiếm bên phải
+  // ✅ Bộ lọc chủ đề + tìm kiếm chung hàng
   $('#mcTable_filter').html(`
     <div class="filter-left">
-      Lọc: 
+      📚 Chủ đề:
       <select id="filter-topic">
         <option value="">-- Tất cả --</option>
         <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
       </select>
     </div>
     <div class="filter-right">
-      Tìm: <input type="search" class="form-control input-sm" placeholder="" aria-controls="mcTable">
+      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="" aria-controls="mcTable">
     </div>
   `);
 
-  // Tìm kiếm
-  $('#mcTable_filter input[type="search"]').on('keyup change', function () {
-    table.search(this.value).draw();
-  });
-
-  // Lọc chủ đề
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
 
-  // Accent-neutralize tìm kiếm tiếng Việt
+  $('#mcTable_filter input[type="search"]').on('keyup change', function () {
+    table.search(this.value).draw();
+  });
+
+  // Accent-neutralize
   $.fn.dataTable.ext.type.search.string = function (data) {
     return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
-  // MathJax
+  // MathJax re-render
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
@@ -206,12 +197,39 @@ $(document).ready(function () {
     }, '*');
   });
 
-  // Nút thao tác
-  $('#btnAddQuestion').click(() => {
-    window.parent.postMessage({ type: 'mc_add_new' }, '*');
+  // Nhập từ Excel
+  $('#excelFile').on('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+      if (jsonData.length === 0) {
+        alert("❌ File Excel rỗng hoặc không hợp lệ.");
+        return;
+      }
+
+      $.ajax({
+        url: 'import_mc_excel.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(jsonData),
+        success: function (res) {
+          alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
+          location.reload();
+        },
+        error: function () {
+          alert("❌ Lỗi khi nhập file Excel.");
+        }
+      });
+    };
+    reader.readAsArrayBuffer(file);
   });
-  $('#btnExportExcel').click(() => $('.buttons-excel').click());
-  $('#btnPrintTable').click(() => $('.buttons-print').click());
 });
 </script>
 </body>
