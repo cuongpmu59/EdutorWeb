@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  // ✨ Accent-neutralize tìm kiếm tiếng Việt
+  // 🔤 Accent-neutralize cho tìm kiếm tiếng Việt
   $.fn.dataTable.ext.type.search.string = function (data) {
     return !data
       ? ''
@@ -9,17 +9,14 @@ $(document).ready(function () {
           .toLowerCase();
   };
 
-  // === Khởi tạo bảng ===
+  // 🎯 Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
     dom: 'Bfrtip',
     buttons: ['excelHtml5', 'print'],
-    pageLength: 10,
-    lengthMenu: [5, 10, 25, 50, 100],
     fixedHeader: true,
+    scrollX: true,
     drawCallback: function () {
-      if (window.MathJax) {
-        MathJax.typeset();
-      }
+      if (window.MathJax) MathJax.typeset();
     },
     language: {
       search: "🔍 Tìm kiếm:",
@@ -28,40 +25,23 @@ $(document).ready(function () {
       infoEmpty: "Không có dữ liệu",
       zeroRecords: "Không tìm thấy kết quả phù hợp",
       paginate: {
-        first: "«",
-        last: "»",
-        next: "▶",
-        previous: "◀"
-      },
-    },
-    initComplete: function () {
-      $('.buttons-excel, .buttons-print').hide();
-      addTopicFilterToTable(this.api(), 1);
-  
-      // MathJax lúc vừa load xong
-      if (window.MathJax) {
-        MathJax.typeset();
+        first: "«", last: "»", next: "▶", previous: "◀"
       }
     }
   });
-  
 
-  // === Chuyển tab giao diện (nếu có) ===
-  $('.tab-button').on('click', function () {
-    const tabId = $(this).data('tab');
-    $('.tab-button').removeClass('active');
-    $(this).addClass('active');
-    $('.tab-content').removeClass('active');
-    $('#' + tabId).addClass('active');
-  });
+  // 📤 Nút xuất Excel/In bảng
+  $('.buttons-excel, .buttons-print').hide();
+  $('#btnExportExcel').on('click', () => $('.buttons-excel').click());
+  $('#btnPrintTable').on('click', () => $('.buttons-print').click());
 
-  // === Nhấp ảnh để xem lớn ===
+  // 🖼️ Click ảnh thu nhỏ → mở lớn
   $('#mcTable').on('click', 'img.thumb', function () {
     const src = $(this).attr('src');
     if (src) window.open(src, '_blank');
   });
 
-  // === Click chọn dòng → gửi về form cha ===
+  // 🧠 Click chọn dòng → gửi dữ liệu về form cha
   $('#mcTable tbody').on('click', 'tr', function () {
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
@@ -69,29 +49,28 @@ $(document).ready(function () {
     sendRowDataToParent(rowData);
   });
 
-  // === Điều hướng ↑ ↓
+  // ⌨️ Điều hướng bằng phím ↑ ↓
   $(document).on('keydown', function (e) {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      const current = $('#mcTable tbody tr.selected');
-      let nextRow = e.key === 'ArrowDown'
-        ? (current.length ? current.next() : $('#mcTable tbody tr').first())
-        : (current.length ? current.prev() : $('#mcTable tbody tr').last());
-
-      if (nextRow.length) {
-        current.removeClass('selected');
-        nextRow.addClass('selected');
-        nextRow[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        const rowData = table.row(nextRow).data();
-        sendRowDataToParent(rowData);
-      }
+    const selected = $('#mcTable tbody tr.selected');
+    let next;
+    if (e.key === 'ArrowDown') {
+      next = selected.length ? selected.next() : $('#mcTable tbody tr').first();
+    } else if (e.key === 'ArrowUp') {
+      next = selected.length ? selected.prev() : $('#mcTable tbody tr').last();
+    }
+    if (next?.length) {
+      selected.removeClass('selected');
+      next.addClass('selected');
+      next[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const rowData = table.row(next).data();
+      sendRowDataToParent(rowData);
     }
   });
 
-  // === Gửi dòng được chọn về form cha ===
+  // 📤 Gửi dòng đã chọn về form cha qua postMessage
   function sendRowDataToParent(rowData) {
     if (!rowData || window.parent === window) return;
-    const imageSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
+    const imgSrc = $('<div>').html(rowData[8]).find('img').attr('src') || '';
     window.parent.postMessage({
       type: 'mc_selected_row',
       data: {
@@ -103,12 +82,19 @@ $(document).ready(function () {
         mc_answer3: rowData[5],
         mc_answer4: rowData[6],
         mc_correct_answer: rowData[7],
-        mc_image_url: imageSrc
+        mc_image_url: imgSrc
       }
     }, '*');
   }
 
-  // === Nhận yêu cầu từ form cha: scroll đến tab Danh sách
+  // 📚 Lọc chủ đề (chuyển trang để filter qua server)
+  $('#topicSelect').on('change', function () {
+    const topic = $(this).val();
+    const url = topic ? `mc_table.php?topic=${encodeURIComponent(topic)}` : 'mc_table.php';
+    window.location.href = url;
+  });
+
+  // 📥 Nhận lệnh cuộn đến tab từ form cha
   window.addEventListener('message', function (event) {
     if (event.data?.type === 'scrollToListTab') {
       document.querySelector('.tab-button[data-tab="listTab"]')?.click();
@@ -116,6 +102,3 @@ $(document).ready(function () {
     }
   });
 });
-
-
-
