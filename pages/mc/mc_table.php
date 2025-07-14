@@ -123,27 +123,20 @@ $(document).ready(function () {
         extend: 'excelHtml5',
         text: '⬇️ Xuất Excel',
         title: 'mc_questions',
-        exportOptions: {
-          columns: ':visible'
-        }
+        exportOptions: { columns: ':visible' }
       },
       {
         extend: 'print',
         text: '🖨️ In bảng',
-        exportOptions: {
-          columns: ':visible'
-        }
+        exportOptions: { columns: ':visible' }
       },
       {
         text: '📥 Nhập Excel',
-        action: function () {
-          $('#excelFile').click();
-        }
+        action: function () { $('#excelFile').click(); }
       }
     ]
   });
 
-  // Tìm kiếm + Lọc chủ đề
   $('#mcTable_filter').html(`
     <div class="filter-left">
       📚 Chủ đề:
@@ -165,17 +158,14 @@ $(document).ready(function () {
     table.search(this.value).draw();
   });
 
-  // Accent-neutralize
   $.fn.dataTable.ext.type.search.string = function (data) {
     return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
-  // MathJax re-render
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
-  // Modal ảnh
   $(document).on('click', '.thumb', function () {
     $('#imgModalContent').attr('src', $(this).attr('src'));
     $('#imgModal').fadeIn();
@@ -184,29 +174,43 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
-  // Gửi dữ liệu về form cha
-  $('#mcTable tbody').on('click', 'tr', function () {
-    const row = table.row(this).data();
-    $('#mcTable tbody tr').removeClass('selected');
-    $(this).addClass('selected');
-    const imageSrc = $(this).find('img.thumb').attr('src') || '';
+  function sendRowData(row) {
+    const imageSrc = $(row.node()).find('img.thumb').attr('src') || '';
+    const data = row.data();
     window.parent.postMessage({
       type: 'mc_select_row',
       data: {
-        id: row[0],
-        topic: row[1],
-        question: row[2],
-        answer1: row[3],
-        answer2: row[4],
-        answer3: row[5],
-        answer4: row[6],
-        correct: row[7],
-        image: imageSrc
+        id: data[0], topic: data[1], question: data[2],
+        answer1: data[3], answer2: data[4], answer3: data[5], answer4: data[6],
+        correct: data[7], image: imageSrc
       }
     }, '*');
+  }
+
+  $('#mcTable tbody').on('click', 'tr', function () {
+    table.$('tr.selected').removeClass('selected');
+    $(this).addClass('selected');
+    sendRowData(table.row(this));
   });
 
-  // Nhập Excel
+  $(document).on('keydown', function (e) {
+    const selected = table.row('.selected');
+    if (!selected.node()) return;
+    let index = selected.index();
+    if (e.key === 'ArrowUp' && index > 0) {
+      index--;
+    } else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) {
+      index++;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    table.$('tr.selected').removeClass('selected');
+    const nextRow = table.row(index);
+    $(nextRow.node()).addClass('selected')[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    sendRowData(nextRow);
+  });
+
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
