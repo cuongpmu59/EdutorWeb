@@ -90,18 +90,6 @@ try {
         <th>A</th><th>B</th><th>C</th><th>D</th>
         <th>Đáp án đúng</th><th>Ảnh</th>
       </tr>
-      <tr class="filters">
-        <th></th>
-        <th>
-          <select id="filter-topic" style="width: 100%">
-            <option value="">-- Tất cả --</option>
-            <?php foreach ($topics as $tp): ?>
-              <option value="<?= htmlspecialchars($tp) ?>"><?= htmlspecialchars($tp) ?></option>
-            <?php endforeach; ?>
-          </select>
-        </th>
-        <th colspan="7"></th>
-      </tr>
     </thead>
     <tbody>
       <?php foreach ($rows as $q): ?>
@@ -116,8 +104,7 @@ try {
           <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb"
-                   onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
@@ -149,24 +136,21 @@ $(document).ready(function () {
     lengthMenu: [10, 25, 50, 100]
   });
 
-  // Accent-neutralize (nếu cần tìm kiếm tiếng Việt)
+  // ✅ Thêm dropdown lọc chủ đề bên cạnh ô tìm kiếm
+  $('<label style="margin-left: 20px;">📚 Chủ đề: <select id="filter-topic"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></label>')
+    .appendTo('#mcTable_filter')
+    .on('change', '#filter-topic', function () {
+      table.column(1).search(this.value).draw();
+    });
+
+  // Accent-neutralize nếu cần tìm kiếm tiếng Việt
   $.fn.dataTable.ext.type.search.string = function (data) {
-    return !data
-      ? ''
-      : data
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase();
+    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   };
 
   // MathJax render lại sau mỗi lần vẽ bảng
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
-  });
-
-  // Lọc chủ đề ngay trong bảng
-  $('#filter-topic').on('change', function () {
-    table.column(1).search(this.value).draw(); // Cột 1 = Chủ đề
   });
 
   // Modal xem ảnh lớn
