@@ -41,6 +41,13 @@ try {
     #mcTable tbody tr.selected {
       background-color: #e0f7fa !important;
     }
+    .toolbar-top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
     #imgModal {
       position: fixed;
       display: none;
@@ -58,7 +65,7 @@ try {
       box-shadow: 0 0 10px #fff;
     }
 
-    /* Bố cục lọc trái, tìm kiếm phải */
+    /* ✅ Bố cục dropdown trái - search phải */
     div.dataTables_filter {
       display: flex;
       justify-content: space-between;
@@ -79,6 +86,17 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+
+<div class="toolbar-top">
+  <div class="left-tools">
+    <button id="btnAddQuestion">➕ Thêm câu hỏi</button>
+    <button id="btnReloadTable" onclick="location.reload()">🔄 Làm mới</button>
+  </div>
+  <div class="right-tools">
+    <button id="btnExportExcel">⬇️ Xuất Excel</button>
+    <button id="btnPrintTable">🖨️ In bảng</button>
+  </div>
+</div>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -118,22 +136,26 @@ try {
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
 <script>
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
     scrollX: true,
-    dom: 'frtip',
+    dom: 'Bfrtip',
+    buttons: ['excelHtml5', 'print'],
     fixedHeader: true,
     pageLength: 10,
     lengthMenu: [10, 25, 50, 100]
   });
 
-  // Lọc chủ đề bên trái, tìm kiếm bên phải
+  // ✅ Tách chủ đề bên trái - tìm kiếm bên phải
   $('#mcTable_filter').html(`
     <div class="filter-left">
-      📚 Chủ đề:
+      📚 Chủ đề: 
       <select id="filter-topic">
         <option value="">-- Tất cả --</option>
         <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
@@ -146,4 +168,62 @@ $(document).ready(function () {
 
   // Tìm kiếm
   $('#mcTable_filter input[type="search"]').on('keyup change', function () {
-    table.searc
+    table.search(this.value).draw();
+  });
+
+  // Lọc chủ đề
+  $('#filter-topic').on('change', function () {
+    table.column(1).search(this.value).draw();
+  });
+
+  // Accent-neutralize tìm kiếm tiếng Việt
+  $.fn.dataTable.ext.type.search.string = function (data) {
+    return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  };
+
+  // MathJax
+  table.on('draw', function () {
+    if (window.MathJax) MathJax.typesetPromise();
+  });
+
+  // Modal ảnh
+  $(document).on('click', '.thumb', function () {
+    $('#imgModalContent').attr('src', $(this).attr('src'));
+    $('#imgModal').fadeIn();
+  });
+  $('#imgModal').on('click', function () {
+    $(this).fadeOut();
+  });
+
+  // Gửi dữ liệu về form
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const row = table.row(this).data();
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+    const imageSrc = $(this).find('img.thumb').attr('src') || '';
+    window.parent.postMessage({
+      type: 'mc_select_row',
+      data: {
+        id: row[0],
+        topic: row[1],
+        question: row[2],
+        answer1: row[3],
+        answer2: row[4],
+        answer3: row[5],
+        answer4: row[6],
+        correct: row[7],
+        image: imageSrc
+      }
+    }, '*');
+  });
+
+  // Nút thao tác
+  $('#btnAddQuestion').click(() => {
+    window.parent.postMessage({ type: 'mc_add_new' }, '*');
+  });
+  $('#btnExportExcel').click(() => $('.buttons-excel').click());
+  $('#btnPrintTable').click(() => $('.buttons-print').click());
+});
+</script>
+</body>
+</html>
