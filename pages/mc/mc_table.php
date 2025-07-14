@@ -13,6 +13,12 @@ try {
 } catch (Exception $e) {
   $rows = [];
 }
+
+$topics = [];
+try {
+  $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
+  $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
+} catch (Exception $e) {}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -34,24 +40,6 @@ try {
     }
     #mcTable tbody tr.selected {
       background-color: #e0f7fa !important;
-    }
-    div.dataTables_filter {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    #mcTable_filter .filter-left,
-    #mcTable_filter .filter-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    #mcTable_filter select {
-      padding: 4px 8px;
-    }
-    #excelFile {
-      display: none;
     }
   </style>
 </head>
@@ -94,7 +82,7 @@ try {
   <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
 </div>
 
-<input type="file" id="excelFile" accept=".xlsx" />
+<input type="file" id="excelFile" accept=".xlsx" style="display: none;">
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -136,7 +124,7 @@ $(document).ready(function () {
     ]
   });
 
-  $('#mcTable_filter').html(`<?= getFilterHTML($topics) ?>`);
+  $('#mcTable_filter').html(`<?= getFilterHTML($topics, 'mc') ?>`);
 
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
@@ -145,10 +133,6 @@ $(document).ready(function () {
   $('#mcTable_filter input[type="search"]').on('keyup change', function () {
     table.search(this.value).draw();
   });
-
-  $.fn.dataTable.ext.type.search.string = function (data) {
-    return !data ? '' : data.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-  };
 
   table.on('draw', function () {
     if (window.MathJax) MathJax.typesetPromise();
@@ -186,7 +170,6 @@ $(document).ready(function () {
   $(document).on('keydown', function (e) {
     const selected = $('#mcTable tbody tr.selected');
     if (!selected.length) return;
-
     if (e.key === 'ArrowUp') {
       const prev = selected.prev('tr');
       if (prev.length) prev.click();
@@ -199,6 +182,7 @@ $(document).ready(function () {
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function (e) {
       const data = new Uint8Array(e.target.result);
@@ -206,10 +190,13 @@ $(document).ready(function () {
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-      if (jsonData.length === 0) return alert("❌ File Excel rỗng hoặc không hợp lệ.");
+      if (jsonData.length === 0) {
+        alert("❌ File Excel rỗng hoặc không hợp lệ.");
+        return;
+      }
 
       $.ajax({
-        url: 'import_excel.php',
+        url: 'import_excel.php?type=mc',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(jsonData),
