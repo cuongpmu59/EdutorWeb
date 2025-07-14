@@ -137,9 +137,9 @@ $(document).ready(function () {
   });
 
   // ✅ Thêm dropdown lọc chủ đề bên cạnh ô tìm kiếm
-  $('<label style="margin-left: 20px;">📚 Chủ đề: <select id="filter-topic"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></label>')
-    .appendTo('#mcTable_filter')
-    .on('change', '#filter-topic', function () {
+  $('<div style="margin-top: 5px;">📚 Chủ đề: <select id="filter-topic" style="margin-left: 5px;"><option value="">-- Tất cả --</option><?php foreach ($topics as $tp): echo "<option value=\"" . htmlspecialchars($tp) . "\">" . htmlspecialchars($tp) . "</option>"; endforeach; ?></select></div>')
+      .insertAfter('#mcTable_filter');
+      .on('change', '#filter-topic', function () {
       table.column(1).search(this.value).draw();
     });
 
