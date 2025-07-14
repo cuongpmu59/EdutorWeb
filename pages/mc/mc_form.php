@@ -101,7 +101,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   }
 });
 
-// Nhận phản hồi từ iframe (postMessage)
+// Nhận phản hồi từ mc_save.php
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
     alert("✅ Đã lưu thành công!");
@@ -113,7 +113,7 @@ window.addEventListener("message", function (event) {
   }
 });
 
-// Xem trước ảnh
+// Xem trước ảnh minh hoạ
 document.getElementById("mc_image").addEventListener("change", function (e) {
   const img = document.getElementById("mc_imagePreview");
   const file = e.target.files[0];
@@ -134,6 +134,9 @@ function scrollToListTabInIframe() {
   document.getElementById("mcIframe").scrollIntoView({ behavior: 'smooth' });
 }
 </script>
+
+<!-- Script nhận dữ liệu từ bảng mc_table -->
+<script src="js/modules/listener.js"></script>
 
 </body>
 </html>
