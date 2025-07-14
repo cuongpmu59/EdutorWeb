@@ -5,13 +5,7 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
-// Chủ đề
-$topics = [];
-try {
-  $stmtTopics = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions WHERE mc_topic IS NOT NULL AND mc_topic != '' ORDER BY mc_topic");
-  $topics = $stmtTopics->fetchAll(PDO::FETCH_COLUMN);
-} catch (Exception $e) {}
-
+// Lấy toàn bộ câu hỏi
 try {
   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
   $stmt->execute();
@@ -19,6 +13,11 @@ try {
 } catch (Exception $e) {
   $rows = [];
 }
+
+// Lấy HTML lọc chủ đề + tìm kiếm
+ob_start();
+include __DIR__ . '/utils/filter.php';
+$filterHTML = trim(preg_replace('/\s+/', ' ', ob_get_clean()));
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -137,18 +136,8 @@ $(document).ready(function () {
     ]
   });
 
-  $('#mcTable_filter').html(`
-    <div class="filter-left">
-      📚 Chủ đề:
-      <select id="filter-topic">
-        <option value="">-- Tất cả --</option>
-        <?php foreach ($topics as $tp): echo "<option value='" . htmlspecialchars($tp) . "'>" . htmlspecialchars($tp) . "</option>"; endforeach; ?>
-      </select>
-    </div>
-    <div class="filter-right">
-      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
-    </div>
-  `);
+  // Giao diện lọc và tìm kiếm
+  $('#mcTable_filter').html(<?= json_encode($filterHTML) ?>);
 
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
@@ -166,6 +155,7 @@ $(document).ready(function () {
     if (window.MathJax) MathJax.typesetPromise();
   });
 
+  // Modal ảnh
   $(document).on('click', '.thumb', function () {
     $('#imgModalContent').attr('src', $(this).attr('src'));
     $('#imgModal').fadeIn();
@@ -174,6 +164,7 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
+  // Gửi dữ liệu về form cha
   function sendRowData(row) {
     const imageSrc = $(row.node()).find('img.thumb').attr('src') || '';
     const data = row.data();
@@ -193,6 +184,7 @@ $(document).ready(function () {
     sendRowData(table.row(this));
   });
 
+  // Mũi tên lên/xuống
   $(document).on('keydown', function (e) {
     const selected = table.row('.selected');
     if (!selected.node()) return;
@@ -211,6 +203,7 @@ $(document).ready(function () {
     sendRowData(nextRow);
   });
 
+  // Nhập Excel
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
