@@ -50,16 +50,18 @@
     </div>
 
     <div class="form-group">
-      <label for="mc_image">🖼️ Ảnh minh hoạ:</label>
-      <input type="file" id="mc_image" name="mc_image" accept="image/*">
+      <label>🖼️ Ảnh minh hoạ:</label><br>
+      <button type="button" id="chooseImageBtn">📂 Chọn ảnh</button>
+      <button type="button" id="deleteImageBtn" style="display:none;">🗑️ Xoá ảnh</button>
+      <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display:none;">
       <br>
-      <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
+      <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px;">
     </div>
 
     <div class="form-actions">
       <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
       <button type="reset" id="resetBtn">🔄 Làm lại</button>
-      <button type="button" id="deleteBtn" style="display:none;">🗑️ Xoá câu hỏi</button>
+      <button type="button" id="deleteBtn" style="background:#ff4444; color:white;">❌ Xoá câu hỏi</button>
     </div>
   </form>
 </div>
@@ -69,38 +71,97 @@
 <script src="js/modules/previewView.js"></script>
 
 <script>
+document.getElementById("chooseImageBtn").addEventListener("click", () => {
+  document.getElementById("mc_image").click();
+});
+
+document.getElementById("mc_image").addEventListener("change", function () {
+  const file = this.files[0];
+  const img = document.getElementById("mc_imagePreview");
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      img.src = e.target.result;
+      img.style.display = "block";
+      document.getElementById("deleteImageBtn").style.display = "inline-block";
+      document.getElementById("saveBtn").style.display = "inline-block";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+document.getElementById("deleteImageBtn").addEventListener("click", async function () {
+  const mc_id = document.getElementById("mc_id").value;
+  if (!mc_id) return alert("❌ Chưa có ID để xoá ảnh.");
+
+  if (!confirm("Bạn có chắc muốn xoá ảnh minh hoạ?")) return;
+
+  try {
+    const res = await fetch("utils/mc_delete_image.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "mc_id=" + encodeURIComponent(mc_id)
+    });
+    const result = await res.text();
+    alert(result);
+
+    document.getElementById("mc_imagePreview").style.display = "none";
+    document.getElementById("mc_image").value = "";
+    document.getElementById("deleteImageBtn").style.display = "none";
+    document.getElementById("saveBtn").style.display = "inline-block";
+
+    // Gửi lại form để lưu trạng thái không có ảnh
+    document.getElementById("mcForm").dispatchEvent(new Event("submit"));
+  } catch (err) {
+    alert("❌ Lỗi khi xoá ảnh: " + err.message);
+  }
+});
+
+document.getElementById("deleteBtn").addEventListener("click", async function () {
+  const mc_id = document.getElementById("mc_id").value;
+  if (!mc_id) return alert("❌ Không có ID để xoá.");
+
+  if (!confirm("Bạn có chắc muốn xoá câu hỏi này?")) return;
+
+  try {
+    const res = await fetch("utils/mc_delete_question.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "mc_id=" + encodeURIComponent(mc_id)
+    });
+    const result = await res.text();
+    alert(result);
+
+    document.getElementById("mcForm").reset();
+    document.getElementById("mc_imagePreview").style.display = "none";
+    document.getElementById("deleteImageBtn").style.display = "none";
+    document.getElementById("saveBtn").style.display = "inline-block";
+    document.getElementById("mcIframe").contentWindow.location.reload();
+  } catch (err) {
+    alert("❌ Lỗi khi xoá câu hỏi: " + err.message);
+  }
+});
+
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
 
   try {
-    const response = await fetch("utils/mc_save.php", {
+    const res = await fetch("utils/mc_save.php", {
       method: "POST",
       body: formData
     });
-    const result = await response.text();
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-    iframe.contentDocument.write(result);
-    iframe.contentDocument.close();
-    setTimeout(() => iframe.remove(), 1000);
-  } catch (error) {
-    alert("❌ Lỗi khi gửi dữ liệu: " + error.message);
+    const result = await res.text();
+    alert(result);
+    document.getElementById("mcIframe").contentWindow.location.reload();
+  } catch (err) {
+    alert("❌ Lỗi khi lưu: " + err.message);
   }
 });
 
-// Nhận dữ liệu từ bảng
+// ✅ Nhận dữ liệu từ bảng mc_table.php
 window.addEventListener("message", function (event) {
-  if (event.data.type === "saved") {
-    alert("✅ Đã lưu thành công!");
-    document.getElementById("mcIframe").contentWindow.location.reload();
-    document.getElementById("mcForm").reset();
-    document.getElementById("mc_imagePreview").style.display = "none";
-    document.getElementById("deleteBtn").style.display = "none";
-  } else if (event.data.type === "error") {
-    alert("❌ Lỗi: " + event.data.message);
-  } else if (event.data.type === "mc_select_row") {
+  if (event.data.type === "mc_select_row") {
     const d = event.data.data;
     document.getElementById("mc_id").value = d.id || "";
     document.getElementById("mc_topic").value = d.topic || "";
@@ -111,68 +172,26 @@ window.addEventListener("message", function (event) {
     document.getElementById("mc_answer4").value = d.answer4 || "";
     document.getElementById("mc_correct_answer").value = d.correct || "";
 
+    const img = document.getElementById("mc_imagePreview");
     if (d.image) {
-      const img = document.getElementById("mc_imagePreview");
       img.src = d.image;
       img.style.display = "block";
+      document.getElementById("deleteImageBtn").style.display = "inline-block";
     } else {
-      document.getElementById("mc_imagePreview").style.display = "none";
+      img.style.display = "none";
+      document.getElementById("deleteImageBtn").style.display = "none";
     }
 
-    // Hiện nút xoá nếu có id
-    document.getElementById("deleteBtn").style.display = d.id ? "inline-block" : "none";
+    document.getElementById("saveBtn").style.display = "inline-block";
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
+    // ✅ Gọi lại xem trước LaTeX
     if (typeof updatePreviews === "function") updatePreviews();
-    if (window.MathJax) MathJax.typesetPromise();
-  }
-});
 
-// Xem trước ảnh khi chọn file
-document.getElementById("mc_image").addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  const img = document.getElementById("mc_imagePreview");
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      img.src = e.target.result;
-      img.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    img.style.display = "none";
-  }
-});
-
-// Xoá câu hỏi
-document.getElementById("deleteBtn").addEventListener("click", async function () {
-  const id = document.getElementById("mc_id").value;
-  const imageUrl = document.getElementById("mc_imagePreview").src || "";
-  if (!id) return alert("❌ Không có câu hỏi để xoá.");
-
-  if (!confirm("❓ Bạn có chắc chắn muốn xoá câu hỏi này không?")) return;
-
-  try {
-    const res = await fetch("utils/mc_delete.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, image: imageUrl })
-    });
-    const result = await res.json();
-    if (result.success) {
-      alert("🗑️ Đã xoá thành công!");
-      document.getElementById("mcForm").reset();
-      document.getElementById("mc_imagePreview").style.display = "none";
-      document.getElementById("deleteBtn").style.display = "none";
-      document.getElementById("mcIframe").contentWindow.location.reload();
-    } else {
-      alert("❌ Không xoá được: " + result.message);
-    }
-  } catch (err) {
-    alert("❌ Lỗi khi xoá: " + err.message);
+    // ✅ Cuộn lên đầu
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 });
 </script>
+
 </body>
 </html>
