@@ -5,19 +5,25 @@
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <link rel="stylesheet" href="../../css/modules/preview.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
       max-width: 900px;
       margin: auto;
+      font-family: Arial, sans-serif;
       padding: 20px;
     }
     .form-group {
       margin-bottom: 15px;
     }
-    .form-group label {
-      font-weight: bold;
+    .preview-box {
+      display: none;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      padding: 10px;
+      margin-top: 5px;
+    }
+    .preview-box.visible {
+      display: block;
     }
     .form-actions {
       display: flex;
@@ -25,20 +31,15 @@
       gap: 10px;
       margin-top: 20px;
     }
-    .preview-box {
-      display: none;
-      background: #f7f7f7;
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
-    }
-    .preview-box.visible {
-      display: block;
-    }
     @media (max-width: 600px) {
       .form-actions {
         flex-direction: column;
       }
+    }
+    .preview-toggle {
+      font-size: 13px;
+      margin-top: 4px;
+      display: inline-block;
     }
   </style>
   <script>
@@ -78,7 +79,11 @@
   ?>
     <div class="form-group">
       <label for="<?= $id ?>"><?= $label ?>:</label>
-      <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required oninput="updatePreviews()"></<?= $isTextarea ? 'textarea' : 'input' ?>>
+      <<?= $isTextarea ? 'textarea' : 'input type="text"' ?>
+        id="<?= $id ?>" name="<?= $id ?>" required oninput="updatePreviews()"></<?= $isTextarea ? 'textarea' : 'input' ?>>
+      <label class="preview-toggle">
+        <input type="checkbox" onchange="togglePreview('<?= $id ?>')"> 🔍 Xem trước
+      </label>
       <div id="preview_<?= $id ?>" class="preview-box"></div>
     </div>
   <?php endforeach; ?>
@@ -115,9 +120,9 @@
 <script>
 function renderLatex(text) {
   if (!text) return '';
-  const escapeHTML = str => str.replace(/[&<>"']/g, m => ({
+  const escapeHTML = s => s.replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-  }[m]));
+  })[c]);
   text = escapeHTML(text);
   text = text.replace(/\$\$(.+?)\$\$/gs, (_, expr) => `\\[${expr.trim()}\\]`);
   text = text.replace(/\$(.+?)\$/g, (_, expr) => `\\(${expr.trim()}\\)`);
@@ -129,36 +134,39 @@ function updatePreviews() {
     const input = document.getElementById(id);
     const preview = document.getElementById("preview_" + id);
     if (input && preview) {
-      const raw = input.value;
-      preview.innerHTML = renderLatex(raw);
-      preview.classList.toggle('visible', raw.trim() !== '');
+      preview.innerHTML = renderLatex(input.value);
+      if (typeof MathJax !== 'undefined') MathJax.typesetPromise();
     }
   });
-  if (typeof MathJax !== 'undefined' && window.MathJax.typesetPromise) {
-    MathJax.typesetPromise();
-  }
 }
 
-const imageInput = document.getElementById("mc_image");
-const imagePreview = document.getElementById("mc_imagePreview");
+function togglePreview(id) {
+  const box = document.getElementById("preview_" + id);
+  if (box) box.classList.toggle("visible");
+}
 
-document.getElementById("loadImageBtn").onclick = () => imageInput.click();
-imageInput.addEventListener("change", e => {
-  const file = e.target.files[0];
+document.getElementById("loadImageBtn").onclick = () => {
+  document.getElementById("mc_image").click();
+};
+
+document.getElementById("mc_image").addEventListener("change", function () {
+  const file = this.files[0];
+  const preview = document.getElementById("mc_imagePreview");
   if (file) {
     const reader = new FileReader();
     reader.onload = e => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = "block";
+      preview.src = e.target.result;
+      preview.style.display = "block";
     };
     reader.readAsDataURL(file);
+  } else {
+    preview.style.display = "none";
   }
 });
 
 document.getElementById("deleteImageBtn").addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
-  if (!id) return alert("❗ Không có ID để xoá ảnh");
-  if (!confirm("❌ Xoá ảnh minh hoạ khỏi Cloudinary?")) return;
+  if (!id || !confirm("❌ Xác nhận xoá ảnh?")) return;
   const res = await fetch("utils/mc_delete_image.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -166,9 +174,9 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
   });
   const result = await res.json();
   if (result.success) {
-    imagePreview.style.display = "none";
-    imageInput.value = "";
-    document.getElementById("saveBtn").click(); // tự lưu sau xoá
+    document.getElementById("mc_imagePreview").style.display = "none";
+    document.getElementById("mc_image").value = "";
+    document.getElementById("saveBtn").click();
   } else {
     alert("❌ Lỗi khi xoá ảnh.");
   }
@@ -192,7 +200,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
 
 document.getElementById("deleteQuestionBtn").addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
-  if (!id || !confirm("❗ Bạn có chắc muốn xoá câu hỏi?")) return;
+  if (!id || !confirm("🗑️ Bạn có chắc xoá câu hỏi này?")) return;
   const res = await fetch("utils/mc_delete.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -200,24 +208,24 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   });
   const result = await res.json();
   if (result.success) {
-    alert("🗑️ Đã xoá câu hỏi!");
+    alert("🗑️ Đã xoá!");
     document.getElementById("mcForm").reset();
-    imagePreview.style.display = "none";
+    document.getElementById("mc_imagePreview").style.display = "none";
     document.getElementById("mcIframe").contentWindow.location.reload();
   } else {
     alert("❌ Lỗi khi xoá.");
   }
 });
 
-const toggleBtn = document.getElementById("toggleIframeBtn");
-const iframe = document.getElementById("mcIframe");
-toggleBtn.onclick = () => {
+document.getElementById("toggleIframeBtn").addEventListener("click", () => {
+  const iframe = document.getElementById("mcIframe");
+  const btn = document.getElementById("toggleIframeBtn");
   const isHidden = iframe.style.display === "none";
   iframe.style.display = isHidden ? "block" : "none";
-  toggleBtn.textContent = isHidden ? "🔼 Ẩn bảng câu hỏi" : "🔽 Hiện bảng câu hỏi";
-};
+  btn.textContent = isHidden ? "🔼 Ẩn bảng câu hỏi" : "🔽 Hiện bảng câu hỏi";
+});
 
-// Nhận dữ liệu từ bảng (postMessage)
+// Nhận dữ liệu từ bảng
 window.addEventListener("message", function (event) {
   if (event.data?.type === "mc_select_row") {
     const d = event.data.data;
@@ -230,10 +238,10 @@ window.addEventListener("message", function (event) {
     document.getElementById("mc_answer4").value = d.answer4 || "";
     document.getElementById("mc_correct_answer").value = d.correct || "";
     if (d.image) {
-      imagePreview.src = d.image;
-      imagePreview.style.display = "block";
+      document.getElementById("mc_imagePreview").src = d.image;
+      document.getElementById("mc_imagePreview").style.display = "block";
     } else {
-      imagePreview.style.display = "none";
+      document.getElementById("mc_imagePreview").style.display = "none";
     }
     updatePreviews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
