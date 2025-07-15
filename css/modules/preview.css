@@ -1,7 +1,4 @@
-/* ===============================
-   🎨 BỐ CỤC FORM & RESPONSIVE
-================================ */
-
+/* === Layout tổng thể === */
 .form-layout {
   display: flex;
   flex-wrap: wrap;
@@ -13,135 +10,88 @@
 .form-left {
   flex: 2;
   min-width: 300px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .form-right {
   flex: 1;
-  min-width: 200px;
+  min-width: 250px;
+}
+
+.form-right-inner {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 400px;
 }
 
-/* ===============================
-   📝 INPUT, TEXTAREA, GROUP
-================================ */
-.question-form .form-group {
-  margin-bottom: 15px;
+.image-box {
+  text-align: center;
 }
 
-.question-form textarea,
-.question-form input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  min-height: 40px;
-  font-size: 15px;
-  font-family: inherit;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  resize: vertical;
-  transition: font-size 0.3s ease;
-}
-
-.question-form textarea:focus,
-.question-form input[type="text"]:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-/* ===============================
-   👁️ VÙNG XEM TRƯỚC (PREVIEW)
-================================ */
-.preview-box {
-  display: none;
-  margin-top: 8px;
-  padding: 10px;
-  border: 1px dashed #999;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #333;
-  white-space: pre-wrap;
-  overflow-x: auto;
-  transition: all 0.2s ease-in-out;
-}
-
-.preview-box.show {
-  display: block;
-}
-
-.toggle-preview {
-  cursor: pointer;
-  margin-left: 6px;
-  font-size: 1rem;
-  vertical-align: middle;
-  user-select: none;
-  transition: color 0.2s ease;
-}
-
-.toggle-preview:hover {
-  color: #007bff;
-}
-
-/* ===============================
-   🎯 NÚT HÀNH ĐỘNG
-================================ */
-.form-actions button {
-  padding: 10px;
-  font-size: 15px;
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.form-actions button:hover {
-  background-color: #0056b3;
-}
-
-.form-actions button:disabled {
-  background-color: #999;
-  cursor: not-allowed;
-}
-
-/* ===============================
-   🖼️ ẢNH MINH HOẠ
-================================ */
 #mc_imagePreview {
-  display: block;
-  max-height: 150px;
+  display: none;
+  max-width: 100%;
+  max-height: 200px;
   margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
-/* ===============================
-   📱 MOBILE RESPONSIVE
-================================ */
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .form-layout {
     flex-direction: column;
   }
+}
 
-  .form-actions button {
-    font-size: 14px;
-  }
+/* Hộp xem trước chung cho câu hỏi và đáp án */
+.preview-box {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 4px solid #0d6efd;
+  background-color: #f8f9fa;
+  color: #212529;
+  font-size: 15px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  transition: all 0.3s ease;
+}
 
-  .toggle-preview {
-    font-size: 16px;
-  }
+/* Biểu tượng 👁️ toggle xem trước */
+.toggle-preview {
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 1rem;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
 
-  .question-form textarea,
-  .question-form input[type="text"] {
-    font-size: 14px;
-  }
+.toggle-preview:hover {
+  transform: scale(1.2);
+}
 
-  .preview-box {
-    font-size: 14px;
-    padding: 8px;
-  }
+/* Tối ưu hiển thị công thức MathJax */
+.preview-box mjx-container {
+  font-size: 110%;
+}
+
+/* Hỗ trợ dark mode */
+body.dark .preview-box {
+  background-color: #1e1e1e;
+  border-left-color: #4dabf7;
+  color: #eee;
+}
+
+body.dark .toggle-preview {
+  color: #ccc;
 }
