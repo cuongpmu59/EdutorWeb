@@ -59,7 +59,7 @@
     <div class="form-actions">
       <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
       <button type="reset" id="resetBtn">🔄 Làm lại</button>
-      <button type="button" onclick="scrollToListTabInIframe()">📄 Xem danh sách</button>
+      <button type="button" id="deleteBtn" style="display:none;">🗑️ Xoá câu hỏi</button>
     </div>
   </form>
 </div>
@@ -90,18 +90,17 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   }
 });
 
+// Nhận dữ liệu từ bảng
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
     alert("✅ Đã lưu thành công!");
     document.getElementById("mcIframe").contentWindow.location.reload();
     document.getElementById("mcForm").reset();
     document.getElementById("mc_imagePreview").style.display = "none";
+    document.getElementById("deleteBtn").style.display = "none";
   } else if (event.data.type === "error") {
     alert("❌ Lỗi: " + event.data.message);
-  }
-
-  // 🔁 Nhận dữ liệu từ bảng mc_table.php
-  if (event.data.type === "mc_select_row") {
+  } else if (event.data.type === "mc_select_row") {
     const d = event.data.data;
     document.getElementById("mc_id").value = d.id || "";
     document.getElementById("mc_topic").value = d.topic || "";
@@ -120,14 +119,17 @@ window.addEventListener("message", function (event) {
       document.getElementById("mc_imagePreview").style.display = "none";
     }
 
-    // Tự động scroll đến đầu form
+    // Hiện nút xoá nếu có id
+    document.getElementById("deleteBtn").style.display = d.id ? "inline-block" : "none";
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Gọi lại previewView nếu có
     if (typeof updatePreviews === "function") updatePreviews();
+    if (window.MathJax) MathJax.typesetPromise();
   }
 });
 
+// Xem trước ảnh khi chọn file
 document.getElementById("mc_image").addEventListener("change", function (e) {
   const file = e.target.files[0];
   const img = document.getElementById("mc_imagePreview");
@@ -143,9 +145,34 @@ document.getElementById("mc_image").addEventListener("change", function (e) {
   }
 });
 
-function scrollToListTabInIframe() {
-  document.getElementById("mcIframe").scrollIntoView({ behavior: 'smooth' });
-}
+// Xoá câu hỏi
+document.getElementById("deleteBtn").addEventListener("click", async function () {
+  const id = document.getElementById("mc_id").value;
+  const imageUrl = document.getElementById("mc_imagePreview").src || "";
+  if (!id) return alert("❌ Không có câu hỏi để xoá.");
+
+  if (!confirm("❓ Bạn có chắc chắn muốn xoá câu hỏi này không?")) return;
+
+  try {
+    const res = await fetch("utils/mc_delete.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, image: imageUrl })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert("🗑️ Đã xoá thành công!");
+      document.getElementById("mcForm").reset();
+      document.getElementById("mc_imagePreview").style.display = "none";
+      document.getElementById("deleteBtn").style.display = "none";
+      document.getElementById("mcIframe").contentWindow.location.reload();
+    } else {
+      alert("❌ Không xoá được: " + result.message);
+    }
+  } catch (err) {
+    alert("❌ Lỗi khi xoá: " + err.message);
+  }
+});
 </script>
 </body>
 </html>
