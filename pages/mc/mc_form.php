@@ -10,14 +10,16 @@
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-<div class="mc-wrapper">
-  <form id="mcForm" class="question-form" enctype="multipart/form-data">
-    <input type="hidden" id="mc_id" name="mc_id" />
 
-    <div class="form-left">
+<div class="form-layout">
+  <!-- Cột trái: Form nội dung -->
+  <div class="form-left">
+    <form id="mcForm" class="question-form" enctype="multipart/form-data">
+      <input type="hidden" id="mc_id" name="mc_id">
+
       <div class="form-group">
         <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required />
+        <input type="text" id="mc_topic" name="mc_topic" required>
       </div>
 
       <?php
@@ -29,13 +31,15 @@
         'mc_answer4' => '🔸 D'
       ];
       foreach ($fields as $id => $label):
+        $isTextarea = $id === 'mc_question';
       ?>
         <div class="form-group">
           <label for="<?= $id ?>">
-            <?= $label ?> <span class="toggle-preview-icon" data-target="<?= $id ?>">👁️</span>
+            <?= $label ?>
+            <span class="toggle-preview" data-target="preview_<?= $id ?>">👁️</span>
           </label>
-          <textarea id="<?= $id ?>" name="<?= $id ?>" rows="2" required></textarea>
-          <div id="preview_<?= $id ?>" class="preview-box" style="display:none;"></div>
+          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
+          <div id="preview_<?= $id ?>" class="preview-box"></div>
         </div>
       <?php endforeach; ?>
 
@@ -51,75 +55,38 @@
       </div>
 
       <div class="form-group">
-        <label>🖼️ Ảnh minh hoạ:</label>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;" />
+        <label>🖼️ Ảnh minh hoạ:</label><br>
+        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
         <button type="button" id="loadImageBtn">📂 Load ảnh</button>
         <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <br>
-        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px" />
+        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
       </div>
-    </div>
+    </form>
+  </div>
 
-    <div class="form-right">
-      <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
-      <button type="reset" id="resetBtn">🔄 Làm lại</button>
+  <!-- Cột phải: Các nút thao tác -->
+  <div class="form-right">
+    <div class="form-actions">
+      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
+      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
       <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
       <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
     </div>
-  </form>
-
-  <iframe id="mcIframe" src="mc_table.php" width="100%" height="500" style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
+  </div>
 </div>
 
+<iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
+        style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
+
 <script src="js/modules/previewView.js"></script>
+
 <script>
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
+const saveBtn = document.getElementById("saveBtn");
+const deleteBtn = document.getElementById("deleteImageBtn");
+const loadBtn = document.getElementById("loadImageBtn");
 
-// Load ảnh minh hoạ
-document.getElementById("loadImageBtn").addEventListener("click", () => imageInput.click());
-
-imageInput.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    imagePreview.style.display = "none";
-  }
-});
-
-// Xoá ảnh minh hoạ
-document.getElementById("deleteImageBtn").addEventListener("click", async () => {
-  const id = document.getElementById("mc_id").value;
-  if (!id) return alert("❗ Không có ID câu hỏi.");
-  if (!confirm("❌ Xoá ảnh khỏi Cloudinary?")) return;
-
-  try {
-    const res = await fetch("utils/mc_delete_image.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mc_id: id })
-    });
-    const result = await res.json();
-    if (result.success) {
-      imageInput.value = "";
-      imagePreview.style.display = "none";
-      alert("🧹 Đã xoá ảnh!");
-      document.getElementById("saveBtn").click(); // Tự động lưu lại
-    } else {
-      alert("❌ Không thể xoá ảnh.");
-    }
-  } catch {
-    alert("❌ Lỗi xoá ảnh.");
-  }
-});
-
-// Gửi form lưu câu hỏi
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
@@ -129,23 +96,93 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
       body: formData
     });
     const result = await response.text();
-    alert(result.includes("✅") ? "✅ Đã lưu thành công!" : result);
-    document.getElementById("mcIframe").contentWindow.location.reload();
-    if (result.includes("✅")) {
-      this.reset();
-      imagePreview.style.display = "none";
-    }
-  } catch (err) {
-    alert("❌ Lỗi: " + err.message);
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+    iframe.contentDocument.write(result);
+    iframe.contentDocument.close();
+    setTimeout(() => iframe.remove(), 1000);
+  } catch (error) {
+    alert("❌ Lỗi khi gửi dữ liệu: " + error.message);
   }
 });
 
-// Xoá câu hỏi
+window.addEventListener("message", function (event) {
+  if (event.data.type === "saved") {
+    alert("✅ Đã lưu thành công!");
+    document.getElementById("mcIframe").contentWindow.location.reload();
+    document.getElementById("mcForm").reset();
+    imagePreview.style.display = "none";
+  } else if (event.data.type === "error") {
+    alert("❌ Lỗi: " + event.data.message);
+  }
+
+  // Nhận dữ liệu từ bảng
+  if (event.data.type === "mc_select_row") {
+    const d = event.data.data;
+    document.getElementById("mc_id").value = d.id || "";
+    document.getElementById("mc_topic").value = d.topic || "";
+    document.getElementById("mc_question").value = d.question || "";
+    document.getElementById("mc_answer1").value = d.answer1 || "";
+    document.getElementById("mc_answer2").value = d.answer2 || "";
+    document.getElementById("mc_answer3").value = d.answer3 || "";
+    document.getElementById("mc_answer4").value = d.answer4 || "";
+    document.getElementById("mc_correct_answer").value = d.correct || "";
+    if (d.image) {
+      imagePreview.src = d.image;
+      imagePreview.style.display = "block";
+    } else {
+      imagePreview.style.display = "none";
+    }
+    if (typeof updatePreviews === "function") updatePreviews();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+loadBtn.addEventListener("click", () => imageInput.click());
+
+imageInput.addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      imagePreview.src = e.target.result;
+      imagePreview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    imagePreview.style.display = "none";
+  }
+});
+
+deleteBtn.addEventListener("click", async () => {
+  const id = document.getElementById("mc_id").value;
+  if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
+  if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
+  try {
+    const res = await fetch("utils/mc_delete_image.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mc_id: id })
+    });
+    const result = await res.json();
+    if (result.success) {
+      imagePreview.style.display = "none";
+      imageInput.value = "";
+      alert("🧹 Đã xoá ảnh!");
+      document.getElementById("saveBtn").click(); // Tự động lưu
+    } else {
+      alert("❌ Lỗi khi xoá ảnh.");
+    }
+  } catch (err) {
+    alert("❌ Xảy ra lỗi khi xoá ảnh.");
+  }
+});
+
 document.getElementById("deleteQuestionBtn").addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
-  if (!id) return alert("❗ Không có ID câu hỏi.");
-  if (!confirm("🗑️ Xoá câu hỏi và ảnh liên quan?")) return;
-
+  if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
+  if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
   try {
     const res = await fetch("utils/mc_delete.php", {
       method: "POST",
@@ -154,62 +191,27 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
     });
     const result = await res.json();
     if (result.success) {
-      alert("🗑️ Đã xoá!");
+      alert("🗑️ Đã xoá câu hỏi!");
       document.getElementById("mcForm").reset();
       imagePreview.style.display = "none";
       document.getElementById("mcIframe").contentWindow.location.reload();
     } else {
       alert("❌ Xoá thất bại.");
     }
-  } catch {
-    alert("❌ Lỗi khi xoá.");
+  } catch (err) {
+    alert("❌ Lỗi khi gửi yêu cầu xoá.");
   }
 });
 
-// Ẩn/hiện bảng
 const iframe = document.getElementById("mcIframe");
 const toggleBtn = document.getElementById("toggleIframeBtn");
 toggleBtn.addEventListener("click", () => {
-  iframe.style.display = iframe.style.display === "none" ? "block" : "none";
-  toggleBtn.textContent = iframe.style.display === "none" ? "🔼 Hiện bảng câu hỏi" : "🔽 Ẩn bảng câu hỏi";
-});
-
-// Nhận dữ liệu từ bảng
-window.addEventListener("message", (e) => {
-  if (e.data?.type === "mc_select_row") {
-    const d = e.data.data;
-    document.getElementById("mc_id").value = d.id;
-    document.getElementById("mc_topic").value = d.topic;
-    document.getElementById("mc_question").value = d.question;
-    document.getElementById("mc_answer1").value = d.answer1;
-    document.getElementById("mc_answer2").value = d.answer2;
-    document.getElementById("mc_answer3").value = d.answer3;
-    document.getElementById("mc_answer4").value = d.answer4;
-    document.getElementById("mc_correct_answer").value = d.correct;
-    if (d.image) {
-      imagePreview.src = d.image;
-      imagePreview.style.display = "block";
-    } else {
-      imagePreview.style.display = "none";
-    }
-    if (typeof updatePreviews === "function") updatePreviews();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-});
-
-// 👁️ Toggle preview theo biểu tượng
-document.querySelectorAll(".toggle-preview-icon").forEach(icon => {
-  icon.addEventListener("click", () => {
-    const target = icon.dataset.target;
-    const box = document.getElementById("preview_" + target);
-    if (box.style.display === "none") {
-      box.style.display = "block";
-    } else {
-      box.style.display = "none";
-    }
-    if (typeof updatePreviews === "function") updatePreviews();
-  });
+  iframe.style.display = (iframe.style.display === "none") ? "block" : "none";
+  toggleBtn.textContent = iframe.style.display === "none"
+    ? "🔼 Hiện bảng câu hỏi"
+    : "🔽 Ẩn bảng câu hỏi";
 });
 </script>
+
 </body>
 </html>
