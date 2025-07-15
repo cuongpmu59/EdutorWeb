@@ -79,6 +79,31 @@ textarea {
 }
 
 /* =========================
+   Ẩn/ hiện vùng xem trước
+========================= */
+
+.preview-toggle {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.preview-toggle button {
+  background: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  transition: color 0.2s ease-in-out;
+}
+
+.preview-toggle button:hover {
+  color: #0056b3;
+}
+
+
+/* =========================
    Buttons
 ========================= */
 .form-actions {
