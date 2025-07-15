@@ -11,68 +11,60 @@
 </head>
 <body>
 
-<div class="form-layout">
-  <!-- Cột trái: Form nội dung -->
-  <div class="form-left">
-    <form id="mcForm" class="question-form" enctype="multipart/form-data">
-      <input type="hidden" id="mc_id" name="mc_id">
+<div class="form-container">
+  <form id="mcForm" class="question-form" enctype="multipart/form-data">
+    <input type="hidden" id="mc_id" name="mc_id">
 
+    <div class="form-group">
+      <label for="mc_topic">📚 Chủ đề:</label>
+      <input type="text" id="mc_topic" name="mc_topic" required>
+    </div>
+
+    <?php
+    $fields = [
+      'mc_question' => '❓ Câu hỏi',
+      'mc_answer1' => '🔸 A',
+      'mc_answer2' => '🔸 B',
+      'mc_answer3' => '🔸 C',
+      'mc_answer4' => '🔸 D'
+    ];
+    foreach ($fields as $id => $label):
+      $isTextarea = $id === 'mc_question';
+    ?>
       <div class="form-group">
-        <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
+        <label for="<?= $id ?>"><?= $label ?>:</label>
+        <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
+        <div id="preview_<?= $id ?>" class="preview-box"></div>
       </div>
+    <?php endforeach; ?>
 
-      <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
-      ?>
-        <div class="form-group">
-          <label for="<?= $id ?>">
-            <?= $label ?>
-            <span class="toggle-preview" data-target="preview_<?= $id ?>">👁️</span>
-          </label>
-          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-          <div id="preview_<?= $id ?>" class="preview-box"></div>
-        </div>
-      <?php endforeach; ?>
+    <div class="form-group">
+      <label for="mc_correct_answer">✅ Đáp án đúng:</label>
+      <select id="mc_correct_answer" name="mc_correct_answer" required>
+        <option value="">-- Chọn --</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
+    </div>
 
-      <div class="form-group">
-        <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-        <select id="mc_correct_answer" name="mc_correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
+    <div class="form-group">
+      <label for="mc_image">🖼️ Ảnh minh hoạ:</label>
+      <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
+      <button type="button" id="loadImageBtn">📂 Load ảnh</button>
+      <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
+      <br>
+      <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
+    </div>
 
-      <div class="form-group">
-        <label>🖼️ Ảnh minh hoạ:</label><br>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
-      </div>
-    </form>
-  </div>
-
-  <!-- Cột phải: Các nút thao tác -->
-  <div class="form-right">
     <div class="form-actions">
-      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
+      <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
+      <button type="reset" id="resetBtn">🔄 Làm lại</button>
       <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
       <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
     </div>
-  </div>
+  </form>
 </div>
 
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
@@ -90,6 +82,7 @@ const loadBtn = document.getElementById("loadImageBtn");
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const formData = new FormData(this);
+
   try {
     const response = await fetch("utils/mc_save.php", {
       method: "POST",
@@ -128,24 +121,28 @@ window.addEventListener("message", function (event) {
     document.getElementById("mc_answer3").value = d.answer3 || "";
     document.getElementById("mc_answer4").value = d.answer4 || "";
     document.getElementById("mc_correct_answer").value = d.correct || "";
+
     if (d.image) {
       imagePreview.src = d.image;
       imagePreview.style.display = "block";
     } else {
       imagePreview.style.display = "none";
     }
+
     if (typeof updatePreviews === "function") updatePreviews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
-loadBtn.addEventListener("click", () => imageInput.click());
+loadBtn.addEventListener("click", () => {
+  imageInput.click();
+});
 
 imageInput.addEventListener("change", function (e) {
   const file = e.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = function (e) {
       imagePreview.src = e.target.result;
       imagePreview.style.display = "block";
     };
@@ -158,7 +155,9 @@ imageInput.addEventListener("change", function (e) {
 deleteBtn.addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
+
   if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
+
   try {
     const res = await fetch("utils/mc_delete_image.php", {
       method: "POST",
@@ -170,7 +169,8 @@ deleteBtn.addEventListener("click", async () => {
       imagePreview.style.display = "none";
       imageInput.value = "";
       alert("🧹 Đã xoá ảnh!");
-      document.getElementById("saveBtn").click(); // Tự động lưu
+      // Tự động lưu lại sau khi xoá ảnh
+      document.getElementById("saveBtn").click();
     } else {
       alert("❌ Lỗi khi xoá ảnh.");
     }
@@ -182,7 +182,9 @@ deleteBtn.addEventListener("click", async () => {
 document.getElementById("deleteQuestionBtn").addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
+
   if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
+
   try {
     const res = await fetch("utils/mc_delete.php", {
       method: "POST",
@@ -203,13 +205,18 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   }
 });
 
+// Ẩn/hiện iframe
 const iframe = document.getElementById("mcIframe");
 const toggleBtn = document.getElementById("toggleIframeBtn");
+
 toggleBtn.addEventListener("click", () => {
-  iframe.style.display = (iframe.style.display === "none") ? "block" : "none";
-  toggleBtn.textContent = iframe.style.display === "none"
-    ? "🔼 Hiện bảng câu hỏi"
-    : "🔽 Ẩn bảng câu hỏi";
+  if (iframe.style.display === "none") {
+    iframe.style.display = "block";
+    toggleBtn.textContent = "🔽 Ẩn bảng câu hỏi";
+  } else {
+    iframe.style.display = "none";
+    toggleBtn.textContent = "🔼 Hiện bảng câu hỏi";
+  }
 });
 </script>
 
