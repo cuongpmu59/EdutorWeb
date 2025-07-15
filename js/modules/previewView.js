@@ -1,115 +1,25 @@
-import { updateLivePreview } from "./mathPreview.js";
-
-/**
- * Tải nội dung xem trước từ mc_preview.php
- * và hiển thị vào vùng container
- * @param {HTMLElement} container
- */
-export function render(container) {
-  fetch("mc_preview.php")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Không thể tải xem trước (${response.status})`);
-      }
-      return response.text();
-    })
-    .then(html => {
-      container.innerHTML = html;
-      renderMath(container);
-      initPreviewEvents(container);
-    })
-    .catch(error => {
-      container.innerHTML = `<div class="error-box">❌ ${error.message}</div>`;
-    });
+function renderLatex(text) {
+  if (!text) return '';
+  const inline = /\$(.+?)\$/g;
+  const display = /\$\$(.+?)\$\$/g;
+  return text
+    .replace(display, (_, expr) => `\\[${expr}\\]`)
+    .replace(inline, (_, expr) => `\\(${expr}\\)`);
 }
 
-/**
- * Kích hoạt MathJax sau khi render
- * @param {HTMLElement} scope - vùng cần render Math
- */
-function renderMath(scope = document.body) {
-  if (window.MathJax && typeof MathJax.typesetPromise === "function") {
-    MathJax.typesetPromise([scope]).catch(err => {
-      console.error("MathJax render error:", err);
-    });
-  }
-}
+function updatePreviews() {
+  const fields = ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'];
 
-/**
- * Gắn các sự kiện sau khi xem trước được render
- * @param {HTMLElement} container
- */
-function initPreviewEvents(container) {
-  const refreshBtn = container.querySelector("#refreshPreviewBtn");
-  if (refreshBtn) {
-    refreshBtn.addEventListener("click", () => {
-      render(container);
-    });
-  }
-
-  // Nếu có modal ảnh
-  const images = container.querySelectorAll(".preview-image");
-  images.forEach(img => {
-    img.addEventListener("click", () => {
-      openModal(img.src);
-    });
-  });
-
-  // Nếu có input live preview
-  const formulaInput = container.querySelector("#previewFormulaInput");
-  const previewOutput = container.querySelector("#previewFormulaOutput");
-  if (formulaInput && previewOutput) {
-    formulaInput.addEventListener("input", () => {
-      updateLivePreview(formulaInput, previewOutput);
-    });
-    updateLivePreview(formulaInput, previewOutput); // Khởi tạo ban đầu
-  }
-}
-
-/**
- * Hiển thị ảnh ở dạng modal
- * @param {string} src
- */
-function openModal(src) {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-
-  if (modal && modalImg) {
-    modalImg.src = src;
-    modal.style.display = "block";
-
-    modal.addEventListener("click", () => {
-      modal.style.display = "none";
-      modalImg.src = "";
-    });
-  } else {
-    console.warn("Modal ảnh chưa được khai báo trong DOM.");
-  }
-}
-
-function renderMathPreview(inputId, previewId) {
-  const input = document.getElementById(inputId);
-  const preview = document.getElementById(previewId);
-  if (input && preview) {
-    preview.innerHTML = '\\(' + input.value.trim() + '\\)';
-    MathJax.typesetPromise([preview]);
-  }
-}
-
-function renderMathPreviewAll() {
-  ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'].forEach(id =>
-    renderMathPreview(id, 'preview_' + id)
-  );
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', () => {
-        renderMathPreview(id, 'preview_' + id);
-      });
+  fields.forEach(id => {
+    const input = document.getElementById(id);
+    const preview = document.getElementById("preview_" + id);
+    if (input && preview) {
+      const rawText = input.value;
+      preview.innerHTML = renderLatex(rawText);
     }
   });
-});
 
+  if (typeof MathJax !== 'undefined') {
+    MathJax.typesetPromise();
+  }
+}
