@@ -1,4 +1,4 @@
-// 👉 Chuyển nội dung $...$ và $$...$$ thành \(...\) và \[...\]
+// 🔁 Chuyển $...$ và $$...$$ thành \(...\) và \[...\]
 function renderLatex(text) {
   if (!text) return '';
   const inline = /\$(.+?)\$/g;
@@ -8,7 +8,7 @@ function renderLatex(text) {
     .replace(inline, (_, expr) => `\\(${expr}\\)`);
 }
 
-// 👉 Cập nhật toàn bộ vùng xem trước
+// 🚀 Cập nhật toàn bộ vùng xem trước
 function updatePreviews() {
   const fields = ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'];
 
@@ -26,26 +26,26 @@ function updatePreviews() {
   }
 }
 
-// 👉 Toggle preview khi click biểu tượng 👁️
+// 👁️ Xử lý toggle preview khi nhấn biểu tượng
 function setupTogglePreviews() {
   const fields = ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'];
 
   fields.forEach(id => {
-    const eye = document.getElementById("eye_" + id);
-    const preview = document.getElementById("preview_" + id);
-    if (eye && preview) {
-      eye.addEventListener("click", () => {
-        preview.classList.toggle("show");
-        eye.textContent = preview.classList.contains("show") ? "🙈" : "👁️";
-        if (preview.classList.contains("show")) {
-          updatePreviews();
-        }
+    const eyeIcon = document.getElementById("eye_" + id);
+    const previewBox = document.getElementById("preview_" + id);
+
+    if (eyeIcon && previewBox) {
+      eyeIcon.addEventListener("click", () => {
+        const isShown = previewBox.classList.toggle("show");
+        eyeIcon.textContent = isShown ? "🙈" : "👁️";
+
+        if (isShown) updatePreviews();
       });
     }
   });
 }
 
-// 👉 Gắn auto-preview khi gõ nội dung
+// 📝 Tự động update khi gõ nội dung
 function setupAutoPreview() {
   const fields = ['mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4'];
 
@@ -57,8 +57,8 @@ function setupAutoPreview() {
   });
 }
 
-// 👉 Gọi setup ngay khi tải trang
-document.addEventListener("DOMContentLoaded", function () {
+// 🚦 Khởi tạo khi DOM đã sẵn sàng
+document.addEventListener("DOMContentLoaded", () => {
   setupTogglePreviews();
   setupAutoPreview();
   updatePreviews();
