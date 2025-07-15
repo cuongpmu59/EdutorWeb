@@ -5,7 +5,6 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
-// Lấy toàn bộ câu hỏi
 try {
   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
   $stmt->execute();
@@ -71,14 +70,14 @@ try {
     <tbody>
       <?php foreach ($rows as $q): ?>
         <tr>
-          <td><?= $q['mc_id'] ?></td>
-          <td><?= htmlspecialchars($q['mc_topic']) ?></td>
-          <td><?= $q['mc_question'] ?></td>
-          <td><?= $q['mc_answer1'] ?></td>
-          <td><?= $q['mc_answer2'] ?></td>
-          <td><?= $q['mc_answer3'] ?></td>
-          <td><?= $q['mc_answer4'] ?></td>
-          <td><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
+          <td data-raw="<?= $q['mc_id'] ?>"><?= $q['mc_id'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_topic']) ?>"><?= htmlspecialchars($q['mc_topic']) ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_question']) ?>"><?= $q['mc_question'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer1']) ?>"><?= $q['mc_answer1'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer2']) ?>"><?= $q['mc_answer2'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer3']) ?>"><?= $q['mc_answer3'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer4']) ?>"><?= $q['mc_answer4'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
               <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
@@ -131,7 +130,7 @@ $(document).ready(function () {
     ]
   });
 
-  // Lọc và tìm kiếm
+  // Lọc theo chủ đề
   $('#mcTable_filter').html(`
     <div class="filter-left">
       📚 Chủ đề:
@@ -170,38 +169,43 @@ $(document).ready(function () {
     $(this).fadeOut();
   });
 
-  // Gửi dữ liệu về form cha
+  // 📤 Gửi dữ liệu gốc về form cha
   function sendRowData(row) {
-    const imageSrc = $(row.node()).find('img.thumb').attr('src') || '';
-    const data = row.data();
-    window.parent.postMessage({
-      type: 'mc_select_row',
-      data: {
-        id: data[0], topic: data[1], question: data[2],
-        answer1: data[3], answer2: data[4], answer3: data[5], answer4: data[6],
-        correct: data[7], image: imageSrc
-      }
-    }, '*');
+    const $cells = $(row.node()).find('td');
+    const getRaw = i => $cells.eq(i).data('raw') || '';
+
+    const data = {
+      id: getRaw(0),
+      topic: getRaw(1),
+      question: getRaw(2),
+      answer1: getRaw(3),
+      answer2: getRaw(4),
+      answer3: getRaw(5),
+      answer4: getRaw(6),
+      correct: getRaw(7),
+      image: $cells.eq(8).find('img.thumb').attr('src') || ''
+    };
+
+    window.parent.postMessage({ type: 'mc_select_row', data }, '*');
+    if (window.MathJax) MathJax.typesetPromise(); // render lại form nếu cần
   }
 
+  // Click chọn dòng
   $('#mcTable tbody').on('click', 'tr', function () {
     table.$('tr.selected').removeClass('selected');
     $(this).addClass('selected');
     sendRowData(table.row(this));
   });
 
-  // Mũi tên lên/xuống
+  // Mũi tên lên/xuống để điều hướng
   $(document).on('keydown', function (e) {
     const selected = table.row('.selected');
     if (!selected.node()) return;
     let index = selected.index();
-    if (e.key === 'ArrowUp' && index > 0) {
-      index--;
-    } else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) {
-      index++;
-    } else {
-      return;
-    }
+    if (e.key === 'ArrowUp' && index > 0) index--;
+    else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) index++;
+    else return;
+
     e.preventDefault();
     table.$('tr.selected').removeClass('selected');
     const nextRow = table.row(index);
@@ -213,6 +217,7 @@ $(document).ready(function () {
   $('#excelFile').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function (e) {
       const data = new Uint8Array(e.target.result);
