@@ -50,7 +50,7 @@
     </div>
 
     <div class="form-group">
-      <label for="mc_image">🖼️ Ảnh minh hoạ:</label>
+      <label>🖼️ Ảnh minh hoạ:</label>
       <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
       <button type="button" id="loadImageBtn">📂 Load ảnh</button>
       <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
@@ -169,7 +169,6 @@ deleteBtn.addEventListener("click", async () => {
       imagePreview.style.display = "none";
       imageInput.value = "";
       alert("🧹 Đã xoá ảnh!");
-      // Tự động lưu lại sau khi xoá ảnh
       document.getElementById("saveBtn").click();
     } else {
       alert("❌ Lỗi khi xoá ảnh.");
@@ -205,7 +204,6 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   }
 });
 
-// Ẩn/hiện iframe
 const iframe = document.getElementById("mcIframe");
 const toggleBtn = document.getElementById("toggleIframeBtn");
 
