@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <link rel="stylesheet" href="../../css/modules/form.css">
-  <link rel="stylesheet" href="../../css/modules/preview.css">
+  <link rel="stylesheet" href="/css/main_ui.css">
+  <link rel="stylesheet" href="/css/modules/form.css">
+  <link rel="stylesheet" href="/css/modules/preview.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
@@ -54,7 +54,7 @@
         </select>
       </div>
 
-      <!-- Các nút thao tác nằm trong form -->
+      <!-- Nút thao tác -->
       <div class="form-actions">
         <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
         <button type="reset" id="resetBtn">🔄 Làm lại</button>
@@ -77,10 +77,10 @@
   </div>
 </div>
 
-<iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
+<iframe id="mcIframe" src="/pages/mc/mc_table.php" width="100%" height="500"
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
-<script src="js/modules/previewView.js"></script>
+<script src="/js/modules/previewView.js"></script>
 <script>
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
@@ -89,7 +89,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   e.preventDefault();
   const formData = new FormData(this);
   try {
-    const response = await fetch("../../utils/mc_save.php", {
+    const response = await fetch("/utils/mc_save.php", {
       method: "POST",
       body: formData
     });
@@ -163,7 +163,7 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
   if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
   if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
   try {
-    const res = await fetch("../../utils/mc_delete_image.php", {
+    const res = await fetch("/utils/mc_delete_image.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mc_id: id })
@@ -187,7 +187,7 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
   if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
   try {
-    const res = await fetch("../../utils/mc_delete.php", {
+    const res = await fetch("/utils/mc_delete.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mc_id: id })
