@@ -12,51 +12,49 @@
 </head>
 <body>
 
-<div class="form-layout">
-  <!-- Bên trái: Form nội dung -->
+<form id="mcForm" class="form-layout" enctype="multipart/form-data">
+  <input type="hidden" id="mc_id" name="mc_id">
+
+  <!-- Bên trái: Nội dung -->
   <div class="form-left">
-    <form id="mcForm" class="question-form" enctype="multipart/form-data">
-      <input type="hidden" id="mc_id" name="mc_id">
+    <div class="form-group">
+      <label for="mc_topic">📚 Chủ đề:</label>
+      <input type="text" id="mc_topic" name="mc_topic" required>
+    </div>
 
+    <?php
+    $fields = [
+      'mc_question' => '❓ Câu hỏi',
+      'mc_answer1' => '🔸 A',
+      'mc_answer2' => '🔸 B',
+      'mc_answer3' => '🔸 C',
+      'mc_answer4' => '🔸 D'
+    ];
+    foreach ($fields as $id => $label):
+      $isTextarea = $id === 'mc_question';
+    ?>
       <div class="form-group">
-        <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
+        <label for="<?= $id ?>">
+          <?= $label ?> <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
+        </label>
+        <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
+        <div id="preview_<?= $id ?>" class="preview-box"></div>
       </div>
+    <?php endforeach; ?>
 
-      <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
-      ?>
-        <div class="form-group">
-          <label for="<?= $id ?>">
-            <?= $label ?> <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
-          </label>
-          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-          <div id="preview_<?= $id ?>" class="preview-box"></div>
-        </div>
-      <?php endforeach; ?>
-
-      <div class="form-group">
-        <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-        <select id="mc_correct_answer" name="mc_correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
-    </form>
+    <div class="form-group">
+      <label for="mc_correct_answer">✅ Đáp án đúng:</label>
+      <select id="mc_correct_answer" name="mc_correct_answer" required>
+        <option value="">-- Chọn --</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
+    </div>
   </div>
 
-  <!-- Bên phải: Ảnh minh hoạ -->
+  <!-- Bên phải: Ảnh minh hoạ và các nút -->
   <div class="form-right">
     <div class="form-right-inner">
       <div class="image-box">
@@ -67,14 +65,14 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-        <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
+        <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
+        <button type="reset" id="resetBtn">🔄 Làm lại</button>
         <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
         <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
       </div>
     </div>
   </div>
-</div>
+</form>
 
 <iframe id="mcIframe" src="/pages/mc/mc_table.php" width="100%" height="500"
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
