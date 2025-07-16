@@ -56,8 +56,9 @@ $mc_topic  = trim($_POST['mc_topic']);
 $mc_q      = trim($_POST['mc_question']);
 $a1        = trim($_POST['mc_answer1']);
 $a2        = trim($_POST['mc_answer2']);
-a3        = trim($_POST['mc_answer3']);
-a4        = trim($_POST['mc_answer4']);
+$a3        = trim($_POST['mc_answer3']);
+$a4        = trim($_POST['mc_answer4']);
+
 $correct   = $_POST['mc_correct_answer'];
 $image_url = '';
 
