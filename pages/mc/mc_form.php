@@ -56,7 +56,7 @@
     </form>
   </div>
 
-  <!-- Bên phải: Ảnh minh hoạ + các nút -->
+  <!-- Bên phải: Ảnh minh hoạ -->
   <div class="form-right">
     <div class="form-right-inner">
       <div class="image-box">
@@ -116,17 +116,18 @@ window.addEventListener("message", function (event) {
   } else if (d.type === "error") {
     alert("❌ Lỗi: " + d.message);
   } else if (d.type === "mc_select_row") {
-    document.getElementById("mc_id").value = d.data.id || "";
-    document.getElementById("mc_topic").value = d.data.topic || "";
-    document.getElementById("mc_question").value = d.data.question || "";
-    document.getElementById("mc_answer1").value = d.data.answer1 || "";
-    document.getElementById("mc_answer2").value = d.data.answer2 || "";
-    document.getElementById("mc_answer3").value = d.data.answer3 || "";
-    document.getElementById("mc_answer4").value = d.data.answer4 || "";
-    document.getElementById("mc_correct_answer").value = d.data.correct || "";
+    const data = d.data;
+    document.getElementById("mc_id").value = data.id || "";
+    document.getElementById("mc_topic").value = data.topic || "";
+    document.getElementById("mc_question").value = data.question || "";
+    document.getElementById("mc_answer1").value = data.answer1 || "";
+    document.getElementById("mc_answer2").value = data.answer2 || "";
+    document.getElementById("mc_answer3").value = data.answer3 || "";
+    document.getElementById("mc_answer4").value = data.answer4 || "";
+    document.getElementById("mc_correct_answer").value = data.correct || "";
 
-    if (d.data.image) {
-      imagePreview.src = d.data.image;
+    if (data.image) {
+      imagePreview.src = data.image;
       imagePreview.style.display = "block";
     } else {
       imagePreview.style.display = "none";
