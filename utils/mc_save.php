@@ -20,8 +20,9 @@ $mc_correct = $_POST['mc_correct_answer'] ?? '';
 
 $imageUrl = null;
 $tempImageUploaded = false;
+$publicId = null;
 
-// Nếu có ảnh được upload mới
+// 📤 Nếu có ảnh upload mới → upload tạm lên Cloudinary
 if (!empty($_FILES['mc_image']['tmp_name'])) {
   $uploadResult = uploadImageToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
   if ($uploadResult['success']) {
@@ -33,16 +34,15 @@ if (!empty($_FILES['mc_image']['tmp_name'])) {
 
 try {
   if ($mc_id === '') {
-    // THÊM MỚI
+    // ✅ THÊM MỚI
     $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image)
                             VALUES (?, ?, ?, ?, ?, ?, ?, '')");
     $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct]);
 
     $newId = $conn->lastInsertId();
 
-    // Nếu có ảnh thì đổi tên và lưu URL mới
     if ($tempImageUploaded) {
-      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $newId);  // ✅ đổi tên thành mc_{mc_id}
+      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $newId);
       if ($renameResult['success']) {
         $finalUrl = $renameResult['url'];
         $updateStmt = $conn->prepare("UPDATE mc_questions SET mc_image = ? WHERE id = ?");
@@ -51,13 +51,29 @@ try {
     }
 
     echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
+
   } else {
-    // CẬP NHẬT
+    // ✅ CẬP NHẬT
     $imageClause = '';
     $params = [$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct];
 
     if ($tempImageUploaded) {
-      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $mc_id);  // ✅ đổi tên thành mc_{mc_id}
+      // 🔍 Lấy ảnh cũ từ DB
+      $stmtOld = $conn->prepare("SELECT mc_image FROM mc_questions WHERE id = ?");
+      $stmtOld->execute([$mc_id]);
+      $oldImage = $stmtOld->fetchColumn();
+
+      // 🗑️ Xoá ảnh cũ nếu có
+      if ($oldImage) {
+        preg_match('/\/([^\/]+)\.(jpg|jpeg|png|gif|webp)$/', $oldImage, $matches);
+        $oldPublicId = $matches[1] ?? null;
+        if ($oldPublicId) {
+          deleteImageFromCloudinary($oldPublicId);
+        }
+      }
+
+      // 🔄 Đổi tên ảnh mới thành mc_{id}
+      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $mc_id);
       if ($renameResult['success']) {
         $imageUrl = $renameResult['url'];
         $imageClause = ", mc_image = ?";
@@ -77,6 +93,7 @@ try {
 
     echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
   }
+
 } catch (Exception $e) {
   echo "<script>parent.postMessage({type: 'error', message: 'Lỗi CSDL: " . $e->getMessage() . "'}, '*');</script>";
 }
