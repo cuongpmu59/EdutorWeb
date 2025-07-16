@@ -1,50 +1,56 @@
 <?php
-require_once __DIR__ . '/../../../db_connection.php';
-require_once __DIR__ . '/../../../dotenv.php';
+// utils/mc_delete_image.php
 
-$id = $_POST['mc_id'] ?? '';
-if (!$id) exit("❌ Thiếu ID");
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../dotenv.php';
+require_once __DIR__ . '/../db_connection.php';
+
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
+
+header('Content-Type: application/json');
+
+Configuration::instance([
+  'cloud' => [
+    'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
+    'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
+    'api_secret' => $_ENV['CLOUDINARY_API_SECRET']
+  ],
+  'url' => [ 'secure' => true ]
+]);
+
+function respond($success, $message = '') {
+  echo json_encode(['success' => $success, 'message' => $message]);
+  exit;
+}
+
+$raw = file_get_contents("php://input");
+$data = json_decode($raw, true);
+$mc_id = $data['mc_id'] ?? '';
+
+if (!$mc_id || !is_numeric($mc_id)) {
+  respond(false, 'ID không hợp lệ.');
+}
 
 try {
+  if (!$conn) throw new Exception("Không kết nối CSDL");
+
   $stmt = $conn->prepare("SELECT mc_image_url FROM mc_questions WHERE mc_id = ?");
-  $stmt->execute([$id]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt->execute([$mc_id]);
+  $url = $stmt->fetchColumn();
 
-  if (!$row || empty($row['mc_image_url'])) exit("⚠️ Không có ảnh để xoá");
+  if (!$url) respond(false, 'Không tìm thấy ảnh để xoá.');
 
-  // Lấy public_id từ URL
-  $url = $row['mc_image_url'];
-  $parsed = parse_url($url);
-  $parts = explode('/', $parsed['path']);
-  $filename = end($parts);
-  $publicId = 'mc_questions/' . pathinfo($filename, PATHINFO_FILENAME);
+  $publicId = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_FILENAME);
 
-  // Xoá Cloudinary
-  $cloudName = getenv('CLOUDINARY_CLOUD_NAME');
-  $apiKey    = getenv('CLOUDINARY_API_KEY');
-  $apiSecret = getenv('CLOUDINARY_API_SECRET');
-  $timestamp = time();
+  $uploadApi = new UploadApi();
+  $uploadApi->destroy($publicId, [ 'invalidate' => true ]);
 
-  $signature = sha1("public_id=$publicId&timestamp=$timestamp$apiSecret");
+  $conn->prepare("UPDATE mc_questions SET mc_image_url = NULL WHERE mc_id = ?")
+       ->execute([$mc_id]);
 
-  $postFields = http_build_query([
-    'public_id' => $publicId,
-    'timestamp' => $timestamp,
-    'api_key'   => $apiKey,
-    'signature' => $signature
-  ]);
+  respond(true, 'Đã xoá ảnh.');
 
-  $ch = curl_init("https://api.cloudinary.com/v1_1/$cloudName/image/destroy");
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-  $response = curl_exec($ch);
-  curl_close($ch);
-
-  // Xoá trường ảnh trong DB
-  $stmt = $conn->prepare("UPDATE mc_questions SET mc_image_url = NULL WHERE mc_id = ?");
-  $stmt->execute([$id]);
-
-  echo "✅ Đã xoá ảnh: $publicId";
 } catch (Exception $e) {
-  echo "❌ Lỗi: " . $e->getMessage();
+  respond(false, 'Lỗi: ' . $e->getMessage());
 }
