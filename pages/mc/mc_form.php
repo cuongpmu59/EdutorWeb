@@ -53,18 +53,10 @@
           <option value="D">D</option>
         </select>
       </div>
-
-      <!-- Nút thao tác -->
-      <div class="form-actions">
-        <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
-        <button type="reset" id="resetBtn">🔄 Làm lại</button>
-        <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-        <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
-      </div>
     </form>
   </div>
 
-  <!-- Bên phải: Ảnh minh hoạ -->
+  <!-- Bên phải: Ảnh minh hoạ + các nút -->
   <div class="form-right">
     <div class="form-right-inner">
       <div class="image-box">
@@ -72,6 +64,13 @@
         <button type="button" id="loadImageBtn">📂 Load ảnh</button>
         <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
         <img id="mc_imagePreview" src="">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
+        <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
+        <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
+        <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
       </div>
     </div>
   </div>
@@ -93,7 +92,6 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
       method: "POST",
       body: formData
     });
-
     const result = await response.text();
     const tempFrame = document.createElement("iframe");
     tempFrame.style.display = "none";
@@ -107,37 +105,38 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
 });
 
 window.addEventListener("message", function (event) {
-  if (event.data.type === "saved") {
+  const d = event.data;
+  if (d.type === "saved") {
     alert("✅ Đã lưu thành công!");
     const iframe = document.getElementById("mcIframe");
     iframe.style.display = "block";
     iframe.src = iframe.src;
     document.getElementById("mcForm").reset();
     imagePreview.style.display = "none";
-  } else if (event.data.type === "error") {
-    alert("❌ Lỗi: " + event.data.message);
-  }
+  } else if (d.type === "error") {
+    alert("❌ Lỗi: " + d.message);
+  } else if (d.type === "mc_select_row") {
+    document.getElementById("mc_id").value = d.data.id || "";
+    document.getElementById("mc_topic").value = d.data.topic || "";
+    document.getElementById("mc_question").value = d.data.question || "";
+    document.getElementById("mc_answer1").value = d.data.answer1 || "";
+    document.getElementById("mc_answer2").value = d.data.answer2 || "";
+    document.getElementById("mc_answer3").value = d.data.answer3 || "";
+    document.getElementById("mc_answer4").value = d.data.answer4 || "";
+    document.getElementById("mc_correct_answer").value = d.data.correct || "";
 
-  if (event.data.type === "mc_select_row") {
-    const d = event.data.data;
-    document.getElementById("mc_id").value = d.id || "";
-    document.getElementById("mc_topic").value = d.topic || "";
-    document.getElementById("mc_question").value = d.question || "";
-    document.getElementById("mc_answer1").value = d.answer1 || "";
-    document.getElementById("mc_answer2").value = d.answer2 || "";
-    document.getElementById("mc_answer3").value = d.answer3 || "";
-    document.getElementById("mc_answer4").value = d.answer4 || "";
-    document.getElementById("mc_correct_answer").value = d.correct || "";
-    if (d.image) {
-      imagePreview.src = d.image;
+    if (d.data.image) {
+      imagePreview.src = d.data.image;
       imagePreview.style.display = "block";
     } else {
       imagePreview.style.display = "none";
     }
+
     if (typeof updatePreviews === "function") {
       updatePreviews();
       if (window.MathJax) MathJax.typesetPromise();
     }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
@@ -162,6 +161,7 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
   if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
+
   try {
     const res = await fetch("/utils/mc_delete_image.php", {
       method: "POST",
@@ -186,6 +186,7 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
   if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
+
   try {
     const res = await fetch("/utils/mc_delete.php", {
       method: "POST",
@@ -206,12 +207,11 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   }
 });
 
-const toggleBtn = document.getElementById("toggleIframeBtn");
-toggleBtn.addEventListener("click", () => {
+document.getElementById("toggleIframeBtn").addEventListener("click", () => {
   const iframe = document.getElementById("mcIframe");
   const show = iframe.style.display === "none";
   iframe.style.display = show ? "block" : "none";
-  toggleBtn.textContent = show ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
+  toggleIframeBtn.textContent = show ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
 });
 </script>
 
