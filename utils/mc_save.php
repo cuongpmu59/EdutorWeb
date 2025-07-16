@@ -11,13 +11,15 @@ error_reporting(E_ALL);
 
 header('Content-Type: text/html; charset=UTF-8');
 
+// 🧹 Hàm làm sạch dữ liệu đầu vào
 function sanitize($value) {
   return trim(htmlspecialchars($value));
 }
 
-$mc_id = $_POST['mc_id'] ?? '';
-$mc_topic = sanitize($_POST['mc_topic'] ?? '');
-$mc_question = $_POST['mc_question'] ?? '';
+// 📥 Nhận dữ liệu từ form
+$mc_id      = $_POST['mc_id'] ?? '';
+$mc_topic   = sanitize($_POST['mc_topic'] ?? '');
+$mc_question= $_POST['mc_question'] ?? '';
 $mc_answer1 = $_POST['mc_answer1'] ?? '';
 $mc_answer2 = $_POST['mc_answer2'] ?? '';
 $mc_answer3 = $_POST['mc_answer3'] ?? '';
@@ -28,7 +30,7 @@ $imageUrl = null;
 $tempImageUploaded = false;
 $publicId = null;
 
-// 📤 Upload ảnh tạm thời nếu có
+// 📤 Upload ảnh tạm nếu có
 if (!empty($_FILES['mc_image']['tmp_name'])) {
   try {
     $uploadResult = uploadImageToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
@@ -45,13 +47,15 @@ if (!empty($_FILES['mc_image']['tmp_name'])) {
 
 try {
   if ($mc_id === '') {
-    // ➕ THÊM MỚI
-    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, '')");
+    // ➕ Thêm mới
+    $stmt = $conn->prepare("INSERT INTO mc_questions 
+      (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, '')");
     $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct]);
 
     $newId = $conn->lastInsertId();
 
+    // 🔄 Nếu có ảnh thì đổi tên ảnh temp sang mc_{id}
     if ($tempImageUploaded) {
       $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $newId);
       if ($renameResult['success']) {
@@ -62,27 +66,29 @@ try {
     }
 
     echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
+
   } else {
-    // 🔁 CẬP NHẬT
+    // 🔁 Cập nhật
     $imageClause = '';
     $params = [$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct];
 
     if ($tempImageUploaded) {
-      // 📥 Lấy ảnh cũ từ DB
+      // 🗂 Lấy ảnh cũ từ DB
       $stmtOld = $conn->prepare("SELECT mc_image FROM mc_questions WHERE id = ?");
       $stmtOld->execute([$mc_id]);
       $oldImage = $stmtOld->fetchColumn();
 
-      // 🧹 Xoá ảnh cũ trên Cloudinary nếu có
+      // 🧹 Xoá ảnh cũ nếu tồn tại
       if ($oldImage) {
-        preg_match('/\/([^\/]+)\.(jpg|jpeg|png|gif|webp)$/', $oldImage, $matches);
-        $oldPublicId = $matches[1] ?? null;
-        if ($oldPublicId) {
-          deleteImageFromCloudinary($oldPublicId);
+        if (preg_match('/\/([^\/]+)\.(jpg|jpeg|png|gif|webp)$/', $oldImage, $matches)) {
+          $oldPublicId = $matches[1] ?? null;
+          if ($oldPublicId) {
+            deleteImageFromCloudinary($oldPublicId);
+          }
         }
       }
 
-      // 🔄 Đổi tên ảnh mới
+      // 🔄 Đổi tên ảnh tạm sang mc_{id}
       $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $mc_id);
       if ($renameResult['success']) {
         $imageUrl = $renameResult['url'];
@@ -94,8 +100,9 @@ try {
     $params[] = $mc_id;
 
     $sql = "UPDATE mc_questions SET
-              mc_topic = ?, mc_question = ?, mc_answer1 = ?, mc_answer2 = ?, mc_answer3 = ?, mc_answer4 = ?, mc_correct_answer = ?
-              $imageClause
+              mc_topic = ?, mc_question = ?, mc_answer1 = ?, mc_answer2 = ?, 
+              mc_answer3 = ?, mc_answer4 = ?, mc_correct_answer = ? 
+              $imageClause 
             WHERE id = ?";
 
     $stmt = $conn->prepare($sql);
