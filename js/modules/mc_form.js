@@ -2,58 +2,48 @@
 
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
-const saveBtn = document.getElementById("saveBtn");
-const toggleIframeBtn = document.getElementById("toggleIframeBtn");
+const iframe = document.getElementById("mcIframe");
 
-// ==== Load ảnh xem trước ====
-document.getElementById("loadImageBtn").addEventListener("click", () => imageInput.click());
-
-imageInput.addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    imagePreview.style.display = "none";
-  }
-});
-
-// ==== Gửi form lưu câu hỏi ====
-document.getElementById("mcForm").addEventListener("submit", async function (e) {
+// Gửi form lưu câu hỏi
+const form = document.getElementById("mcForm");
+form.addEventListener("submit", async function (e) {
   e.preventDefault();
-  saveBtn.disabled = true;
 
   const formData = new FormData(this);
+
   try {
-    const res = await fetch("/utils/mc_save.php", {
+    const response = await fetch("/utils/mc_save.php", {
       method: "POST",
       body: formData
     });
-    const json = await res.json();
 
-    if (json.success) {
-      alert("✅ Đã lưu thành công!");
-      document.getElementById("mcForm").reset();
+    const text = await response.text();
+    console.log("🔍 Phản hồi từ server:", text);
+
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (jsonErr) {
+      alert("❌ Server không trả về JSON hợp lệ:\n" + text);
+      return;
+    }
+
+    if (result.success) {
+      alert("✅ " + result.message);
+      form.reset();
       imagePreview.style.display = "none";
-
-      const iframe = document.getElementById("mcIframe");
       iframe.style.display = "block";
       iframe.src = iframe.src;
+      if (result.id) window.postMessage({ type: "mc_saved", id: result.id }, "*");
     } else {
-      alert("❌ " + (json.message || "Lỗi khi lưu."));
+      alert("❌ " + (result.message || "Lỗi không xác định"));
     }
   } catch (err) {
-    alert("❌ Lỗi gửi yêu cầu: " + err.message);
+    alert("❌ Lỗi kết nối: " + err.message);
   }
-
-  saveBtn.disabled = false;
 });
 
-// ==== Nhận dữ liệu khi chọn dòng bảng ====
+// Nhận dữ liệu từ iframe khi chọn dòng
 window.addEventListener("message", function (event) {
   const d = event.data;
   if (d.type === "mc_select_row") {
@@ -79,12 +69,31 @@ window.addEventListener("message", function (event) {
       if (window.MathJax) MathJax.typesetPromise();
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
-// ==== Xoá ảnh minh hoạ ====
-document.getElementById("deleteImageBtn").addEventListener("click", async () => {
+// Nút chọn ảnh
+const loadImageBtn = document.getElementById("loadImageBtn");
+loadImageBtn.addEventListener("click", () => imageInput.click());
+
+imageInput.addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      imagePreview.src = e.target.result;
+      imagePreview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else {
+    imagePreview.style.display = "none";
+  }
+});
+
+// Nút xoá ảnh
+const deleteImageBtn = document.getElementById("deleteImageBtn");
+deleteImageBtn.addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
   if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
@@ -100,7 +109,7 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
       imagePreview.style.display = "none";
       imageInput.value = "";
       alert("🧹 Đã xoá ảnh!");
-      saveBtn.click();
+      document.getElementById("saveBtn").click();
     } else {
       alert("❌ Lỗi khi xoá ảnh.");
     }
@@ -109,8 +118,9 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
   }
 });
 
-// ==== Xoá câu hỏi ====
-document.getElementById("deleteQuestionBtn").addEventListener("click", async () => {
+// Nút xoá câu hỏi
+const deleteQuestionBtn = document.getElementById("deleteQuestionBtn");
+deleteQuestionBtn.addEventListener("click", async () => {
   const id = document.getElementById("mc_id").value;
   if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
   if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
@@ -124,9 +134,9 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
     const result = await res.json();
     if (result.success) {
       alert("🗑️ Đã xoá câu hỏi!");
-      document.getElementById("mcForm").reset();
+      form.reset();
       imagePreview.style.display = "none";
-      document.getElementById("mcIframe").src = document.getElementById("mcIframe").src;
+      iframe.src = iframe.src;
     } else {
       alert("❌ Xoá thất bại.");
     }
@@ -135,9 +145,9 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   }
 });
 
-// ==== Toggle bảng câu hỏi ====
+// Nút ẩn/hiện iframe
+const toggleIframeBtn = document.getElementById("toggleIframeBtn");
 toggleIframeBtn.addEventListener("click", () => {
-  const iframe = document.getElementById("mcIframe");
   const show = iframe.style.display === "none";
   iframe.style.display = show ? "block" : "none";
   toggleIframeBtn.textContent = show ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
