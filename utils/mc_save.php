@@ -1,131 +1,82 @@
 <?php
 require_once __DIR__ . '/../../db_connection.php';
 require_once __DIR__ . '/../../dotenv.php';
+require_once __DIR__ . '/cloudinary_upload.php';
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+header('Content-Type: text/html; charset=UTF-8');
 
-// Chỉ chấp nhận POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-  exit('❌ Chỉ chấp nhận POST');
+function sanitize($value) {
+  return trim(htmlspecialchars($value));
 }
 
-// Nhận dữ liệu
-$id       = $_POST['mc_id'] ?? '';
-$topic    = $_POST['mc_topic'] ?? '';
-$question = $_POST['mc_question'] ?? '';
-$answer1  = $_POST['mc_answer1'] ?? '';
-$answer2  = $_POST['mc_answer2'] ?? '';
-$answer3  = $_POST['mc_answer3'] ?? '';
-$answer4  = $_POST['mc_answer4'] ?? '';
-$correct  = $_POST['mc_correct_answer'] ?? '';
-$imageUrl = '';
-$publicId = '';
+$mc_id = $_POST['mc_id'] ?? '';
+$mc_topic = sanitize($_POST['mc_topic'] ?? '');
+$mc_question = $_POST['mc_question'] ?? '';
+$mc_answer1 = $_POST['mc_answer1'] ?? '';
+$mc_answer2 = $_POST['mc_answer2'] ?? '';
+$mc_answer3 = $_POST['mc_answer3'] ?? '';
+$mc_answer4 = $_POST['mc_answer4'] ?? '';
+$mc_correct = $_POST['mc_correct_answer'] ?? '';
 
-// === Upload ảnh tạm nếu có ===
-if (isset($_FILES['mc_image']) && $_FILES['mc_image']['error'] === UPLOAD_ERR_OK) {
-  $tmpName   = $_FILES['mc_image']['tmp_name'];
-  $imageData = base64_encode(file_get_contents($tmpName));
-  $mimeType  = mime_content_type($tmpName);
+$imageUrl = null;
+$tempImageUploaded = false;
 
-  $cloudName    = getenv('CLOUDINARY_CLOUD_NAME');
-  $uploadPreset = getenv('CLOUDINARY_UPLOAD_PRESET');
-  $uploadUrl    = "https://api.cloudinary.com/v1_1/$cloudName/image/upload";
-
-  $postData = [
-    'file' => "data:$mimeType;base64,$imageData",
-    'upload_preset' => $uploadPreset,
-    'folder' => 'mc_questions'
-  ];
-
-  $ch = curl_init($uploadUrl);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-  $response = curl_exec($ch);
-  curl_close($ch);
-
-  $result = json_decode($response, true);
-  if (isset($result['secure_url'])) {
-    $imageUrl = $result['secure_url'];
-    $publicId = $result['public_id']; // Tên gốc trên Cloudinary
+// Nếu có ảnh được upload mới
+if (!empty($_FILES['mc_image']['tmp_name'])) {
+  $uploadResult = uploadImageToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
+  if ($uploadResult['success']) {
+    $imageUrl = $uploadResult['url'];
+    $publicId = $uploadResult['public_id'];
+    $tempImageUploaded = true;
   }
 }
 
 try {
-  // === Cập nhật ===
-  if ($id) {
-    $stmt = $conn->prepare("
-      UPDATE mc_questions SET
-        mc_topic = ?, mc_question = ?,
-        mc_answer1 = ?, mc_answer2 = ?, mc_answer3 = ?, mc_answer4 = ?,
-        mc_correct_answer = ?, mc_image_url = ?
-      WHERE mc_id = ?
-    ");
-    $stmt->execute([
-      $topic, $question,
-      $answer1, $answer2, $answer3, $answer4,
-      $correct, $imageUrl, $id
-    ]);
-  } else {
-    // === Thêm mới ===
-    $stmt = $conn->prepare("
-      INSERT INTO mc_questions (
-        mc_topic, mc_question,
-        mc_answer1, mc_answer2, mc_answer3, mc_answer4,
-        mc_correct_answer, mc_image_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([
-      $topic, $question,
-      $answer1, $answer2, $answer3, $answer4,
-      $correct, $imageUrl
-    ]);
+  if ($mc_id === '') {
+    // THÊM MỚI
+    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, '')");
+    $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct]);
 
-    // Lấy ID vừa chèn
-    $id = $conn->lastInsertId();
+    $newId = $conn->lastInsertId();
 
-    // === Đổi tên ảnh nếu có ===
-    if (!empty($publicId)) {
-      $newPublicId = 'mc_questions/mc_' . $id;
-
-      $timestamp = time();
-      $apiKey    = getenv('CLOUDINARY_API_KEY');
-      $apiSecret = getenv('CLOUDINARY_API_SECRET');
-
-      $signatureData = "from_public_id=$publicId&to_public_id=$newPublicId&timestamp=$timestamp$apiSecret";
-      $signature = sha1($signatureData);
-
-      $renameData = [
-        'from_public_id' => $publicId,
-        'to_public_id'   => $newPublicId,
-        'timestamp'      => $timestamp,
-        'api_key'        => $apiKey,
-        'signature'      => $signature
-      ];
-
-      $renameUrl = "https://api.cloudinary.com/v1_1/$cloudName/image/rename";
-
-      $ch2 = curl_init($renameUrl);
-      curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch2, CURLOPT_POST, true);
-      curl_setopt($ch2, CURLOPT_POSTFIELDS, http_build_query($renameData));
-      $renameResponse = curl_exec($ch2);
-      curl_close($ch2);
-
-      $renameResult = json_decode($renameResponse, true);
-
-      if (!empty($renameResult['secure_url'])) {
-        $imageUrl = $renameResult['secure_url'];
-
-        // Cập nhật lại URL trong bảng
-        $conn->prepare("UPDATE mc_questions SET mc_image_url = ? WHERE mc_id = ?")
-             ->execute([$imageUrl, $id]);
+    // Nếu có ảnh thì đổi tên và lưu URL mới
+    if ($tempImageUploaded) {
+      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $newId);  // ✅ đổi tên thành mc_{mc_id}
+      if ($renameResult['success']) {
+        $finalUrl = $renameResult['url'];
+        $updateStmt = $conn->prepare("UPDATE mc_questions SET mc_image = ? WHERE id = ?");
+        $updateStmt->execute([$finalUrl, $newId]);
       }
     }
-  }
 
-  // ✅ Thành công
-  echo '<script>parent.postMessage({ type: "saved" }, "*");</script>';
-} catch (PDOException $e) {
-  echo '<script>parent.postMessage({ type: "error", message: "' . $e->getMessage() . '" }, "*");</script>';
+    echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
+  } else {
+    // CẬP NHẬT
+    $imageClause = '';
+    $params = [$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct];
+
+    if ($tempImageUploaded) {
+      $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $mc_id);  // ✅ đổi tên thành mc_{mc_id}
+      if ($renameResult['success']) {
+        $imageUrl = $renameResult['url'];
+        $imageClause = ", mc_image = ?";
+        $params[] = $imageUrl;
+      }
+    }
+
+    $params[] = $mc_id;
+
+    $sql = "UPDATE mc_questions SET
+              mc_topic = ?, mc_question = ?, mc_answer1 = ?, mc_answer2 = ?, mc_answer3 = ?, mc_answer4 = ?, mc_correct_answer = ?
+              $imageClause
+            WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+
+    echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
+  }
+} catch (Exception $e) {
+  echo "<script>parent.postMessage({type: 'error', message: 'Lỗi CSDL: " . $e->getMessage() . "'}, '*');</script>";
 }
