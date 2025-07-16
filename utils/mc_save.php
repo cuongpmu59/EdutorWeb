@@ -1,7 +1,5 @@
 <?php
-require __DIR__ . '/../../db_connection.php';
-
-//require_once __DIR__ . '/../../db_connection.php';
+require_once __DIR__ . '/../../db_connection.php';
 require_once __DIR__ . '/../../dotenv.php';
 require_once __DIR__ . '/cloudinary_upload.php';
 require_once __DIR__ . '/cloudinary_rename.php';
