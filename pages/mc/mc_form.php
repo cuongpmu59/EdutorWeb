@@ -87,7 +87,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   e.preventDefault();
   const formData = new FormData(this);
   try {
-    const response = await fetch("utils/mc_save.php", {
+    const response = await fetch("../../utils/mc_save.php", {
     method: "POST",
     body: formData
       });
