@@ -53,10 +53,18 @@
           <option value="D">D</option>
         </select>
       </div>
+
+      <!-- Các nút thao tác nằm trong form -->
+      <div class="form-actions">
+        <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
+        <button type="reset" id="resetBtn">🔄 Làm lại</button>
+        <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
+        <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
+      </div>
     </form>
   </div>
 
-  <!-- Bên phải: Ảnh và nút -->
+  <!-- Bên phải: Ảnh minh hoạ -->
   <div class="form-right">
     <div class="form-right-inner">
       <div class="image-box">
@@ -64,12 +72,6 @@
         <button type="button" id="loadImageBtn">📂 Load ảnh</button>
         <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
         <img id="mc_imagePreview" src="">
-      </div>
-      <div class="form-actions">
-        <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-        <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
-        <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-        <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
       </div>
     </div>
   </div>
@@ -83,16 +85,15 @@
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
 
-
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-  const form = document.getElementById("mcForm");
-  const formData = new FormData(form);
+  const formData = new FormData(this);
   try {
     const response = await fetch("../../utils/mc_save.php", {
       method: "POST",
       body: formData
     });
+
     const result = await response.text();
     const tempFrame = document.createElement("iframe");
     tempFrame.style.display = "none";
@@ -105,12 +106,11 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
   }
 });
 
-
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
     alert("✅ Đã lưu thành công!");
     const iframe = document.getElementById("mcIframe");
-    iframe.style.display = "block"; 
+    iframe.style.display = "block";
     iframe.src = iframe.src;
     document.getElementById("mcForm").reset();
     imagePreview.style.display = "none";
