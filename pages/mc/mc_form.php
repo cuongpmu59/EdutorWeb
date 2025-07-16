@@ -83,15 +83,16 @@
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
 
+
 document.getElementById("mcForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-  const formData = new FormData(this);
+  const form = document.getElementById("mcForm");
+  const formData = new FormData(form);
   try {
     const response = await fetch("../../utils/mc_save.php", {
       method: "POST",
-    body: formData
-      });
-
+      body: formData
+    });
     const result = await response.text();
     const tempFrame = document.createElement("iframe");
     tempFrame.style.display = "none";
@@ -103,6 +104,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
     alert("❌ Lỗi khi gửi dữ liệu: " + error.message);
   }
 });
+
 
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
