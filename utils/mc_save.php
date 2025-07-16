@@ -1,103 +1,79 @@
 <?php
 require_once __DIR__ . '/../db_connection.php';
 require_once __DIR__ . '/../dotenv.php';
-require_once __DIR__ . '/../cloudinary_upload.php';
-require_once __DIR__ . '/../cloudinary_rename.php';
+require_once __DIR__ . '/cloudinary_upload.php';
+require_once __DIR__ . '/cloudinary_rename.php';
 
-header("Content-Type: text/html; charset=UTF-8");
-header("X-Frame-Options: SAMEORIGIN");
+header('Content-Type: application/json');
 
-function sanitize($input) {
-  return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+function respond($success, $message = '', $extra = []) {
+  echo json_encode(array_merge([
+    'success' => $success,
+    'message' => $message
+  ], $extra));
+  exit;
 }
 
+if (!isset($_POST['mc_topic'], $_POST['mc_question'], $_POST['mc_answer1'], $_POST['mc_correct_answer'])) {
+  respond(false, 'Thiếu dữ liệu bắt buộc.');
+}
+
+$mc_id     = $_POST['mc_id'] ?? '';
+$mc_topic  = trim($_POST['mc_topic']);
+$mc_q      = trim($_POST['mc_question']);
+$a1        = trim($_POST['mc_answer1']);
+$a2        = trim($_POST['mc_answer2']);
+$a3        = trim($_POST['mc_answer3']);
+$a4        = trim($_POST['mc_answer4']);
+$correct   = $_POST['mc_correct_answer'];
+$image_url = '';
+
 try {
-  // ===== LẤY DỮ LIỆU TỪ FORM =====
-  $mc_id             = isset($_POST['mc_id']) ? intval($_POST['mc_id']) : 0;
-  $mc_topic          = sanitize($_POST['mc_topic'] ?? '');
-  $mc_question       = sanitize($_POST['mc_question'] ?? '');
-  $mc_answer1        = sanitize($_POST['mc_answer1'] ?? '');
-  $mc_answer2        = sanitize($_POST['mc_answer2'] ?? '');
-  $mc_answer3        = sanitize($_POST['mc_answer3'] ?? '');
-  $mc_answer4        = sanitize($_POST['mc_answer4'] ?? '');
-  $mc_correct_answer = sanitize($_POST['mc_correct_answer'] ?? '');
+  if (!$conn) throw new Exception('Không kết nối được CSDL');
 
-  if (!$mc_topic || !$mc_question || !$mc_answer1 || !$mc_answer2 || !$mc_answer3 || !$mc_answer4 || !$mc_correct_answer) {
-    echo "<script>parent.postMessage({type:'error', message:'Vui lòng điền đầy đủ thông tin.'}, '*');</script>";
-    exit;
+  // === UPLOAD ẢNH nếu có ===
+  if (!empty($_FILES['mc_image']['tmp_name'])) {
+    $uploadRes = uploadToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
+    if (!$uploadRes['secure_url']) throw new Exception('Không upload được ảnh.');
+    $image_url = $uploadRes['secure_url'];
+    $public_id = $uploadRes['public_id'];
   }
 
-  $image_url = null;
-
-  // ===== XỬ LÝ ẢNH MỚI =====
-  if (isset($_FILES['mc_image']) && $_FILES['mc_image']['error'] === UPLOAD_ERR_OK) {
-    $tempPath = $_FILES['mc_image']['tmp_name'];
-    $publicIdTemp = 'temp_' . uniqid();
-    $uploadResult = cloudinary_upload($tempPath, $publicIdTemp);
-
-    if ($uploadResult && isset($uploadResult['secure_url'])) {
-      $image_url = $uploadResult['secure_url'];
-    }
-  }
-
-  // ===== THÊM MỚI =====
-  if ($mc_id === 0) {
-    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([
-      $mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer, $image_url
-    ]);
-
+  // === THÊM MỚI ===
+  if ($mc_id === '') {
+    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$mc_topic, $mc_q, $a1, $a2, $a3, $a4, $correct, $image_url]);
     $newId = $conn->lastInsertId();
 
-    // Nếu có ảnh thì rename thành pic_ID
-    if ($image_url) {
-      $renamedUrl = cloudinary_rename(basename($image_url), 'pic_' . $newId);
+    // Đổi tên ảnh nếu có
+    if (!empty($image_url)) {
+      $newPublicId = 'pic_' . $newId;
+      $renamedUrl = renameCloudinaryImage($public_id, $newPublicId);
       if ($renamedUrl) {
         $conn->prepare("UPDATE mc_questions SET mc_image_url = ? WHERE mc_id = ?")
              ->execute([$renamedUrl, $newId]);
       }
     }
-
-    echo "<script>parent.postMessage({type:'saved', id: $newId}, '*');</script>";
-    exit;
+    respond(true, 'Đã thêm mới', ['id' => $newId]);
   }
 
-  // ===== CẬP NHẬT =====
-  $sql = "UPDATE mc_questions SET 
-            mc_topic = ?, 
-            mc_question = ?, 
-            mc_answer1 = ?, 
-            mc_answer2 = ?, 
-            mc_answer3 = ?, 
-            mc_answer4 = ?, 
-            mc_correct_answer = ?";
+  // === CẬP NHẬT ===
+  if (!is_numeric($mc_id)) throw new Exception('ID không hợp lệ.');
+  $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=? WHERE mc_id=?");
+  $stmt->execute([$mc_topic, $mc_q, $a1, $a2, $a3, $a4, $correct, $mc_id]);
 
-  $params = [$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer];
-
-  if ($image_url) {
-    // Nếu upload ảnh mới khi cập nhật, thì ghi đè
-    $sql .= ", mc_image_url = ?";
-    $params[] = $image_url;
-  }
-
-  $sql .= " WHERE mc_id = ?";
-  $params[] = $mc_id;
-
-  $stmt = $conn->prepare($sql);
-  $stmt->execute($params);
-
-  // Nếu có ảnh, rename nó theo pic_ID
-  if ($image_url) {
-    $renamedUrl = cloudinary_rename(basename($image_url), 'pic_' . $mc_id);
+  // Nếu có ảnh mới -> cập nhật lại ảnh
+  if (!empty($image_url)) {
+    $newPublicId = 'pic_' . $mc_id;
+    $renamedUrl = renameCloudinaryImage($public_id, $newPublicId);
     if ($renamedUrl) {
       $conn->prepare("UPDATE mc_questions SET mc_image_url = ? WHERE mc_id = ?")
            ->execute([$renamedUrl, $mc_id]);
     }
   }
 
-  echo "<script>parent.postMessage({type:'saved', id: $mc_id}, '*');</script>";
+  respond(true, 'Đã cập nhật');
 
 } catch (Exception $e) {
-  echo "<script>parent.postMessage({type:'error', message:'" . $e->getMessage() . "'}, '*');</script>";
+  respond(false, $e->getMessage());
 }
