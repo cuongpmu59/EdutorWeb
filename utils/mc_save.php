@@ -14,25 +14,18 @@ function respond($success, $message = '', $extra = []) {
   exit;
 }
 
-function uploadToCloudinary($filePath, $publicId) {
-  $cloudName = env('CLOUDINARY_CLOUD_NAME');
-  $apiKey    = env('CLOUDINARY_API_KEY');
-  $apiSecret = env('CLOUDINARY_API_SECRET');
+function uploadToCloudinaryUnsigned($filePath, $publicId) {
+  $cloudName     = env('CLOUDINARY_CLOUD_NAME');
+  $uploadPreset  = env('CLOUDINARY_UPLOAD_PRESET'); // Preset bạn tạo trong Cloudinary dashboard
 
-  if (!$cloudName || !$apiKey || !$apiSecret) {
-    throw new Exception("Thiếu cấu hình Cloudinary trong .env");
+  if (!$cloudName || !$uploadPreset) {
+    throw new Exception("Thiếu CLOUDINARY_CLOUD_NAME hoặc CLOUDINARY_UPLOAD_PRESET trong .env");
   }
 
-  $timestamp = time();
-  $toSign    = "public_id=$publicId&timestamp=$timestamp";
-  $signature = sha1($toSign . $apiSecret);
-
   $post = [
-    'file'      => new CURLFile($filePath),
-    'api_key'   => $apiKey,
-    'timestamp' => $timestamp,
-    'public_id' => $publicId,
-    'signature' => $signature
+    'file'           => new CURLFile($filePath),
+    'upload_preset'  => $uploadPreset,
+    'public_id'      => $publicId,
   ];
 
   $ch = curl_init("https://api.cloudinary.com/v1_1/$cloudName/image/upload");
@@ -80,7 +73,7 @@ try {
   // === Upload ảnh nếu có ===
   if (!empty($_FILES['mc_image']['tmp_name'])) {
     $publicId  = $mc_id ? 'pic_' . $mc_id : 'mc_temp_' . uniqid();
-    $image_url = uploadToCloudinary($_FILES['mc_image']['tmp_name'], $publicId);
+    $image_url = uploadToCloudinaryUnsigned($_FILES['mc_image']['tmp_name'], $publicId);
   }
 
   // === THÊM MỚI ===
