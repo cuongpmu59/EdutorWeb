@@ -159,7 +159,7 @@ document.getElementById("deleteImageBtn").addEventListener("click", async () => 
   if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
   if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
   try {
-    const res = await fetch("utils/mc_delete_image.php", {
+    const res = await fetch("../../utils/mc_delete_image.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mc_id: id })
@@ -183,7 +183,7 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
   if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
   try {
-    const res = await fetch("utils/mc_delete.php", {
+    const res = await fetch("../../utils/mc_delete.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mc_id: id })
