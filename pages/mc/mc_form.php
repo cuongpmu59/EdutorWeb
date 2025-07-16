@@ -107,7 +107,9 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
 window.addEventListener("message", function (event) {
   if (event.data.type === "saved") {
     alert("✅ Đã lưu thành công!");
-    document.getElementById("mcIframe").src = document.getElementById("mcIframe").src;
+    const iframe = document.getElementById("mcIframe");
+    iframe.style.display = "block"; 
+    iframe.src = iframe.src;
     document.getElementById("mcForm").reset();
     imagePreview.style.display = "none";
   } else if (event.data.type === "error") {
