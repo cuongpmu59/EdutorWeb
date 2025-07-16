@@ -2,6 +2,12 @@
 require_once __DIR__ . '/../../db_connection.php';
 require_once __DIR__ . '/../../dotenv.php';
 require_once __DIR__ . '/cloudinary_upload.php';
+require_once __DIR__ . '/cloudinary_rename.php';
+require_once __DIR__ . '/delete_cloudinary_image.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -22,19 +28,24 @@ $imageUrl = null;
 $tempImageUploaded = false;
 $publicId = null;
 
-// 📤 Nếu có ảnh upload mới → upload tạm lên Cloudinary
+// 📤 Upload ảnh tạm thời nếu có
 if (!empty($_FILES['mc_image']['tmp_name'])) {
-  $uploadResult = uploadImageToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
-  if ($uploadResult['success']) {
-    $imageUrl = $uploadResult['url'];
-    $publicId = $uploadResult['public_id'];
-    $tempImageUploaded = true;
+  try {
+    $uploadResult = uploadImageToCloudinary($_FILES['mc_image']['tmp_name'], 'mc_temp');
+    if ($uploadResult['success']) {
+      $imageUrl = $uploadResult['url'];
+      $publicId = $uploadResult['public_id'];
+      $tempImageUploaded = true;
+    }
+  } catch (Exception $e) {
+    echo "<script>parent.postMessage({type: 'error', message: 'Lỗi upload ảnh: " . $e->getMessage() . "'}, '*');</script>";
+    exit;
   }
 }
 
 try {
   if ($mc_id === '') {
-    // ✅ THÊM MỚI
+    // ➕ THÊM MỚI
     $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image)
                             VALUES (?, ?, ?, ?, ?, ?, ?, '')");
     $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct]);
@@ -51,19 +62,18 @@ try {
     }
 
     echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
-
   } else {
-    // ✅ CẬP NHẬT
+    // 🔁 CẬP NHẬT
     $imageClause = '';
     $params = [$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct];
 
     if ($tempImageUploaded) {
-      // 🔍 Lấy ảnh cũ từ DB
+      // 📥 Lấy ảnh cũ từ DB
       $stmtOld = $conn->prepare("SELECT mc_image FROM mc_questions WHERE id = ?");
       $stmtOld->execute([$mc_id]);
       $oldImage = $stmtOld->fetchColumn();
 
-      // 🗑️ Xoá ảnh cũ nếu có
+      // 🧹 Xoá ảnh cũ trên Cloudinary nếu có
       if ($oldImage) {
         preg_match('/\/([^\/]+)\.(jpg|jpeg|png|gif|webp)$/', $oldImage, $matches);
         $oldPublicId = $matches[1] ?? null;
@@ -72,7 +82,7 @@ try {
         }
       }
 
-      // 🔄 Đổi tên ảnh mới thành mc_{id}
+      // 🔄 Đổi tên ảnh mới
       $renameResult = renameImageOnCloudinary($publicId, 'mc_' . $mc_id);
       if ($renameResult['success']) {
         $imageUrl = $renameResult['url'];
@@ -93,7 +103,6 @@ try {
 
     echo "<script>parent.postMessage({type: 'saved'}, '*');</script>";
   }
-
 } catch (Exception $e) {
   echo "<script>parent.postMessage({type: 'error', message: 'Lỗi CSDL: " . $e->getMessage() . "'}, '*');</script>";
 }
