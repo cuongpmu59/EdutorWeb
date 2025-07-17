@@ -19,8 +19,7 @@
   <div class="form-left">
     <div class="form-group">
       <label for="mc_topic">📚 Chủ đề:</label>
-      <input type="text" id="mc_topic" name="mc_topic" list="mc_topic_list" required placeholder="Nhập chủ đề...">
-      <?php include __DIR__ . '/../../utils/filter.php'; ?>
+      <input type="text" id="mc_topic" name="mc_topic" required>
     </div>
 
     <?php
