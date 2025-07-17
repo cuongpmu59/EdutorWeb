@@ -3,160 +3,44 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Nhập câu hỏi trắc nghiệm nhiều lựa chọn</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f6f8fa;
-      padding: 20px;
-      margin: 0;
-      color: #333;
-    }
-
-    .form-container {
-      max-width: 1100px;
-      background: #fff;
-      padding: 25px;
-      margin: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .form-title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .preview-icon {
-      cursor: pointer;
-      margin-left: 8px;
-      font-size: 18px;
-    }
-
-    .form-layout {
-      display: flex;
-      gap: 30px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .form-left {
-      flex: 2;
-      min-width: 350px;
-    }
-
-    .form-right {
-      flex: 1;
-      min-width: 250px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      font-weight: 500;
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    textarea, input[type="text"], select {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .preview-toggle {
-      float: right;
-      cursor: pointer;
-      font-size: 14px;
-      color: #007bff;
-    }
-
-    .image-group {
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-      background: #f9f9f9;
-    }
-
-    .image-preview {
-      width: 100%;
-      height: 220px;
-      object-fit: contain;
-      border: 1px solid #aaa;
-      border-radius: 8px;
-      background: #fff;
-      display: block;
-      margin-top: 10px;
-    }
-
-    .button-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .button-group button {
-      padding: 10px;
-      font-size: 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-save      { background: #28a745; color: #fff; }
-    .btn-reset     { background: #ffc107; color: #000; }
-    .btn-delete    { background: #dc3545; color: #fff; }
-    .btn-table     { background: #17a2b8; color: #fff; }
-    .btn-upload    { background: #6c757d; color: #fff; width: 100%; }
-
-    #mc_image {
-      display: none;
-    }
-  </style>
+  <title>Nhập câu hỏi trắc nghiệm</title>
+  <link rel="stylesheet" href="../../css/form.css">
 </head>
 <body>
   <div class="form-container">
-    <div class="form-title">
-      Nhập câu hỏi trắc nghiệm nhiều lựa chọn
-      <span class="preview-icon" title="Xem trước toàn bộ nội dung">👁️</span>
-    </div>
-
-    <form id="mcForm">
+    <h2>Nhập câu hỏi trắc nghiệm</h2>
+    <form id="mcForm" method="post" enctype="multipart/form-data">
       <div class="form-layout">
         <!-- Cột trái -->
         <div class="form-left">
           <div class="form-group">
             <label for="mc_topic">Chủ đề</label>
-            <input type="text" id="mc_topic" name="mc_topic" placeholder="Nhập chủ đề">
+            <input type="text" id="mc_topic" name="mc_topic" required>
           </div>
-
           <div class="form-group">
-            <label for="mc_question">Câu hỏi <span class="preview-toggle">👁️</span></label>
-            <textarea id="mc_question" name="mc_question" rows="3" placeholder="Nhập nội dung câu hỏi"></textarea>
+            <label for="mc_question">Câu hỏi</label>
+            <textarea id="mc_question" name="mc_question" rows="3" required></textarea>
           </div>
-
-          <?php
-            $options = ['A', 'B', 'C', 'D'];
-            foreach ($options as $opt) {
-              echo <<<HTML
-              <div class="form-group">
-                <label for="mc_opt_$opt">Đáp án $opt <span class="preview-toggle">👁️</span></label>
-                <input type="text" id="mc_opt_$opt" name="mc_opt_$opt" placeholder="Nhập đáp án $opt">
-              </div>
-              HTML;
-            }
-          ?>
-
+          <div class="form-group">
+            <label for="mc_optionA">A.</label>
+            <input type="text" id="mc_optionA" name="mc_optionA" required>
+          </div>
+          <div class="form-group">
+            <label for="mc_optionB">B.</label>
+            <input type="text" id="mc_optionB" name="mc_optionB" required>
+          </div>
+          <div class="form-group">
+            <label for="mc_optionC">C.</label>
+            <input type="text" id="mc_optionC" name="mc_optionC" required>
+          </div>
+          <div class="form-group">
+            <label for="mc_optionD">D.</label>
+            <input type="text" id="mc_optionD" name="mc_optionD" required>
+          </div>
           <div class="form-group">
             <label for="mc_answer">Đáp án đúng</label>
-            <select id="mc_answer" name="mc_answer">
-              <option value="">-- Chọn --</option>
+            <select id="mc_answer" name="mc_answer" required>
+              <option value="">-- Chọn đáp án --</option>
               <option value="A">A</option>
               <option value="B">B</option>
               <option value="C">C</option>
@@ -169,53 +53,43 @@
         <div class="form-right">
           <div class="image-group">
             <label>Ảnh minh họa</label>
-            <button type="button" class="btn-upload" onclick="document.getElementById('mc_image').click();">📷 Tải ảnh</button>
-            <input type="file" id="mc_image" name="mc_image" accept="image/*">
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn-upload" onclick="document.getElementById('mc_image').click();">📷 Tải ảnh</button>
+              <button type="button" class="btn-delete" onclick="deleteImage()">🗑️ Xoá ảnh</button>
+            </div>
+            <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display:none;">
             <img id="imagePreview" class="image-preview" src="#" alt="Ảnh minh họa" style="display:none;">
-            <button type="button" class="btn-delete" onclick="deleteImage()">🗑️ Xoá ảnh</button>
-          </div>
-
-          <div class="button-group">
-            <button type="submit" class="btn-save">💾 Lưu</button>
-            <button type="reset" class="btn-reset">🔄 Làm lại</button>
-            <button type="button" class="btn-delete" onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
-            <button type="button" class="btn-table" onclick="openQuestionTable()">📋 Xem bảng</button>
           </div>
         </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-save">💾 Lưu câu hỏi</button>
+        <button type="reset" class="btn-reset">🔄 Làm lại</button>
       </div>
     </form>
   </div>
 
   <script>
-    function deleteImage() {
-      const image = document.getElementById('imagePreview');
-      image.src = '#';
-      image.style.display = 'none';
-      document.getElementById('mc_image').value = '';
-    }
-
-    function deleteQuestion() {
-      if (confirm("Bạn có chắc chắn muốn xoá câu hỏi này không?")) {
-        document.getElementById('mcForm').reset();
-        deleteImage();
-      }
-    }
-
-    document.getElementById('mc_image').addEventListener('change', function (e) {
-      const file = e.target.files[0];
+    // Preview ảnh
+    document.getElementById('mc_image').addEventListener('change', function () {
+      const preview = document.getElementById('imagePreview');
+      const file = this.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = function (evt) {
-          const img = document.getElementById('imagePreview');
-          img.src = evt.target.result;
-          img.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } else {
+        preview.src = '#';
+        preview.style.display = 'none';
       }
     });
 
-    function openQuestionTable() {
-      window.open('get_question.php', '_blank');
+    function deleteImage() {
+      const input = document.getElementById('mc_image');
+      const preview = document.getElementById('imagePreview');
+      input.value = '';
+      preview.src = '#';
+      preview.style.display = 'none';
     }
   </script>
 </body>
