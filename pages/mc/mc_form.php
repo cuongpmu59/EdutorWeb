@@ -1,3 +1,4 @@
+<!-- mc_form.php -->
 <?php require_once __DIR__ . '/../../dotenv.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,42 +17,32 @@
   <input type="hidden" id="mc_id" name="mc_id">
 
   <div class="form-left">
-    <!-- Chủ đề + bộ lọc -->
     <div class="form-group">
       <label for="mc_topic">📚 Chủ đề:</label>
-      <input type="text" id="mc_topic" name="mc_topic" list="mc_topic_list" required autocomplete="off">
-      <?php include_once __DIR__ . '/filter.php'; ?>
+      <input type="text" id="mc_topic" name="mc_topic" list="mc_topic_list" required placeholder="Nhập chủ đề...">
+      <?php include __DIR__ . '/../../utils/filter.php'; ?>
     </div>
 
-    <!-- Câu hỏi và đáp án -->
     <?php
     $fields = [
-      ['id' => 'mc_question', 'label' => '❓ Câu hỏi', 'type' => 'textarea'],
-      ['id' => 'mc_answer1', 'label' => '🔸 A'],
-      ['id' => 'mc_answer2', 'label' => '🔸 B'],
-      ['id' => 'mc_answer3', 'label' => '🔸 C'],
-      ['id' => 'mc_answer4', 'label' => '🔸 D'],
+      'mc_question' => '❓ Câu hỏi',
+      'mc_answer1' => '🔸 A',
+      'mc_answer2' => '🔸 B',
+      'mc_answer3' => '🔸 C',
+      'mc_answer4' => '🔸 D'
     ];
-
-    foreach ($fields as $field):
-      $id = $field['id'];
-      $label = $field['label'];
-      $isTextarea = ($field['type'] ?? '') === 'textarea';
+    foreach ($fields as $id => $label):
+      $isTextarea = $id === 'mc_question';
     ?>
       <div class="form-group">
         <label for="<?= $id ?>">
           <?= $label ?> <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
         </label>
-        <?php if ($isTextarea): ?>
-          <textarea id="<?= $id ?>" name="<?= $id ?>" required autocomplete="off"></textarea>
-        <?php else: ?>
-          <input type="text" id="<?= $id ?>" name="<?= $id ?>" required autocomplete="off">
-        <?php endif; ?>
+        <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
         <div id="preview_<?= $id ?>" class="preview-box"></div>
       </div>
     <?php endforeach; ?>
 
-    <!-- Đáp án đúng -->
     <div class="form-group">
       <label for="mc_correct_answer">✅ Đáp án đúng:</label>
       <select id="mc_correct_answer" name="mc_correct_answer" required>
@@ -66,8 +57,6 @@
 
   <div class="form-right">
     <div class="form-right-inner">
-
-      <!-- Hình ảnh minh hoạ -->
       <div class="image-box">
         <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
         <button type="button" id="loadImageBtn">📂 Load ảnh</button>
@@ -75,7 +64,6 @@
         <img id="mc_imagePreview" src="" style="display:none">
       </div>
 
-      <!-- Nút chức năng -->
       <div class="form-actions">
         <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
         <button type="reset" id="resetBtn">🔄 Làm lại</button>
@@ -86,13 +74,10 @@
   </div>
 </form>
 
-<!-- Bảng câu hỏi -->
 <iframe id="mcIframe" src="/pages/mc/mc_table.php" width="100%" height="500"
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
-<!-- Script xử lý -->
 <script src="/js/modules/previewView.js"></script>
 <script src="/js/modules/mc_form.js"></script>
-
 </body>
 </html>
