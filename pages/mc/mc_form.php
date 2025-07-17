@@ -12,8 +12,8 @@
   <script src="/js/mc_form.js" defer></script>
 </head>
 <body>
-  <div class="form-wrapper">
-    <!-- 🔽 Tiêu đề có icon toggle -->
+  <form id="mc_form" class="form-wrapper">
+    <!-- 🔽 Tiêu đề có nút toggle xem trước -->
     <div class="form-header">
       <h2>
         <span id="togglePreview" style="cursor: pointer;">📘</span>
@@ -21,51 +21,56 @@
       </h2>
     </div>
 
-    <!-- 🔽 Khung ẩn/hiện xem trước toàn bộ -->
+    <!-- 🔽 Xem trước toàn bộ nội dung -->
     <div id="fullPreview" class="full-preview hidden">
       <div class="preview-block" id="preview-question"></div>
-      <div class="preview-block" id="preview-image" style="margin: 10px 0;"></div>
+      <div class="preview-block" id="preview-image"></div>
       <ul id="preview-answers"></ul>
     </div>
 
-    <!-- 🔽 Form chia 2 cột -->
+    <!-- 🔽 Chia 2 cột: trái và phải -->
     <div class="form-layout">
-      <!-- Bên trái -->
+      <!-- Cột trái -->
       <div class="form-left">
-        <label>Câu hỏi:</label>
+        <!-- 📝 Câu hỏi -->
+        <label for="mc_question">Câu hỏi:</label>
         <textarea id="mc_question" rows="4"></textarea>
 
+        <!-- 🔤 Các đáp án -->
+        <label>Đáp án:</label>
+        <div class="answer">
+          <label><input type="radio" name="mc_correct" value="0"> A.</label>
+          <input type="text" class="mc_answer">
+        </div>
+        <div class="answer">
+          <label><input type="radio" name="mc_correct" value="1"> B.</label>
+          <input type="text" class="mc_answer">
+        </div>
+        <div class="answer">
+          <label><input type="radio" name="mc_correct" value="2"> C.</label>
+          <input type="text" class="mc_answer">
+        </div>
+        <div class="answer">
+          <label><input type="radio" name="mc_correct" value="3"> D.</label>
+          <input type="text" class="mc_answer">
+        </div>
+
+        <!-- 📘 Toggle xem trước nội dung -->
+        <button type="button" id="preview_toggle_single">👁️ Xem trước nội dung</button>
+      </div>
+
+      <!-- Cột phải -->
+      <div class="form-right">
+        <!-- 🖼️ Nhóm ảnh minh hoạ -->
         <label>Hình minh họa:</label>
         <input type="file" id="mc_image" accept="image/*">
-        <div id="mc_image_preview"></div>
-        <button type="button" id="delete_image">Xoá ảnh</button>
+        <div id="mc_image_preview" style="margin: 10px 0;"></div>
+        <button type="button" id="delete_image">🗑️ Xoá ảnh</button>
 
+        <!-- 📅 Thông tin bổ sung -->
         <label>Chủ đề:</label>
         <input type="text" id="mc_topic">
 
-        <label>Các đáp án:</label>
-        <div id="answer_container">
-          <div class="answer">
-            <input type="radio" name="mc_correct" value="0">
-            <input type="text" class="mc_answer">
-          </div>
-          <div class="answer">
-            <input type="radio" name="mc_correct" value="1">
-            <input type="text" class="mc_answer">
-          </div>
-          <div class="answer">
-            <input type="radio" name="mc_correct" value="2">
-            <input type="text" class="mc_answer">
-          </div>
-          <div class="answer">
-            <input type="radio" name="mc_correct" value="3">
-            <input type="text" class="mc_answer">
-          </div>
-        </div>
-      </div>
-
-      <!-- Bên phải -->
-      <div class="form-right">
         <label>ID:</label>
         <input type="text" id="mc_id" readonly>
 
@@ -75,25 +80,19 @@
         <label>Ngày sửa:</label>
         <input type="text" id="mc_updated_at" readonly>
 
+        <!-- 🔘 Nhóm nút chức năng -->
         <div class="form-buttons">
           <button type="button" id="btn_save">💾 Lưu</button>
-          <button type="button" id="btn_reset">🧹 Làm mới</button>
-          <button type="button" id="btn_delete">🗑️ Xoá</button>
-          <button type="button" id="btn_export">📄 Xuất PDF</button>
+          <button type="button" id="btn_reset">🧹 Làm lại</button>
+          <button type="button" id="btn_delete">🗑️ Xoá câu hỏi</button>
+          <button type="button" id="btn_view_table">📋 Xem bảng câu hỏi</button>
         </div>
       </div>
     </div>
 
-    <!-- Iframe danh sách câu hỏi -->
+    <!-- 📑 Iframe bảng câu hỏi -->
     <iframe id="question_table" src="mc_table.php"></iframe>
-  </div>
-
-  <script>
-    // Toggle khung xem trước toàn bộ
-    $('#togglePreview').on('click', function () {
-      $('#fullPreview').toggleClass('hidden');
-    });
-  </script>
+  </form>
 
   <style>
     .hidden { display: none; }
@@ -110,6 +109,25 @@
       align-items: center;
       gap: 10px;
     }
+    .form-layout {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .form-left {
+      flex: 2;
+      min-width: 300px;
+    }
+    .form-right {
+      flex: 1;
+      min-width: 250px;
+    }
+    .form-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
     .full-preview {
       background: #f9f9f9;
       padding: 10px;
@@ -120,9 +138,33 @@
       margin-bottom: 10px;
     }
     #preview-answers li {
-      margin-left: 20px;
       list-style-type: upper-alpha;
+      margin-left: 20px;
+    }
+    iframe#question_table {
+      width: 100%;
+      height: 400px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
     }
   </style>
+
+  <script>
+    // Toggle toàn bộ preview
+    $('#togglePreview').on('click', function () {
+      $('#fullPreview').toggleClass('hidden');
+    });
+
+    // Toggle xem trước từng phần
+    $('#preview_toggle_single').on('click', function () {
+      $('#preview-question').text($('#mc_question').val());
+      const answers = $('.mc_answer').map(function (i, el) {
+        const prefix = String.fromCharCode(65 + i) + '. ';
+        return '<li>' + prefix + $(el).val() + '</li>';
+      }).get().join('');
+      $('#preview-answers').html(answers);
+      MathJax.typeset();
+    });
+  </script>
 </body>
 </html>
