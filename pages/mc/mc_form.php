@@ -41,9 +41,14 @@
       flex-wrap: wrap;
     }
 
-    .form-left, .form-right {
+    .form-left {
+      flex: 2;
+      min-width: 350px;
+    }
+
+    .form-right {
       flex: 1;
-      min-width: 300px;
+      min-width: 250px;
     }
 
     .form-group {
@@ -80,12 +85,14 @@
     }
 
     .image-preview {
-      max-width: 100%;
-      max-height: 200px;
-      display: block;
-      margin-top: 10px;
+      width: 100%;
+      height: 220px;
+      object-fit: contain;
       border: 1px solid #aaa;
       border-radius: 8px;
+      background: #fff;
+      display: block;
+      margin-top: 10px;
     }
 
     .button-group {
@@ -189,8 +196,6 @@
 
     function deleteQuestion() {
       if (confirm("Bạn có chắc chắn muốn xoá câu hỏi này không?")) {
-        // Gửi yêu cầu xoá lên server (nếu có ID)
-        // Hoặc chỉ cần reset form nếu là xoá mới
         document.getElementById('mcForm').reset();
         deleteImage();
       }
