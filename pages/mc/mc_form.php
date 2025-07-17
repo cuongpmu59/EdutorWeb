@@ -4,167 +4,198 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm nhiều lựa chọn</title>
-  <link rel="stylesheet" href="/css/form.css">
-  <link rel="stylesheet" href="/css/main_ui.css">
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="/js/mc_form.js" defer></script>
-</head>
-<body>
-  <form id="mc_form" class="form-wrapper">
-    <!-- 🔽 Tiêu đề có nút toggle xem trước -->
-    <div class="form-header">
-      <h2>
-        <span id="togglePreview" style="cursor: pointer;">📘</span>
-        Nhập câu hỏi trắc nghiệm nhiều lựa chọn
-      </h2>
-    </div>
-
-    <!-- 🔽 Xem trước toàn bộ nội dung -->
-    <div id="fullPreview" class="full-preview hidden">
-      <div class="preview-block" id="preview-question"></div>
-      <div class="preview-block" id="preview-image"></div>
-      <ul id="preview-answers"></ul>
-    </div>
-
-    <!-- 🔽 Chia 2 cột: trái và phải -->
-    <div class="form-layout">
-      <!-- Cột trái -->
-      <div class="form-left">
-        <!-- 📝 Câu hỏi -->
-        <label for="mc_question">Câu hỏi:</label>
-        <textarea id="mc_question" rows="4"></textarea>
-
-        <!-- 🔤 Các đáp án -->
-        <label>Đáp án:</label>
-        <div class="answer">
-          <label><input type="radio" name="mc_correct" value="0"> A.</label>
-          <input type="text" class="mc_answer">
-        </div>
-        <div class="answer">
-          <label><input type="radio" name="mc_correct" value="1"> B.</label>
-          <input type="text" class="mc_answer">
-        </div>
-        <div class="answer">
-          <label><input type="radio" name="mc_correct" value="2"> C.</label>
-          <input type="text" class="mc_answer">
-        </div>
-        <div class="answer">
-          <label><input type="radio" name="mc_correct" value="3"> D.</label>
-          <input type="text" class="mc_answer">
-        </div>
-
-        <!-- 📘 Toggle xem trước nội dung -->
-        <button type="button" id="preview_toggle_single">👁️ Xem trước nội dung</button>
-      </div>
-
-      <!-- Cột phải -->
-      <div class="form-right">
-        <!-- 🖼️ Nhóm ảnh minh hoạ -->
-        <label>Hình minh họa:</label>
-        <input type="file" id="mc_image" accept="image/*">
-        <div id="mc_image_preview" style="margin: 10px 0;"></div>
-        <button type="button" id="delete_image">🗑️ Xoá ảnh</button>
-
-        <!-- 📅 Thông tin bổ sung -->
-        <label>Chủ đề:</label>
-        <input type="text" id="mc_topic">
-
-        <label>ID:</label>
-        <input type="text" id="mc_id" readonly>
-
-        <label>Ngày tạo:</label>
-        <input type="text" id="mc_created_at" readonly>
-
-        <label>Ngày sửa:</label>
-        <input type="text" id="mc_updated_at" readonly>
-
-        <!-- 🔘 Nhóm nút chức năng -->
-        <div class="form-buttons">
-          <button type="button" id="btn_save">💾 Lưu</button>
-          <button type="button" id="btn_reset">🧹 Làm lại</button>
-          <button type="button" id="btn_delete">🗑️ Xoá câu hỏi</button>
-          <button type="button" id="btn_view_table">📋 Xem bảng câu hỏi</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 📑 Iframe bảng câu hỏi -->
-    <iframe id="question_table" src="mc_table.php"></iframe>
-  </form>
-
   <style>
-    .hidden { display: none; }
-    .form-header {
-      background: #eef3f7;
-      padding: 10px 15px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .form-header h2 {
+    body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      padding: 20px;
+      background: #f6f8fa;
     }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
     .form-layout {
       display: flex;
-      gap: 20px;
       flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
     .form-left {
       flex: 2;
       min-width: 300px;
     }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    textarea, input[type="text"], select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+
+    .preview-btn {
+      background: none;
+      border: none;
+      color: #007bff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
     .form-right {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       min-width: 250px;
     }
-    .form-buttons {
+
+    .image-group {
+      border: 1px dashed #aaa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .image-group input[type="file"] {
+      display: block;
+      margin: 10px auto;
+    }
+
+    .button-group {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 15px;
     }
-    .full-preview {
-      background: #f9f9f9;
+
+    .button-group button {
       padding: 10px;
-      margin-bottom: 15px;
-      border-left: 4px solid #0a74da;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
     }
-    .preview-block {
-      margin-bottom: 10px;
+
+    .save-btn { background: #28a745; color: white; }
+    .reset-btn { background: #ffc107; }
+    .delete-img-btn { background: #dc3545; color: white; }
+    .view-table-btn { background: #17a2b8; color: white; }
+
+    .full-preview-icon {
+      position: absolute;
+      top: 18px;
+      right: 30px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #444;
     }
-    #preview-answers li {
-      list-style-type: upper-alpha;
-      margin-left: 20px;
-    }
-    iframe#question_table {
-      width: 100%;
-      height: 400px;
-      border: 1px solid #ccc;
-      margin-top: 20px;
+
+    .form-container {
+      position: relative;
     }
   </style>
+</head>
+<body>
 
-  <script>
-    // Toggle toàn bộ preview
-    $('#togglePreview').on('click', function () {
-      $('#fullPreview').toggleClass('hidden');
-    });
+  <h2>Nhập câu hỏi trắc nghiệm nhiều lựa chọn</h2>
 
-    // Toggle xem trước từng phần
-    $('#preview_toggle_single').on('click', function () {
-      $('#preview-question').text($('#mc_question').val());
-      const answers = $('.mc_answer').map(function (i, el) {
-        const prefix = String.fromCharCode(65 + i) + '. ';
-        return '<li>' + prefix + $(el).val() + '</li>';
-      }).get().join('');
-      $('#preview-answers').html(answers);
-      MathJax.typeset();
-    });
-  </script>
+  <div class="form-container">
+    <!-- Nút xem trước toàn bộ -->
+    <span class="full-preview-icon" title="Xem trước toàn bộ">&#128065;</span>
+
+    <form id="mcForm" method="post" enctype="multipart/form-data">
+      <div class="form-layout">
+
+        <!-- Cột trái -->
+        <div class="form-left">
+          <div class="form-group">
+            <label>
+              Chủ đề:
+              <select name="mc_topic" required>
+                <option value="">-- Chọn chủ đề --</option>
+                <option value="Toán">Toán</option>
+                <option value="Lý">Lý</option>
+                <option value="Hóa">Hóa</option>
+                <!-- ... -->
+              </select>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>
+              Câu hỏi:
+              <button type="button" class="preview-btn" title="Xem trước">&#128065;</button>
+            </label>
+            <textarea name="mc_question" rows="3" required></textarea>
+          </div>
+
+          <?php
+            foreach (['A', 'B', 'C', 'D'] as $opt) {
+              echo <<<HTML
+              <div class="form-group">
+                <label>
+                  Đáp án $opt:
+                  <button type="button" class="preview-btn" title="Xem trước">&#128065;</button>
+                </label>
+                <input type="text" name="mc_answer_$opt" required />
+              </div>
+              HTML;
+            }
+          ?>
+
+          <div class="form-group">
+            <label>Đáp án đúng:</label>
+            <select name="mc_correct" required>
+              <option value="">-- Chọn đáp án đúng --</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cột phải -->
+        <div class="form-right">
+
+          <!-- Nhóm ảnh minh họa -->
+          <div class="image-group">
+            <label>Ảnh minh hoạ</label>
+            <input type="file" name="mc_image" accept="image/*" />
+            <button type="button" class="delete-img-btn">Xoá ảnh</button>
+          </div>
+
+          <!-- Nhóm nút chức năng -->
+          <div class="button-group">
+            <button type="submit" class="save-btn">💾 Lưu câu hỏi</button>
+            <button type="reset" class="reset-btn">🔄 Làm lại</button>
+            <button type="button" class="view-table-btn">📋 Xem bảng câu hỏi</button>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </div>
+
 </body>
 </html>
