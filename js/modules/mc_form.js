@@ -152,3 +152,38 @@ toggleIframeBtn.addEventListener("click", () => {
   iframe.style.display = show ? "block" : "none";
   toggleIframeBtn.textContent = show ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
 });
+
+
+document.getElementById("togglePreviewHeader").addEventListener("click", function () {
+  const box = document.getElementById("fullPreviewBox");
+  const icon = document.getElementById("previewToggleIcon");
+  const isVisible = box.style.display !== "none";
+
+  box.style.display = isVisible ? "none" : "block";
+  icon.textContent = isVisible ? "▶️" : "🔽";
+});
+
+function updateFullPreview() {
+  const q = document.getElementById("mc_question").value;
+  const a1 = document.getElementById("mc_answer1").value;
+  const a2 = document.getElementById("mc_answer2").value;
+  const a3 = document.getElementById("mc_answer3").value;
+  const a4 = document.getElementById("mc_answer4").value;
+  const correct = document.getElementById("mc_correct_answer").value;
+  const img = document.getElementById("mc_imagePreview");
+
+  let html = `
+    <div><b>❓ Câu hỏi:</b> ${q}</div>
+    ${img.src && img.style.display !== "none" ? `<div><b>🖼️ Ảnh minh hoạ:</b><br><img src="${img.src}" style="max-width:100%; max-height:200px;"></div>` : ''}
+    <div><b>🔸 A:</b> ${a1}</div>
+    <div><b>🔸 B:</b> ${a2}</div>
+    <div><b>🔸 C:</b> ${a3}</div>
+    <div><b>🔸 D:</b> ${a4}</div>
+    <div><b>✅ Đáp án đúng:</b> ${correct}</div>
+  `;
+
+  const box = document.getElementById("fullPreviewBox");
+  box.innerHTML = html;
+  if (window.MathJax) MathJax.typesetPromise([box]);
+}
+
