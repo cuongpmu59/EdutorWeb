@@ -1,95 +1,167 @@
+/* =========================
+   BỐ CỤC GIAO DIỆN FORM
+========================= */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", Tahoma, sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #f4f6f9;
+  background-color: #f5f7fa;
   color: #333;
 }
 
-.form-layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 1200px;
+.form-container {
+  max-width: 1100px;
   margin: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 30px;
 }
 
 .form-left {
-  flex: 3;
-  min-width: 300px;
-}
-
-.form-left label {
-  font-weight: bold;
-  display: block;
-  margin-top: 10px;
-}
-
-.form-left input,
-.form-left textarea,
-.form-left select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .form-right {
-  flex: 2;
-  min-width: 250px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+/* =========================
+   TRƯỜNG NHẬP LIỆU
+========================= */
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.answer-group {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
   gap: 10px;
 }
 
-/* Ảnh minh hoạ */
-.image-preview {
-  width: 100%;
-  height: 250px;
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* =========================
+   VÙNG XEM ẢNH
+========================= */
+.image-container {
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+  padding: 10px;
+  background-color: #fafafa;
+  text-align: center;
+  height: 240px;
+  position: relative;
 }
 
-.image-preview img {
+.image-container img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-/* Nút tải ảnh và xoá ảnh cùng hàng */
-.row-buttons {
+/* =========================
+   NÚT TẢI/XÓA ẢNH
+========================= */
+.image-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
 }
 
-/* Nút chính dọc */
-.column-buttons {
+.image-buttons button {
+  flex: 1;
+}
+
+/* =========================
+   NHÓM NÚT CHỨC NĂNG
+========================= */
+.button-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
 button {
-  padding: 10px 15px;
-  font-size: 15px;
+  padding: 10px 16px;
   border: none;
   border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
   cursor: pointer;
-  background-color: #3498db;
-  color: #fff;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s ease;
 }
 
-button:hover {
-  background-color: #2c80b4;
+button.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+button.reset-btn {
+  background-color: #ffc107;
+  color: #333;
+}
+
+button.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.view-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+/* =========================
+   NÚT ẨN INPUT FILE
+========================= */
+input[type="file"] {
+  display: none;
+}
+
+/* =========================
+   ĐÁP ỨNG DI ĐỘNG
+========================= */
+@media (max-width: 768px) {
+  .form-container {
+    flex-direction: column;
+  }
+
+  .form-right {
+    flex-direction: column;
+  }
+
+  .image-container {
+    height: auto;
+  }
+
+  .image-buttons {
+    flex-direction: column;
+  }
 }
