@@ -73,6 +73,10 @@
 
     .image-group {
       margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      background: #f9f9f9;
     }
 
     .image-preview {
@@ -80,18 +84,17 @@
       max-height: 200px;
       display: block;
       margin-top: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #aaa;
       border-radius: 8px;
     }
 
     .button-group {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 10px;
     }
 
     .button-group button {
-      flex: 1;
       padding: 10px;
       font-size: 15px;
       border: none;
@@ -99,11 +102,15 @@
       cursor: pointer;
     }
 
-    .btn-save { background: #28a745; color: #fff; }
-    .btn-reset { background: #ffc107; color: #000; }
-    .btn-delete-img { background: #dc3545; color: #fff; }
-    .btn-table { background: #17a2b8; color: #fff; }
+    .btn-save      { background: #28a745; color: #fff; }
+    .btn-reset     { background: #ffc107; color: #000; }
+    .btn-delete    { background: #dc3545; color: #fff; }
+    .btn-table     { background: #17a2b8; color: #fff; }
+    .btn-upload    { background: #6c757d; color: #fff; width: 100%; }
 
+    #mc_image {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -155,14 +162,16 @@
         <div class="form-right">
           <div class="image-group">
             <label>Ảnh minh họa</label>
+            <button type="button" class="btn-upload" onclick="document.getElementById('mc_image').click();">📷 Tải ảnh</button>
             <input type="file" id="mc_image" name="mc_image" accept="image/*">
             <img id="imagePreview" class="image-preview" src="#" alt="Ảnh minh họa" style="display:none;">
-            <button type="button" class="btn-delete-img" onclick="deleteImage()">🗑️ Xoá ảnh</button>
+            <button type="button" class="btn-delete" onclick="deleteImage()">🗑️ Xoá ảnh</button>
           </div>
 
           <div class="button-group">
             <button type="submit" class="btn-save">💾 Lưu</button>
             <button type="reset" class="btn-reset">🔄 Làm lại</button>
+            <button type="button" class="btn-delete" onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
             <button type="button" class="btn-table" onclick="openQuestionTable()">📋 Xem bảng</button>
           </div>
         </div>
@@ -176,6 +185,15 @@
       image.src = '#';
       image.style.display = 'none';
       document.getElementById('mc_image').value = '';
+    }
+
+    function deleteQuestion() {
+      if (confirm("Bạn có chắc chắn muốn xoá câu hỏi này không?")) {
+        // Gửi yêu cầu xoá lên server (nếu có ID)
+        // Hoặc chỉ cần reset form nếu là xoá mới
+        document.getElementById('mcForm').reset();
+        deleteImage();
+      }
     }
 
     document.getElementById('mc_image').addEventListener('change', function (e) {
