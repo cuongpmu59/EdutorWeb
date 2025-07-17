@@ -1,50 +1,45 @@
-<!-- mc_form.php -->
 <?php require_once __DIR__ . '/../../dotenv.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css">
-  <link rel="stylesheet" href="/css/modules/form.css">
-  <link rel="stylesheet" href="/css/modules/preview.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <link rel="stylesheet" href="/css/form.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="/js/modules/previewView.js" defer></script>
 </head>
 <body>
+  <h2>📘 Nhập câu hỏi trắc nghiệm</h2>
+  <form id="mcForm" method="POST" enctype="multipart/form-data">
+    <input type="hidden" id="mc_id" name="mc_id">
 
-<form id="mcForm" class="form-layout" enctype="multipart/form-data">
-  <input type="hidden" id="mc_id" name="mc_id">
-
-  <div class="form-left">
     <div class="form-group">
-      <label for="mc_topic">📚 Chủ đề:</label>
+      <label for="mc_topic">Chủ đề</label>
       <input type="text" id="mc_topic" name="mc_topic" required>
     </div>
 
-    <?php
-    $fields = [
-      'mc_question' => '❓ Câu hỏi',
-      'mc_answer1' => '🔸 A',
-      'mc_answer2' => '🔸 B',
-      'mc_answer3' => '🔸 C',
-      'mc_answer4' => '🔸 D'
-    ];
-    foreach ($fields as $id => $label):
-      $isTextarea = $id === 'mc_question';
-    ?>
-      <div class="form-group">
-        <label for="<?= $id ?>">
-          <?= $label ?> <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
-        </label>
-        <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-        <div id="preview_<?= $id ?>" class="preview-box"></div>
-      </div>
-    <?php endforeach; ?>
-
     <div class="form-group">
-      <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-      <select id="mc_correct_answer" name="mc_correct_answer" required>
+      <label for="mc_question">Câu hỏi</label>
+      <textarea id="mc_question" name="mc_question" rows="3" required></textarea>
+    </div>
+
+    <!-- Đáp án A–D -->
+    <div class="form-group-row">
+      <label>A:</label>
+      <input type="text" name="mc_answer_a" id="mc_answer_a" required>
+      <label>B:</label>
+      <input type="text" name="mc_answer_b" id="mc_answer_b" required>
+      <label>C:</label>
+      <input type="text" name="mc_answer_c" id="mc_answer_c" required>
+      <label>D:</label>
+      <input type="text" name="mc_answer_d" id="mc_answer_d" required>
+    </div>
+
+    <!-- Đáp án đúng -->
+    <div class="form-group-inline">
+      <label for="mc_correct_answer">Đáp án đúng</label>
+      <select name="mc_correct_answer" id="mc_correct_answer" required>
         <option value="">-- Chọn --</option>
         <option value="A">A</option>
         <option value="B">B</option>
@@ -52,31 +47,30 @@
         <option value="D">D</option>
       </select>
     </div>
-  </div>
 
-  <div class="form-right">
-    <div class="form-right-inner">
-      <div class="image-box">
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <img id="mc_imagePreview" src="" style="display:none">
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
-        <button type="reset" id="resetBtn">🔄 Làm lại</button>
-        <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-        <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
-      </div>
+    <!-- Ảnh minh hoạ -->
+    <div class="form-group">
+      <label for="mc_image">Ảnh minh hoạ</label>
+      <input type="file" id="mc_image" name="mc_image" accept="image/*">
     </div>
+
+    <!-- Buttons -->
+    <div class="form-buttons">
+      <button type="submit" id="btnSave">💾 Lưu</button>
+      <button type="reset" id="btnReset">🔄 Nhập lại</button>
+    </div>
+  </form>
+
+  <!-- Xem trước -->
+  <div class="preview-box">
+    <h3>👁️ Xem trước</h3>
+    <div id="previewQuestion" class="preview-field"></div>
+    <ul>
+      <li><strong>A:</strong> <span id="previewA"></span></li>
+      <li><strong>B:</strong> <span id="previewB"></span></li>
+      <li><strong>C:</strong> <span id="previewC"></span></li>
+      <li><strong>D:</strong> <span id="previewD"></span></li>
+    </ul>
   </div>
-</form>
-
-<iframe id="mcIframe" src="/pages/mc/mc_table.php" width="100%" height="500"
-        style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
-
-<script src="/js/modules/previewView.js"></script>
-<script src="/js/modules/mc_form.js"></script>
 </body>
 </html>
