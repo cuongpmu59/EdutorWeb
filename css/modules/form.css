@@ -1,165 +1,184 @@
-<!-- mc_form.php -->
-<?php require_once __DIR__ . '/../../dotenv.php'; ?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css">
-  <link rel="stylesheet" href="/css/modules/form.css">
-  <link rel="stylesheet" href="/css/modules/preview.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    .preview-full-toggle {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-    .preview-full-toggle span {
-      margin-left: 8px;
-      font-size: 16px;
-      color: #007bff;
-    }
-    #previewFullBox {
-      display: none;
-      background: #fefefe;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    #previewFullBox img {
-      max-width: 100%;
-      height: auto;
-      margin: 10px 0;
-    }
-    #previewFullBox ul {
-      padding-left: 20px;
-    }
-  </style>
-</head>
-<body>
+/* =========================
+   Form Giao Diện Chính
+========================= */
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f6f8fa;
+  color: #333;
+}
 
-<div class="form-container">
-  <div class="preview-full-toggle" id="togglePreviewFull">
-    📄 Nhập câu hỏi trắc nghiệm nhiều lựa chọn
-    <span>(Nhấp để xem trước toàn bộ)</span>
-  </div>
+.form-container {
+  background: #fff;
+  max-width: 1000px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-  <div id="previewFullBox">
-    <div id="previewFullContent"></div>
-  </div>
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #007bff;
+}
 
-  <form id="mcForm" class="form-layout" enctype="multipart/form-data">
-    <input type="hidden" id="mc_id" name="mc_id">
+/* =========================
+   Input & Textarea
+========================= */
+.form-group {
+  margin-bottom: 20px;
+}
 
-    <div class="form-left">
-      <div class="form-group">
-        <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
-      </div>
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
 
-      <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
-      ?>
-        <div class="form-group">
-          <label for="<?= $id ?>">
-            <?= $label ?> <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
-          </label>
-          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-          <div id="preview_<?= $id ?>" class="preview-box"></div>
-        </div>
-      <?php endforeach; ?>
+textarea,
+input[type="text"],
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s ease-in-out;
+  box-sizing: border-box;
+}
 
-      <div class="form-group">
-        <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-        <select id="mc_correct_answer" name="mc_correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
-    </div>
+textarea:focus,
+input[type="text"]:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0,123,255,0.2);
+}
 
-    <div class="form-right">
-      <div class="form-right-inner">
-        <div class="image-box">
-          <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-          <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-          <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-          <img id="mc_imagePreview" src="" style="display:none">
-        </div>
+/* Tự động mở rộng textarea */
+textarea {
+  min-height: 60px;
+  resize: vertical;
+}
 
-        <div class="form-actions">
-          <button type="submit" id="saveBtn">💾 Lưu câu hỏi</button>
-          <button type="reset" id="resetBtn">🔄 Làm lại</button>
-          <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-          <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
-        </div>
-      </div>
-    </div>
-  </form>
+/* =========================
+   Xem Trước
+========================= */
+.preview-box {
+  display: none;
+  background-color: #f0f8ff;
+  border-left: 4px solid #007bff;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 16px;
+  white-space: pre-wrap;
+  border-radius: 6px;
+}
 
-  <iframe id="mcIframe" src="/pages/mc/mc_table.php" width="100%" height="500"
-          style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
-</div>
+/* =========================
+   Ẩn/ hiện vùng xem trước
+========================= */
 
-<script src="/js/modules/previewView.js"></script>
-<script src="/js/modules/mc_form.js"></script>
+.preview-toggle {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: right;
+}
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('togglePreviewFull');
-    const box = document.getElementById('previewFullBox');
-    const content = document.getElementById('previewFullContent');
+.preview-toggle button {
+  background: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  transition: color 0.2s ease-in-out;
+}
 
-    toggle.addEventListener('click', () => {
-      const isHidden = box.style.display === 'none' || box.style.display === '';
-      box.style.display = isHidden ? 'block' : 'none';
-      if (isHidden) updatePreviewFull();
-    });
+.preview-toggle button:hover {
+  color: #0056b3;
+}
 
-    function updatePreviewFull() {
-      const q = document.getElementById('mc_question').value;
-      const a1 = document.getElementById('mc_answer1').value;
-      const a2 = document.getElementById('mc_answer2').value;
-      const a3 = document.getElementById('mc_answer3').value;
-      const a4 = document.getElementById('mc_answer4').value;
-      const image = document.getElementById('mc_imagePreview');
-      const imageSrc = image && image.style.display !== 'none' ? image.src : '';
 
-      let html = `<p><strong>Câu hỏi:</strong><br>${q}</p>`;
-      if (imageSrc) {
-        html += `<p><img src="${imageSrc}" alt="Ảnh minh hoạ"></p>`;
-      }
-      html += `
-        <p><strong>Đáp án:</strong></p>
-        <ul>
-          <li><strong>A:</strong> ${a1}</li>
-          <li><strong>B:</strong> ${a2}</li>
-          <li><strong>C:</strong> ${a3}</li>
-          <li><strong>D:</strong> ${a4}</li>
-        </ul>
-      `;
-      content.innerHTML = html;
-      if (window.MathJax) MathJax.typesetPromise([content]);
-    }
-  });
-</script>
+/* =========================
+   Buttons
+========================= */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  margin-top: 25px;
+}
 
-</body>
-</html>
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button#deleteImageBtn {
+  background-color: #dc3545;
+}
+
+button#deleteImageBtn:hover {
+  background-color: #b02a37;
+}
+
+button#deleteQuestionBtn {
+  background-color: #fd7e14;
+}
+
+button#deleteQuestionBtn:hover {
+  background-color: #e86400;
+}
+
+button#resetBtn {
+  background-color: #6c757d;
+}
+
+button#resetBtn:hover {
+  background-color: #495057;
+}
+
+/* =========================
+   Ảnh minh hoạ
+========================= */
+#mc_imagePreview {
+  margin-top: 10px;
+  max-height: 150px;
+  display: none;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .form-container {
+    padding: 15px;
+  }
+}
