@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/form.css">
   <link rel="stylesheet" href="/css/main_ui.css">
 </head>
 <body>
