@@ -1,27 +1,30 @@
 <?php
 /**
- * dotenv.php - Tải biến môi trường từ file .env đơn giản
+ * env/dotenv.php
+ * Tải biến môi trường từ file .env thủ công (không cần thư viện ngoài)
  */
+
 function env($key, $default = null) {
     static $env = null;
 
     if ($env === null) {
         $env = [];
-
         $path = __DIR__ . '/.env';
+
         if (file_exists($path)) {
             $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
-                if (strpos(trim($line), '#') === 0) continue;
+                $line = trim($line);
+                if ($line === '' || $line[0] === '#') continue;
 
                 $parts = explode('=', $line, 2);
                 if (count($parts) === 2) {
                     $name = trim($parts[0]);
                     $value = trim($parts[1]);
 
-                    // Bỏ dấu ngoặc nếu có
-                    if ((substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
-                        (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
+                    // Loại bỏ dấu nháy nếu có
+                    if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+                        (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
                         $value = substr($value, 1, -1);
                     }
 
@@ -29,7 +32,7 @@ function env($key, $default = null) {
                 }
             }
         } else {
-            error_log(".env file not found in " . __DIR__);
+            error_log("[dotenv] Không tìm thấy file .env tại: $path");
         }
     }
 

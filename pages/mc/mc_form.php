@@ -3,215 +3,197 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <link rel="stylesheet" href="../../css/modules/preview.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <title>Nhập câu hỏi trắc nghiệm nhiều lựa chọn</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f6f8fa;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 1100px;
+      background: #fff;
+      padding: 25px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .preview-icon {
+      cursor: pointer;
+      margin-left: 8px;
+      font-size: 18px;
+    }
+
+    .form-layout {
+      display: flex;
+      gap: 30px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .form-left, .form-right {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    textarea, input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .preview-toggle {
+      float: right;
+      cursor: pointer;
+      font-size: 14px;
+      color: #007bff;
+    }
+
+    .image-group {
+      margin-bottom: 20px;
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      display: block;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+      padding: 10px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-save { background: #28a745; color: #fff; }
+    .btn-reset { background: #ffc107; color: #000; }
+    .btn-delete-img { background: #dc3545; color: #fff; }
+    .btn-table { background: #17a2b8; color: #fff; }
+
+  </style>
 </head>
 <body>
+  <div class="form-container">
+    <div class="form-title">
+      Nhập câu hỏi trắc nghiệm nhiều lựa chọn
+      <span class="preview-icon" title="Xem trước toàn bộ nội dung">👁️</span>
+    </div>
 
-<div class="form-layout">
-  <!-- Cột trái: Form nội dung -->
-  <div class="form-left">
-    <form id="mcForm" class="question-form" enctype="multipart/form-data">
-      <input type="hidden" id="mc_id" name="mc_id">
+    <form id="mcForm">
+      <div class="form-layout">
+        <!-- Cột trái -->
+        <div class="form-left">
+          <div class="form-group">
+            <label for="mc_topic">Chủ đề</label>
+            <input type="text" id="mc_topic" name="mc_topic" placeholder="Nhập chủ đề">
+          </div>
 
-      <div class="form-group">
-        <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
-      </div>
+          <div class="form-group">
+            <label for="mc_question">Câu hỏi <span class="preview-toggle">👁️</span></label>
+            <textarea id="mc_question" name="mc_question" rows="3" placeholder="Nhập nội dung câu hỏi"></textarea>
+          </div>
 
-      <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
-      ?>
-        <div class="form-group">
-          <label for="<?= $id ?>">
-            <?= $label ?>
-            <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
-            </label>
-          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-          <div id="preview_<?= $id ?>" class="preview-box"></div>
+          <?php
+            $options = ['A', 'B', 'C', 'D'];
+            foreach ($options as $opt) {
+              echo <<<HTML
+              <div class="form-group">
+                <label for="mc_opt_$opt">Đáp án $opt <span class="preview-toggle">👁️</span></label>
+                <input type="text" id="mc_opt_$opt" name="mc_opt_$opt" placeholder="Nhập đáp án $opt">
+              </div>
+              HTML;
+            }
+          ?>
+
+          <div class="form-group">
+            <label for="mc_answer">Đáp án đúng</label>
+            <select id="mc_answer" name="mc_answer">
+              <option value="">-- Chọn --</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
         </div>
-      <?php endforeach; ?>
 
-      <div class="form-group">
-        <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-        <select id="mc_correct_answer" name="mc_correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-      </div>
+        <!-- Cột phải -->
+        <div class="form-right">
+          <div class="image-group">
+            <label>Ảnh minh họa</label>
+            <input type="file" id="mc_image" name="mc_image" accept="image/*">
+            <img id="imagePreview" class="image-preview" src="#" alt="Ảnh minh họa" style="display:none;">
+            <button type="button" class="btn-delete-img" onclick="deleteImage()">🗑️ Xoá ảnh</button>
+          </div>
 
-      <div class="form-group">
-        <label>🖼️ Ảnh minh hoạ:</label><br>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
+          <div class="button-group">
+            <button type="submit" class="btn-save">💾 Lưu</button>
+            <button type="reset" class="btn-reset">🔄 Làm lại</button>
+            <button type="button" class="btn-table" onclick="openQuestionTable()">📋 Xem bảng</button>
+          </div>
+        </div>
       </div>
     </form>
   </div>
 
-  <!-- Cột phải: Các nút thao tác -->
-  <div class="form-right">
-    <div class="form-actions">
-      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
-      <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-      <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
-    </div>
-  </div>
-</div>
-
-<iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
-        style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
-
-<script src="js/modules/previewView.js"></script>
-
-<script>
-const imageInput = document.getElementById("mc_image");
-const imagePreview = document.getElementById("mc_imagePreview");
-const saveBtn = document.getElementById("saveBtn");
-const deleteBtn = document.getElementById("deleteImageBtn");
-const loadBtn = document.getElementById("loadImageBtn");
-
-document.getElementById("mcForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  try {
-    const response = await fetch("utils/mc_save.php", {
-      method: "POST",
-      body: formData
-    });
-    const result = await response.text();
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-    iframe.contentDocument.write(result);
-    iframe.contentDocument.close();
-    setTimeout(() => iframe.remove(), 1000);
-  } catch (error) {
-    alert("❌ Lỗi khi gửi dữ liệu: " + error.message);
-  }
-});
-
-window.addEventListener("message", function (event) {
-  if (event.data.type === "saved") {
-    alert("✅ Đã lưu thành công!");
-    document.getElementById("mcIframe").contentWindow.location.reload();
-    document.getElementById("mcForm").reset();
-    imagePreview.style.display = "none";
-  } else if (event.data.type === "error") {
-    alert("❌ Lỗi: " + event.data.message);
-  }
-
-  // Nhận dữ liệu từ bảng
-  if (event.data.type === "mc_select_row") {
-    const d = event.data.data;
-    document.getElementById("mc_id").value = d.id || "";
-    document.getElementById("mc_topic").value = d.topic || "";
-    document.getElementById("mc_question").value = d.question || "";
-    document.getElementById("mc_answer1").value = d.answer1 || "";
-    document.getElementById("mc_answer2").value = d.answer2 || "";
-    document.getElementById("mc_answer3").value = d.answer3 || "";
-    document.getElementById("mc_answer4").value = d.answer4 || "";
-    document.getElementById("mc_correct_answer").value = d.correct || "";
-    if (d.image) {
-      imagePreview.src = d.image;
-      imagePreview.style.display = "block";
-    } else {
-      imagePreview.style.display = "none";
+  <script>
+    function deleteImage() {
+      const image = document.getElementById('imagePreview');
+      image.src = '#';
+      image.style.display = 'none';
+      document.getElementById('mc_image').value = '';
     }
-    if (typeof updatePreviews === "function") updatePreviews();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-});
 
-loadBtn.addEventListener("click", () => imageInput.click());
-
-imageInput.addEventListener("change", function (e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      imagePreview.src = e.target.result;
-      imagePreview.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  } else {
-    imagePreview.style.display = "none";
-  }
-});
-
-deleteBtn.addEventListener("click", async () => {
-  const id = document.getElementById("mc_id").value;
-  if (!id) return alert("❗ Câu hỏi chưa có ID. Không thể xoá ảnh.");
-  if (!confirm("❌ Xác nhận xoá ảnh minh hoạ?")) return;
-  try {
-    const res = await fetch("utils/mc_delete_image.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mc_id: id })
+    document.getElementById('mc_image').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          const img = document.getElementById('imagePreview');
+          img.src = evt.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
     });
-    const result = await res.json();
-    if (result.success) {
-      imagePreview.style.display = "none";
-      imageInput.value = "";
-      alert("🧹 Đã xoá ảnh!");
-      document.getElementById("saveBtn").click(); // Tự động lưu
-    } else {
-      alert("❌ Lỗi khi xoá ảnh.");
+
+    function openQuestionTable() {
+      window.open('get_question.php', '_blank');
     }
-  } catch (err) {
-    alert("❌ Xảy ra lỗi khi xoá ảnh.");
-  }
-});
-
-document.getElementById("deleteQuestionBtn").addEventListener("click", async () => {
-  const id = document.getElementById("mc_id").value;
-  if (!id) return alert("❗ Chưa có câu hỏi nào được chọn.");
-  if (!confirm("🗑️ Bạn có chắc muốn xoá câu hỏi này?")) return;
-  try {
-    const res = await fetch("utils/mc_delete.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mc_id: id })
-    });
-    const result = await res.json();
-    if (result.success) {
-      alert("🗑️ Đã xoá câu hỏi!");
-      document.getElementById("mcForm").reset();
-      imagePreview.style.display = "none";
-      document.getElementById("mcIframe").contentWindow.location.reload();
-    } else {
-      alert("❌ Xoá thất bại.");
-    }
-  } catch (err) {
-    alert("❌ Lỗi khi gửi yêu cầu xoá.");
-  }
-});
-
-const iframe = document.getElementById("mcIframe");
-const toggleBtn = document.getElementById("toggleIframeBtn");
-toggleBtn.addEventListener("click", () => {
-  iframe.style.display = (iframe.style.display === "none") ? "block" : "none";
-  toggleBtn.textContent = iframe.style.display === "none"
-    ? "🔼 Hiện bảng câu hỏi"
-    : "🔽 Ẩn bảng câu hỏi";
-});
-</script>
-
+  </script>
 </body>
 </html>
