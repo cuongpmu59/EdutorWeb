@@ -153,37 +153,37 @@ toggleIframeBtn.addEventListener("click", () => {
   toggleIframeBtn.textContent = show ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
 });
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleTitle = document.getElementById('togglePreviewFull');
+    const previewBox = document.getElementById('previewFullBox');
+    const previewContent = document.getElementById('previewFullContent');
 
-document.getElementById("togglePreviewHeader").addEventListener("click", function () {
-  const box = document.getElementById("fullPreviewBox");
-  const icon = document.getElementById("previewToggleIcon");
-  const isVisible = box.style.display !== "none";
+    toggleTitle.addEventListener('click', function () {
+      const isHidden = previewBox.style.display === 'none';
+      previewBox.style.display = isHidden ? 'block' : 'none';
+      if (isHidden) updatePreviewFull();
+    });
 
-  box.style.display = isVisible ? "none" : "block";
-  icon.textContent = isVisible ? "▶️" : "🔽";
-});
+    function updatePreviewFull() {
+      const question = document.getElementById('mc_question').value;
+      const answers = ['A', 'B', 'C', 'D'].map(id => 
+        document.getElementById(`mc_answer_${id}`).value
+      );
+      const imageURL = document.getElementById('mc_image_preview')?.src || '';
 
-function updateFullPreview() {
-  const q = document.getElementById("mc_question").value;
-  const a1 = document.getElementById("mc_answer1").value;
-  const a2 = document.getElementById("mc_answer2").value;
-  const a3 = document.getElementById("mc_answer3").value;
-  const a4 = document.getElementById("mc_answer4").value;
-  const correct = document.getElementById("mc_correct_answer").value;
-  const img = document.getElementById("mc_imagePreview");
+      let html = `<p><strong>Câu hỏi:</strong><br>${question}</p>`;
+      if (imageURL && !imageURL.includes('no_image')) {
+        html += `<img src="${imageURL}" alt="Ảnh minh họa" style="max-width: 100%; height: auto; margin: 10px 0;">`;
+      }
+      html += '<p><strong>Đáp án:</strong><ul>';
+      ['A', 'B', 'C', 'D'].forEach((label, i) => {
+        html += `<li><strong>${label}:</strong> ${answers[i]}</li>`;
+      });
+      html += '</ul></p>';
 
-  let html = `
-    <div><b>❓ Câu hỏi:</b> ${q}</div>
-    ${img.src && img.style.display !== "none" ? `<div><b>🖼️ Ảnh minh hoạ:</b><br><img src="${img.src}" style="max-width:100%; max-height:200px;"></div>` : ''}
-    <div><b>🔸 A:</b> ${a1}</div>
-    <div><b>🔸 B:</b> ${a2}</div>
-    <div><b>🔸 C:</b> ${a3}</div>
-    <div><b>🔸 D:</b> ${a4}</div>
-    <div><b>✅ Đáp án đúng:</b> ${correct}</div>
-  `;
-
-  const box = document.getElementById("fullPreviewBox");
-  box.innerHTML = html;
-  if (window.MathJax) MathJax.typesetPromise([box]);
-}
-
+      previewContent.innerHTML = html;
+      if (window.MathJax) MathJax.typesetPromise([previewContent]);
+    }
+  });
+</script>
