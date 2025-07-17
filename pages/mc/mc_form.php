@@ -4,68 +4,88 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css">
+  <link rel="stylesheet" href="css/main_ui.css">
 </head>
 <body>
-  <div class="form-wrapper">
+  <div class="form-layout">
+    <!-- CỘT TRÁI: FORM NHẬP -->
     <div class="form-left">
       <h2>Nhập câu hỏi</h2>
-      <form id="mcForm" enctype="multipart/form-data">
-        <label for="mc_topic">Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
+      <label>Chủ đề:</label>
+      <input type="text" name="topic" placeholder="Nhập chủ đề..."><br>
 
-        <label for="mc_question">Câu hỏi:</label>
-        <textarea id="mc_question" name="mc_question" rows="4" required></textarea>
+      <label>Câu hỏi:</label>
+      <textarea name="question" rows="4" placeholder="Nhập câu hỏi..."></textarea><br>
 
-        <label for="mc_a">A:</label>
-        <input type="text" id="mc_a" name="mc_a" required>
+      <label>Đáp án A:</label>
+      <input type="text" name="answer_a" placeholder="Đáp án A"><br>
 
-        <label for="mc_b">B:</label>
-        <input type="text" id="mc_b" name="mc_b" required>
+      <label>Đáp án B:</label>
+      <input type="text" name="answer_b" placeholder="Đáp án B"><br>
 
-        <label for="mc_c">C:</label>
-        <input type="text" id="mc_c" name="mc_c" required>
+      <label>Đáp án C:</label>
+      <input type="text" name="answer_c" placeholder="Đáp án C"><br>
 
-        <label for="mc_d">D:</label>
-        <input type="text" id="mc_d" name="mc_d" required>
+      <label>Đáp án D:</label>
+      <input type="text" name="answer_d" placeholder="Đáp án D"><br>
 
-        <label for="mc_answer">Đáp án đúng:</label>
-        <select id="mc_answer" name="mc_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
-
-        <label for="mc_note">Ghi chú (nếu có):</label>
-        <textarea id="mc_note" name="mc_note" rows="3"></textarea>
-
-        <input type="hidden" id="mc_id" name="mc_id">
-      </form>
-
-      <div class="action-buttons">
-        <button id="btnSave">💾 Lưu</button>
-        <button id="btnReset">🔄 Làm lại</button>
-        <button id="btnDelete">🗑️ Xoá câu hỏi</button>
-        <button id="btnView">📋 Xem bảng</button>
-      </div>
+      <label>Đáp án đúng:</label>
+      <select name="correct">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
     </div>
 
+    <!-- CỘT PHẢI: HÌNH ẢNH + NÚT -->
     <div class="form-right">
-      <h3>🖼️ Ảnh minh hoạ</h3>
-      <div class="image-frame" id="imagePreview">
-        <img id="mc_preview_img" src="" alt="Chưa có ảnh" />
+      <!-- ẢNH MINH HOẠ -->
+      <div class="image-preview" id="imageBox">
+        <img id="previewImage" src="" alt="Ảnh minh hoạ sẽ hiển thị ở đây">
       </div>
 
-      <div class="image-controls">
-        <label for="mc_image" class="upload-label">📤 Tải ảnh</label>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden>
-        <button type="button" id="btnRemoveImage">❌ Xoá ảnh</button>
+      <!-- NÚT TẢI ẢNH + XOÁ ẢNH -->
+      <div class="row-buttons">
+        <input type="file" id="imageInput" hidden>
+        <button onclick="document.getElementById('imageInput').click()">📷 Tải ảnh</button>
+        <button onclick="deleteImage()">❌ Xoá ảnh</button>
+      </div>
+
+      <!-- CÁC NÚT CHÍNH -->
+      <div class="column-buttons">
+        <button onclick="saveQuestion()">💾 Lưu câu hỏi</button>
+        <button onclick="resetForm()">🔄 Làm lại</button>
+        <button onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
+        <button onclick="openTable()">📋 Xem bảng</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/modules/previewView.js"></script>
+  <script>
+    function deleteImage() {
+      document.getElementById('previewImage').src = '';
+    }
+
+    function saveQuestion() {
+      alert('Chức năng Lưu đang phát triển...');
+    }
+
+    function resetForm() {
+      document.querySelectorAll('.form-left input, .form-left textarea, .form-left select')
+        .forEach(el => el.value = '');
+      deleteImage();
+    }
+
+    function deleteQuestion() {
+      if (confirm("Bạn có chắc chắn muốn xoá câu hỏi này?")) {
+        alert('Đã xoá!');
+      }
+    }
+
+    function openTable() {
+      alert('Chuyển đến bảng câu hỏi...');
+    }
+  </script>
 </body>
 </html>
