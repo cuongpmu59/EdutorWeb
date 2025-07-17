@@ -1,196 +1,95 @@
-/* =========================
-   Giao Diện Chính cho mc_form.php
-========================= */
-
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #f4f6f9;
   color: #333;
 }
 
-/* ==== BỐ CỤC FORM ==== */
-.form-wrapper {
+.form-layout {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
 }
 
 .form-left {
-  flex: 2;
+  flex: 3;
   min-width: 300px;
 }
 
-.form-right {
-  flex: 1;
-  min-width: 240px;
-  border-left: 2px dashed #ccc;
-  padding-left: 20px;
-}
-
-/* ==== TIÊU ĐỀ ==== */
-h2 {
-  margin-bottom: 25px;
-  color: #007bff;
-}
-
-h3 {
-  margin-bottom: 12px;
-  color: #333;
-}
-
-/* ==== INPUT & TEXTAREA ==== */
-label {
+.form-left label {
+  font-weight: bold;
   display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-input[type="text"],
-select,
-textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-  margin-bottom: 14px;
-  transition: border 0.2s ease-in-out;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-
-/* ==== NÚT HÀNH ĐỘNG ==== */
-.action-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   margin-top: 10px;
 }
 
-.action-buttons button {
-  flex: 1;
-  padding: 10px 14px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+.form-left input,
+.form-left textarea,
+.form-left select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  font-size: 16px;
 }
 
-.action-buttons button:hover {
-  background-color: #0056b3;
+.form-right {
+  flex: 2;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
 }
 
-button#btnDelete {
-  background-color: #fd7e14;
-}
-
-button#btnDelete:hover {
-  background-color: #e86400;
-}
-
-button#btnReset {
-  background-color: #6c757d;
-}
-
-button#btnReset:hover {
-  background-color: #495057;
-}
-
-/* ==== KHUNG ẢNH ==== */
-.image-frame {
-  border: 1px dashed #aaa;
+/* Ảnh minh hoạ */
+.image-preview {
+  width: 100%;
+  height: 250px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  overflow: hidden;
   background-color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.image-frame img {
+.image-preview img {
   max-width: 100%;
-  max-height: 200px;
+  max-height: 100%;
   object-fit: contain;
-  margin-bottom: 10px;
 }
 
-/* ==== NÚT ẢNH ==== */
-.image-controls {
+/* Nút tải ảnh và xoá ảnh cùng hàng */
+.row-buttons {
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
-.upload-label {
-  flex: 1;
-  background-color: #4caf50;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+/* Nút chính dọc */
+.column-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.upload-label:hover {
-  background-color: #388e3c;
-}
-
-.image-controls button {
-  background-color: #d32f2f;
-  color: white;
+button {
+  padding: 10px 15px;
+  font-size: 15px;
   border: none;
   border-radius: 6px;
-  padding: 10px 14px;
-  font-weight: bold;
   cursor: pointer;
+  background-color: #3498db;
+  color: #fff;
+  transition: background-color 0.3s;
 }
 
-.image-controls button:hover {
-  background-color: #b71c1c;
-}
-
-/* ==== RESPONSIVE ==== */
-@media (max-width: 768px) {
-  .form-wrapper {
-    flex-direction: column;
-  }
-
-  .form-right {
-    border-left: none;
-    border-top: 2px dashed #ccc;
-    padding-left: 0;
-    padding-top: 20px;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-  }
-
-  .image-controls {
-    flex-direction: column;
-  }
-
-  .upload-label,
-  .image-controls button {
-    width: 100%;
-  }
+button:hover {
+  background-color: #2c80b4;
 }
