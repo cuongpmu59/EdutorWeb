@@ -4,145 +4,92 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css">
+  <link rel="stylesheet" href="/css/mc/mc_form.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
   <div class="form-container">
-
-    <!-- === CỘT TRÁI: FORM CÂU HỎI === -->
+    <!-- CỘT TRÁI: NHẬP CÂU HỎI VÀ ĐÁP ÁN -->
     <div class="column-left">
-      <h2>Nhập câu hỏi trắc nghiệm</h2>
+      <h2>
+        Nhập câu hỏi trắc nghiệm
+        <button type="button" class="eye-icon" data-preview="full">
+          <i class="fas fa-eye"></i>
+        </button>
+      </h2>
 
-      <label>Chủ đề:</label>
-      <input type="text" id="topic" placeholder="Nhập chủ đề...">
+      <form id="questionForm">
+        <div class="form-group">
+          <label for="topic">Chủ đề:</label>
+          <input type="text" id="topic" name="topic" required>
+        </div>
 
-      <label>Câu hỏi:</label>
-      <div class="input-with-eye">
-        <textarea id="question" placeholder="Nhập nội dung câu hỏi..."></textarea>
-        <button class="toggle-preview" onclick="togglePreview('question')">👁️</button>
-      </div>
-      <div id="preview-question" class="preview-box hidden"></div>
+        <div class="form-group">
+          <label for="question">Câu hỏi:</label>
+          <textarea id="question" name="question" rows="3" required></textarea>
+        </div>
 
-      <div class="answer-row">
-  <label for="answerA">A</label>
-  <button type="button" class="eye-button" data-target="answerA">👁️</button>
-  <input type="text" id="answerA" name="answerA" required>
-  <span class="preview answer-preview" id="preview-answerA"></span>
-</div>
+        <div class="answer-group">
+          <label for="answerA">A:</label>
+          <input type="text" id="answerA" name="answerA" required>
+          <button type="button" class="eye-icon" data-preview="A"><i class="fas fa-eye"></i></button>
+        </div>
 
-<div class="answer-row">
-  <label for="answerB">B</label>
-  <button type="button" class="eye-button" data-target="answerB">👁️</button>
-  <input type="text" id="answerB" name="answerB" required>
-  <span class="preview answer-preview" id="preview-answerB"></span>
-</div>
+        <div class="answer-group">
+          <label for="answerB">B:</label>
+          <input type="text" id="answerB" name="answerB" required>
+          <button type="button" class="eye-icon" data-preview="B"><i class="fas fa-eye"></i></button>
+        </div>
 
-<div class="answer-row">
-  <label for="answerC">C</label>
-  <button type="button" class="eye-button" data-target="answerC">👁️</button>
-  <input type="text" id="answerC" name="answerC" required>
-  <span class="preview answer-preview" id="preview-answerC"></span>
-</div>
+        <div class="answer-group">
+          <label for="answerC">C:</label>
+          <input type="text" id="answerC" name="answerC" required>
+          <button type="button" class="eye-icon" data-preview="C"><i class="fas fa-eye"></i></button>
+        </div>
 
-<div class="answer-row">
-  <label for="answerD">D</label>
-  <button type="button" class="eye-button" data-target="answerD">👁️</button>
-  <input type="text" id="answerD" name="answerD" required>
-  <span class="preview answer-preview" id="preview-answerD"></span>
-</div>
+        <div class="answer-group">
+          <label for="answerD">D:</label>
+          <input type="text" id="answerD" name="answerD" required>
+          <button type="button" class="eye-icon" data-preview="D"><i class="fas fa-eye"></i></button>
+        </div>
 
+        <div class="form-group">
+          <label for="correct">Đáp án đúng:</label>
+          <select id="correct" name="correct" required>
+            <option value="">--Chọn--</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>
+      </form>
 
-      <label>Đáp án đúng:</label>
-      <select id="correctAnswer">
-        <option value="">-- Chọn --</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-        <option value="D">D</option>
-      </select>
-
-      <div class="preview-toggle-all">
-        <button onclick="toggleAllPreviews()">👁️ Xem toàn bộ</button>
-      </div>
-      <div id="preview-all" class="preview-box hidden"></div>
+      <!-- KHUNG XEM TRƯỚC CÔNG THỨC -->
+      <div id="previewBox" class="preview-box"></div>
     </div>
 
-    <!-- === CỘT PHẢI: ẢNH & NÚT === -->
+    <!-- CỘT PHẢI: ẢNH MINH HỌA + NÚT -->
     <div class="column-right">
-
-      <!-- KHU VỰC ẢNH MINH HOẠ -->
       <div class="image-section">
-        <label>Ảnh minh hoạ:</label>
-        <img id="imagePreview" src="" alt="Xem trước ảnh" class="image-preview hidden">
-        <input type="file" id="imageInput" accept="image/*">
-        <div class="image-buttons">
-          <button onclick="uploadImage()">📤 Tải ảnh</button>
-          <button onclick="deleteImage()">🗑️ Xoá ảnh</button>
-        </div>
+        <h3>Ảnh minh hoạ</h3>
+        <input type="file" id="imageInput" accept="image/*" hidden>
+        <button type="button" id="selectImageBtn"><i class="fas fa-upload"></i> Chọn ảnh</button>
+        <button type="button" id="deleteImageBtn"><i class="fas fa-trash"></i> Xoá ảnh</button>
+        <div class="image-preview" id="imagePreview"></div>
       </div>
 
-      <!-- KHU VỰC NÚT CHỨC NĂNG -->
       <div class="action-buttons">
-        <button onclick="saveQuestion()">💾 Lưu</button>
-        <button onclick="resetForm()">🔄 Làm lại</button>
-        <button onclick="deleteQuestion()">❌ Xoá</button>
-        <button onclick="viewTable()">📋 Xem bảng</button>
+        <button type="button" id="saveBtn" class="btn-primary"><i class="fas fa-save"></i> Lưu</button>
+        <button type="button" id="resetBtn"><i class="fas fa-sync-alt"></i> Làm lại</button>
+        <button type="button" id="deleteBtn"><i class="fas fa-trash-alt"></i> Xoá</button>
+        <a href="mc_table.php" class="btn-link"><i class="fas fa-table"></i> Xem bảng</a>
       </div>
     </div>
   </div>
 
-  <script>
-    function togglePreview(type) {
-      const inputId = type === 'question' ? 'question' : 'answer' + type;
-      const previewId = 'preview-' + (type === 'question' ? 'question' : type);
-      const previewBox = document.getElementById(previewId);
-      const content = document.getElementById(inputId).value;
-      previewBox.innerHTML = content;
-      previewBox.classList.toggle('hidden');
-      MathJax.typesetPromise();
-    }
-
-    function toggleAllPreviews() {
-      const fields = ['question', 'A', 'B', 'C', 'D'];
-      let allContent = '<strong>Câu hỏi:</strong><br>' + document.getElementById('question').value + '<br><br>';
-      fields.slice(1).forEach(letter => {
-        allContent += `<strong>Đáp án ${letter}:</strong> ${document.getElementById('answer' + letter).value}<br>`;
-      });
-      const previewAll = document.getElementById('preview-all');
-      previewAll.innerHTML = allContent;
-      previewAll.classList.toggle('hidden');
-      MathJax.typesetPromise();
-    }
-
-    function uploadImage() {
-      alert('Đang phát triển: Tải ảnh lên máy chủ');
-    }
-
-    function deleteImage() {
-      document.getElementById('imageInput').value = '';
-      document.getElementById('imagePreview').src = '';
-      document.getElementById('imagePreview').classList.add('hidden');
-    }
-
-    function saveQuestion() {
-      alert('Đang lưu câu hỏi...');
-    }
-
-    function resetForm() {
-      document.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
-      document.querySelectorAll('.preview-box').forEach(el => el.classList.add('hidden'));
-      deleteImage();
-    }
-
-    function deleteQuestion() {
-      alert('Bạn muốn xoá câu hỏi này?');
-    }
-
-    function viewTable() {
-      window.location.href = 'mc_table.php';
-    }
-  </script>
+  <script src="/js/mc/mc_form.js"></script>
 </body>
 </html>
