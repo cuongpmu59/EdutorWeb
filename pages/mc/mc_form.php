@@ -25,33 +25,34 @@
       </div>
       <div id="preview-question" class="preview-box hidden"></div>
 
-      <label>Đáp án A:</label>
-      <div class="input-with-eye">
-        <input type="text" id="answerA" placeholder="Nhập đáp án A">
-        <button class="toggle-preview" onclick="togglePreview('A')">👁️</button>
-      </div>
-      <div id="preview-A" class="preview-box hidden"></div>
+      <div class="answer-row">
+  <label for="answerA">A</label>
+  <button type="button" class="eye-button" data-target="answerA">👁️</button>
+  <input type="text" id="answerA" name="answerA" required>
+  <span class="preview answer-preview" id="preview-answerA"></span>
+</div>
 
-      <label>Đáp án B:</label>
-      <div class="input-with-eye">
-        <input type="text" id="answerB" placeholder="Nhập đáp án B">
-        <button class="toggle-preview" onclick="togglePreview('B')">👁️</button>
-      </div>
-      <div id="preview-B" class="preview-box hidden"></div>
+<div class="answer-row">
+  <label for="answerB">B</label>
+  <button type="button" class="eye-button" data-target="answerB">👁️</button>
+  <input type="text" id="answerB" name="answerB" required>
+  <span class="preview answer-preview" id="preview-answerB"></span>
+</div>
 
-      <label>Đáp án C:</label>
-      <div class="input-with-eye">
-        <input type="text" id="answerC" placeholder="Nhập đáp án C">
-        <button class="toggle-preview" onclick="togglePreview('C')">👁️</button>
-      </div>
-      <div id="preview-C" class="preview-box hidden"></div>
+<div class="answer-row">
+  <label for="answerC">C</label>
+  <button type="button" class="eye-button" data-target="answerC">👁️</button>
+  <input type="text" id="answerC" name="answerC" required>
+  <span class="preview answer-preview" id="preview-answerC"></span>
+</div>
 
-      <label>Đáp án D:</label>
-      <div class="input-with-eye">
-        <input type="text" id="answerD" placeholder="Nhập đáp án D">
-        <button class="toggle-preview" onclick="togglePreview('D')">👁️</button>
-      </div>
-      <div id="preview-D" class="preview-box hidden"></div>
+<div class="answer-row">
+  <label for="answerD">D</label>
+  <button type="button" class="eye-button" data-target="answerD">👁️</button>
+  <input type="text" id="answerD" name="answerD" required>
+  <span class="preview answer-preview" id="preview-answerD"></span>
+</div>
+
 
       <label>Đáp án đúng:</label>
       <select id="correctAnswer">
