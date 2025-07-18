@@ -54,20 +54,7 @@ try {
     }
   </style>
 </head>
-
 <body>
-<div id="custom-filter-bar" class="custom-filter" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-  <div class="filter-left">
-    📚 Chủ đề:
-    <select id="filter-topic">
-      <option value="">-- Tất cả --</option>
-      <?php include __DIR__ . '/utils/filter.php'; ?>
-    </select>
-  </div>
-  <div class="filter-right">
-    🔍 Tìm kiếm: <input type="search" id="custom-search" class="form-control input-sm" placeholder="">
-  </div>
-</div>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
@@ -144,15 +131,18 @@ $(document).ready(function () {
   });
 
   // Lọc theo chủ đề
-  $('#filter-topic').on('change', function () {
-  table.column(1).search(this.value).draw();
-  });
-
-  // Tìm kiếm chung
-  $('#custom-search').on('keyup change', function () {
-  table.search(this.value).draw();
-  });
-
+  $('#mcTable_filter').html(`
+    <div class="filter-left">
+      📚 Chủ đề:
+      <select id="filter-topic">
+        <option value="">-- Tất cả --</option>
+        <?php include __DIR__ . '/utils/filter.php'; ?>
+      </select>
+    </div>
+    <div class="filter-right">
+      🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
+    </div>
+  `);
 
   $('#filter-topic').on('change', function () {
     table.column(1).search(this.value).draw();
