@@ -1,7 +1,7 @@
 /* ===========================
    Giao diện bảng câu hỏi
 =========================== */
-@import url('table/table.css');
+@import url('table/mc_table.css');
 @import url('table/topbar.css');
 
 body {
