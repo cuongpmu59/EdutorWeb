@@ -1,5 +1,11 @@
-/* ===== table_ui.css ===== */
-/* Tổng hợp giao diện bảng + thanh tiêu đề */
+/* ===========================
+   Giao diện bảng câu hỏi
+=========================== */
+@import url('table/table.css');
+@import url('table/topbar.css');
 
-@import url('/css/table/topbar.css');
-@import url('/css/table/table.css');
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
