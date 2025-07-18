@@ -12,22 +12,22 @@
     <div class="form-left">
       <h2>Nhập câu hỏi</h2>
       <label>Chủ đề:</label>
-      <input type="text" name="topic" placeholder="Nhập chủ đề..."><br>
+      <input type="text" name="topic" placeholder="Chủ đề:"><br>
 
       <label>Câu hỏi:</label>
-      <textarea name="question" rows="4" placeholder="Nhập câu hỏi..."></textarea><br>
+      <textarea name="question" rows="4" placeholder="Câu hỏi:"></textarea><br>
 
       <label>Đáp án A:</label>
-      <input type="text" name="answer_a" placeholder="Đáp án A"><br>
+      <input type="text" name="answer_a" placeholder="A."><br>
 
       <label>Đáp án B:</label>
-      <input type="text" name="answer_b" placeholder="Đáp án B"><br>
+      <input type="text" name="answer_b" placeholder="B."><br>
 
       <label>Đáp án C:</label>
-      <input type="text" name="answer_c" placeholder="Đáp án C"><br>
+      <input type="text" name="answer_c" placeholder="C."><br>
 
       <label>Đáp án D:</label>
-      <input type="text" name="answer_d" placeholder="Đáp án D"><br>
+      <input type="text" name="answer_d" placeholder="D."><br>
 
       <label>Đáp án đúng:</label>
       <select name="correct">
@@ -42,7 +42,7 @@
     <div class="form-right">
       <!-- ẢNH MINH HOẠ -->
       <div class="image-preview" id="imageBox">
-        <img id="previewImage" src="" alt="Ảnh minh hoạ sẽ hiển thị ở đây">
+        <img id="previewImage" src="" alt="Ảnh minh hoạ">
       </div>
 
       <!-- NÚT TẢI ẢNH + XOÁ ẢNH -->
