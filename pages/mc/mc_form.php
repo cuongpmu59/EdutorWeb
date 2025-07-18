@@ -14,42 +14,46 @@
     <!-- === CỘT TRÁI: FORM CÂU HỎI === -->
     <div class="column-left">
       <h2>Nhập câu hỏi trắc nghiệm</h2>
+      <div class="preview-toggle-all">
+        <button onclick="toggleAllPreviews()">👁️ Xem toàn bộ</button>
+      </div>
+      <div id="preview-all" class="preview-box hidden"></div>
 
       <label>Chủ đề:</label>
       <input type="text" id="topic" placeholder="Nhập chủ đề...">
 
       <label>Câu hỏi:</label>
       <div class="input-with-eye">
-        <textarea id="question" placeholder="Nhập nội dung câu hỏi..."></textarea>
         <button class="toggle-preview" onclick="togglePreview('question')">👁️</button>
+        <textarea id="question" placeholder="Nhập nội dung câu hỏi..."></textarea>
       </div>
       <div id="preview-question" class="preview-box hidden"></div>
 
-      <label>Đáp án A:</label>
+      <label>A.</label>
       <div class="input-with-eye">
-        <input type="text" id="answerA" placeholder="Nhập đáp án A">
         <button class="toggle-preview" onclick="togglePreview('A')">👁️</button>
+        <input type="text" id="answerA" placeholder="Nhập đáp án A">
       </div>
       <div id="preview-A" class="preview-box hidden"></div>
 
-      <label>Đáp án B:</label>
+      <label>B.</label>
       <div class="input-with-eye">
-        <input type="text" id="answerB" placeholder="Nhập đáp án B">
         <button class="toggle-preview" onclick="togglePreview('B')">👁️</button>
+        <input type="text" id="answerB" placeholder="Nhập đáp án B">
       </div>
       <div id="preview-B" class="preview-box hidden"></div>
 
-      <label>Đáp án C:</label>
+      <label>C.</label>
       <div class="input-with-eye">
-        <input type="text" id="answerC" placeholder="Nhập đáp án C">
         <button class="toggle-preview" onclick="togglePreview('C')">👁️</button>
+        <input type="text" id="answerC" placeholder="Nhập đáp án C">
       </div>
       <div id="preview-C" class="preview-box hidden"></div>
 
-      <label>Đáp án D:</label>
+      <label>D.</label>
       <div class="input-with-eye">
-        <input type="text" id="answerD" placeholder="Nhập đáp án D">
         <button class="toggle-preview" onclick="togglePreview('D')">👁️</button>
+        <input type="text" id="answerD" placeholder="Nhập đáp án D">
       </div>
       <div id="preview-D" class="preview-box hidden"></div>
 
@@ -61,11 +65,6 @@
         <option value="C">C</option>
         <option value="D">D</option>
       </select>
-
-      <div class="preview-toggle-all">
-        <button onclick="toggleAllPreviews()">👁️ Xem toàn bộ</button>
-      </div>
-      <div id="preview-all" class="preview-box hidden"></div>
     </div>
 
     <!-- === CỘT PHẢI: ẢNH & NÚT === -->
