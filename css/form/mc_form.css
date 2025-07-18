@@ -1,175 +1,240 @@
-/* =========================
-   Form chính: Bố cục 2 cột
-========================= */
-.mc-form-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20px;
+/* =============================
+   BIẾN MÀU CHỦ ĐỀ & CHẾ ĐỘ TỐI
+============================= */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --box-bg: #f9f9f9;
+    --input-bg: #ffffff;
+    --border-color: #ccc;
+    --button-color: #007bff;
+    --button-hover: #0056b3;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+  }
+  
+  body.dark-mode {
+    --bg-color: #1e1e1e;
+    --text-color: #f1f1f1;
+    --box-bg: #2c2c2c;
+    --input-bg: #2a2a2a;
+    --border-color: #444;
+    --button-color: #3399ff;
+    --button-hover: #1a75d1;
+    --danger-color: #ff4d4d;
+    --success-color: #4dd17a;
+  }
+  
+  /* ============================
+     BỐ CỤC TOÀN FORM
+  ============================ */
+  body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
     padding: 20px;
-    background-color: var(--bg-color, #fff);
-    color: var(--text-color, #000);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
-  /* ========================
-     Khu vực nhập liệu (Câu hỏi & đáp án)
-  ======================== */
-  .mc-input-group label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 6px;
-  }
-  
-  .mc-input-group input[type="text"],
-  .mc-input-group textarea,
-  .mc-input-group select {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-    background-color: var(--input-bg, #fff);
-    color: var(--text-color, #000);
-  }
-  
-  .mc-input-group {
-    margin-bottom: 15px;
-  }
-  
-  /* Hàng chứa label + input đáp án */
-  .answer-row {
+  .mc-form-container {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
   }
   
-  .answer-row label {
-    flex: 0 0 40px;
-  }
-  
-  .answer-row input[type="text"] {
-    flex: 1;
-  }
-  
-  /* Câu hỏi */
-  textarea[name="question"] {
-    min-height: 80px;
-  }
-  
-  /* ========================
-     Khu vực ảnh minh hoạ
-  ======================== */
-  .mc-image-section {
-    border: 1px dashed #999;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    background-color: var(--box-bg, #f9f9f9);
+  /* =============================
+     FORM BÊN TRÁI: NHẬP CÂU HỎI
+  ============================= */
+  .mc-input-section {
+    flex: 2;
+    min-width: 320px;
     display: flex;
     flex-direction: column;
+    gap: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+  }
+  
+  .form-group input[type="text"],
+  .form-group textarea,
+  .form-group select {
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  
+  .answer-group {
+    display: grid;
+    grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 10px;
-    height: 320px;
-    box-sizing: border-box;
+    gap: 6px 10px;
   }
   
-  .mc-image-section img {
-    max-height: 200px;
-    object-fit: contain;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    padding: 5px;
-    max-width: 100%;
+  /* =============================
+     BÊN PHẢI: ẢNH & NÚT CHỨC NĂNG
+  ============================= */
+  .mc-side-section {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   
-  /* Nút tải ảnh và xóa ảnh */
+  /* === ẢNH MINH HỌA === */
+  .image-section {
+    background-color: var(--box-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .image-section h4 {
+    margin: 0 0 8px;
+  }
+  
   .image-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    margin-top: 8px;
   }
   
-  .image-buttons button {
+  /* ẨN input file */
+  .image-buttons input[type="file"] {
+    display: none;
+  }
+  
+  /* Nút chọn file qua label */
+  label.upload-label {
+    background-color: var(--success-color);
     padding: 6px 12px;
-    font-size: 14px;
-    border: none;
-    background-color: #007bff;
-    color: white;
     border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  label.upload-label:hover {
+    background-color: #218838;
+  }
+  
+  /* Nút xoá ảnh */
+  button.delete-image-btn {
+    background-color: var(--danger-color);
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
     cursor: pointer;
     transition: background-color 0.2s;
   }
   
-  .image-buttons button:hover {
-    background-color: #0056b3;
+  button.delete-image-btn:hover {
+    background-color: #c82333;
   }
   
-  .image-buttons .delete-btn {
-    background-color: #dc3545;
+  /* Ảnh minh hoạ */
+  #previewImage {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    margin: 8px 0;
   }
   
-  .image-buttons .delete-btn:hover {
-    background-color: #a71d2a;
-  }
-  
-  /* Ẩn input file */
-  input[type="file"] {
-    display: none;
-  }
-  
-  /* =========================
-     Khu vực nhóm nút Lưu / Xoá / Làm lại / Xem danh sách
-  ========================= */
-  .mc-button-group {
-    grid-column: span 2;
-    margin-top: 20px;
+  /* =============================
+     NÚT CHỨC NĂNG
+  ============================= */
+  .button-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 10px;
   }
   
-  .mc-button-group button {
-    padding: 10px 16px;
+  .button-group button {
+    padding: 10px;
     font-size: 15px;
+    font-weight: bold;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: 0.2s ease;
-    background-color: #17a2b8;
-    color: #fff;
+    color: white;
+    transition: background-color 0.2s;
   }
   
-  .mc-button-group .delete {
-    background-color: #dc3545;
+  .button-group .save-btn {
+    background-color: var(--button-color);
   }
   
-  .mc-button-group .reset {
-    background-color: #ffc107;
-    color: #000;
+  .button-group .save-btn:hover {
+    background-color: var(--button-hover);
   }
   
-  .mc-button-group .view-table {
-    background-color: #6c757d;
+  .button-group .reset-btn {
+    background-color: gray;
   }
   
-  .mc-button-group button:hover {
-    opacity: 0.85;
+  .button-group .delete-btn {
+    background-color: var(--danger-color);
   }
   
-  /* =========================
-     Responsive
-  ========================= */
+  .button-group .pdf-btn {
+    background-color: darkorange;
+  }
+  
+  .button-group .excel-btn {
+    background-color: green;
+  }
+  
+  /* =============================
+     KHU VỰC XEM TRƯỚC
+  ============================= */
+  .preview-section {
+    margin-top: 20px;
+    background-color: var(--box-bg);
+    border: 1px dashed var(--border-color);
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  
+  .preview-section h4 {
+    margin: 4px 0;
+    color: var(--text-color);
+  }
+  
+  /* =============================
+     RESPONSIVE
+  ============================= */
   @media (max-width: 768px) {
     .mc-form-container {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
-  
-    .mc-button-group {
+    .button-group {
+      flex-direction: row;
+      flex-wrap: wrap;
       justify-content: center;
     }
   }
