@@ -1,0 +1,44 @@
+/* ===============================
+   FONT & VIEW FOR TEXT + FORMULA
+   =============================== */
+
+/* Áp dụng cho nội dung có chứa công thức toán (LaTeX) */
+.math-cell {
+    white-space: normal;
+    line-height: 1.6;
+    font-size: 16px;
+    vertical-align: top;
+  }
+  
+  /* Căn lề cho ô dữ liệu chứa nội dung nhiều dòng */
+  #mcTable td {
+    white-space: normal;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  
+  /* MathJax công thức block */
+  .MathJax_Display {
+    margin: 0.5em 0;
+    text-align: left !important;
+  }
+  
+  /* Giảm padding để bảng gọn hơn nếu công thức dài */
+  #mcTable td, #mcTable th {
+    padding: 8px 10px;
+  }
+  
+  /* Giới hạn chiều rộng ô nếu cần */
+  #mcTable td.math-cell {
+    max-width: 400px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  
+  /* Hỗ trợ responsive tốt hơn */
+  @media screen and (max-width: 768px) {
+    .math-cell {
+      font-size: 15px;
+    }
+  }
+  
