@@ -11,43 +11,45 @@
     <!-- CỘT TRÁI: FORM NHẬP -->
     <div class="form-left">
       <h2>Nhập câu hỏi</h2>
-      <label>Chủ đề:</label>
+
+      <label for="topic">Chủ đề:</label>
       <input type="text" name="topic" id="topic" placeholder="Chủ đề:">
 
-      <label>Câu hỏi:</label>
+      <label for="question">Câu hỏi:</label>
       <textarea name="question" id="question" rows="4" placeholder="Câu hỏi:"></textarea>
 
       <div class="answer-group">
-  <label for="answer_a">A.</label>
-  <input type="text" id="answer_a" name="answer_a" required>
-</div>
+        <label for="answer_a">A.</label>
+        <input type="text" id="answer_a" name="answer_a" required>
+      </div>
 
-<div class="answer-group">
-  <label for="answer_b">B.</label>
-  <input type="text" id="answer_b" name="answer_b" required>
-</div>
+      <div class="answer-group">
+        <label for="answer_b">B.</label>
+        <input type="text" id="answer_b" name="answer_b" required>
+      </div>
 
-<div class="answer-group">
-  <label for="answer_c">C.</label>
-  <input type="text" id="answer_c" name="answer_c" required>
-</div>
+      <div class="answer-group">
+        <label for="answer_c">C.</label>
+        <input type="text" id="answer_c" name="answer_c" required>
+      </div>
 
-<div class="answer-group">
-  <label for="answer_d">D.</label>
-  <input type="text" id="answer_d" name="answer_d" required>
-</div>
+      <div class="answer-group">
+        <label for="answer_d">D.</label>
+        <input type="text" id="answer_d" name="answer_d" required>
+      </div>
 
-<div class="correct-answer-group">
-  <label for="correct_answer">Đáp án:</label>
-  <select id="correct_answer" name="correct_answer" required>
-    <option value="">-- Chọn --</option>
-    <option value="A">A</option>
-    <option value="B">B</option>
-    <option value="C">C</option>
-    <option value="D">D</option>
-  </select>
-</div>
-  
+      <div class="correct-answer-group">
+        <label for="correct_answer">Đáp án:</label>
+        <select id="correct_answer" name="correct_answer" required>
+          <option value="">-- Chọn --</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+        </select>
+      </div>
+    </div>
+
     <!-- CỘT PHẢI: HÌNH ẢNH + NÚT -->
     <div class="form-right">
       <!-- ẢNH MINH HOẠ -->
@@ -64,10 +66,10 @@
 
       <!-- CÁC NÚT CHÍNH -->
       <div class="column-buttons">
-        <button onclick="saveQuestion()">💾 Lưu câu hỏi</button>
-        <button onclick="resetForm()">🔄 Làm lại</button>
-        <button onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
-        <button onclick="openTable()">📋 Xem bảng</button>
+        <button class="btn-save" onclick="saveQuestion()">💾 Lưu câu hỏi</button>
+        <button class="btn-reset" onclick="resetForm()">🔄 Làm lại</button>
+        <button class="btn-delete" onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
+        <button class="btn-export" onclick="openTable()">📋 Xem bảng</button>
       </div>
     </div>
   </div>
