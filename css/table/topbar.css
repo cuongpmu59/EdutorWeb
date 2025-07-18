@@ -1,0 +1,29 @@
+.table-top-bar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px 0;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  
+  .table-top-bar .filter-group,
+  .table-top-bar .search-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+  }
+  
+  .table-top-bar select,
+  .table-top-bar input[type="search"] {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    max-width: 250px;
+  }
+  
