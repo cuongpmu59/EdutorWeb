@@ -1,2 +1,5 @@
-@import url('/css/modules/topbar.css');
-@import url('/css/modules/table.css');
+/* ===== table_ui.css ===== */
+/* Tổng hợp giao diện bảng + thanh tiêu đề */
+
+@import url('/css/table/topbar.css');
+@import url('/css/table/table.css');
