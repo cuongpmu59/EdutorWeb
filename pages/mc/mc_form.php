@@ -7,73 +7,75 @@
   <link rel="stylesheet" href="/css/main_ui.css">
 </head>
 <body>
-  <div class="form-layout">
-    <!-- CỘT TRÁI: FORM NHẬP -->
-    <div class="form-left">
-      <h2>Nhập câu hỏi</h2>
+  <div class="mc-container">
+    <!-- CỘT TRÁI: FORM CÂU HỎI -->
+    <form id="questionForm" class="mc-form">
+      <h2>📄 Nhập câu hỏi</h2>
 
-      <label for="topic">Chủ đề:</label>
-      <input type="text" name="topic" id="topic" placeholder="Chủ đề:">
-
-      <label for="question">Câu hỏi:</label>
-      <textarea name="question" id="question" rows="4" placeholder="Câu hỏi:"></textarea>
-
-      <div class="answer-group">
-        <label for="answer_a">A.</label>
-        <input type="text" id="answer_a" name="answer_a" required>
+      <div class="form-group">
+        <label for="topic">Chủ đề:</label>
+        <input type="text" id="topic" name="topic" required>
       </div>
 
-      <div class="answer-group">
-        <label for="answer_b">B.</label>
-        <input type="text" id="answer_b" name="answer_b" required>
+      <div class="form-group">
+        <label for="question">Câu hỏi:</label>
+        <textarea id="question" name="question" rows="3" required></textarea>
       </div>
 
-      <div class="answer-group">
-        <label for="answer_c">C.</label>
-        <input type="text" id="answer_c" name="answer_c" required>
+      <div class="form-group answer-group">
+        <label for="answerA">Đáp án A:</label>
+        <input type="text" id="answerA" name="answerA" required>
       </div>
 
-      <div class="answer-group">
-        <label for="answer_d">D.</label>
-        <input type="text" id="answer_d" name="answer_d" required>
+      <div class="form-group answer-group">
+        <label for="answerB">Đáp án B:</label>
+        <input type="text" id="answerB" name="answerB" required>
       </div>
 
-      <div class="correct-answer-group">
-        <label for="correct_answer">Đáp án:</label>
-        <select id="correct_answer" name="correct_answer" required>
-          <option value="">-- Chọn --</option>
+      <div class="form-group answer-group">
+        <label for="answerC">Đáp án C:</label>
+        <input type="text" id="answerC" name="answerC" required>
+      </div>
+
+      <div class="form-group answer-group">
+        <label for="answerD">Đáp án D:</label>
+        <input type="text" id="answerD" name="answerD" required>
+      </div>
+
+      <div class="form-group">
+        <label for="correct">Đáp án đúng:</label>
+        <select id="correct" name="correct" required>
+          <option value="">--Chọn--</option>
           <option value="A">A</option>
           <option value="B">B</option>
           <option value="C">C</option>
           <option value="D">D</option>
         </select>
       </div>
-    </div>
+    </form>
 
-    <!-- CỘT PHẢI: HÌNH ẢNH + NÚT -->
-    <div class="form-right">
-      <!-- ẢNH MINH HOẠ -->
-      <div class="image-preview" id="imageBox">
-        <img id="previewImage" src="" alt="Ảnh minh hoạ" style="display:none;">
+    <!-- CỘT PHẢI: ẢNH MINH HOẠ + NÚT -->
+    <div class="mc-side-panel">
+      <!-- KHUNG ẢNH -->
+      <div class="image-preview-container">
+        <label>🖼️ Ảnh minh hoạ:</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <div class="image-box">
+          <img id="previewImage" src="" alt="Ảnh minh hoạ" style="max-width: 100%; max-height: 100%;">
+        </div>
+        <button type="button" id="removeImageBtn" class="small-button">Xoá ảnh</button>
       </div>
 
-      <!-- NÚT TẢI ẢNH + XOÁ ẢNH -->
-      <div class="row-buttons">
-        <input type="file" id="imageInput" hidden>
-        <button onclick="document.getElementById('imageInput').click()">📷 Tải ảnh</button>
-        <button onclick="deleteImage()">❌ Xoá ảnh</button>
-      </div>
-
-      <!-- CÁC NÚT CHÍNH -->
-      <div class="column-buttons">
-        <button class="btn-save" onclick="saveQuestion()">💾 Lưu câu hỏi</button>
-        <button class="btn-reset" onclick="resetForm()">🔄 Làm lại</button>
-        <button class="btn-delete" onclick="deleteQuestion()">🗑️ Xoá câu hỏi</button>
-        <button class="btn-export" onclick="openTable()">📋 Xem bảng</button>
+      <!-- NÚT CHỨC NĂNG -->
+      <div class="form-buttons">
+        <button type="submit" form="questionForm">💾 Lưu</button>
+        <button type="reset" form="questionForm">🧹 Làm lại</button>
+        <button type="button" id="deleteBtn">🗑️ Xoá</button>
+        <button type="button" id="exportBtn">📤 Xuất</button>
       </div>
     </div>
   </div>
 
-  <script src="/js/mc_form.js"></script>
+  <script src="/js/form/mc_form.js"></script>
 </body>
 </html>
