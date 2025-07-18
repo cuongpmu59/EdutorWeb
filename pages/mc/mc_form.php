@@ -8,41 +8,47 @@
   <link rel="stylesheet" href="/css/form/mc_form.css">
 </head>
 <body>
-  <form id="mcForm">
-    <div class="form-grid">
-      <!-- CỘT TRÁI: KHU NHẬP LIỆU -->
-      <div class="column column-left">
-        <div class="form-group">
+
+  <form class="form-container" method="post" enctype="multipart/form-data">
+    <!-- Cột trái: Khu vực nhập liệu -->
+    <div class="column-left">
+      <div class="input-section">
+        <h2>📝 Nhập câu hỏi</h2>
+
+        <div class="input-group">
           <label for="mc_topic">Chủ đề:</label>
-          <input type="text" id="mc_topic" name="mc_topic" required>
+          <input type="text" id="mc_topic" name="mc_topic">
         </div>
 
-        <div class="form-group">
+        <div class="input-group">
           <label for="mc_question">Câu hỏi:</label>
-          <textarea id="mc_question" name="mc_question" rows="4" required></textarea>
+          <textarea id="mc_question" name="mc_question" rows="4"></textarea>
         </div>
 
-        <div class="form-group">
-          <label>Đáp án A:</label>
-          <input type="text" name="mc_option_a" required>
-        </div>
-        <div class="form-group">
-          <label>Đáp án B:</label>
-          <input type="text" name="mc_option_b" required>
-        </div>
-        <div class="form-group">
-          <label>Đáp án C:</label>
-          <input type="text" name="mc_option_c" required>
-        </div>
-        <div class="form-group">
-          <label>Đáp án D:</label>
-          <input type="text" name="mc_option_d" required>
+        <div class="answer-row">
+          <label for="mc_answerA">A:</label>
+          <input type="text" id="mc_answerA" name="mc_answerA">
         </div>
 
-        <div class="form-group-inline">
-          <label for="mc_answer">Đáp án đúng:</label>
-          <select id="mc_answer" name="mc_answer" required>
-            <option value="">--Chọn--</option>
+        <div class="answer-row">
+          <label for="mc_answerB">B:</label>
+          <input type="text" id="mc_answerB" name="mc_answerB">
+        </div>
+
+        <div class="answer-row">
+          <label for="mc_answerC">C:</label>
+          <input type="text" id="mc_answerC" name="mc_answerC">
+        </div>
+
+        <div class="answer-row">
+          <label for="mc_answerD">D:</label>
+          <input type="text" id="mc_answerD" name="mc_answerD">
+        </div>
+
+        <div class="input-group">
+          <label for="mc_correct">Đáp án đúng:</label>
+          <select id="mc_correct" name="mc_correct">
+            <option value="">-- Chọn --</option>
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="C">C</option>
@@ -50,23 +56,30 @@
           </select>
         </div>
       </div>
+    </div>
 
-      <!-- CỘT PHẢI: ẢNH VÀ NÚT -->
-      <div class="column column-right">
-        <div class="image-section">
-          <div class="image-box" id="imagePreview">Ảnh minh họa</div>
-          <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden>
-          <div class="image-buttons">
-            <button type="button" onclick="document.getElementById('mc_image').click()">🖼️ Tải ảnh</button>
-            <button type="button" onclick="removeImage()">❌ Xoá ảnh</button>
-          </div>
+    <!-- Cột phải: Khu vực ảnh và nút -->
+    <div class="column-right">
+      <!-- Ảnh minh hoạ -->
+      <div class="image-section">
+        <h2>🖼️ Ảnh minh hoạ</h2>
+        <div class="image-box">
+          <img id="previewImage" src="" alt="Chưa có ảnh">
         </div>
+        <input type="file" id="imageInput" name="mc_image" accept="image/*">
+        <div class="image-buttons">
+          <button type="button" id="btnUploadImage">📤 Tải ảnh</button>
+          <button type="button" id="btnDeleteImage">❌ Xoá ảnh</button>
+        </div>
+      </div>
 
+      <!-- Nhóm nút -->
+      <div class="button-section">
         <div class="button-group">
-          <button type="submit">💾 Lưu</button>
-          <button type="button" onclick="resetForm()">🔁 Làm lại</button>
-          <button type="button" onclick="deleteQuestion()">🗑️ Xoá</button>
-          <button type="button" onclick="viewList()">📋 Danh sách</button>
+          <button type="submit" id="btnSave">💾 Lưu</button>
+          <button type="reset" id="btnReset">🔁 Làm lại</button>
+          <button type="button" id="btnDelete">🗑️ Xoá</button>
+          <button type="button" id="btnList">📋 Danh sách</button>
         </div>
       </div>
     </div>
