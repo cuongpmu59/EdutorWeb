@@ -2,69 +2,82 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css" />
+  <link rel="stylesheet" href="/css/main_ui.css">
+  <link rel="stylesheet" href="/css/form/mc_form.css">
 </head>
 <body>
-  <form id="mcForm" class="form-grid" enctype="multipart/form-data">
-    <!-- KHU VỰC NHẬP LIỆU -->
-    <div class="input-area">
-      <h2>📝 Nhập câu hỏi</h2>
+  <form class="mc-form" method="POST" enctype="multipart/form-data">
+    <div class="mc-form-container">
+      
+      <!-- KHU VỰC NHẬP LIỆU -->
+      <div class="mc-input-section">
+        <h2>📝 Nhập câu hỏi</h2>
 
-      <label for="mc_topic">Chủ đề</label>
-      <input type="text" id="mc_topic" name="mc_topic" required />
+        <div class="form-group">
+          <label for="mc_topic">Chủ đề:</label>
+          <input type="text" id="mc_topic" name="mc_topic">
+        </div>
 
-      <label for="mc_question">Câu hỏi</label>
-      <textarea id="mc_question" name="mc_question" rows="4" required></textarea>
+        <div class="form-group">
+          <label for="mc_question">Câu hỏi:</label>
+          <textarea id="mc_question" name="mc_question" rows="4"></textarea>
+        </div>
 
-      <div class="answer-group">
-        <label for="mc_a">A</label>
-        <input type="text" id="mc_a" name="mc_a" required />
+        <div class="form-group">
+          <label for="mc_answerA">Đáp án A:</label>
+          <input type="text" id="mc_answerA" name="mc_answerA">
+        </div>
 
-        <label for="mc_b">B</label>
-        <input type="text" id="mc_b" name="mc_b" required />
+        <div class="form-group">
+          <label for="mc_answerB">Đáp án B:</label>
+          <input type="text" id="mc_answerB" name="mc_answerB">
+        </div>
 
-        <label for="mc_c">C</label>
-        <input type="text" id="mc_c" name="mc_c" required />
+        <div class="form-group">
+          <label for="mc_answerC">Đáp án C:</label>
+          <input type="text" id="mc_answerC" name="mc_answerC">
+        </div>
 
-        <label for="mc_d">D</label>
-        <input type="text" id="mc_d" name="mc_d" required />
+        <div class="form-group">
+          <label for="mc_answerD">Đáp án D:</label>
+          <input type="text" id="mc_answerD" name="mc_answerD">
+        </div>
+
+        <div class="form-group">
+          <label for="mc_correct">Đáp án đúng:</label>
+          <select id="mc_correct" name="mc_correct">
+            <option value="">-- Chọn --</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </div>
       </div>
 
-      <div class="correct-answer">
-        <label for="mc_answer">Đáp án đúng</label>
-        <select id="mc_answer" name="mc_answer" required>
-          <option value="">--Chọn--</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
+      <!-- KHU VỰC ẢNH -->
+      <div class="mc-side-section">
+        <div class="image-section">
+          <h4>🖼️ Ảnh minh hoạ</h4>
+          <img id="previewImage" src="" alt="Chưa có ảnh">
+          <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden>
+          <div class="image-buttons">
+            <label for="mc_image" class="upload-label">📤 Tải ảnh</label>
+            <button type="button" class="delete-image-btn" id="btnDeleteImage">❌ Xoá ảnh</button>
+          </div>
+        </div>
+
+        <!-- KHU VỰC NÚT -->
+        <div class="button-group">
+          <button type="submit" class="save-btn">💾 Lưu</button>
+          <button type="reset" class="reset-btn">🔁 Làm lại</button>
+          <button type="button" class="delete-btn">🗑️ Xoá</button>
+          <button type="button" class="view-btn">📋 Xem danh sách</button>
+        </div>
       </div>
-    </div>
 
-    <!-- KHU VỰC ẢNH MINH HỌA -->
-    <div class="image-area">
-      <h2>🖼️ Ảnh minh họa</h2>
-
-      <div class="image-frame" id="imageFrame">
-        <img id="mc_preview" src="#" alt="Xem trước ảnh" style="display:none;" />
-      </div>
-
-      <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden />
-      <div class="image-buttons">
-        <button type="button" id="btnUpload">📤 Tải ảnh</button>
-        <button type="button" id="btnRemove">❌ Xóa ảnh</button>
-      </div>
-    </div>
-
-    <!-- KHU VỰC NÚT CHỨC NĂNG -->
-    <div class="action-area">
-      <button type="submit" id="btnSave">💾 Lưu</button>
-      <button type="button" id="btnReset">🔄 Làm lại</button>
-      <button type="button" id="btnDelete">🗑️ Xóa</button>
-      <button type="button" id="btnList">📋 Xem bảng</button>
     </div>
   </form>
 
