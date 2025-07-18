@@ -23,27 +23,27 @@
       </div>
 
       <div class="form-group answer-group">
-        <label for="answerA">Đáp án A:</label>
+        <label for="answerA">A.</label>
         <input type="text" id="answerA" name="answerA" required>
       </div>
 
       <div class="form-group answer-group">
-        <label for="answerB">Đáp án B:</label>
+        <label for="answerB">B.</label>
         <input type="text" id="answerB" name="answerB" required>
       </div>
 
       <div class="form-group answer-group">
-        <label for="answerC">Đáp án C:</label>
+        <label for="answerC">C.</label>
         <input type="text" id="answerC" name="answerC" required>
       </div>
 
       <div class="form-group answer-group">
-        <label for="answerD">Đáp án D:</label>
+        <label for="answerD">D.</label>
         <input type="text" id="answerD" name="answerD" required>
       </div>
 
       <div class="form-group">
-        <label for="correct">Đáp án đúng:</label>
+        <label for="correct">Đáp án:</label>
         <select id="correct" name="correct" required>
           <option value="">--Chọn--</option>
           <option value="A">A</option>
