@@ -134,10 +134,7 @@ $(document).ready(function () {
   $('#mcTable_filter').html(`
     <div class="filter-left">
       📚 Chủ đề:
-      <select id="filter-topic">
-        <option value="">-- Tất cả --</option>
-        <?php include __DIR__ . '/utils/filter.php'; ?>
-      </select>
+      <?php include __DIR__ . '/../../utils/filter.php'; ?>
     </div>
     <div class="filter-right">
       🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
