@@ -89,66 +89,54 @@
   }
   
   /* =========================
+     KHU VỰC ẢNH MINH HOẠ
+  ========================= */
+  .image-container {
+    border: 1px dashed var(--border-color, #ccc);
+    border-radius: 10px;
+    padding: 10px;
+    background-color: var(--box-bg, #f4f4f4);
+    margin-bottom: 20px;
+    max-height: 220px;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .image-container img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* =========================
      NHÓM NÚT CHỨC NĂNG
   ========================= */
   .button-group {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
+    margin-top: 10px;
   }
   
-  .button-group button {
-    padding: 10px 12px;
-    font-size: 15px;
+  .button-group button,
+  .button-group input[type="button"] {
+    flex: 1 1 auto;
+    padding: 10px 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
+    background-color: var(--primary-color, #3498db);
+    color: #fff;
+    font-size: 15px;
     cursor: pointer;
-    background-color: #3498db;
-    color: white;
-    transition: background 0.3s ease;
+    transition: background 0.2s;
   }
   
   .button-group button:hover {
-    background-color: #2980b9;
-  }
-  
-  .button-group input[type="file"] {
-    padding: 6px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-  }
-  
-  /* =========================
-     ẢNH MINH HOẠ
-  ========================= */
-  .image-preview-container {
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  .image-preview-container img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    margin-top: 6px;
-  }
-  
-  .image-buttons {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .image-buttons button {
-    background-color: #e74c3c;
-  }
-  
-  .image-buttons button:hover {
-    background-color: #c0392b;
+    background-color: var(--primary-dark, #2980b9);
   }
   
   /* =========================
@@ -178,14 +166,6 @@
   
   body.dark-mode .button-group button:hover {
     background-color: #1c638f;
-  }
-  
-  body.dark-mode .image-buttons button {
-    background-color: #e74c3c;
-  }
-  
-  body.dark-mode .image-buttons button:hover {
-    background-color: #c0392b;
   }
   
   /* =========================
