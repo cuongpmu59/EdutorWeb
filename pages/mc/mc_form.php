@@ -41,8 +41,7 @@
               <button class="preview-toggle" data-target="answer$a"><span>👁️</span></button>
             </label>
             <input type="text" id="answer$a" name="answer$a" required />
-            <input type="radio" name="correct" value="$a" required />
-          </div>
+            </div>
           HTML;
         }
         ?>
