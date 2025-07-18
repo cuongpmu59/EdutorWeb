@@ -4,62 +4,54 @@
 <head>
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="/css/main_ui.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="/css/mc_form.css">
 </head>
 <body>
   <div class="form-container">
-
-    <!-- === CỘT TRÁI: FORM CÂU HỎI === -->
+    <!-- CỘT TRÁI: NHẬP CÂU HỎI -->
     <div class="column-left">
       <h2>Nhập câu hỏi trắc nghiệm</h2>
-      <div class="preview-toggle-all">
-        <button onclick="toggleAllPreviews()">👁️ Xem toàn bộ</button>
-      </div>
-      <div id="preview-all" class="preview-box hidden"></div>
 
       <label>Chủ đề:</label>
-      <input type="text" id="topic" placeholder="Nhập chủ đề...">
+      <input type="text" id="topic">
 
       <label>Câu hỏi:</label>
-      <div class="input-with-eye">
-        <button class="toggle-preview" onclick="togglePreview('question')">👁️</button>
-        <textarea id="question" placeholder="Nhập nội dung câu hỏi..."></textarea>
+      <div class="input-preview-row">
+        <textarea id="question"></textarea>
+        <button class="eye-button" onclick="togglePreview('question')">👁️</button>
       </div>
-      <div id="preview-question" class="preview-box hidden"></div>
+      <div class="preview-box" id="preview-question"></div>
 
-      <label>A.</label>
-      <div class="input-with-eye">
-        <button class="toggle-preview" onclick="togglePreview('A')">👁️</button>
-        <input type="text" id="answerA" placeholder="Nhập đáp án A">
+      <label>Đáp án A:</label>
+      <div class="input-preview-row">
+        <input type="text" id="answerA">
+        <button class="eye-button" onclick="togglePreview('answerA')">👁️</button>
       </div>
-      <div id="preview-A" class="preview-box hidden"></div>
+      <div class="preview-box" id="preview-answerA"></div>
 
-      <label>B.</label>
-      <div class="input-with-eye">
-        <button class="toggle-preview" onclick="togglePreview('B')">👁️</button>
-        <input type="text" id="answerB" placeholder="Nhập đáp án B">
+      <label>Đáp án B:</label>
+      <div class="input-preview-row">
+        <input type="text" id="answerB">
+        <button class="eye-button" onclick="togglePreview('answerB')">👁️</button>
       </div>
-      <div id="preview-B" class="preview-box hidden"></div>
+      <div class="preview-box" id="preview-answerB"></div>
 
-      <label>C.</label>
-      <div class="input-with-eye">
-        <button class="toggle-preview" onclick="togglePreview('C')">👁️</button>
-        <input type="text" id="answerC" placeholder="Nhập đáp án C">
+      <label>Đáp án C:</label>
+      <div class="input-preview-row">
+        <input type="text" id="answerC">
+        <button class="eye-button" onclick="togglePreview('answerC')">👁️</button>
       </div>
-      <div id="preview-C" class="preview-box hidden"></div>
+      <div class="preview-box" id="preview-answerC"></div>
 
-      <label>D.</label>
-      <div class="input-with-eye">
-        <button class="toggle-preview" onclick="togglePreview('D')">👁️</button>
-        <input type="text" id="answerD" placeholder="Nhập đáp án D">
+      <label>Đáp án D:</label>
+      <div class="input-preview-row">
+        <input type="text" id="answerD">
+        <button class="eye-button" onclick="togglePreview('answerD')">👁️</button>
       </div>
-      <div id="preview-D" class="preview-box hidden"></div>
+      <div class="preview-box" id="preview-answerD"></div>
 
       <label>Đáp án đúng:</label>
       <select id="correctAnswer">
-        <option value="">-- Chọn --</option>
         <option value="A">A</option>
         <option value="B">B</option>
         <option value="C">C</option>
@@ -67,80 +59,35 @@
       </select>
     </div>
 
-    <!-- === CỘT PHẢI: ẢNH & NÚT === -->
+    <!-- CỘT PHẢI: ẢNH + NÚT -->
     <div class="column-right">
-
-      <!-- KHU VỰC ẢNH MINH HOẠ -->
-      <div class="image-section">
+      <!-- KHU VỰC ẢNH -->
+      <div class="image-area">
         <label>Ảnh minh hoạ:</label>
-        <img id="imagePreview" src="" alt="Xem trước ảnh" class="image-preview hidden">
-        <input type="file" id="imageInput" accept="image/*">
+        <div class="image-preview" id="imagePreview">Chưa có ảnh</div>
+        <input type="file" id="imageInput" accept="image/*" hidden>
         <div class="image-buttons">
-          <button onclick="uploadImage()">📤 Tải ảnh</button>
-          <button onclick="deleteImage()">🗑️ Xoá ảnh</button>
+          <button onclick="document.getElementById('imageInput').click()">📁 Tải ảnh</button>
+          <button onclick="removeImage()">🗑️ Xoá ảnh</button>
         </div>
       </div>
 
-      <!-- KHU VỰC NÚT CHỨC NĂNG -->
-      <div class="action-buttons">
+      <!-- KHU VỰC NÚT FORM -->
+      <div class="form-buttons">
         <button onclick="saveQuestion()">💾 Lưu</button>
-        <button onclick="resetForm()">🔄 Làm lại</button>
-        <button onclick="deleteQuestion()">❌ Xoá</button>
-        <button onclick="viewTable()">📋 Xem bảng</button>
+        <button onclick="resetForm()">🔁 Làm lại</button>
+        <button onclick="deleteQuestion()">🗑️ Xoá</button>
+        <button onclick="window.location.href='mc_table.php'">📋 Xem bảng</button>
       </div>
     </div>
   </div>
 
-  <script>
-    function togglePreview(type) {
-      const inputId = type === 'question' ? 'question' : 'answer' + type;
-      const previewId = 'preview-' + (type === 'question' ? 'question' : type);
-      const previewBox = document.getElementById(previewId);
-      const content = document.getElementById(inputId).value;
-      previewBox.innerHTML = content;
-      previewBox.classList.toggle('hidden');
-      MathJax.typesetPromise();
-    }
-
-    function toggleAllPreviews() {
-      const fields = ['question', 'A', 'B', 'C', 'D'];
-      let allContent = '<strong>Câu hỏi:</strong><br>' + document.getElementById('question').value + '<br><br>';
-      fields.slice(1).forEach(letter => {
-        allContent += `<strong>Đáp án ${letter}:</strong> ${document.getElementById('answer' + letter).value}<br>`;
-      });
-      const previewAll = document.getElementById('preview-all');
-      previewAll.innerHTML = allContent;
-      previewAll.classList.toggle('hidden');
-      MathJax.typesetPromise();
-    }
-
-    function uploadImage() {
-      alert('Đang phát triển: Tải ảnh lên máy chủ');
-    }
-
-    function deleteImage() {
-      document.getElementById('imageInput').value = '';
-      document.getElementById('imagePreview').src = '';
-      document.getElementById('imagePreview').classList.add('hidden');
-    }
-
-    function saveQuestion() {
-      alert('Đang lưu câu hỏi...');
-    }
-
-    function resetForm() {
-      document.querySelectorAll('input, textarea, select').forEach(el => el.value = '');
-      document.querySelectorAll('.preview-box').forEach(el => el.classList.add('hidden'));
-      deleteImage();
-    }
-
-    function deleteQuestion() {
-      alert('Bạn muốn xoá câu hỏi này?');
-    }
-
-    function viewTable() {
-      window.location.href = 'mc_table.php';
-    }
+  <!-- MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
   </script>
+
+  <script src="/js/form/mc_form.js"></script>
 </body>
 </html>
