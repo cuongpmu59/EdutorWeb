@@ -1,241 +1,152 @@
-/* =============================
-   BIẾN MÀU CHỦ ĐỀ & CHẾ ĐỘ TỐI
-============================= */
-:root {
-    --bg-color: #ffffff;
-    --text-color: #1a1a1a;
-    --box-bg: #f9f9f9;
-    --input-bg: #ffffff;
-    --border-color: #ccc;
-    --button-color: #007bff;
-    --button-hover: #0056b3;
-    --danger-color: #dc3545;
-    --success-color: #28a745;
-  }
-  
-  body.dark-mode {
-    --bg-color: #1e1e1e;
-    --text-color: #f1f1f1;
-    --box-bg: #2c2c2c;
-    --input-bg: #2a2a2a;
-    --border-color: #444;
-    --button-color: #3399ff;
-    --button-hover: #1a75d1;
-    --danger-color: #ff4d4d;
-    --success-color: #4dd17a;
-  }
-  
-  /* ============================
-     BỐ CỤC TOÀN FORM
-  ============================ */
-  body {
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-  }
-  
-  .mc-form-container {
-    display: flex;
-    flex-wrap: wrap;
+/* =========================
+   Bố cục chính với CSS Grid
+========================= */
+.form-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     gap: 20px;
-    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    background-color: var(--bg-color, #fff);
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    color: var(--text-color, #333);
   }
   
-  /* =============================
-     FORM BÊN TRÁI: NHẬP CÂU HỎI
-  ============================= */
-  .mc-input-section {
-    flex: 2;
-    min-width: 320px;
+  /* ===== KHU VỰC NHẬP LIỆU (BÊN TRÁI) ===== */
+  .input-section {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
   
-  .form-group {
+  .input-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
   }
   
-  .form-group label {
-    font-weight: bold;
+  .input-group label {
+    font-weight: 600;
   }
   
-  .form-group input[type="text"],
-  .form-group textarea,
-  .form-group select {
+  .input-group input[type="text"],
+  .input-group textarea,
+  .input-group select {
     padding: 8px;
-    font-size: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-  }
-  
-  textarea {
-    resize: vertical;
-    min-height: 60px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
   }
   
   .answer-group {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 6px 10px;
+    gap: 8px;
   }
   
-  /* =============================
-     BÊN PHẢI: ẢNH & NÚT CHỨC NĂNG
-  ============================= */
-  .mc-side-section {
-    flex: 1;
-    min-width: 250px;
+  /* ===== KHU VỰC ẢNH + NÚT CHỨC NĂNG (BÊN PHẢI) ===== */
+  .side-section {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
   
-  /* === ẢNH MINH HỌA === */
-  .image-section {
-    background-color: var(--box-bg);
-    border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  
-  .image-section h4 {
-    margin: 0 0 8px;
-  }
-  
-  .image-buttons {
+  /* KHU ẢNH MINH HỌA */
+  .image-box {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    height: 240px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
     justify-content: center;
-    margin-top: 8px;
+    align-items: center;
+    background: #f9f9f9;
+    overflow: hidden;
+    position: relative;
   }
   
-  /* ẨN input file */
-  .image-buttons input[type="file"] {
+  .image-box img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  
+  /* NÚT TẢI & XÓA ẢNH */
+  .image-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .image-actions button {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #007bff;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .image-actions button:hover {
+    background: #0056b3;
+  }
+  
+  input[type="file"] {
     display: none;
   }
   
-  /* Nút chọn file qua label */
-  label.upload-label {
-    background-color: var(--success-color);
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    transition: background-color 0.2s;
-  }
-  
-  label.upload-label:hover {
-    background-color: #218838;
-  }
-  
-  /* Nút xoá ảnh */
-  button.delete-image-btn {
-    background-color: var(--danger-color);
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  button.delete-image-btn:hover {
-    background-color: #c82333;
-  }
-  
-  /* Ảnh minh hoạ */
-  #previewImage {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 6px;
-    margin: 8px 0;
-  }
-  
-  /* =============================
-     NÚT CHỨC NĂNG
-  ============================= */
+  /* ===== KHU VỰC NHÓM CÁC NÚT (BÊN DƯỚI KHU ẢNH) ===== */
   .button-group {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
   }
   
   .button-group button {
-    padding: 10px;
-    font-size: 15px;
-    font-weight: bold;
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: 600;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  button.save-btn {
+    background: #28a745;
     color: white;
-    transition: background-color 0.2s;
   }
   
-  .button-group .save-btn {
-    background-color: var(--button-color);
+  button.delete-btn {
+    background: #dc3545;
+    color: white;
   }
   
-  .button-group .save-btn:hover {
-    background-color: var(--button-hover);
+  button.reset-btn {
+    background: #ffc107;
+    color: black;
   }
   
-  .button-group .reset-btn {
-    background-color: gray;
+  button.list-btn {
+    background: #17a2b8;
+    color: white;
   }
   
-  .button-group .delete-btn {
-    background-color: var(--danger-color);
+  .button-group button:hover {
+    opacity: 0.85;
   }
   
-  .button-group .pdf-btn {
-    background-color: darkorange;
-  }
-  
-  .button-group .excel-btn {
-    background-color: green;
-  }
-  
-  /* =============================
-     KHU VỰC XEM TRƯỚC
-  ============================= */
-  .preview-section {
-    margin-top: 20px;
-    background-color: var(--box-bg);
-    border: 1px dashed var(--border-color);
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 16px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-  }
-  
-  .preview-section h4 {
-    margin: 4px 0;
-    color: var(--text-color);
-  }
-  
-  /* =============================
-     RESPONSIVE
-  ============================= */
+  /* =========================
+     Responsive
+  ========================= */
   @media (max-width: 768px) {
-    .mc-form-container {
-      flex-direction: column;
-    }
-    .button-group {
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
+    .form-container {
+      grid-template-columns: 1fr;
     }
   }
   
