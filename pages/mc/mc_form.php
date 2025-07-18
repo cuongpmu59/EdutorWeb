@@ -17,27 +17,37 @@
       <label>Câu hỏi:</label>
       <textarea name="question" id="question" rows="4" placeholder="Câu hỏi:"></textarea>
 
-      <label>Đáp án A:</label>
-      <input type="text" name="answer_a" id="answer_a" placeholder="A.">
+      <div class="answer-group">
+  <label for="answer_a">A.</label>
+  <input type="text" id="answer_a" name="answer_a" required>
+</div>
 
-      <label>Đáp án B:</label>
-      <input type="text" name="answer_b" id="answer_b" placeholder="B.">
+<div class="answer-group">
+  <label for="answer_b">B.</label>
+  <input type="text" id="answer_b" name="answer_b" required>
+</div>
 
-      <label>Đáp án C:</label>
-      <input type="text" name="answer_c" id="answer_c" placeholder="C.">
+<div class="answer-group">
+  <label for="answer_c">C.</label>
+  <input type="text" id="answer_c" name="answer_c" required>
+</div>
 
-      <label>Đáp án D:</label>
-      <input type="text" name="answer_d" id="answer_d" placeholder="D.">
+<div class="answer-group">
+  <label for="answer_d">D.</label>
+  <input type="text" id="answer_d" name="answer_d" required>
+</div>
 
-      <label>Đáp án đúng:</label>
-      <select name="correct" id="correct">
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-        <option value="D">D</option>
-      </select>
-    </div>
-
+<div class="correct-answer-group">
+  <label for="correct_answer">Đáp án:</label>
+  <select id="correct_answer" name="correct_answer" required>
+    <option value="">-- Chọn --</option>
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+    <option value="D">D</option>
+  </select>
+</div>
+  
     <!-- CỘT PHẢI: HÌNH ẢNH + NÚT -->
     <div class="form-right">
       <!-- ẢNH MINH HOẠ -->
