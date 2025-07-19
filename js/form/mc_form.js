@@ -1,5 +1,3 @@
-// js/form/mc_form.js
-
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
 const saveBtn = document.getElementById("saveBtn");
@@ -47,12 +45,14 @@ window.addEventListener("message", function (event) {
     document.getElementById("mc_answer3").value = d.answer3 || "";
     document.getElementById("mc_answer4").value = d.answer4 || "";
     document.getElementById("mc_correct_answer").value = d.correct || "";
+
     if (d.image) {
       imagePreview.src = d.image;
       imagePreview.style.display = "block";
     } else {
       imagePreview.style.display = "none";
     }
+
     if (typeof updatePreviews === "function") updatePreviews();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -122,12 +122,11 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
   }
 });
 
+// Iframe toggle logic dùng classList
 const iframe = document.getElementById("mcIframe");
 const toggleBtn = document.getElementById("toggleIframeBtn");
 
 toggleBtn.addEventListener("click", () => {
-  const isHidden = iframe.style.display === "none" || iframe.style.display === "";
-  iframe.style.display = isHidden ? "block" : "none";
-  toggleBtn.textContent = isHidden ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
+  const isVisible = iframe.classList.toggle("show");
+  toggleBtn.textContent = isVisible ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
 });
-
