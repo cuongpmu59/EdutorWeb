@@ -77,7 +77,7 @@
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
-<script src="js/form/previewView.js"></script>
+<!-- <script src="js/form/previewView.js"></script> -->
 <!-- <script src="js/form/listener.js"></script>
 <script src="js/form/mc_form.js"></script> -->
 
