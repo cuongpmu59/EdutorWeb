@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <link rel="stylesheet" href="../../css/modules/preview.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
@@ -78,7 +77,7 @@
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
-<script src="js/modules/previewView.js"></script>
+<script src="js/form/previewView.js"></script>
 
 <script>
 const imageInput = document.getElementById("mc_image");
