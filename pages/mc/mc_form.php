@@ -5,21 +5,13 @@
   <meta charset="UTF-8">
   <title>Nhập câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/main_ui.css">
+  <link rel="stylesheet" href="../../css/modules/preview.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
-<div class="form-left-wrapper">
-  <!-- Tiêu đề và biểu tượng 👁️ -->
-  <div class="form-left-header">
-    <h2>Nhập câu hỏi trắc nghiệm</h2>
-    <span class="toggle-preview" id="toggleFullPreview">👁️</span>
-  </div>
-  <!-- Hộp xem trước (ẩn lúc đầu) -->
-  <div id="fullPreviewBox" class="preview-box" style="display: none;">
-    <!-- Nội dung xem trước sẽ hiển thị ở đây -->
-  </div>
+<div class="form-layout">
   <!-- Cột trái: Form nội dung -->
   <div class="form-left">
     <form id="mcForm" class="question-form" enctype="multipart/form-data">
@@ -61,36 +53,26 @@
           <option value="D">D</option>
         </select>
       </div>
+
+      <div class="form-group">
+        <label>🖼️ Ảnh minh hoạ:</label><br>
+        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
+        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
+        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
+        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
       </div>
-      
     </form>
   </div>
 
   <!-- Cột phải: Các nút thao tác -->
-  <div class="column-right">
-  <!-- 🖼️ Khu vực ảnh minh hoạ -->
-  <div class="image-section">
-    <label>🖼️ Ảnh minh hoạ:</label>
-    <div class="image-box">
-      <img id="mc_imagePreview" src="">
-    </div>
-    <div class="image-buttons">
-      <button type="button" id="loadImageBtn" class="btn">📂 Load ảnh</button>
-      <button type="button" id="deleteImageBtn" class="btn">❌ Xoá ảnh</button>
+  <div class="form-right">
+    <div class="form-actions">
+      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
+      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
+      <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
+      <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
     </div>
   </div>
-
-  <!-- 🎯 Khu vực nút thao tác -->
-  <div class="action-section">
-    <div class="action-buttons">
-      <button type="submit" form="mcForm" id="saveBtn" class="btn">💾 Lưu câu hỏi</button>
-      <button type="reset" form="mcForm" id="resetBtn" class="btn">🔄 Làm lại</button>
-      <button type="button" id="deleteQuestionBtn" class="btn">🗑️ Xoá câu hỏi</button>
-      <button type="button" id="toggleIframeBtn" class="btn">🔼 Hiện bảng câu hỏi</button>
-    </div>
-  </div>
-</div>
-
 </div>
 
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
@@ -229,14 +211,6 @@ toggleBtn.addEventListener("click", () => {
     ? "🔼 Hiện bảng câu hỏi"
     : "🔽 Ẩn bảng câu hỏi";
 });
-</script>
-<script>
-  document.getElementById("toggleFullPreview").addEventListener("click", function () {
-    const previewBox = document.getElementById("fullPreviewBox");
-    const isVisible = previewBox.style.display === "block";
-
-    previewBox.style.display = isVisible ? "none" : "block";
-  });
 </script>
 
 </body>
