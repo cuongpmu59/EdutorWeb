@@ -78,8 +78,9 @@
         style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
 <script src="js/form/previewView.js"></script>
+<script src="js/form/listener.js"></script>
 
-<script>
+<!-- <script>
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
 const saveBtn = document.getElementById("saveBtn");
@@ -210,7 +211,7 @@ toggleBtn.addEventListener("click", () => {
     ? "🔼 Hiện bảng câu hỏi"
     : "🔽 Ẩn bảng câu hỏi";
 });
-</script>
+</script> -->
 
 </body>
 </html>
