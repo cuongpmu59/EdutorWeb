@@ -2,32 +2,33 @@
    Giao diện Form MC - mc_form.css
 ========================== */
 
-/* Layout tổng */
+/* ===== Layout tổng ===== */
 .form-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   align-items: flex-start;
   padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-/* Cột trái: Câu hỏi và đáp án */
 .column-left {
   flex: 2;
   min-width: 300px;
 }
 
-/* Cột phải: Ảnh + nút chức năng */
 .column-right {
   flex: 1;
-  min-width: 250px;
+  min-width: 260px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Tiêu đề chính */
-.form-title {
+/* ===== Tiêu đề form ===== */
+.form-title,
+.form-container > h2 {
   font-size: 1.6rem;
   font-weight: bold;
   margin-bottom: 20px;
@@ -36,7 +37,7 @@
   gap: 10px;
 }
 
-/* Nhóm trường nhập liệu */
+/* ===== Nhóm trường nhập ===== */
 .form-group {
   margin-bottom: 16px;
 }
@@ -49,7 +50,7 @@
   gap: 8px;
 }
 
-/* Nhập liệu */
+/* ===== Nhập liệu ===== */
 textarea,
 input[type="text"] {
   width: 100%;
@@ -60,7 +61,7 @@ input[type="text"] {
   resize: vertical;
 }
 
-/* Hàng đáp án */
+/* ===== Hàng đáp án ===== */
 .answer-row {
   display: flex;
   align-items: center;
@@ -68,12 +69,11 @@ input[type="text"] {
   margin-bottom: 10px;
 }
 
-/* Input đáp án */
 .answer-row input[type="text"] {
   flex: 1;
 }
 
-/* Vùng ảnh */
+/* ===== Khu ảnh minh hoạ ===== */
 .image-section {
   border: 1px dashed #ccc;
   padding: 12px;
@@ -85,12 +85,22 @@ input[type="text"] {
 /* Xem trước ảnh */
 .image-preview {
   height: 180px;
-  object-fit: contain;
+  width: 100%;
   border-radius: 6px;
   border: 1px solid #ddd;
   background: #fff;
+  object-fit: contain;
   margin-bottom: 10px;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-preview:empty::before {
+  content: "Chưa có ảnh";
+  color: #777;
+  font-style: italic;
 }
 
 /* Nút ảnh */
@@ -100,7 +110,7 @@ input[type="text"] {
   gap: 10px;
 }
 
-/* Nhóm nút chức năng chính */
+/* ===== Nhóm nút chức năng chính ===== */
 .form-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -109,7 +119,7 @@ input[type="text"] {
   margin-top: 20px;
 }
 
-/* Nút chung */
+/* ===== Nút chung ===== */
 button {
   padding: 8px 16px;
   font-size: 14px;
@@ -123,18 +133,45 @@ button:hover {
   opacity: 0.9;
 }
 
-/* Màu nút */
-.btn-save { background-color: #2e7d32; color: white; }
-.btn-delete { background-color: #c62828; color: white; }
-.btn-reset { background-color: #f9a825; color: white; }
-.btn-view { background-color: #1976d2; color: white; }
+/* ===== Màu sắc nút ===== */
+.btn-save         { background-color: #2e7d32; color: white; }
+.btn-delete       { background-color: #c62828; color: white; }
+.btn-reset        { background-color: #f9a825; color: white; }
+.btn-view         { background-color: #1976d2; color: white; }
 
 .btn-image-upload { background-color: #00897b; color: white; }
 .btn-image-delete { background-color: #d84315; color: white; }
 
-/* Responsive */
+/* Nút 👁️ xem trước nhỏ */
+.eye-btn {
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* ===== Xem trước toàn bộ ===== */
+.preview-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f4f4f4;
+  padding: 15px;
+  margin-top: 30px;
+}
+
+.preview-box h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .form-container {
+    flex-direction: column;
+  }
+  .form-buttons,
+  .image-buttons {
     flex-direction: column;
   }
 }
