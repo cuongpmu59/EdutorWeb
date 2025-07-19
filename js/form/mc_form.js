@@ -15,6 +15,7 @@ document.getElementById("mcForm").addEventListener("submit", async function (e) 
       body: formData
     });
     const result = await response.text();
+
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     document.body.appendChild(iframe);
@@ -123,9 +124,10 @@ document.getElementById("deleteQuestionBtn").addEventListener("click", async () 
 
 const iframe = document.getElementById("mcIframe");
 const toggleBtn = document.getElementById("toggleIframeBtn");
+
 toggleBtn.addEventListener("click", () => {
-  iframe.style.display = (iframe.style.display === "none") ? "block" : "none";
-  toggleBtn.textContent = iframe.style.display === "none"
-    ? "🔼 Hiện bảng câu hỏi"
-    : "🔽 Ẩn bảng câu hỏi";
+  const isHidden = iframe.style.display === "none" || iframe.style.display === "";
+  iframe.style.display = isHidden ? "block" : "none";
+  toggleBtn.textContent = isHidden ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
 });
+
