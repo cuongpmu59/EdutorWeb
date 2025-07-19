@@ -1,183 +1,184 @@
-/* =========================
-   Form Giao Diện Chính
-========================= */
+/* ========================
+   BIẾN MÀU & NỀN GIAO DIỆN
+========================== */
+:root {
+  --bg-light: #f9f9f9;
+  --bg-dark: #1e1e1e;
+  --color-light: #333;
+  --color-dark: #fff;
+  --accent: #007bff;
+  --border: #ccc;
+  --box-bg: #fff;
+  --box-bg-dark: #2b2b2b;
+}
+
+/* Tự động dark mode nếu hệ điều hành hỗ trợ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-light: #1e1e1e;
+    --color-light: #f0f0f0;
+    --box-bg: #2b2b2b;
+    --border: #444;
+  }
+}
+
+/* ========== NỀN CHUNG ========== */
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #f6f8fa;
-  color: #333;
+  background-color: var(--bg-light);
+  color: var(--color-light);
 }
 
-.form-container {
-  background: #fff;
-  max-width: 1000px;
-  margin: auto;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #007bff;
-}
-
-/* =========================
-   Input & Textarea
-========================= */
-.form-group {
+/* ========== TIÊU ĐỀ FORM ========== */
+h2.form-title {
   margin-bottom: 20px;
+  font-size: 1.6rem;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 6px;
 }
 
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #333;
+/* ========== KHUNG CHÍNH CHIA 2 CỘT ========== */
+.form-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
+/* CỘT TRÁI: NHẬP NỘI DUNG */
+.form-left {
+  flex: 2;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* CỘT PHẢI: ẢNH + NÚT */
+.form-right {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ========== FORM NHẬP VÀ NHÓM ĐÁP ÁN ========== */
 textarea,
-input[type="text"],
-select {
+select,
+input[type="text"] {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  outline: none;
-  transition: border 0.2s ease-in-out;
-  box-sizing: border-box;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--box-bg);
+  color: var(--color-light);
 }
 
-textarea:focus,
-input[type="text"]:focus,
-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0,123,255,0.2);
-}
-
-/* Tự động mở rộng textarea */
 textarea {
-  min-height: 60px;
   resize: vertical;
+  min-height: 80px;
 }
 
-/* =========================
-   Xem Trước
-========================= */
-.preview-box {
-  display: none;
-  background-color: #f0f8ff;
-  border-left: 4px solid #007bff;
+label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.answer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.answer-row input[type="text"] {
+  flex: 1;
+}
+
+.answer-row input[type="radio"] {
+  transform: scale(1.2);
+}
+
+/* ========== ẢNH MINH HOẠ ========== */
+.image-section {
+  background: var(--box-bg);
   padding: 12px;
-  margin-top: 8px;
-  font-size: 16px;
-  white-space: pre-wrap;
-  border-radius: 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  text-align: center;
 }
 
-/* =========================
-   Ẩn/ hiện vùng xem trước
-========================= */
-
-.preview-toggle {
-  margin-top: -10px;
+.image-preview {
+  width: 100%;
+  height: 180px;
+  background-color: #eee;
+  border: 1px dashed #aaa;
+  border-radius: 8px;
   margin-bottom: 10px;
-  text-align: right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.preview-toggle button {
-  background: transparent;
-  border: none;
-  color: #007bff;
+.image-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.image-buttons button {
+  flex: 1;
+  padding: 8px;
+  background-color: #f3f3f3;
+  border: 1px solid #aaa;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  padding: 4px;
-  transition: color 0.2s ease-in-out;
+  transition: background 0.2s;
 }
 
-.preview-toggle button:hover {
-  color: #0056b3;
+.image-buttons button:hover {
+  background-color: #ddd;
 }
 
-/* =========================
-   Buttons
-========================= */
-.form-actions {
+/* ========== NHÓM NÚT CHỨC NĂNG ========== */
+.form-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  justify-content: flex-start;
-  margin-top: 25px;
+  justify-content: stretch;
 }
 
-button {
-  background-color: #007bff;
+.form-buttons button {
+  flex: 1;
+  padding: 10px 12px;
+  background-color: var(--accent);
   color: white;
-  padding: 10px 16px;
-  font-size: 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.25s;
 }
 
-button:hover {
+.form-buttons button:hover {
   background-color: #0056b3;
 }
 
-button#deleteImageBtn {
-  background-color: #dc3545;
-}
-
-button#deleteImageBtn:hover {
-  background-color: #b02a37;
-}
-
-button#deleteQuestionBtn {
-  background-color: #fd7e14;
-}
-
-button#deleteQuestionBtn:hover {
-  background-color: #e86400;
-}
-
-button#resetBtn {
-  background-color: #6c757d;
-}
-
-button#resetBtn:hover {
-  background-color: #495057;
-}
-
-/* =========================
-   Ảnh minh hoạ
-========================= */
-#mc_imagePreview {
-  margin-top: 10px;
-  max-height: 150px;
-  display: none;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-}
-
-/* =========================
-   Responsive
-========================= */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .form-actions {
+  .form-layout {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  button {
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .form-buttons button {
     width: 100%;
-    font-size: 15px;
-  }
-
-  .form-container {
-    padding: 15px;
   }
 }
