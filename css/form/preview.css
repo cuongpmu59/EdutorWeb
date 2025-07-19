@@ -95,3 +95,200 @@ body.dark .preview-box {
 body.dark .toggle-preview {
   color: #ccc;
 }
+
+/* ================================
+   CỘT PHẢI - BỐ CỤC & THIẾT KẾ
+================================ */
+.column-right {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ================================
+   TIÊU ĐỀ & LABEL
+================================ */
+.column-right label {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: block;
+  color: #333;
+}
+
+/* ================================
+   HỘP ẢNH - IMAGE BOX
+================================ */
+.image-box {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  height: 180px;
+  background-color: #f8f8f8;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.image-box:hover {
+  border-color: #999;
+}
+
+.image-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: transform 0.2s ease-in-out, opacity 0.3s;
+}
+
+.image-box img:hover {
+  transform: scale(1.03);
+}
+
+/* ================================
+   HIỆU ỨNG LOADING ẢNH
+================================ */
+.image-box.loading::after {
+  content: "Đang tải ảnh...";
+  position: absolute;
+  color: #666;
+  background: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  padding: 4px 10px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.image-box.loading img {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ================================
+   NÚT TẢI & XOÁ ẢNH
+================================ */
+.image-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-buttons .btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.image-buttons .btn:first-child {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.image-buttons .btn:first-child:hover {
+  background-color: #138496;
+}
+
+.image-buttons .btn:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.image-buttons .btn:last-child:hover {
+  background-color: #c82333;
+}
+
+/* ================================
+   NÚT THAO TÁC CHÍNH
+================================ */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-buttons .btn {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.action-buttons .btn:nth-child(1) {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.action-buttons .btn:nth-child(1):hover {
+  background-color: #0056b3;
+}
+
+.action-buttons .btn:nth-child(2) {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.action-buttons .btn:nth-child(2):hover {
+  background-color: #5a6268;
+}
+
+.action-buttons .btn:nth-child(3) {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.action-buttons .btn:nth-child(3):hover {
+  background-color: #c82333;
+}
+
+.action-buttons .btn:nth-child(4) {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.action-buttons .btn:nth-child(4):hover {
+  background-color: #e0a800;
+}
+
+/* ================================
+   RESPONSIVE MOBILE
+================================ */
+@media (max-width: 768px) {
+  .column-right {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .image-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .action-buttons .btn {
+    flex: 1 1 calc(50% - 10px);
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+}
+
