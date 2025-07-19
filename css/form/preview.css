@@ -306,3 +306,43 @@ body.dark .toggle-preview {
   }
 }
 
+.form-left-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.form-left-header h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.toggle-preview {
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.toggle-preview:hover {
+  transform: scale(1.2);
+}
+
+.preview-box {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 4px solid #0d6efd;
+  background-color: #f8f9fa;
+  color: #212529;
+  font-size: 15px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  transition: all 0.3s ease;
+}
