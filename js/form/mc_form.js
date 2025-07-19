@@ -1,3 +1,5 @@
+// js/form/mc_form.js
+
 const imageInput = document.getElementById("mc_image");
 const imagePreview = document.getElementById("mc_imagePreview");
 const saveBtn = document.getElementById("saveBtn");
