@@ -59,21 +59,29 @@
 
   <!-- Cột phải: Các nút thao tác -->
   <div class="column-right">
-      <div class="form-image">
-        <label>🖼️ Ảnh minh hoạ:</label><br>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
-      </div>
-
-    <div class="form-actions">
-      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
-      <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-      <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
+  <!-- 🖼️ Khu vực ảnh minh hoạ -->
+  <div class="image-section">
+    <label>🖼️ Ảnh minh hoạ:</label>
+    <div class="image-box">
+      <img id="mc_imagePreview" src="">
+    </div>
+    <div class="image-buttons">
+      <button type="button" id="loadImageBtn" class="btn">📂 Load ảnh</button>
+      <button type="button" id="deleteImageBtn" class="btn">❌ Xoá ảnh</button>
     </div>
   </div>
+
+  <!-- 🎯 Khu vực nút thao tác -->
+  <div class="action-section">
+    <div class="action-buttons">
+      <button type="submit" form="mcForm" id="saveBtn" class="btn">💾 Lưu câu hỏi</button>
+      <button type="reset" form="mcForm" id="resetBtn" class="btn">🔄 Làm lại</button>
+      <button type="button" id="deleteQuestionBtn" class="btn">🗑️ Xoá câu hỏi</button>
+      <button type="button" id="toggleIframeBtn" class="btn">🔼 Hiện bảng câu hỏi</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
