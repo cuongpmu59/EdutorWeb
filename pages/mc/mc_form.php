@@ -59,7 +59,7 @@
   </div>
 
   <!-- Cột phải: Các nút thao tác -->
-  <div class="form-right">
+  <div class="column-right">
       <div class="form-image">
         <label>🖼️ Ảnh minh hoạ:</label><br>
         <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
