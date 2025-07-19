@@ -1,4 +1,7 @@
-/* === Layout tổng thể === */
+/* ===============================
+   🎨 BỐ CỤC FORM & RESPONSIVE
+================================ */
+
 .form-layout {
   display: flex;
   flex-wrap: wrap;
@@ -10,339 +13,135 @@
 .form-left {
   flex: 2;
   min-width: 300px;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding-right: 10px;
 }
 
 .form-right {
   flex: 1;
-  min-width: 250px;
-}
-
-.form-right-inner {
+  min-width: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 400px;
+  gap: 15px;
 }
 
-.image-box {
-  text-align: center;
+/* ===============================
+   📝 INPUT, TEXTAREA, GROUP
+================================ */
+.question-form .form-group {
+  margin-bottom: 15px;
 }
 
-#mc_imagePreview {
-  display: none;
-  max-width: 100%;
-  max-height: 200px;
-  margin-top: 10px;
+.question-form textarea,
+.question-form input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  min-height: 40px;
+  font-size: 15px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  transition: font-size 0.3s ease;
 }
 
-.form-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.question-form textarea:focus,
+.question-form input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .form-layout {
-    flex-direction: column;
-  }
-}
-
-/* Hộp xem trước chung cho câu hỏi và đáp án */
+/* ===============================
+   👁️ VÙNG XEM TRƯỚC (PREVIEW)
+================================ */
 .preview-box {
   display: none;
   margin-top: 8px;
-  padding: 10px 12px;
-  border-left: 4px solid #0d6efd;
-  background-color: #f8f9fa;
-  color: #212529;
-  font-size: 15px;
-  border-radius: 6px;
+  padding: 10px;
+  border: 1px dashed #999;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
   white-space: pre-wrap;
   overflow-x: auto;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Biểu tượng 👁️ toggle xem trước */
+.preview-box.show {
+  display: block;
+}
+
 .toggle-preview {
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: 6px;
   font-size: 1rem;
+  vertical-align: middle;
   user-select: none;
-  transition: transform 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .toggle-preview:hover {
-  transform: scale(1.2);
+  color: #007bff;
 }
 
-/* Tối ưu hiển thị công thức MathJax */
-.preview-box mjx-container {
-  font-size: 110%;
-}
-
-/* Hỗ trợ dark mode */
-body.dark .preview-box {
-  background-color: #1e1e1e;
-  border-left-color: #4dabf7;
-  color: #eee;
-}
-
-body.dark .toggle-preview {
-  color: #ccc;
-}
-
-/* ================================
-   CỘT PHẢI - BỐ CỤC & THIẾT KẾ
+/* ===============================
+   🎯 NÚT HÀNH ĐỘNG
 ================================ */
-.column-right {
-  flex: 1;
-  min-width: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-/* === Bọc riêng từng khối === */
-.image-section,
-.action-section {
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fafafa;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-}
-
-/* Khoảng cách giữa 2 phần */
-.image-section {
-  margin-bottom: 20px;
-}
-
-/* ================================
-   TIÊU ĐỀ & LABEL
-================================ */
-.column-right label {
-  font-weight: 600;
-  font-size: 16px;
-  margin-bottom: 10px;
-  display: block;
-  color: #333;
-}
-
-/* ================================
-   HỘP ẢNH - IMAGE BOX
-================================ */
-.image-box {
-  border: 2px dashed #ccc;
-  border-radius: 10px;
-  height: 180px;
-  background-color: #f8f8f8;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  transition: border-color 0.2s ease-in-out;
-}
-
-.image-box:hover {
-  border-color: #999;
-}
-
-.image-box img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+.form-actions button {
+  padding: 10px;
+  font-size: 15px;
+  width: 100%;
+  border: none;
   border-radius: 6px;
-  transition: transform 0.2s ease-in-out, opacity 0.3s;
-}
-
-.image-box img:hover {
-  transform: scale(1.03);
-}
-
-/* ================================
-   HIỆU ỨNG LOADING ẢNH
-================================ */
-.image-box.loading::after {
-  content: "Đang tải ảnh...";
-  position: absolute;
-  color: #666;
-  background: rgba(255, 255, 255, 0.85);
-  font-style: italic;
-  padding: 4px 10px;
-  border-radius: 4px;
-  z-index: 2;
-}
-
-.image-box.loading img {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-/* ================================
-   NÚT TẢI & XOÁ ẢNH
-================================ */
-.image-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.image-buttons .btn {
-  flex: 1;
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 6px;
-  font-weight: 500;
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.image-buttons .btn:first-child {
-  background-color: #17a2b8;
-  color: #fff;
-}
-
-.image-buttons .btn:first-child:hover {
-  background-color: #138496;
-}
-
-.image-buttons .btn:last-child {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.image-buttons .btn:last-child:hover {
-  background-color: #c82333;
-}
-
-/* ================================
-   NÚT THAO TÁC CHÍNH
-================================ */
-.action-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.action-buttons .btn {
-  width: 100%;
-  padding: 10px 14px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.action-buttons .btn:nth-child(1) {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.action-buttons .btn:nth-child(1):hover {
+.form-actions button:hover {
   background-color: #0056b3;
 }
 
-.action-buttons .btn:nth-child(2) {
-  background-color: #6c757d;
-  color: #fff;
+.form-actions button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
 }
 
-.action-buttons .btn:nth-child(2):hover {
-  background-color: #5a6268;
+/* ===============================
+   🖼️ ẢNH MINH HOẠ
+================================ */
+#mc_imagePreview {
+  display: block;
+  max-height: 150px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.action-buttons .btn:nth-child(3) {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.action-buttons .btn:nth-child(3):hover {
-  background-color: #c82333;
-}
-
-.action-buttons .btn:nth-child(4) {
-  background-color: #ffc107;
-  color: #000;
-}
-
-.action-buttons .btn:nth-child(4):hover {
-  background-color: #e0a800;
-}
-
-/* ================================
-   RESPONSIVE MOBILE
+/* ===============================
+   📱 MOBILE RESPONSIVE
 ================================ */
 @media (max-width: 768px) {
-  .column-right {
-    padding: 16px;
-    gap: 20px;
-  }
-
-  .image-buttons {
+  .form-layout {
     flex-direction: column;
   }
 
-  .action-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .action-buttons .btn {
-    flex: 1 1 calc(50% - 10px);
+  .form-actions button {
     font-size: 14px;
-    padding: 8px 10px;
   }
-}
 
-.form-left-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-}
+  .toggle-preview {
+    font-size: 16px;
+  }
 
-.form-left-header h2 {
-  font-size: 20px;
-  margin: 0;
-  font-weight: 600;
-  color: #333;
-}
+  .question-form textarea,
+  .question-form input[type="text"] {
+    font-size: 14px;
+  }
 
-.toggle-preview {
-  font-size: 20px;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-.toggle-preview:hover {
-  transform: scale(1.2);
-}
-
-.preview-box {
-  display: none;
-  margin-top: 8px;
-  padding: 10px 12px;
-  border-left: 4px solid #0d6efd;
-  background-color: #f8f9fa;
-  color: #212529;
-  font-size: 15px;
-  border-radius: 6px;
-  white-space: pre-wrap;
-  overflow-x: auto;
-  transition: all 0.3s ease;
+  .preview-box {
+    font-size: 14px;
+    padding: 8px;
+  }
 }
