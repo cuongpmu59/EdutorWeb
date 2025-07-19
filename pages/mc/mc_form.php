@@ -70,6 +70,9 @@
       <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
       <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
       <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
+        <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
+        style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
+
     </div>
   </div>
 </div>
