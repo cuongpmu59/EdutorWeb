@@ -19,3 +19,13 @@ fieldIds.forEach(id => {
     });
   }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleBtn = document.getElementById("toggleIframeBtn");
+  const iframe = document.getElementById("mcIframe");
+
+  toggleBtn.addEventListener("click", function () {
+    const isVisible = iframe.classList.toggle("show");
+    toggleBtn.textContent = isVisible ? "🔽 Ẩn bảng câu hỏi" : "🔼 Hiện bảng câu hỏi";
+  });
+});
