@@ -10,7 +10,16 @@
 </head>
 <body>
 
-<div class="form-layout">
+<div class="form-left-wrapper">
+  <!-- Tiêu đề và biểu tượng 👁️ -->
+  <div class="form-left-header">
+    <h2>Nhập câu hỏi trắc nghiệm</h2>
+    <span class="toggle-preview" id="toggleFullPreview">👁️</span>
+  </div>
+  <!-- Hộp xem trước (ẩn lúc đầu) -->
+  <div id="fullPreviewBox" class="preview-box" style="display: none;">
+    <!-- Nội dung xem trước sẽ hiển thị ở đây -->
+  </div>
   <!-- Cột trái: Form nội dung -->
   <div class="form-left">
     <form id="mcForm" class="question-form" enctype="multipart/form-data">
@@ -52,7 +61,7 @@
           <option value="D">D</option>
         </select>
       </div>
-
+      </div>
       
     </form>
   </div>
@@ -220,6 +229,14 @@ toggleBtn.addEventListener("click", () => {
     ? "🔼 Hiện bảng câu hỏi"
     : "🔽 Ẩn bảng câu hỏi";
 });
+</script>
+<script>
+  document.getElementById("toggleFullPreview").addEventListener("click", function () {
+    const previewBox = document.getElementById("fullPreviewBox");
+    const isVisible = previewBox.style.display === "block";
+
+    previewBox.style.display = isVisible ? "none" : "block";
+  });
 </script>
 
 </body>
