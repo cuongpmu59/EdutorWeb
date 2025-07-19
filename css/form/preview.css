@@ -110,6 +110,20 @@ body.dark .toggle-preview {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
+/* === Bọc riêng từng khối === */
+.image-section,
+.action-section {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fafafa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+/* Khoảng cách giữa 2 phần */
+.image-section {
+  margin-bottom: 20px;
+}
 
 /* ================================
    TIÊU ĐỀ & LABEL
