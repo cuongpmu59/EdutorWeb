@@ -1,0 +1,28 @@
+.mc-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0 20px;
+    background-color: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mc-filter-container .search-box input,
+  .mc-filter-container .filter-box select {
+    padding: 8px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 260px;
+  }
+  
+  .mc-filter-container .filter-box label {
+    margin-right: 6px;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  
