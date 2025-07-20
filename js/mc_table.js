@@ -1,10 +1,18 @@
 $(document).ready(function () {
     const table = $('#mcTable').DataTable({
       scrollX: true,
-      dom: '<"top-controls"B>rtip', // Ẩn ô tìm kiếm mặc định
       fixedHeader: true,
       pageLength: 10,
       lengthMenu: [10, 25, 50, 100],
+      dom: '<"top-controls"B>rtip',
+      columnDefs: [
+        {
+          targets: -1, // Cột ảnh cuối cùng
+          className: 'dt-center',
+          orderable: false,
+          searchable: false
+        }
+      ],
       buttons: [
         {
           extend: 'excelHtml5',
@@ -36,18 +44,18 @@ $(document).ready(function () {
       table.search(this.value).draw();
     });
   
-    // Lọc theo chủ đề (cột index = 1)
+    // Lọc theo chủ đề (cột 1)
     $('#topicFilter').on('change', function () {
       const selected = this.value;
       table.column(1).search(selected ? '^' + selected + '$' : '', true, false).draw();
     });
   
-    // Re-render MathJax sau khi vẽ lại bảng
+    // Vẽ lại MathJax sau mỗi lần cập nhật bảng
     table.on('draw', function () {
       if (window.MathJax) MathJax.typesetPromise();
     });
   
-    // Hiển thị ảnh lớn khi click
+    // Phóng to ảnh khi click
     $(document).on('click', '.thumb', function () {
       const imgSrc = $(this).attr('src');
       if (imgSrc) {
@@ -56,14 +64,14 @@ $(document).ready(function () {
       }
     });
   
-    // Đóng modal ảnh khi click ra ngoài ảnh
+    // Đóng modal ảnh khi click ra ngoài
     $('#imgModal').on('click', function (e) {
       if (!$(e.target).is('#imgModalContent')) {
         $('#imgModal').fadeOut();
       }
     });
   
-    // Gửi dữ liệu dòng được chọn về form cha
+    // Gửi dữ liệu dòng về form cha
     function sendRowData(row) {
       const $cells = $(row.node()).find('td');
       const getRaw = i => $cells.eq(i).data('raw') || '';
@@ -89,7 +97,7 @@ $(document).ready(function () {
       sendRowData(table.row(this));
     });
   
-    // Điều hướng bằng bàn phím (lên/xuống)
+    // Điều hướng bằng bàn phím
     $(document).on('keydown', function (e) {
       const selected = table.row('.selected');
       if (!selected.node()) return;
@@ -105,7 +113,7 @@ $(document).ready(function () {
       sendRowData(nextRow);
     });
   
-    // Xử lý nhập file Excel
+    // Xử lý nhập Excel
     $('#excelFile').on('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -139,5 +147,4 @@ $(document).ready(function () {
       reader.readAsArrayBuffer(file);
     });
   });
-
   
