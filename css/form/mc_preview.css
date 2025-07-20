@@ -1,5 +1,9 @@
-body.show-preview .mc-field input,
-body.show-preview .mc-field textarea {
-  background: #f9f9f9;
-}
-.icon-eye { cursor: pointer; }
+.icon-eye {
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  body.show-preview .mc-field input,
+  body.show-preview .mc-field textarea {
+    background-color: #f0f8ff;
+  }
+  
