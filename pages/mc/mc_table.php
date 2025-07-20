@@ -27,14 +27,15 @@ try {
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
 <!-- Khu vực tìm kiếm và lọc -->
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; margin: 10px 0;">
-  <!-- Ô tìm kiếm -->
-  <input type="search" id="customSearch" class="form-control" placeholder="Tìm kiếm trong bảng..." style="padding:6px 10px; font-size:14px; width: 300px;">
 
-  <!-- Bộ lọc chủ đề -->
-  <div>
-    <label for="topicFilter">Chủ đề:</label>
-    <select id="topicFilter" class="form-control" style="padding:6px 10px;">
+<div class="mc-filter-container">
+  <div class="search-box">
+    <input type="search" id="customSearch" placeholder="🔍 Tìm kiếm trong bảng...">
+  </div>
+
+  <div class="filter-box">
+    <label for="topicFilter">📁 Chủ đề:</label>
+    <select id="topicFilter">
       <option value="">-- Tất cả --</option>
       <?php
         $topics = array_unique(array_column($rows, 'mc_topic'));
@@ -45,6 +46,7 @@ try {
     </select>
   </div>
 </div>
+
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
