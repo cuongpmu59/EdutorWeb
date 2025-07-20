@@ -9,10 +9,10 @@ function env($key, $default = null) {
 
     if ($env === null) {
         $env = [];
-        $path = __DIR__ . '/.env';
+        $envPath = realpath(__DIR__ . '/.env'); // đảm bảo đúng đường dẫn thực
 
-        if (file_exists($path)) {
-            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($envPath && file_exists($envPath)) {
+            $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 $line = trim($line);
                 if ($line === '' || $line[0] === '#') continue;
@@ -32,7 +32,7 @@ function env($key, $default = null) {
                 }
             }
         } else {
-            error_log("[dotenv] Không tìm thấy file .env tại: $path");
+            error_log("[dotenv] ❌ Không tìm thấy file .env tại: $envPath");
         }
     }
 
