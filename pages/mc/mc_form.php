@@ -20,8 +20,7 @@ if (!empty($_GET['mc_id'])) {
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <h2>Câu hỏi trắc nghiệm</h2>
-  <!-- <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title> -->
+  <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
   <link rel="stylesheet" href="../../css/form_ui.css">
 
   <!-- MathJax -->
