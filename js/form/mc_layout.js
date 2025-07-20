@@ -40,3 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("mcTogglePreview");
+    const mainContent = document.getElementById("mcMainContent");
+  
+    toggleBtn.addEventListener("click", function () {
+      if (mainContent.style.display === "none") {
+        mainContent.style.display = "flex";
+        toggleBtn.title = "Ẩn nội dung";
+        toggleBtn.querySelector("i").classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        mainContent.style.display = "none";
+        toggleBtn.title = "Hiển thị nội dung";
+        toggleBtn.querySelector("i").classList.replace("fa-eye-slash", "fa-eye");
+      }
+    });
+  });
+  
