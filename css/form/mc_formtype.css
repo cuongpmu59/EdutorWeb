@@ -1,100 +1,117 @@
-/* css/form/formtype.css */
-
-/* Tiêu đề chính của form */
-.mc-col-left h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
+/* FORM CHUNG */
+#mcForm {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  /* CỘT BỐ CỤC CHUNG */
+  .mc-columns {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  
+  .mc-col {
+    flex: 1;
+  }
+  
+  .mc-col-left {
+    max-width: 60%;
+  }
+  
+  .mc-col-right {
+    max-width: 40%;
+  }
+  
+  /* TRƯỜNG NHẬP */
+  .mc-field {
+    margin-bottom: 18px;
+  }
+  
+  .mc-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .mc-field input,
+  .mc-field textarea,
+  .mc-field select {
+    width: 100%;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+  }
+  
+  .mc-field textarea {
+    min-height: 100px;
+  }
+  
+  /* NÚT XEM TRƯỚC CẠNH NHÃN */
+  .toggle-preview {
+    margin-left: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+  }
+  
+  .toggle-preview i {
+    pointer-events: none;
+  }
+  
+  /* KHU VỰC XEM TRƯỚC CÁC TRƯỜNG */
+  .preview-box {
+    margin-top: 6px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-style: italic;
+  }
+  
+  /* KHU VỰC XEM TRƯỚC TOÀN BỘ */
+  .mc-preview-zone {
+    margin-top: 36px;
+    border: 1px dashed #aaa;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #fafafa;
+  }
+  
+  /* TIÊU ĐỀ FORM */
+  h2 {
+    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   
-  .mc-col-left h2 span#mcTogglePreview {
-    font-size: 18px;
+  #mcTogglePreview {
+    cursor: pointer;
     color: #007bff;
-    cursor: pointer;
-    margin-left: 10px;
   }
   
-  .mc-col-left h2 span#mcTogglePreview:hover {
-    color: #0056b3;
-  }
-  
-  /* Các label */
-  .mc-field label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  /* Nút xem trước từng phần */
-  .mc-field .toggle-preview {
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-    margin-left: 5px;
-  }
-  
-  .mc-field .toggle-preview:hover {
-    color: #333;
-  }
-  
-  /* Select đáp án */
+  /* ĐÁP ÁN */
   #mc_answer {
-    width: 100%;
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    font-weight: bold;
   }
   
-  /* Phần hiển thị xem trước toàn bộ */
-  .mc-preview-zone {
-    border-top: 2px dashed #ccc;
-    margin-top: 30px;
-    padding-top: 20px;
+  /* CHỈNH MÀU INPUT ĐANG ACTIVE */
+  .mc-field input:focus,
+  .mc-field textarea:focus,
+  .mc-field select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 3px rgba(0,123,255,0.4);
   }
-  
-  .mc-preview-zone h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  #mcPreviewContent {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 6px;
-  }
-
-  /* ======================= */
-/* Định dạng chung cho form trắc nghiệm */
-/* ======================= */
-
-#mcForm {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  #mcForm h2,
-  #mcForm h4 {
-    margin-bottom: 16px;
-    color: #222;
-  }
-  
-  .mc-preview-zone {
-    margin-top: 32px;
-    border-top: 1px dashed #ccc;
-    padding-top: 16px;
-  }
-  
   
