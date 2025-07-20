@@ -40,7 +40,7 @@ if (!empty($_GET['mc_id'])) {
     <form id="mcForm" method="POST" enctype="multipart/form-data">
       <div class="mc-columns">
         <!-- Cột trái -->
-        <div class="mc-col-left">
+        <div class="mc-col mc-col-left">
           <h2>
             <?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới' ?>
             <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
@@ -80,7 +80,7 @@ if (!empty($_GET['mc_id'])) {
         </div>
 
         <!-- Cột phải -->
-        <div class="mc-col-right">
+        <div class="mc-col mc-col-right">
           <!-- Khu vực ảnh -->
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
@@ -113,7 +113,6 @@ if (!empty($_GET['mc_id'])) {
         </div>
       </div>
 
-      <!-- Hidden ID nếu là chỉnh sửa -->
       <?php if (!empty($mc['mc_id'])): ?>
         <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
       <?php endif; ?>
