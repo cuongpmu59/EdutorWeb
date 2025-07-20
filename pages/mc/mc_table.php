@@ -1,9 +1,5 @@
 <?php
-require __DIR__ . '/../../db_connection.php';
-if (!isset($conn)) {
-  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
-}
-header("X-Frame-Options: SAMEORIGIN");
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 try {
   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
