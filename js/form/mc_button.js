@@ -67,3 +67,18 @@ document.addEventListener('DOMContentLoaded', function () {
     window.open('mc_exam_preview.php', '_blank');
   });
 });
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tableWrapper = document.getElementById("mcTableWrapper");
+    const viewListBtn = document.getElementById("mc_view_list");
+
+    viewListBtn?.addEventListener("click", function () {
+      if (!tableWrapper) return;
+
+      const isHidden = tableWrapper.style.display === "none";
+      tableWrapper.style.display = isHidden ? "block" : "none";
+      viewListBtn.textContent = isHidden ? "Ẩn danh sách" : "Xem danh sách";
+    });
+  });
+</script>
