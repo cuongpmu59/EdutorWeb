@@ -25,7 +25,6 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
 <!-- Khu vực tìm kiếm và lọc -->
 <div style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; margin: 10px 0;">
