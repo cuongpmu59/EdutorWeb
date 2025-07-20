@@ -149,12 +149,20 @@ $(document).ready(function () {
     });
   });
   
-  $(document).on('click', '.thumb', function () {
-    $('#imgModalContent').attr('src', $(this).attr('src'));
-    $('#imgModal').fadeIn();
+  // Xử lý click ảnh thumb để hiện modal
+$(document).on('click', '.thumb', function () {
+    const imgSrc = $(this).attr('src');
+    if (imgSrc) {
+      $('#imgModalContent').attr('src', imgSrc);
+      $('#imgModal').fadeIn();
+    }
   });
   
-  $('#imgModal').on('click', function () {
-    $(this).fadeOut();
+  // Đóng modal khi click ra ngoài ảnh
+  $(document).on('click', '#imgModal', function (e) {
+    if (!$(e.target).is('#imgModalContent')) {
+      $('#imgModal').fadeOut();
+    }
   });
+  
   
