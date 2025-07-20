@@ -108,6 +108,7 @@ if (!empty($_GET['mc_id'])) {
             <button type="button" id="mc_delete">Xóa</button>
             <button type="button" id="mc_reset">Làm lại</button>
             <button type="button" id="mc_view_list">Ẩn/ hiện danh sách</button>
+            
             <button type="button" id="mc_preview_exam">Làm đề</button>
           </div>
         </div>
