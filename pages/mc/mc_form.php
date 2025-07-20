@@ -21,7 +21,7 @@ if (!empty($_GET['mc_id'])) {
 <head>
   <meta charset="UTF-8">
   <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
-  <link rel="stylesheet" href="../css/form_ui.css">
+  <link rel="stylesheet" href="css/form_ui.css">
 
   <!-- MathJax -->
   <script>
