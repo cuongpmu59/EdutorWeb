@@ -1,13 +1,12 @@
-.thumb {
-    max-width: 60px;
-    max-height: 60px;
+/* Hiển thị ảnh thumbnail nhỏ gọn trong bảng */
+img.thumb {
+    width: 40px;
+    height: auto;
     cursor: pointer;
-    border-radius: 4px;
     transition: transform 0.2s ease;
-    object-fit: cover;
   }
   
-  .thumb:hover {
+  img.thumb:hover {
     transform: scale(1.8);
     z-index: 10;
     position: relative;
