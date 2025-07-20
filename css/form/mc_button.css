@@ -1,2 +1,14 @@
-.mc-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-.mc-buttons button { padding: 8px 12px; }
+.mc-buttons {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mc-buttons button {
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+  }
+  
