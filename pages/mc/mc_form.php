@@ -119,7 +119,7 @@ if (!empty($_GET['mc_id'])) {
       <?php endif; ?>
     </form>
 
-    <div id="mcTableWrapper" style="display: none;">
+    <div id="mcTableWrapper" style="display: block;">
       <?php include 'mc_table.php'; ?>
     </div>
 
