@@ -67,3 +67,21 @@ document.addEventListener('DOMContentLoaded', function () {
     window.open('mc_exam_preview.php', '_blank');
   });
 });
+
+// Nút xử lý xem bảng câu hỏi
+document.addEventListener("DOMContentLoaded", function () {
+  const viewListBtn = document.getElementById("mc_view_list");
+  const tableWrapper = document.getElementById("mcTableWrapper");
+
+  viewListBtn.addEventListener("click", function () {
+    if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
+      tableWrapper.style.display = "block";
+      viewListBtn.textContent = "Ẩn danh sách";
+    } else {
+      tableWrapper.style.display = "none";
+      viewListBtn.textContent = "Hiện danh sách";
+    }
+  });
+});
+
+
