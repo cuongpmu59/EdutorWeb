@@ -1,10 +1,10 @@
 $(document).ready(function () {
     const table = $('#mcTable').DataTable({
       scrollX: true,
+      dom: '<"top-controls"B>rtip', // Ẩn ô tìm kiếm mặc định
       fixedHeader: true,
       pageLength: 10,
       lengthMenu: [10, 25, 50, 100],
-      dom: '<"top-controls"Bf>rtip',
       buttons: [
         {
           extend: 'excelHtml5',
@@ -19,67 +19,51 @@ $(document).ready(function () {
         },
         {
           text: '📥 Nhập Excel',
-          action: () => $('#excelFile').click()
+          action: function () {
+            $('#excelFile').click();
+          }
         }
-      ],
-      language: {
-        search: "Tìm kiếm:",
-        lengthMenu: "Hiển thị _MENU_ dòng",
-        info: "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-        paginate: { first: "Đầu", last: "Cuối", next: "›", previous: "‹" }
-      }
+      ]
     });
   
-    // Tuỳ chỉnh bộ lọc chủ đề và tìm kiếm
-    $('#mcTable_filter').html(`
-      <div class="filter-left">
-        📚 Chủ đề:
-        <select id="filter-topic"><option value="">Tất cả</option></select>
-      </div>
-      <div class="filter-right">
-        🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
-      </div>
-    `);
-  
-    // Đổ chủ đề vào dropdown lọc
-    const topics = new Set();
-    table.column(1).data().each(d => topics.add(d));
-    [...topics].sort().forEach(topic => {
-      $('#filter-topic').append(`<option value="${topic}">${topic}</option>`);
-    });
-  
-    // Lọc chủ đề
-    $('#filter-topic').on('change', function () {
-      table.column(1).search(this.value).draw();
-    });
-  
-    // Tìm kiếm toàn bảng
-    $('#mcTable_filter input[type="search"]').on('keyup change', function () {
-      table.search(this.value).draw();
-    });
-  
-    // Normalize dữ liệu để tìm kiếm không dấu
+    // Normalize tiếng Việt không dấu cho tìm kiếm
     $.fn.dataTable.ext.type.search.string = function (data) {
       return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     };
   
-    // Hiển thị ảnh lớn khi click ảnh nhỏ
-    $('#mcTable').on('click', '.thumb', function () {
-      const src = $(this).attr('src');
-      if (src) {
-        $('#imgModalContent').attr('src', src);
+    // Tìm kiếm tùy chỉnh
+    $('#customSearch').on('keyup change', function () {
+      table.search(this.value).draw();
+    });
+  
+    // Lọc theo chủ đề (cột index = 1)
+    $('#topicFilter').on('change', function () {
+      const selected = this.value;
+      table.column(1).search(selected ? '^' + selected + '$' : '', true, false).draw();
+    });
+  
+    // Re-render MathJax sau khi vẽ lại bảng
+    table.on('draw', function () {
+      if (window.MathJax) MathJax.typesetPromise();
+    });
+  
+    // Hiển thị ảnh lớn khi click
+    $(document).on('click', '.thumb', function () {
+      const imgSrc = $(this).attr('src');
+      if (imgSrc) {
+        $('#imgModalContent').attr('src', imgSrc);
         $('#imgModal').fadeIn();
       }
     });
   
-    // Đóng modal khi click ra ngoài ảnh
+    // Đóng modal ảnh khi click ra ngoài ảnh
     $('#imgModal').on('click', function (e) {
       if (!$(e.target).is('#imgModalContent')) {
         $('#imgModal').fadeOut();
       }
     });
   
-    // Gửi dữ liệu dòng về form cha (nếu có)
+    // Gửi dữ liệu dòng được chọn về form cha
     function sendRowData(row) {
       const $cells = $(row.node()).find('td');
       const getRaw = i => $cells.eq(i).data('raw') || '';
@@ -98,14 +82,14 @@ $(document).ready(function () {
       if (window.MathJax) MathJax.typesetPromise();
     }
   
-    // Click chọn dòng
+    // Chọn dòng bằng chuột
     $('#mcTable tbody').on('click', 'tr', function () {
       table.$('tr.selected').removeClass('selected');
       $(this).addClass('selected');
       sendRowData(table.row(this));
     });
   
-    // Điều hướng bằng bàn phím
+    // Điều hướng bằng bàn phím (lên/xuống)
     $(document).on('keydown', function (e) {
       const selected = table.row('.selected');
       if (!selected.node()) return;
@@ -121,7 +105,7 @@ $(document).ready(function () {
       sendRowData(nextRow);
     });
   
-    // Xử lý nhập Excel
+    // Xử lý nhập file Excel
     $('#excelFile').on('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -153,11 +137,6 @@ $(document).ready(function () {
         });
       };
       reader.readAsArrayBuffer(file);
-    });
-  
-    // Re-render MathJax sau mỗi lần vẽ lại
-    table.on('draw', function () {
-      if (window.MathJax) MathJax.typesetPromise();
     });
   });
   
