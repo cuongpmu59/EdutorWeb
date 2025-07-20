@@ -1,14 +1,16 @@
-.mc-buttons {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .mc-buttons button {
-    padding: 10px;
-    font-weight: bold;
+.mc-buttons button {
+    margin: 5px 5px 0 0;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
-    border: none;
+    background-color: #007bff;
+    color: white;
+    transition: background 0.2s;
+  }
+  
+  .mc-buttons button:hover {
+    background-color: #0056b3;
   }
   
