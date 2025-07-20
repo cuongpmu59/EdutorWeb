@@ -67,4 +67,34 @@
     padding: 15px;
     border-radius: 6px;
   }
+
+  /* ======================= */
+/* Định dạng chung cho form trắc nghiệm */
+/* ======================= */
+
+#mcForm {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  #mcForm h2,
+  #mcForm h4 {
+    margin-bottom: 16px;
+    color: #222;
+  }
+  
+  .mc-preview-zone {
+    margin-top: 32px;
+    border-top: 1px dashed #ccc;
+    padding-top: 16px;
+  }
+  
   
