@@ -17,4 +17,28 @@
     min-width: 80px;
     font-weight: bold;
   }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  form#mcForm {
+    background: white;
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+  }
+
+  .mc-col-left {
+    border: 2px dashed #007bff;
+  }
+  .mc-col-right {
+    border: 2px dashed #28a745;
+  }
+  
   
