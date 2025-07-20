@@ -1,0 +1,5 @@
+body.show-preview .mc-field input,
+body.show-preview .mc-field textarea {
+  background: #f9f9f9;
+}
+.icon-eye { cursor: pointer; }
