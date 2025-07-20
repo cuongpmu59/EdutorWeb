@@ -118,6 +118,10 @@ if (!empty($_GET['mc_id'])) {
       <?php endif; ?>
     </form>
 
+    <div id="mcTableWrapper" style="display: none;">
+      <?php include 'mc_table.php'; ?>
+    </div>
+
     <!-- Khu vực xem trước toàn bộ -->
     <div id="mcPreview" class="mc-preview-zone" style="display:none;">
       <h3>Xem trước toàn bộ</h3>
