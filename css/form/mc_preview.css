@@ -1,6 +1,29 @@
-#mcTogglePreview {
-    cursor: pointer;
-    font-size: 16px;
-    color: #007bff;
-  }
-  
+.mc-preview-zone {
+  margin-top: 30px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  background-color: #fdfdfd;
+  border-radius: 6px;
+}
+
+.mc-preview-zone h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.mc-preview-content {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.mc-inline-preview {
+  margin-top: 8px;
+  padding: 10px;
+  background-color: #f6f8fa;
+  border: 1px dashed #bbb;
+  border-radius: 4px;
+  font-style: italic;
+  color: #444;
+}
