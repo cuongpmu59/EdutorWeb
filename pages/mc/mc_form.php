@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 session_start();
 
 // Kết nối CSDL
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '../../includes/db_connection.php';
 
 $mc = null;
 if (!empty($_GET['mc_id'])) {
@@ -21,7 +21,7 @@ if (!empty($_GET['mc_id'])) {
 <head>
   <meta charset="UTF-8">
   <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
-  <link rel="stylesheet" href="../css/mc_form.css">
+  <link rel="stylesheet" href="../../css/mc_form.css">
 
   <!-- MathJax -->
   <script>
