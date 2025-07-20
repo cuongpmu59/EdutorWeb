@@ -1,84 +1,95 @@
-<?php require_once __DIR__ . '/../../dotenv.php'; ?>
+<?php
+// mc_form.php
+// (đầu file) kiểm tra session, load db connection, v.v.
+
+// Nếu có mc_id truyền vào (xem bảng và tải form), load dữ liệu:
+$mc = null;
+if (!empty($_GET['mc_id'])) {
+  $id = intval($_GET['mc_id']);
+  // giả sử kết nối DB ở $conn
+  $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
+  $stmt->execute([$id]);
+  $mc = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Nhập câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="utf-8">
+  <title>Form Câu hỏi trắc nghiệm</title>
+  <link rel="stylesheet" href="css/mc_form.css">
 </head>
 <body>
-
-<div class="form-layout">
-  <!-- Cột trái: Form nội dung -->
-  <div class="form-left">
-    <form id="mcForm" class="question-form" enctype="multipart/form-data">
-      <input type="hidden" id="mc_id" name="mc_id">
-
-      <div class="form-group">
-        <label for="mc_topic">📚 Chủ đề:</label>
-        <input type="text" id="mc_topic" name="mc_topic" required>
-      </div>
-
-      <?php
-      $fields = [
-        'mc_question' => '❓ Câu hỏi',
-        'mc_answer1' => '🔸 A',
-        'mc_answer2' => '🔸 B',
-        'mc_answer3' => '🔸 C',
-        'mc_answer4' => '🔸 D'
-      ];
-      foreach ($fields as $id => $label):
-        $isTextarea = $id === 'mc_question';
-      ?>
-        <div class="form-group">
-          <label for="<?= $id ?>">
-            <?= $label ?>
-            <span id="eye_<?= $id ?>" class="toggle-preview">👁️</span>
-            </label>
-          <<?= $isTextarea ? 'textarea' : 'input type="text"' ?> id="<?= $id ?>" name="<?= $id ?>" required></<?= $isTextarea ? 'textarea' : 'input' ?>>
-          <div id="preview_<?= $id ?>" class="preview-box"></div>
+  <form id="mcForm" enctype="multipart/form-data">
+    <div class="mc-columns">
+      <!-- Cột trái: nhập liệu -->
+      <div class="mc-col-left">
+        <h2>Nhập câu trắc nghiệm
+          <span id="mcTogglePreview"><i class="icon-eye"></i></span>
+        </h2>
+        <div class="mc-field">
+          <label for="mc_topic">Chủ đề:</label>
+          <input type="text" id="mc_topic" name="topic" value="<?= htmlspecialchars($mc['mc_topic'] ?? '') ?>">
         </div>
-      <?php endforeach; ?>
-
-      <div class="form-group">
-        <label for="mc_correct_answer">✅ Đáp án đúng:</label>
-        <select id="mc_correct_answer" name="mc_correct_answer" required>
-          <option value="">-- Chọn --</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-          <option value="D">D</option>
-        </select>
+        <div class="mc-field">
+          <label for="mc_question">Câu hỏi:</label>
+          <textarea id="mc_question" name="question"><?= htmlspecialchars($mc['mc_question'] ?? '') ?></textarea>
+        </div>
+        <?php foreach (['A','B','C','D'] as $opt): ?>
+        <div class="mc-field">
+          <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.</label>
+          <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" value="<?= htmlspecialchars($mc['mc_opt_'.$opt] ?? '') ?>">
+        </div>
+        <?php endforeach; ?>
+        <div class="mc-field">
+          <label for="mc_answer">Đáp án:</label>
+          <select id="mc_answer" name="answer">
+            <?php foreach (['A','B','C','D'] as $opt): ?>
+            <option value="<?= $opt ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer']==$opt)?'selected':'' ?>><?= $opt ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>🖼️ Ảnh minh hoạ:</label><br>
-        <input type="file" id="mc_image" name="mc_image" accept="image/*" style="display: none;">
-        <button type="button" id="loadImageBtn">📂 Load ảnh</button>
-        <button type="button" id="deleteImageBtn">❌ Xoá ảnh</button>
-        <img id="mc_imagePreview" src="" style="display:none; max-height:150px; margin-top:10px">
-      </div>
-    </form>
-  </div>
+      <!-- Cột phải -->
+      <div class="mc-col-right">
+        <!-- Khu vực 2: ảnh minh họa -->
+        <div class="mc-image-zone">
+          <div class="mc-image-preview">
+            <?php if (!empty($mc['mc_image_url'])): ?>
+            <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
+            <?php endif; ?>
+          </div>
+          <div class="mc-image-buttons">
+            <label class="btn-upload">
+              Tải ảnh
+              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+            </label>
+            <button type="button" id="mc_remove_image">Xóa ảnh</button>
+          </div>
+        </div>
 
-  <!-- Cột phải: Các nút thao tác -->
-  <div class="form-right">
-    <div class="form-actions">
-      <button type="submit" form="mcForm" id="saveBtn">💾 Lưu câu hỏi</button>
-      <button type="reset" form="mcForm" id="resetBtn">🔄 Làm lại</button>
-      <button type="button" id="deleteQuestionBtn">🗑️ Xoá câu hỏi</button>
-      <button type="button" id="toggleIframeBtn">🔼 Hiện bảng câu hỏi</button>
+        <!-- Khu vực 3: các nút thao tác -->
+        <div class="mc-buttons">
+          <button type="button" id="mc_save">Lưu</button>
+          <button type="button" id="mc_delete">Xóa</button>
+          <button type="button" id="mc_reset">Làm lại</button>
+          <button type="button" id="mc_view_list">Xem danh sách</button>
+          <button type="button" id="mc_preview_exam">Làm đề</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-        <iframe id="mcIframe" src="mc_table.php" width="100%" height="500"
-        style="border:1px solid #ccc; margin-top:20px; display:none;"></iframe>
 
-<script src="js/form/previewView.js"></script>
-<script src="js/form/mc_form.js"></script>
-<script src="js/form/listener.js"></script>
+    <!-- Nếu có mc_id, đính kèm input ẩn -->
+    <?php if (!empty($mc['mc_id'])): ?>
+    <input type="hidden" id="mc_id" name="mc_id" value="<?= $mc['mc_id'] ?>">
+    <?php endif; ?>
+  </form>
 
+  <!-- script chung -->
+  <script src="mc/mc_layout.js"></script>
+  <script src="mc/js/mc_preview.js"></script>
+  <script src="mc/js/mc_image.js"></script>
+  <script src="mc/js/mc_button.js"></script>
 </body>
 </html>
