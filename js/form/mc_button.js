@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Nút Xem danh sách
-  document.getElementById('mc_view_list').addEventListener('click', function () {
-    window.location.href = 'mc_list.php';
+  document.getElementById('mc_table').addEventListener('click', function () {
+    window.location.href = 'mc_table.php';
   });
 
   // Nút Làm đề
