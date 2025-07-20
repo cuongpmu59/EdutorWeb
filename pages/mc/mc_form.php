@@ -121,9 +121,9 @@ if (!empty($_GET['mc_id'])) {
   </div>
 
   <!-- Scripts -->
-  <script src="../js/mc_layout.js"></script>
-  <script src="../js/mc_preview.js"></script>
-  <script src="../js/mc_image.js"></script>
-  <script src="../js/mc_button.js"></script>
+  <script src="../../js/mc_layout.js"></script>
+  <script src="../../js/mc_preview.js"></script>
+  <script src="../../js/mc_image.js"></script>
+  <script src="../../js/mc_button.js"></script>
 </body>
 </html>
