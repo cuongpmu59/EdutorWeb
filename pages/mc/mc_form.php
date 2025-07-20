@@ -2,8 +2,8 @@
 // mc_form.php
 session_start();
 
-// Kết nối CSDL (sửa lại theo cấu trúc dự án của bạn)
-require_once 'includes/db_connect.php'; // file này khởi tạo $conn = new PDO(...)
+// Kết nối CSDL qua hệ thống dotenv
+require_once __DIR__ . '/includes/db_connection.php';
 
 $mc = null;
 if (!empty($_GET['mc_id'])) {
@@ -14,11 +14,12 @@ if (!empty($_GET['mc_id'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-  <meta charset="utf-8">
-  <title>Form Câu hỏi trắc nghiệm</title>
+  <meta charset="UTF-8">
+  <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
   <link rel="stylesheet" href="css/mc_form.css">
+
   <!-- MathJax -->
   <script>
     window.MathJax = {
@@ -27,35 +28,43 @@ if (!empty($_GET['mc_id'])) {
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+  <!-- FontAwesome icon (nếu dùng icon eye) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="container">
-    <form id="mcForm" enctype="multipart/form-data">
+    <form id="mcForm" enctype="multipart/form-data" method="POST">
       <div class="mc-columns">
         <!-- Cột trái -->
         <div class="mc-col-left">
-          <h2>Nhập câu trắc nghiệm
-            <span id="mcTogglePreview" title="Xem trước LaTeX"><i class="icon-eye"></i></span>
+          <h2>
+            <?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới' ?>
+            <span id="mcTogglePreview" title="Xem trước LaTeX"><i class="fa fa-eye"></i></span>
           </h2>
+
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
-            <input type="text" id="mc_topic" name="topic" value="<?= htmlspecialchars($mc['mc_topic'] ?? '') ?>">
+            <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
           </div>
+
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:</label>
-            <textarea id="mc_question" name="question"><?= htmlspecialchars($mc['mc_question'] ?? '') ?></textarea>
+            <textarea id="mc_question" name="question" required><?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
           </div>
+
           <?php foreach (['A','B','C','D'] as $opt): ?>
           <div class="mc-field">
             <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.</label>
-            <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" value="<?= htmlspecialchars($mc['mc_opt_'.$opt] ?? '') ?>">
+            <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" required value="<?= htmlspecialchars($mc["mc_opt_$opt"] ?? '', ENT_QUOTES) ?>">
           </div>
           <?php endforeach; ?>
+
           <div class="mc-field">
             <label for="mc_answer">Đáp án:</label>
-            <select id="mc_answer" name="answer">
+            <select id="mc_answer" name="answer" required>
               <?php foreach (['A','B','C','D'] as $opt): ?>
-              <option value="<?= $opt ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] == $opt) ? 'selected' : '' ?>><?= $opt ?></option>
+              <option value="<?= $opt ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] === $opt) ? 'selected' : '' ?>><?= $opt ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -70,6 +79,7 @@ if (!empty($_GET['mc_id'])) {
               <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
               <?php endif; ?>
             </div>
+
             <div class="mc-image-buttons">
               <label class="btn-upload">
                 Tải ảnh
@@ -77,6 +87,10 @@ if (!empty($_GET['mc_id'])) {
               </label>
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
+
+            <?php if (!empty($mc['mc_image_url'])): ?>
+              <input type="hidden" name="existing_image" value="<?= htmlspecialchars($mc['mc_image_url']) ?>">
+            <?php endif; ?>
           </div>
 
           <!-- Nút thao tác -->
@@ -90,8 +104,9 @@ if (!empty($_GET['mc_id'])) {
         </div>
       </div>
 
+      <!-- Hidden ID nếu là chỉnh sửa -->
       <?php if (!empty($mc['mc_id'])): ?>
-      <input type="hidden" id="mc_id" name="mc_id" value="<?= $mc['mc_id'] ?>">
+        <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
       <?php endif; ?>
     </form>
 
@@ -102,7 +117,7 @@ if (!empty($_GET['mc_id'])) {
     </div>
   </div>
 
-  <!-- Các file JS -->
+  <!-- Gắn JS -->
   <script src="js/mc_layout.js"></script>
   <script src="js/mc_preview.js"></script>
   <script src="js/mc_image.js"></script>
