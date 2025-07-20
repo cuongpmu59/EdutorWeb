@@ -22,34 +22,8 @@ try {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    .thumb {
-      max-width: 50px;
-      max-height: 50px;
-      cursor: pointer;
-    }
-    #mcTable tbody tr.selected {
-      background-color: #e0f7fa !important;
-    }
-    div.dataTables_filter {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    #mcTable_filter .filter-left,
-    #mcTable_filter .filter-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    #mcTable_filter select {
-      padding: 4px 8px;
-    }
-    #excelFile {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/table/mc_table_custom.css">
+
 </head>
 <body>
 
