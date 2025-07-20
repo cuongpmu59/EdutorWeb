@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 session_start();
 
 // Kết nối CSDL
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../includes/db_connection.php';
 
 $mc = null;
 if (!empty($_GET['mc_id'])) {
@@ -21,7 +21,7 @@ if (!empty($_GET['mc_id'])) {
 <head>
   <meta charset="UTF-8">
   <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
-  <link rel="stylesheet" href="../../css/mc_form.css">
+  <link rel="stylesheet" href="../css/mc_form.css">
 
   <!-- MathJax -->
   <script>
@@ -43,7 +43,7 @@ if (!empty($_GET['mc_id'])) {
         <div class="mc-col-left">
           <h2>
             <?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới' ?>
-            <span id="mcTogglePreview" title="Xem trước LaTeX"><i class="fa fa-eye"></i></span>
+            <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
           </h2>
 
           <div class="mc-field">
@@ -52,14 +52,20 @@ if (!empty($_GET['mc_id'])) {
           </div>
 
           <div class="mc-field">
-            <label for="mc_question">Câu hỏi:</label>
+            <label for="mc_question">Câu hỏi:
+              <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
+            </label>
             <textarea id="mc_question" name="question" required><?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
+            <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
           <?php foreach (['A','B','C','D'] as $opt): ?>
           <div class="mc-field">
-            <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.</label>
+            <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.
+              <button type="button" class="toggle-preview" data-target="mc_opt_<?= $opt ?>"><i class="fa fa-eye"></i></button>
+            </label>
             <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" required value="<?= htmlspecialchars($mc["mc_opt_$opt"] ?? '', ENT_QUOTES) ?>">
+            <div class="preview-box" id="preview-mc_opt_<?= $opt ?>" style="display:none;"></div>
           </div>
           <?php endforeach; ?>
 
@@ -77,12 +83,12 @@ if (!empty($_GET['mc_id'])) {
         <div class="mc-col-right">
           <!-- Khu vực ảnh -->
           <div class="mc-image-zone">
+            <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
               <?php if (!empty($mc['mc_image_url'])): ?>
               <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
               <?php endif; ?>
             </div>
-
             <div class="mc-image-buttons">
               <label class="btn-upload">
                 Tải ảnh
@@ -90,14 +96,14 @@ if (!empty($_GET['mc_id'])) {
               </label>
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
-
             <?php if (!empty($mc['mc_image_url'])): ?>
               <input type="hidden" name="existing_image" value="<?= htmlspecialchars($mc['mc_image_url']) ?>">
             <?php endif; ?>
           </div>
 
-          <!-- Nút thao tác -->
+          <!-- Khu vực nút thao tác -->
           <div class="mc-buttons">
+            <h4>Thao tác</h4>
             <button type="button" id="mc_save">Lưu</button>
             <button type="button" id="mc_delete">Xóa</button>
             <button type="button" id="mc_reset">Làm lại</button>
@@ -113,9 +119,9 @@ if (!empty($_GET['mc_id'])) {
       <?php endif; ?>
     </form>
 
-    <!-- Khu vực xem trước -->
+    <!-- Khu vực xem trước toàn bộ -->
     <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-      <h3>Xem trước</h3>
+      <h3>Xem trước toàn bộ</h3>
       <div id="mcPreviewContent"></div>
     </div>
   </div>
