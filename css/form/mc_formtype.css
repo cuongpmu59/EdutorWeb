@@ -1,0 +1,54 @@
+h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  #mcTogglePreview {
+    cursor: pointer;
+    color: #555;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+  }
+  
+  #mcTogglePreview:hover {
+    color: #000;
+  }
+  
+  .mc-field {
+    margin-bottom: 18px;
+  }
+  
+  .mc-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  
+  .mc-field input[type="text"],
+  .mc-field select,
+  .mc-field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+  
+  .mc-field textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .mc-field input:focus,
+  .mc-field textarea:focus,
+  .mc-field select:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+  
