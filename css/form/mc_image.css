@@ -1,50 +1,70 @@
+/* css/form/mc_image.css */
+
+/* Vùng chứa ảnh minh hoạ */
 .mc-image-zone {
   border: 1px solid #ccc;
-  padding: 16px;
-  border-radius: 6px;
+  padding: 15px;
+  border-radius: 8px;
   background-color: #fafafa;
   margin-bottom: 20px;
 }
 
+/* Tiêu đề khu vực ảnh */
+.mc-image-zone h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Khung xem trước ảnh */
 .mc-image-preview {
-  width: 100%;
-  height: auto;
-  max-height: 250px;
-  text-align: center;
-  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  border: 1px dashed #aaa;
+  border-radius: 6px;
+  background-color: #fff;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 
 .mc-image-preview img {
   max-width: 100%;
-  max-height: 240px;
-  border-radius: 4px;
+  max-height: 200px;
   object-fit: contain;
+  display: block;
 }
 
+/* Nút tải và xóa ảnh */
 .mc-image-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mc-image-buttons label,
 .mc-image-buttons button {
-  flex: 1;
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  font-weight: bold;
+  padding: 8px 14px;
+  font-size: 15px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
+  color: white;
   cursor: pointer;
-  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.mc-image-buttons label {
+  background-color: #17a2b8;
+}
+
+.mc-image-buttons label:hover {
+  background-color: #138496;
 }
 
 .mc-image-buttons button {
-  background-color: #e74c3c;
+  background-color: #dc3545;
 }
 
-.mc-image-buttons label:hover,
 .mc-image-buttons button:hover {
-  opacity: 0.9;
+  background-color: #c82333;
 }
