@@ -56,3 +56,42 @@
 .mc-field textarea {
   height: 100px;
 }
+
+/* TIÊU ĐỀ FORM */
+h2 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#mcTogglePreview {
+  cursor: pointer;
+  color: #007bff;
+}
+
+/* ĐÁP ÁN */
+#mc_answer {
+  font-weight: bold;
+}
+
+/* CHỈNH MÀU INPUT ĐANG ACTIVE */
+.mc-field input:focus,
+.mc-field textarea:focus,
+.mc-field select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 3px rgba(0,123,255,0.4);
+}
+
+
+#mcTogglePreview {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+#mcTogglePreview:hover {
+  color: #000;
+}
