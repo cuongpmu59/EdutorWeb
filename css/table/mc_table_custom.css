@@ -3,6 +3,16 @@
     max-height: 50px;
     cursor: pointer;
   }
+  .thumb {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+  }
+  .thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
   #mcTable tbody tr.selected {
     background-color: #e0f7fa !important;
   }
