@@ -1,0 +1,27 @@
+.thumb {
+    max-width: 50px;
+    max-height: 50px;
+    cursor: pointer;
+  }
+  #mcTable tbody tr.selected {
+    background-color: #e0f7fa !important;
+  }
+  div.dataTables_filter {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  #mcTable_filter .filter-left,
+  #mcTable_filter .filter-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #mcTable_filter select {
+    padding: 4px 8px;
+  }
+  #excelFile {
+    display: none;
+  }
+  
