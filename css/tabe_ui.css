@@ -5,9 +5,5 @@
 @import url('table/mc_table_custom.css');
 @import url('table/topbar.css');
 @import url('table/mc_filter.css');
+@import url('table/mc_image.css');
 
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f9f9f9;
-  color: #333;
-}
