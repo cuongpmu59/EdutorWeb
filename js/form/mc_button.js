@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       if (data.success) {
         alert('Đã xóa thành công!');
-        window.location.href = 'mc_list.php';
+        window.location.href = 'mc_form.php';
       } else {
         alert('Không thể xóa: ' + (data.message || 'Lỗi'));
       }
@@ -51,47 +51,27 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('mc_reset').addEventListener('click', function () {
     if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
       form.reset();
-
-      // Reset xem trước nếu có
       document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
     }
   });
 
   // Nút Ẩn/Hiện danh sách
-  document.getElementById("mc_view_list").addEventListener("click", function () {
+  const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
-  if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
-    tableWrapper.style.display = "block";
-    this.textContent = "Ẩn danh sách";
-  } else {
-    tableWrapper.style.display = "none";
-    this.textContent = "Hiện danh sách";
+  if (btnViewList && tableWrapper) {
+    btnViewList.addEventListener("click", function () {
+      if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
+        tableWrapper.style.display = "block";
+        this.textContent = "Ẩn danh sách";
+      } else {
+        tableWrapper.style.display = "none";
+        this.textContent = "Hiện danh sách";
+      }
+    });
   }
-});
-
 
   // Nút Làm đề
   document.getElementById('mc_preview_exam').addEventListener('click', function () {
     window.open('mc_exam_preview.php', '_blank');
   });
 });
-
-// Nút xử lý xem bảng câu hỏi
-document.addEventListener("DOMContentLoaded", function () {
-  const btnViewList = document.getElementById("mc_view_list");
-  const tableWrapper = document.getElementById("mcTableWrapper");
-
-  if (btnViewList && tableWrapper) {
-    btnViewList.addEventListener("click", function () {
-      if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
-        tableWrapper.style.display = "block";
-        btnViewList.textContent = "Ẩn danh sách";
-      } else {
-        tableWrapper.style.display = "none";
-        btnViewList.textContent = "Hiện danh sách";
-      }
-    });
-  }
-});
-
-
