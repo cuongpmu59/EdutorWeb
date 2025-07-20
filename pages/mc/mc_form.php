@@ -40,10 +40,10 @@ if (!empty($_GET['mc_id'])) {
     <form id="mcForm" method="POST" enctype="multipart/form-data">
       <h2>
         Câu hỏi trắc nghiệm
-        <span id="mcTogglePreview" title="Hiển thị nội dung"><i class="fa fa-eye"></i></span>
+        <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
       </h2>
 
-      <div id="mcMainContent" class="mc-columns" style="display: none;">
+      <div id="mcMainContent" class="mc-columns">
         <!-- Cột trái -->
         <div class="mc-col mc-col-left">
           <div class="mc-field">
@@ -135,5 +135,55 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/mc_image.js"></script>
   <script src="../../js/mc_button.js"></script>
 
+  <!-- Xem trước toàn bộ -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.getElementById("mcTogglePreview");
+      const previewZone = document.getElementById("mcPreview");
+      const previewContent = document.getElementById("mcPreviewContent");
+
+      toggleBtn.addEventListener("click", function () {
+        if (previewZone.style.display === "none" || previewZone.style.display === "") {
+          // Lấy nội dung để xem trước
+          const topic = document.getElementById("mc_topic").value;
+          const question = document.getElementById("mc_question").value;
+          const opts = ['A', 'B', 'C', 'D'].map(opt => {
+            const val = document.getElementById("mc_opt_" + opt).value;
+            return `<p><strong>${opt}:</strong> ${val}</p>`;
+          }).join('');
+          const answer = document.getElementById("mc_answer").value;
+
+          let imageHtml = '';
+          const imgTag = document.querySelector(".mc-image-preview img");
+          if (imgTag) {
+            imageHtml = `<div><strong>Hình minh hoạ:</strong><br><img src="${imgTag.src}" style="max-width: 200px;"></div>`;
+          }
+
+          // Tạo nội dung HTML
+          previewContent.innerHTML = `
+            <p><strong>Chủ đề:</strong> ${topic}</p>
+            <p><strong>Câu hỏi:</strong> ${question}</p>
+            ${opts}
+            <p><strong>Đáp án đúng:</strong> ${answer}</p>
+            ${imageHtml}
+          `;
+
+          previewZone.style.display = "block";
+          toggleBtn.title = "Ẩn xem trước";
+          toggleBtn.querySelector("i").classList.replace("fa-eye", "fa-eye-slash");
+
+          // Gọi MathJax để hiển thị công thức
+          if (window.MathJax) {
+            MathJax.typesetPromise([previewContent]);
+          }
+
+        } else {
+          previewZone.style.display = "none";
+          toggleBtn.title = "Xem trước toàn bộ";
+          toggleBtn.querySelector("i").classList.replace("fa-eye-slash", "fa-eye");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
