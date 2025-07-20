@@ -1,20 +1,54 @@
-// Xem trước LaTeX khi click icon/mặc định tự render
-document.getElementById('mcTogglePreview').addEventListener('click', () => {
-    document.body.classList.toggle('show-preview');
-  });
-  
-  // Có thể tích hợp MathJax hoặc KaTeX
-  function renderLatex(){
-    ['mc_question','mc_opt_A','mc_opt_B','mc_opt_C','mc_opt_D'].forEach(id => {
-      const el = document.getElementById(id);
-      // giả sử có KaTeX:
-      renderMathInElement(el, {
-        delimiters: [ {left: "$$", right: "$$", display: true}, {left: "\\(", right: "\\)", display: false} ]
-      });
+document.addEventListener('DOMContentLoaded', function () {
+  // Xem trước từng phần tử (câu hỏi hoặc đáp án)
+  document.querySelectorAll('.toggle-preview').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const targetId = this.dataset.target;
+      const input = document.getElementById(targetId);
+      const preview = document.getElementById(`preview-${targetId}`);
+
+      if (preview.style.display === 'none' || !preview.style.display) {
+        preview.innerHTML = input.value;
+        preview.style.display = 'block';
+        if (window.MathJax) MathJax.typesetPromise([preview]);
+      } else {
+        preview.style.display = 'none';
+      }
     });
-  }
-  
-  ['mc_question','mc_opt_A','mc_opt_B','mc_opt_C','mc_opt_D'].forEach(id => {
-    document.getElementById(id).addEventListener('input', renderLatex);
   });
-  
+
+  // Xem trước toàn bộ nội dung
+  const toggleBtn = document.getElementById('mcTogglePreview');
+  const previewZone = document.getElementById('mcPreview');
+  const previewContent = document.getElementById('mcPreviewContent');
+
+  toggleBtn.addEventListener('click', function () {
+    if (previewZone.style.display === 'none' || !previewZone.style.display) {
+      // Hiển thị toàn bộ nội dung xem trước
+      const topic = document.getElementById('mc_topic').value;
+      const question = document.getElementById('mc_question').value;
+      const opts = ['A', 'B', 'C', 'D'].map(letter => {
+        const value = document.getElementById(`mc_opt_${letter}`).value;
+        return `<li><strong>${letter}.</strong> ${value}</li>`;
+      }).join('');
+
+      let imageHTML = '';
+      const imgEl = document.querySelector('.mc-image-preview img');
+      if (imgEl) {
+        imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
+      }
+
+      previewContent.innerHTML = `
+        <div class="preview-block">
+          <h4>Chủ đề: ${topic}</h4>
+          <p><strong>Câu hỏi:</strong> ${question}</p>
+          <ul class="preview-options">${opts}</ul>
+          ${imageHTML}
+        </div>
+      `;
+      previewZone.style.display = 'block';
+      if (window.MathJax) MathJax.typesetPromise([previewContent]);
+    } else {
+      previewZone.style.display = 'none';
+    }
+  });
+});
