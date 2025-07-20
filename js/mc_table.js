@@ -139,4 +139,16 @@ $(document).ready(function () {
       reader.readAsArrayBuffer(file);
     });
   });
+
+  $('#mcTable').DataTable({
+    columnDefs: [
+      {
+        targets: -1, // cột ảnh là cột cuối
+        className: 'dt-center',
+        orderable: false,
+        searchable: false
+      }
+    ]
+  });
+  
   
