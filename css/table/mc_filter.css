@@ -3,31 +3,62 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    gap: 15px;
+    background: #f9f9fb;
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    gap: 16px;
   }
   
-  .mc-filter-container .search-box input,
-  .mc-filter-container .filter-box select {
+  .search-box, .filter-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Icon */
+  .search-box::before {
+    content: "🔍";
+    font-size: 16px;
+  }
+  .filter-box label::before {
+    content: "📁";
+    margin-right: 4px;
+  }
+  
+  /* Input & Select */
+  .mc-filter-container input[type="search"],
+  .mc-filter-container select {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
-    min-width: 250px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+    min-width: 220px;
   }
   
-  .mc-filter-container label {
-    margin-right: 6px;
-    font-weight: 500;
+  /* Hover & Focus */
+  .mc-filter-container input[type="search"]:hover,
+  .mc-filter-container select:hover {
+    border-color: #66afe9;
+  }
+  .mc-filter-container input[type="search"]:focus,
+  .mc-filter-container select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
   }
   
-  .mc-filter-container .filter-box {
-    display: flex;
-    align-items: center;
+  /* Responsive */
+  @media (max-width: 600px) {
+    .mc-filter-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-box, .filter-box {
+      width: 100%;
+    }
   }
   
