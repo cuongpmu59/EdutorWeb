@@ -1,54 +1,70 @@
-h2 {
+/* css/form/formtype.css */
+
+/* Tiêu đề chính của form */
+.mc-col-left h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #2c3e50;
   }
   
-  #mcTogglePreview {
+  .mc-col-left h2 span#mcTogglePreview {
+    font-size: 18px;
+    color: #007bff;
     cursor: pointer;
-    color: #555;
     margin-left: 10px;
-    transition: color 0.3s ease;
   }
   
-  #mcTogglePreview:hover {
-    color: #000;
+  .mc-col-left h2 span#mcTogglePreview:hover {
+    color: #0056b3;
   }
   
-  .mc-field {
-    margin-bottom: 18px;
-  }
-  
+  /* Các label */
   .mc-field label {
-    display: block;
-    margin-bottom: 6px;
     font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
   }
   
-  .mc-field input[type="text"],
-  .mc-field select,
-  .mc-field textarea {
+  /* Nút xem trước từng phần */
+  .mc-field .toggle-preview {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
+  .mc-field .toggle-preview:hover {
+    color: #333;
+  }
+  
+  /* Select đáp án */
+  #mc_answer {
     width: 100%;
-    padding: 10px;
+    padding: 6px;
+    border-radius: 4px;
     border: 1px solid #ccc;
+  }
+  
+  /* Phần hiển thị xem trước toàn bộ */
+  .mc-preview-zone {
+    border-top: 2px dashed #ccc;
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+  
+  .mc-preview-zone h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  #mcPreviewContent {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
     border-radius: 6px;
-    font-size: 1rem;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-  
-  .mc-field textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  .mc-field input:focus,
-  .mc-field textarea:focus,
-  .mc-field select:focus {
-    border-color: #3498db;
-    outline: none;
   }
   
