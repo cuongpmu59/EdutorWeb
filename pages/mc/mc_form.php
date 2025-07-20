@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 session_start();
 
 // Kết nối CSDL qua hệ thống dotenv
-require_once __DIR__ . '/includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 $mc = null;
 if (!empty($_GET['mc_id'])) {
