@@ -57,10 +57,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Nút Xem danh sách
-  document.getElementById('mc_table').addEventListener('click', function () {
-    window.location.href = 'mc_table.php';
-  });
+  // Nút Ẩn/Hiện danh sách
+  document.getElementById("mc_view_list").addEventListener("click", function () {
+  const tableWrapper = document.getElementById("mcTableWrapper");
+  if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
+    tableWrapper.style.display = "block";
+    this.textContent = "Ẩn danh sách";
+  } else {
+    tableWrapper.style.display = "none";
+    this.textContent = "Hiện danh sách";
+  }
+});
+
 
   // Nút Làm đề
   document.getElementById('mc_preview_exam').addEventListener('click', function () {
