@@ -72,7 +72,6 @@ try {
   <img id="imgModalContent" src="" style="max-width:90%; max-height:90%; border:4px solid white; box-shadow:0 0 10px white;">
 </div>
 
-
 <input type="file" id="excelFile" accept=".xlsx" />
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
