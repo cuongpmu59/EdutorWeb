@@ -164,5 +164,24 @@ $(document).on('click', '.thumb', function () {
       $('#imgModal').fadeOut();
     }
   });
+
+  $(document).ready(function () {
+    const table = $('#mcTable').DataTable();
+  
+    // Tìm kiếm tuỳ chỉnh
+    $('#customSearch').on('keyup', function () {
+      table.search(this.value).draw();
+    });
+  
+    // Bộ lọc chủ đề
+    $('#topicFilter').on('change', function () {
+      const selected = this.value;
+      if (selected) {
+        table.column(1).search('^' + selected + '$', true, false).draw(); // Cột chủ đề là cột thứ 2 (index = 1)
+      } else {
+        table.column(1).search('').draw();
+      }
+    });
+  });
   
   
