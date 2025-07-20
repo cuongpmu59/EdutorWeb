@@ -87,7 +87,7 @@ if (!empty($_GET['mc_id'])) {
   </form>
 
   <!-- script chung -->
-  <script src="mc/mc_layout.js"></script>
+  <script src="mc/js/mc_layout.js"></script>
   <script src="mc/js/mc_preview.js"></script>
   <script src="mc/js/mc_image.js"></script>
   <script src="mc/js/mc_button.js"></script>
