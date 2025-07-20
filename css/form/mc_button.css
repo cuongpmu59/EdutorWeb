@@ -1,0 +1,2 @@
+.mc-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.mc-buttons button { padding: 8px 12px; }
