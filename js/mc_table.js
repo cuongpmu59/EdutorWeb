@@ -149,3 +149,12 @@ $(document).ready(function () {
     });
   });
   
+  $(document).on('click', '.thumb', function () {
+    $('#imgModalContent').attr('src', $(this).attr('src'));
+    $('#imgModal').fadeIn();
+  });
+  
+  $('#imgModal').on('click', function () {
+    $(this).fadeOut();
+  });
+  
