@@ -20,7 +20,7 @@ if (!empty($_GET['mc_id'])) {
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title><?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi trắc nghiệm' ?></title>
+  <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
 
   <!-- MathJax -->
@@ -38,14 +38,14 @@ if (!empty($_GET['mc_id'])) {
 <body>
   <div class="container">
     <form id="mcForm" method="POST" enctype="multipart/form-data">
-      <div class="mc-columns">
+      <h2>
+        Câu hỏi trắc nghiệm
+        <span id="mcTogglePreview" title="Hiển thị nội dung"><i class="fa fa-eye"></i></span>
+      </h2>
+
+      <div id="mcMainContent" class="mc-columns" style="display: none;">
         <!-- Cột trái -->
         <div class="mc-col mc-col-left">
-          <h2>
-            <?= isset($mc['mc_id']) ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới' ?>
-            <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
-          </h2>
-
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
             <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
@@ -130,5 +130,25 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/mc_preview.js"></script>
   <script src="../../js/mc_image.js"></script>
   <script src="../../js/mc_button.js"></script>
+
+  <!-- Toggle toàn bộ nội dung -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.getElementById("mcTogglePreview");
+      const mainContent = document.getElementById("mcMainContent");
+
+      toggleBtn.addEventListener("click", function () {
+        if (mainContent.style.display === "none") {
+          mainContent.style.display = "flex";
+          toggleBtn.title = "Ẩn nội dung";
+          toggleBtn.querySelector("i").classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          mainContent.style.display = "none";
+          toggleBtn.title = "Hiển thị nội dung";
+          toggleBtn.querySelector("i").classList.replace("fa-eye-slash", "fa-eye");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
