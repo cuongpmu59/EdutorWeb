@@ -70,18 +70,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Nút xử lý xem bảng câu hỏi
 document.addEventListener("DOMContentLoaded", function () {
-  const viewListBtn = document.getElementById("mc_view_list");
+  const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
 
-  viewListBtn.addEventListener("click", function () {
-    if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
-      tableWrapper.style.display = "block";
-      viewListBtn.textContent = "Ẩn danh sách";
-    } else {
-      tableWrapper.style.display = "none";
-      viewListBtn.textContent = "Hiện danh sách";
-    }
-  });
+  if (btnViewList && tableWrapper) {
+    btnViewList.addEventListener("click", function () {
+      if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
+        tableWrapper.style.display = "block";
+        btnViewList.textContent = "Ẩn danh sách";
+      } else {
+        tableWrapper.style.display = "none";
+        btnViewList.textContent = "Hiện danh sách";
+      }
+    });
+  }
 });
 
 
