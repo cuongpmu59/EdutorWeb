@@ -1,37 +1,69 @@
-document.getElementById('mc_save').addEventListener('click', () => {
-    const form = document.getElementById('mcForm');
-    const data = new FormData(form);
-    const url = form.mc_id ? 'api/update_mc_question.php' : 'api/create_mc_question.php';
-    fetch(url, { method: 'POST', body: data })
-      .then(res => res.json())
-      .then(res => {
-        alert(res.message);
-        if (res.mc_id) location.href = `mc_form.php?mc_id=${res.mc_id}`;
-      });
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('mcForm');
+
+  // Nút Lưu
+  document.getElementById('mc_save').addEventListener('click', function () {
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+
+    fetch('../../includes/save_question.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Lưu câu hỏi thành công!');
+        if (!form.mc_id?.value) form.reset();
+      } else {
+        alert('Lỗi khi lưu: ' + (data.message || 'Không xác định'));
+      }
+    })
+    .catch(err => {
+      alert('Lỗi hệ thống: ' + err);
+    });
   });
-  
-  document.getElementById('mc_delete').addEventListener('click', () => {
-    const mcId = document.getElementById('mc_id')?.value;
-    if (!mcId) return alert('Chưa chọn mục để xóa');
-    if (confirm('Bạn có chắc muốn xóa?')) {
-      fetch('api/delete_mc_question.php', {
-        method: 'POST',
-        body: JSON.stringify({ mc_id: mcId }),
-        headers: {'Content-Type': 'application/json'}
-      }).then(res => res.json()).then(r => {
-        alert(r.message);
-        if (r.deleted) location.href = 'mc_list.php';
-      });
+
+  // Nút Xoá
+  document.getElementById('mc_delete').addEventListener('click', function () {
+    const id = document.getElementById('mc_id')?.value;
+    if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+
+    fetch('../../includes/delete_question.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mc_id: id })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert('Đã xóa thành công!');
+        window.location.href = 'mc_list.php';
+      } else {
+        alert('Không thể xóa: ' + (data.message || 'Lỗi'));
+      }
+    })
+    .catch(err => alert('Lỗi hệ thống: ' + err));
+  });
+
+  // Nút Làm lại
+  document.getElementById('mc_reset').addEventListener('click', function () {
+    if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
+      form.reset();
+
+      // Reset xem trước nếu có
+      document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
     }
   });
-  
-  document.getElementById('mc_reset').addEventListener('click', () => {
-    document.getElementById('mcForm').reset();
-    document.querySelector('.mc-image-preview').innerHTML = '';
+
+  // Nút Xem danh sách
+  document.getElementById('mc_view_list').addEventListener('click', function () {
+    window.location.href = 'mc_list.php';
   });
-  
-  document.getElementById('mc_preview_exam').addEventListener('click', () => {
-    // chuyển hướng hoặc mở màn hình preview đầy đủ đề
-    window.open(`mc_exam_preview.php?mc_id=${document.getElementById('mc_id')?.value || ''}`, '_blank');
+
+  // Nút Làm đề
+  document.getElementById('mc_preview_exam').addEventListener('click', function () {
+    window.open('mc_exam_preview.php', '_blank');
   });
-  
+});
