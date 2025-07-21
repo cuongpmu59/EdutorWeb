@@ -120,8 +120,9 @@ if (!empty($_GET['mc_id'])) {
     </form>
 
     <div id="mcTableWrapper" style="display: block;">
-      <?php include 'mc_table.php'; ?>
+      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
+
 
     <!-- Khu vực xem trước toàn bộ -->
     <div id="mcPreview" class="mc-preview-zone" style="display:none;">
