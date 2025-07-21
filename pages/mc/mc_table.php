@@ -25,7 +25,7 @@ try {
 
   <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/main_ui.css">
-  <!-- <link rel="stylesheet" href="../../css/modules/table.css"> -->
+  <!-- <link rel="stylesheet" href="../../css/modules/table.css"> --> <!-- nếu dùng chung cho nhiều bảng -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
 
   <!-- MathJax -->
