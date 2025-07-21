@@ -118,8 +118,8 @@ if (!empty($_GET['mc_id'])) {
       </div>
 
       <?php if (!empty($mc['mc_id'])): ?>
-        <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
-      <?php endif; ?>
+        <input type="hidden" id="mc_id" name="mc_id" value="<?= isset($mc['mc_id']) ? (int)$mc['mc_id'] : '' ?>">
+        <?php endif; ?>
     </form>
 
     <div id="mcTableWrapper" style="display: block;">
