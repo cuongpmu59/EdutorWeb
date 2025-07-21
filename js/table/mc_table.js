@@ -122,7 +122,7 @@ $(document).ready(function () {
         }
   
         $.ajax({
-          url: 'import_mc_excel.php',
+          url: '../../includes/mc_import_excel.php',
           method: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(jsonData),
