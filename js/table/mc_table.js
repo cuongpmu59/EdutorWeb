@@ -36,7 +36,7 @@ $(document).ready(function () {
       </div>
     `);
   
-    $.get('utils/filter.php', function (options) {
+    $.get('includes/mc_filter.php', function (options) {
       $('#filter-topic').append(options);
     });
   
