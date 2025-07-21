@@ -7,12 +7,14 @@ $(document).ready(function () {
       dom: '<"top-controls"B>rtip',
       columnDefs: [
         {
-          targets: -1, // Cột ảnh cuối cùng
+          targets: -1,
           className: 'dt-center',
           orderable: false,
-          searchable: false
+          searchable: false,
+          visible: true // <-- Đảm bảo cột ảnh được hiển thị
         }
       ],
+      
       buttons: [
         {
           extend: 'excelHtml5',
