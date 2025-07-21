@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . '/../../includes/db_connection.php';
+require __DIR__ . '/../../db_connection.php';
+if (!isset($conn)) {
+  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
+}
+header("X-Frame-Options: SAMEORIGIN");
 
 try {
   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
@@ -14,39 +18,26 @@ try {
 <head>
   <meta charset="UTF-8">
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
+
+  <!-- Thư viện CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 
+  <!-- CSS giao diện -->
+  <link rel="stylesheet" href="../../css/main_ui.css">
+  <!-- <link rel="stylesheet" href="../../css/modules/table.css"> -->
+  <link rel="stylesheet" href="../../css/table/mc_table.css">
+
+  <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Excel xử lý -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="../../css/table_ui.css">
 </head>
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-
-<!-- Khu vực tìm kiếm và lọc -->
-
-<div class="mc-filter-container">
-  <div class="search-box">
-    <input type="search" id="customSearch" placeholder="🔍 Tìm kiếm trong bảng...">
-  </div>
-
-  <div class="filter-box">
-    <label for="topicFilter">📁 Chủ đề:</label>
-    <select id="topicFilter">
-      <option value="">-- Tất cả --</option>
-      <?php
-        $topics = array_unique(array_column($rows, 'mc_topic'));
-        foreach ($topics as $topic):
-      ?>
-        <option value="<?= htmlspecialchars($topic) ?>"><?= htmlspecialchars($topic) ?></option>
-      <?php endforeach; ?>
-    </select>
-  </div>
-</div>
-
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -70,7 +61,7 @@ try {
           <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" alt="Ảnh" onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
@@ -80,18 +71,23 @@ try {
 </div>
 
 <!-- Modal ảnh -->
-<div id="imgModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000bb; align-items: center; justify-content: center; z-index: 1000;">
-    <img id="imgModalContent" src=""></div>
+<div id="imgModal" style="display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#000000bb;align-items:center;justify-content:center;z-index:1000;">
+  <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
+</div>
 
+<!-- File Excel -->
 <input type="file" id="excelFile" accept=".xlsx" />
 
+<!-- Thư viện JS ngoài -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="../../js/mc_table.js"></script>
+
+<!-- Script chính -->
+<script src="../../js/table/mc_table.js"></script>
 
 </body>
 </html>
