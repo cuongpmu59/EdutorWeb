@@ -138,6 +138,50 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/form/mc_button.js"></script>
   <script src="../../js/form/mc_form_listener.js"></script>
 
+  <script>
+  // Nhận dữ liệu từ iframe (mc_table.php)
+  window.addEventListener("message", function (event) {
+    if (event.data?.type === "mc_select_row") {
+      const row = event.data.data;
+
+      document.querySelector('#mc_id')?.value = row.mc_id || '';
+      document.querySelector('#mc_topic')?.value = row.mc_topic || '';
+      document.querySelector('#mc_question')?.value = row.mc_question || '';
+
+      ['A', 'B', 'C', 'D'].forEach(opt => {
+        const input = document.querySelector('#mc_opt_' + opt);
+        if (input) input.value = row['mc_opt_' + opt] || '';
+      });
+
+      const answer = document.querySelector('#mc_answer');
+      if (answer) answer.value = row.mc_answer || '';
+
+      // Cập nhật hình ảnh nếu có
+      const imgPreview = document.querySelector('.mc-image-preview');
+      if (imgPreview) {
+        if (row.mc_image_url) {
+          imgPreview.innerHTML = `<img src="${row.mc_image_url}" alt="Hình minh hoạ">`;
+
+          // Gán lại hidden input nếu cần
+          let input = document.querySelector('input[name="existing_image"]');
+          if (!input) {
+            input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "existing_image";
+            document.querySelector('#mcForm').appendChild(input);
+          }
+          input.value = row.mc_image_url;
+        } else {
+          imgPreview.innerHTML = '';
+        }
+      }
+
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+  });
+</script>
+
+
   <!-- Xem trước toàn bộ -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
