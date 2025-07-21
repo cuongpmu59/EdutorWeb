@@ -70,7 +70,7 @@ try {
           <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" alt="Ảnh" onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
