@@ -81,24 +81,30 @@ $(document).ready(function () {
 
   // Gửi dữ liệu dòng về form cha
   function sendRowData(row) {
-    const $cells = $(row.node()).find('td');
-    const getRaw = i => $cells.eq(i).data('raw') || '';
-
-    const data = {
-      id: getRaw(0),
-      topic: getRaw(1),
-      question: getRaw(2),
-      answer1: getRaw(3),
-      answer2: getRaw(4),
-      answer3: getRaw(5),
-      answer4: getRaw(6),
-      correct: getRaw(7),
-      image: $cells.eq(8).find('img.thumb').attr('src') || ''
+    const data = row.data();
+    if (!data) return;
+  
+    const $row = row.node();
+    const cells = $($row).find('td');
+  
+    const message = {
+      type: "mc_select_row",
+      data: {
+        id: cells.eq(0).data('raw'),
+        topic: cells.eq(1).data('raw'),
+        question: cells.eq(2).data('raw'),
+        answer1: cells.eq(3).data('raw'),
+        answer2: cells.eq(4).data('raw'),
+        answer3: cells.eq(5).data('raw'),
+        answer4: cells.eq(6).data('raw'),
+        correct: cells.eq(7).data('raw'),
+        image: cells.eq(8).find('img').attr('src') || ''
+      }
     };
-
-    window.parent.postMessage({ type: 'mc_select_row', data }, '*');
-    if (window.MathJax) MathJax.typesetPromise();
+  
+    window.parent.postMessage(message, "*");
   }
+  
 
   // Click chọn dòng
   $('#mcTable tbody').on('click', 'tr', function () {
