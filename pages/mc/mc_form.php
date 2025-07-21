@@ -137,7 +137,8 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_button.js"></script>
-  <script src="../../js/form/mc_listener.js"></script> 
   <script src="../../js/form/mc_preview_all.js"></script> 
+  <script src="../../js/form/mc_listener.js"></script> 
+
 </body>
 </html>
