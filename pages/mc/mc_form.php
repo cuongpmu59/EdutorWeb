@@ -134,7 +134,7 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_button.js"></script>
-  <script src="../../js/form/mc_form_listener.js"></script> <!-- ✅ nhận postMessage -->
+  <script src="../../js/form/mc_listener.js"></script> <!-- ✅ nhận postMessage -->
   <script src="../../js/form/mc_preview_all.js"></script> <!-- ✅ xem trước toàn bộ -->
 </body>
 </html>
