@@ -24,8 +24,7 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 
   <!-- CSS giao diện -->
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <!-- <link rel="stylesheet" href="../../css/modules/table.css"> --> <!-- nếu dùng chung cho nhiều bảng -->
+  <!-- <link rel="stylesheet" href="../../css/main_ui.css"> -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
 
   <!-- MathJax -->
