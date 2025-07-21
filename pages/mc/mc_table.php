@@ -51,18 +51,19 @@ try {
         <tr>
           <td data-raw="<?= $q['mc_id'] ?>"><?= $q['mc_id'] ?></td>
           <td data-raw="<?= htmlspecialchars($q['mc_topic']) ?>"><?= htmlspecialchars($q['mc_topic']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_question']) ?>"><?= $q['mc_question'] ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer1']) ?>"><?= $q['mc_answer1'] ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer2']) ?>"><?= $q['mc_answer2'] ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer3']) ?>"><?= $q['mc_answer3'] ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer4']) ?>"><?= $q['mc_answer4'] ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_question']) ?>"><?= htmlspecialchars($q['mc_question']) ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer1']) ?>"><?= htmlspecialchars($q['mc_answer1']) ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer2']) ?>"><?= htmlspecialchars($q['mc_answer2']) ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer3']) ?>"><?= htmlspecialchars($q['mc_answer3']) ?></td>
+          <td data-raw="<?= htmlspecialchars($q['mc_answer4']) ?>"><?= htmlspecialchars($q['mc_answer4']) ?></td>
           <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td>
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
+
       <?php endforeach; ?>
     </tbody>
   </table>
