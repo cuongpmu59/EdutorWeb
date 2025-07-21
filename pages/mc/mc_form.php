@@ -148,9 +148,9 @@ if (!empty($_GET['mc_id'])) {
       document.querySelector('#mc_topic')?.value = row.mc_topic || '';
       document.querySelector('#mc_question')?.value = row.mc_question || '';
 
-      ['A', 'B', 'C', 'D'].forEach(opt => {
-        const input = document.querySelector('#mc_opt_' + opt);
-        if (input) input.value = row['mc_opt_' + opt] || '';
+      ['1', '2', '3', '4'].forEach(opt => {
+        const input = document.querySelector('#mc_answer' + opt);
+        if (input) input.value = row['mc_answer' + opt] || '';
       });
 
       const answer = document.querySelector('#mc_answer');
@@ -194,8 +194,8 @@ if (!empty($_GET['mc_id'])) {
           // Lấy nội dung để xem trước
           const topic = document.getElementById("mc_topic").value;
           const question = document.getElementById("mc_question").value;
-          const opts = ['A', 'B', 'C', 'D'].map(opt => {
-            const val = document.getElementById("mc_opt_" + opt).value;
+          const opts = ['1', '2', '3', '4'].map(opt => {
+            const val = document.getElementById("mc_answer" + opt).value;
             return `<p><strong>${opt}:</strong> ${val}</p>`;
           }).join('');
           const answer = document.getElementById("mc_answer").value;
