@@ -59,21 +59,26 @@ if (!empty($_GET['mc_id'])) {
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
-          <?php foreach (['A','B','C','D'] as $opt): ?>
-          <div class="mc-field">
-            <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.
-              <button type="button" class="toggle-preview" data-target="mc_opt_<?= $opt ?>"><i class="fa fa-eye"></i></button>
+          <?php foreach ([1, 2, 3, 4] as $i): ?>
+            <div class="mc-field">
+            <label for="mc_answer<?= $i ?>">Đáp án <?= $i ?>.
+              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
             </label>
-            <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" required value="<?= htmlspecialchars($mc["mc_opt_$opt"] ?? '', ENT_QUOTES) ?>">
-            <div class="preview-box" id="preview-mc_opt_<?= $opt ?>" style="display:none;"></div>
-          </div>
-          <?php endforeach; ?>
+            <input type="text"
+              id="mc_answer<?= $i ?>"
+              name="answer<?= $i ?>"
+              required
+              value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
+            <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
+            </div>
+            <?php endforeach; ?>
+
 
           <div class="mc-field">
             <label for="mc_answer">Đáp án:</label>
             <select id="mc_answer" name="answer" required>
-              <?php foreach (['A','B','C','D'] as $opt): ?>
-              <option value="<?= $opt ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] === $opt) ? 'selected' : '' ?>><?= $opt ?></option>
+              <?php foreach (['1','2','3','4'] as $i): ?>
+              <option value="<?= $i ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] === $i) ? 'selected' : '' ?>><?= $i ?></option>
               <?php endforeach; ?>
             </select>
           </div>
