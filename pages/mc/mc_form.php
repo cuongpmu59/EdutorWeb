@@ -132,10 +132,11 @@ if (!empty($_GET['mc_id'])) {
   </div>
 
   <!-- Scripts -->
-  <script src="../../js/mc_layout.js"></script>
-  <script src="../../js/mc_preview.js"></script>
-  <script src="../../js/mc_image.js"></script>
-  <script src="../../js/mc_button.js"></script>
+  <script src="../../js/form/mc_layout.js"></script>
+  <script src="../../js/form/mc_preview.js"></script>
+  <script src="../../js/form/mc_image.js"></script>
+  <script src="../../js/form/mc_button.js"></script>
+  <script src="../../js/form/mc_form_listener.js"></script>
 
   <!-- Xem trước toàn bộ -->
   <script>
