@@ -1,43 +1,68 @@
-window.addEventListener("message", function (event) {
-    if (!event.data || event.data.type !== "mc_select_row") return;
+document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("message", function (event) {
+      const msg = event.data;
+      if (!msg || msg.type !== "mc_select_row") return;
   
-    const data = event.data.data;
-    if (!data) return;
+      const data = msg.data;
+      if (!data) return;
   
-    // Gán dữ liệu vào form
-    document.getElementById("mc_id")?.value = data.id || '';
-    document.getElementById("mc_topic").value = data.topic || '';
-    document.getElementById("mc_question").value = data.question || '';
+      // === GÁN DỮ LIỆU VÀO FORM ===
+      document.getElementById("mc_id").value = data.id || '';
+      document.getElementById("mc_topic").value = data.topic || '';
+      document.getElementById("mc_question").value = data.question || '';
   
-    document.getElementById("mc_answer1").value = data.answer1 || '';
-    document.getElementById("mc_answer2").value = data.answer2 || '';
-    document.getElementById("mc_answer3").value = data.answer3 || '';
-    document.getElementById("mc_answer4").value = data.answer4 || '';
+      document.getElementById("mc_answer1").value = data.answer1 || '';
+      document.getElementById("mc_answer2").value = data.answer2 || '';
+      document.getElementById("mc_answer3").value = data.answer3 || '';
+      document.getElementById("mc_answer4").value = data.answer4 || '';
+      document.getElementById("mc_correct_answer").value = data.correct || '';
   
-    document.getElementById("mc_correct_answer").value = data.correct || '';
+      // === HIỂN THỊ ẢNH MINH HOẠ ===
+      const imagePreview = document.querySelector(".mc-image-preview");
+      const form = document.getElementById("mcForm");
+      const existingInputName = "existing_image";
   
-    // Xử lý ảnh minh hoạ
-    const imagePreview = document.querySelector(".mc-image-preview");
-    const existingInput = document.querySelector('input[name="existing_image"]');
+      if (data.image) {
+        imagePreview.innerHTML = `<img src="${data.image}" alt="Ảnh minh hoạ">`;
   
-    if (data.image) {
-      imagePreview.innerHTML = `<img src="${data.image}" alt="Hình minh hoạ">`;
-      if (existingInput) {
-        existingInput.value = data.image;
+        let existingImageInput = form.querySelector(`input[name="${existingInputName}"]`);
+        if (!existingImageInput) {
+          existingImageInput = document.createElement("input");
+          existingImageInput.type = "hidden";
+          existingImageInput.name = existingInputName;
+          form.appendChild(existingImageInput);
+        }
+        existingImageInput.value = data.image;
       } else {
-        const hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "existing_image";
-        hidden.value = data.image;
-        document.getElementById("mcForm").appendChild(hidden);
+        imagePreview.innerHTML = '';
+        const existingImageInput = form.querySelector(`input[name="${existingInputName}"]`);
+        if (existingImageInput) existingImageInput.remove();
       }
-    } else {
-      imagePreview.innerHTML = '';
-      if (existingInput) existingInput.remove();
-    }
   
-    // Làm mới MathJax (nếu cần)
-    if (window.MathJax) MathJax.typesetPromise();
+      // === CẬP NHẬT XEM TRƯỚC TOÀN BỘ (NẾU ĐANG MỞ) ===
+      const fullPreview = document.querySelector(".mc-full-preview");
+      if (fullPreview && fullPreview.style.display !== "none") {
+        document.getElementById("preview_topic").innerText = data.topic || '';
+        document.getElementById("preview_question").innerHTML = data.question || '';
+        document.getElementById("preview_image").innerHTML = data.image
+          ? `<img src="${data.image}" alt="Ảnh minh hoạ">`
+          : '';
+        document.getElementById("preview_answer1").innerHTML = data.answer1 || '';
+        document.getElementById("preview_answer2").innerHTML = data.answer2 || '';
+        document.getElementById("preview_answer3").innerHTML = data.answer3 || '';
+        document.getElementById("preview_answer4").innerHTML = data.answer4 || '';
+        document.getElementById("preview_correct").innerText = data.correct || '';
+      }
   
-  }, false);
+      // === HIỆU ỨNG CHUYỂN NHẸ KHI ĐỔ DỮ LIỆU ===
+      const formContainer = document.getElementById("mcForm");
+      formContainer.classList.add("fade-highlight");
+      setTimeout(() => formContainer.classList.remove("fade-highlight"), 300);
+  
+      // === CẬP NHẬT MATHJAX ===
+      if (window.MathJax) MathJax.typesetPromise();
+  
+      console.log("Đã nhận dữ liệu từ bảng:", data);
+    });
+  });
   
