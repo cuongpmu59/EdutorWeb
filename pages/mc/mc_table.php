@@ -81,8 +81,7 @@ try {
 
 <!-- Modal ảnh -->
 <div id="imgModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000bb; align-items: center; justify-content: center; z-index: 1000;">
-  <img id="imgModalContent" src="" style="max-width:90%; max-height:90%; border:4px solid white; box-shadow:0 0 10px white;">
-</div>
+    <img id="imgModalContent" src=""></div>
 
 <input type="file" id="excelFile" accept=".xlsx" />
 
