@@ -45,6 +45,7 @@ if (!empty($_GET['mc_id'])) {
       <div id="mcMainContent" class="mc-columns">
         <!-- Cột trái -->
         <div class="mc-col mc-col-left">
+
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
             <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
@@ -59,6 +60,7 @@ if (!empty($_GET['mc_id'])) {
           </div>
 
           <?php foreach ([1, 2, 3, 4] as $i): ?>
+
           <div class="mc-field">
             <label for="mc_answer<?= $i ?>">Đáp án <?= $i ?>.
               <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
@@ -73,13 +75,14 @@ if (!empty($_GET['mc_id'])) {
           <?php endforeach; ?>
 
           <div class="mc-field">
-            <label for="mc_answer">Đáp án:</label>
-            <select id="mc_answer" name="answer" required>
-              <?php foreach (['1','2','3','4'] as $i): ?>
+          <label for="mc_correct_answer">Đáp án:</label>
+          <select id="mc_correct_answer" name="answer" required>
+            <?php foreach (['1','2','3','4'] as $i): ?>
               <option value="<?= $i ?>" <?= (isset($mc['mc_correct_answer']) && $mc['mc_correct_answer'] === $i) ? 'selected' : '' ?>><?= $i ?></option>
               <?php endforeach; ?>
             </select>
           </div>
+
         </div>
 
         <!-- Cột phải -->
@@ -134,7 +137,7 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_button.js"></script>
-  <script src="../../js/form/mc_listener.js"></script> <!-- ✅ nhận postMessage -->
-  <script src="../../js/form/mc_preview_all.js"></script> <!-- ✅ xem trước toàn bộ -->
+  <script src="../../js/form/mc_listener.js"></script> 
+  <script src="../../js/form/mc_preview_all.js"></script> 
 </body>
 </html>
