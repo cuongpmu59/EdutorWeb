@@ -53,5 +53,15 @@ window.addEventListener("message", function (event) {
   
       if (window.MathJax) MathJax.typesetPromise();
     }
+  
+    // === THÊM HIỆU ỨNG CHUYỂN (flash màu) ===
+    const highlight = id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('mc-highlight');
+      setTimeout(() => el.classList.remove('mc-highlight'), 500);
+    };
+  
+    ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'].forEach(highlight);
   });
   
