@@ -108,20 +108,26 @@ $(document).ready(function () {
   });
 
   // Điều hướng bằng bàn phím
-  $(document).on('keydown', function (e) {
-    const selected = table.row('.selected');
-    if (!selected.node()) return;
-    let index = selected.index();
-    if (e.key === 'ArrowUp' && index > 0) index--;
-    else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) index++;
-    else return;
+$(document).on('keydown', function (e) {
+  const selected = table.row('.selected');
+  if (!selected.node()) return;
+  let index = selected.index();
 
-    e.preventDefault();
-    table.$('tr.selected').removeClass('selected');
-    const nextRow = table.row(index);
-    $(nextRow.node()).addClass('selected')[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    sendRowData(nextRow);
+  if (e.key === 'ArrowUp' && index > 0) index--;
+  else if (e.key === 'ArrowDown' && index < table.rows().count() - 1) index++;
+  else return;
+
+  e.preventDefault();
+  table.$('tr.selected').removeClass('selected');
+  const nextRow = table.row(index);
+  $(nextRow.node()).hide().addClass('selected').fadeIn(200)[0].scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
   });
+  sendRowData(nextRow);
+});
+
+    
 
   // Nhập Excel
   $('#excelFile').on('change', function (e) {
