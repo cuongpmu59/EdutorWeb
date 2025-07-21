@@ -1,14 +1,18 @@
-/* Hiển thị ảnh thumbnail nhỏ gọn trong bảng */
-img.thumb {
-    width: 40px;
+/* Ảnh thu nhỏ trong bảng */
+.thumb {
+    max-width: 50px;
+    max-height: 50px;
+    width: auto;
     height: auto;
     cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    object-fit: contain;
     transition: transform 0.2s ease;
   }
   
-  img.thumb:hover {
-    transform: scale(1.8);
-    z-index: 10;
-    position: relative;
+  .thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   }
   
