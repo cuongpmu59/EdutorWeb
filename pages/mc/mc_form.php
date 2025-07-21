@@ -59,26 +59,21 @@ if (!empty($_GET['mc_id'])) {
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
-          <?php foreach ([1, 2, 3, 4] as $i): ?>
-            <div class="mc-field">
-            <label for="mc_answer<?= $i ?>">Đáp án <?= $i ?>.
-              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
+          <?php foreach (['A','B','C','D'] as $opt): ?>
+          <div class="mc-field">
+            <label for="mc_opt_<?= $opt ?>"><?= $opt ?>.
+              <button type="button" class="toggle-preview" data-target="mc_opt_<?= $opt ?>"><i class="fa fa-eye"></i></button>
             </label>
-            <input type="text"
-              id="mc_answer<?= $i ?>"
-              name="answer<?= $i ?>"
-              required
-              value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
-            <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
-            </div>
-            <?php endforeach; ?>
-
+            <input type="text" id="mc_opt_<?= $opt ?>" name="opt_<?= $opt ?>" required value="<?= htmlspecialchars($mc["mc_opt_$opt"] ?? '', ENT_QUOTES) ?>">
+            <div class="preview-box" id="preview-mc_opt_<?= $opt ?>" style="display:none;"></div>
+          </div>
+          <?php endforeach; ?>
 
           <div class="mc-field">
             <label for="mc_answer">Đáp án:</label>
             <select id="mc_answer" name="answer" required>
-              <?php foreach (['1','2','3','4'] as $i): ?>
-              <option value="<?= $i ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] === $i) ? 'selected' : '' ?>><?= $i ?></option>
+              <?php foreach (['A','B','C','D'] as $opt): ?>
+              <option value="<?= $opt ?>" <?= (isset($mc['mc_answer']) && $mc['mc_answer'] === $opt) ? 'selected' : '' ?>><?= $opt ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -153,9 +148,9 @@ if (!empty($_GET['mc_id'])) {
       document.querySelector('#mc_topic')?.value = row.mc_topic || '';
       document.querySelector('#mc_question')?.value = row.mc_question || '';
 
-      ['1', '2', '3', '4'].forEach(opt => {
-        const input = document.querySelector('#mc_answer' + opt);
-        if (input) input.value = row['mc_answer' + opt] || '';
+      ['A', 'B', 'C', 'D'].forEach(opt => {
+        const input = document.querySelector('#mc_opt_' + opt);
+        if (input) input.value = row['mc_opt_' + opt] || '';
       });
 
       const answer = document.querySelector('#mc_answer');
@@ -199,8 +194,8 @@ if (!empty($_GET['mc_id'])) {
           // Lấy nội dung để xem trước
           const topic = document.getElementById("mc_topic").value;
           const question = document.getElementById("mc_question").value;
-          const opts = ['1', '2', '3', '4'].map(opt => {
-            const val = document.getElementById("mc_answer" + opt).value;
+          const opts = ['A', 'B', 'C', 'D'].map(opt => {
+            const val = document.getElementById("mc_opt_" + opt).value;
             return `<p><strong>${opt}:</strong> ${val}</p>`;
           }).join('');
           const answer = document.getElementById("mc_answer").value;
