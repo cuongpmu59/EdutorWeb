@@ -103,9 +103,13 @@ $(document).ready(function () {
   // Click chọn dòng
   $('#mcTable tbody').on('click', 'tr', function () {
     table.$('tr.selected').removeClass('selected');
-    $(this).addClass('selected');
+    $(this).hide().addClass('selected').fadeIn(200)[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
     sendRowData(table.row(this));
   });
+  
 
   // Điều hướng bằng bàn phím
 $(document).on('keydown', function (e) {
