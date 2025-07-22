@@ -9,11 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!input || !preview) return;
 
       if (preview.style.display === 'none' || !preview.style.display) {
-        preview.innerHTML = input.value.trim();
+        preview.innerHTML = input.value;
         preview.style.display = 'block';
-
         if (window.MathJax) {
-          MathJax.typesetPromise([preview]);
+          MathJax.typesetPromise([preview]).catch(err => console.error(err.message));
         }
       } else {
         preview.style.display = 'none';
@@ -26,44 +25,45 @@ document.addEventListener('DOMContentLoaded', function () {
   const previewZone = document.getElementById('mcPreview');
   const previewContent = document.getElementById('mcPreviewContent');
 
-  if (toggleBtn) {
+  if (toggleBtn && previewZone && previewContent) {
     toggleBtn.addEventListener('click', function () {
       if (previewZone.style.display === 'none' || !previewZone.style.display) {
-        // Lấy dữ liệu từ form
+        // Hiển thị toàn bộ nội dung xem trước
         const topic = document.getElementById('mc_topic')?.value || '';
         const question = document.getElementById('mc_question')?.value || '';
-
-        const letters = ['A', 'B', 'C', 'D'];
-        const optionsHTML = letters.map(letter => {
-          const input = document.getElementById(`mc_opt_${letter}`);
-          const text = input?.value || '';
-          return `<li><strong>${letter}.</strong> ${text}</li>`;
+        const opts = ['A', 'B', 'C', 'D'].map(letter => {
+          const value = document.getElementById(`mc_answer${letterToIndex(letter)}`)?.value || '';
+          return `<li><strong>${letter}.</strong> ${value}</li>`;
         }).join('');
 
-        // Lấy ảnh nếu có
         let imageHTML = '';
-        const img = document.querySelector('.mc-image-preview img');
-        if (img?.src) {
-          imageHTML = `<div class="preview-image"><img src="${img.src}" alt="Hình minh hoạ"></div>`;
+        const imgEl = document.querySelector('.mc-image-preview img');
+        if (imgEl && imgEl.src) {
+          imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
         }
 
-        // Cập nhật nội dung xem trước
         previewContent.innerHTML = `
           <div class="preview-block">
             <h4>Chủ đề: ${topic}</h4>
             <p><strong>Câu hỏi:</strong> ${question}</p>
-            <ul class="preview-options">${optionsHTML}</ul>
+            <ul class="preview-options">${opts}</ul>
             ${imageHTML}
           </div>
         `;
-
         previewZone.style.display = 'block';
+
         if (window.MathJax) {
-          MathJax.typesetPromise([previewContent]);
+          MathJax.typesetPromise([previewContent]).catch(err => console.error(err.message));
         }
       } else {
         previewZone.style.display = 'none';
       }
     });
+  }
+
+  // Chuyển từ A–D sang index 1–4
+  function letterToIndex(letter) {
+    const map = { A: 1, B: 2, C: 3, D: 4 };
+    return map[letter] || 1;
   }
 });
