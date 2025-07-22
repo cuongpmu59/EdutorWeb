@@ -8,11 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!input || !preview) return;
 
-      if (preview.style.display === 'none' || !preview.style.display) {
-        preview.innerHTML = input.value;
+      const isHidden = preview.style.display === 'none' || !preview.style.display;
+      if (isHidden) {
+        preview.innerHTML = escapeHtml(input.value);
         preview.style.display = 'block';
-        if (window.MathJax) {
-          MathJax.typesetPromise([preview]).catch(err => console.error(err.message));
+        if (window.MathJax?.typesetPromise) {
+          MathJax.typesetPromise([preview]).catch(err => console.warn("MathJax error:", err));
         }
       } else {
         preview.style.display = 'none';
@@ -27,33 +28,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (toggleBtn && previewZone && previewContent) {
     toggleBtn.addEventListener('click', function () {
-      if (previewZone.style.display === 'none' || !previewZone.style.display) {
-        // Hiển thị toàn bộ nội dung xem trước
+      const isHidden = previewZone.style.display === 'none' || !previewZone.style.display;
+
+      if (isHidden) {
         const topic = document.getElementById('mc_topic')?.value || '';
         const question = document.getElementById('mc_question')?.value || '';
+
         const opts = ['A', 'B', 'C', 'D'].map(letter => {
-          const value = document.getElementById(`mc_answer${letterToIndex(letter)}`)?.value || '';
-          return `<li><strong>${letter}.</strong> ${value}</li>`;
+          const val = document.getElementById(`mc_answer${letterToIndex(letter)}`)?.value || '';
+          return `<li><strong>${letter}.</strong> ${escapeHtml(val)}</li>`;
         }).join('');
 
-        let imageHTML = '';
         const imgEl = document.querySelector('.mc-image-preview img');
-        if (imgEl && imgEl.src) {
-          imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
-        }
+        const imageHTML = (imgEl && imgEl.src)
+          ? `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>` : '';
 
         previewContent.innerHTML = `
           <div class="preview-block">
-            <h4>Chủ đề: ${topic}</h4>
-            <p><strong>Câu hỏi:</strong> ${question}</p>
+            <h4>Chủ đề: ${escapeHtml(topic)}</h4>
+            <p><strong>Câu hỏi:</strong> ${escapeHtml(question)}</p>
             <ul class="preview-options">${opts}</ul>
             ${imageHTML}
           </div>
         `;
+
         previewZone.style.display = 'block';
 
-        if (window.MathJax) {
-          MathJax.typesetPromise([previewContent]).catch(err => console.error(err.message));
+        if (window.MathJax?.typesetPromise) {
+          MathJax.typesetPromise([previewContent]).catch(err => console.warn("MathJax error:", err));
         }
       } else {
         previewZone.style.display = 'none';
@@ -63,7 +65,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Chuyển từ A–D sang index 1–4
   function letterToIndex(letter) {
-    const map = { A: 1, B: 2, C: 3, D: 4 };
-    return map[letter] || 1;
+    return { A: 1, B: 2, C: 3, D: 4 }[letter] || 1;
+  }
+
+  // Escape nội dung HTML, trừ công thức toán
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')  // giữ nguyên $...$ để MathJax xử lý
+      .replace(/>/g, '&gt;');
   }
 });
