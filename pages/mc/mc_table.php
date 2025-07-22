@@ -57,13 +57,12 @@ try {
           <td data-raw="<?= htmlspecialchars($q['mc_answer3']) ?>"><?= htmlspecialchars($q['mc_answer3']) ?></td>
           <td data-raw="<?= htmlspecialchars($q['mc_answer4']) ?>"><?= htmlspecialchars($q['mc_answer4']) ?></td>
           <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
-          <td>
+          <td data-raw="<?= htmlspecialchars($q['mc_image_url']) ?>">
             <?php if (!empty($q['mc_image_url'])): ?>
-            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
             <?php endif; ?>
           </td>
         </tr>
-
       <?php endforeach; ?>
     </tbody>
   </table>
@@ -91,7 +90,6 @@ try {
 <script src="../../js/table/mc_table_transmittion.js"></script>
 <script src="../../js/table/mc_table_excel.js"></script>
 <script src="../../js/table/mc_table_arrow.js"></script>
-
 
 </body>
 </html>
