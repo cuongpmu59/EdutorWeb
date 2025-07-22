@@ -7,28 +7,28 @@ $(document).ready(function () {
       const total = mcTable.rows().count();
   
       if (e.key === 'ArrowUp') {
-        index = (index - 1 + total) % total;
+        index = (index - 1 + total) % total; // Về dòng cuối nếu ở dòng đầu
       } else if (e.key === 'ArrowDown') {
-        index = (index + 1) % total;
+        index = (index + 1) % total; // Về dòng đầu nếu ở dòng cuối
       } else {
         return;
       }
   
       e.preventDefault();
   
-      // Xoá selected trước khi thêm mới
+      // Cập nhật dòng được chọn
       mcTable.$('tr.selected').removeClass('selected');
-  
-      // Dùng API DataTables để truy xuất dòng mới
       const nextRow = mcTable.row(index);
   
-      // Chỉ thêm class mà không fadeIn/hide gì cả
       $(nextRow.node()).addClass('selected');
   
-      // Đảm bảo dòng đã có trong DOM, rồi cuộn
+      // Cuộn dòng vào giữa màn hình
       setTimeout(() => {
-        nextRow.node().scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 10); // Cho DOM kịp render lại
+        nextRow.node().scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 10);
   
       sendRowData(nextRow);
     });
