@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Xem trước từng phần tử (câu hỏi hoặc đáp án)
+  // Xem trước từng phần tử (câu hỏi hoặc đáp án) — hỗ trợ auto-preview khi đang gõ
   document.querySelectorAll('.toggle-preview').forEach(btn => {
     btn.addEventListener('click', function () {
       const targetId = this.dataset.target;
@@ -8,21 +8,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (!input || !preview) return;
 
-      if (preview.style.display === 'none' || !preview.style.display) {
-        // Gán nội dung (đã escape HTML) để MathJax render
-        preview.innerHTML = input.value
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/\n/g, "<br>");
-
-        preview.style.display = 'block';
-
+      const updatePreview = () => {
+        preview.innerHTML = escapeHTML(input.value);
         if (window.MathJax && MathJax.typesetPromise) {
           MathJax.typesetPromise([preview]).catch(err => console.error(err.message));
         }
+      };
+
+      if (preview.style.display === 'none' || !preview.style.display) {
+        preview.style.display = 'block';
+        updatePreview();
+        input.addEventListener('input', updatePreview);
+        // Gắn hàm để có thể huỷ sau này
+        input._mc_preview_listener = updatePreview;
       } else {
         preview.style.display = 'none';
+        if (input._mc_preview_listener) {
+          input.removeEventListener('input', input._mc_preview_listener);
+          delete input._mc_preview_listener;
+        }
       }
     });
   });
