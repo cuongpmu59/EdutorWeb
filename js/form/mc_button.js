@@ -1,80 +1,104 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('mcForm');
 
-  // Nút Lưu
-  document.getElementById('mc_save').addEventListener('click', function () {
-    if (!form.reportValidity()) return;
+  // === Nút Lưu ===
+  const btnSave = document.getElementById('mc_save');
+  if (btnSave) {
+    btnSave.addEventListener('click', function () {
+      if (!form.reportValidity()) return;
 
-    const formData = new FormData(form);
+      const formData = new FormData(form);
 
-    fetch('../../includes/save_question.php', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert('Lưu câu hỏi thành công!');
-        if (!form.mc_id?.value) form.reset();
-      } else {
-        alert('Lỗi khi lưu: ' + (data.message || 'Không xác định'));
-      }
-    })
-    .catch(err => {
-      alert('Lỗi hệ thống: ' + err);
+      fetch('../../includes/save_question.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Lưu câu hỏi thành công!');
+            if (!form.mc_id?.value) {
+              form.reset();
+              document.querySelector('.mc-image-preview').innerHTML = '';
+              const existing = form.querySelector('input[name="existing_image"]');
+              if (existing) existing.remove();
+              document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
+            }
+
+            // Gửi thông báo cho bảng (nếu cần reload)
+            const iframe = document.getElementById("mcTableFrame");
+            if (iframe) {
+              iframe.contentWindow.postMessage({ type: 'mc_reload' }, '*');
+            }
+          } else {
+            alert('Lỗi khi lưu: ' + (data.message || 'Không xác định'));
+          }
+        })
+        .catch(err => {
+          alert('Lỗi hệ thống: ' + err);
+        });
     });
-  });
+  }
 
-  // Nút Xoá
-  document.getElementById('mc_delete').addEventListener('click', function () {
-    const id = document.getElementById('mc_id')?.value;
-    if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+  // === Nút Xoá ===
+  const btnDelete = document.getElementById('mc_delete');
+  if (btnDelete) {
+    btnDelete.addEventListener('click', function () {
+      const id = document.getElementById('mc_id')?.value;
+      if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
 
-    fetch('../../includes/delete_question.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mc_id: id })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert('Đã xóa thành công!');
-        window.location.href = 'mc_form.php';
-      } else {
-        alert('Không thể xóa: ' + (data.message || 'Lỗi'));
+      fetch('../../includes/delete_question.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mc_id: id })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Đã xóa thành công!');
+            window.location.href = 'mc_form.php';
+          } else {
+            alert('Không thể xóa: ' + (data.message || 'Lỗi'));
+          }
+        })
+        .catch(err => alert('Lỗi hệ thống: ' + err));
+    });
+  }
+
+  // === Nút Làm lại ===
+  const btnReset = document.getElementById('mc_reset');
+  if (btnReset) {
+    btnReset.addEventListener('click', function () {
+      if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
+        form.reset();
+        document.querySelector('.mc-image-preview').innerHTML = '';
+        const existing = form.querySelector('input[name="existing_image"]');
+        if (existing) existing.remove();
+        document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
       }
-    })
-    .catch(err => alert('Lỗi hệ thống: ' + err));
-  });
+    });
+  }
 
-  // Nút Làm lại
-  document.getElementById('mc_reset').addEventListener('click', function () {
-    if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
-      form.reset();
-      document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
-    }
-  });
-
-  // Nút Ẩn/Hiện danh sách (có kiểm tra chắc chắn phần tử tồn tại)
-document.addEventListener('DOMContentLoaded', function () {
+  // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
 
   if (!btnViewList || !tableWrapper) {
     console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
-    return;
+  } else {
+    btnViewList.addEventListener("click", function () {
+      const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
+
+      tableWrapper.style.display = isHidden ? "block" : "none";
+      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
+    });
   }
 
-  btnViewList.addEventListener("click", function () {
-    const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-
-    tableWrapper.style.display = isHidden ? "block" : "none";
-    this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
-  });
-});
-
-// Nút Làm đề
-  document.getElementById('mc_preview_exam').addEventListener('click', function () {
-    window.open('mc_exam_preview.php', '_blank');
-  });
+  // === Nút Làm đề ===
+  const btnExam = document.getElementById('mc_preview_exam');
+  if (btnExam) {
+    btnExam.addEventListener('click', function () {
+      window.open('mc_exam_preview.php', '_blank');
+    });
+  }
 });
