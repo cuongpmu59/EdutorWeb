@@ -40,6 +40,7 @@ $(document).ready(function () {
   });
 
   // Giao diện lọc + tìm kiếm
+  initComplete: function () {
   $('#mcTable_filter').html(`
     <div class="filter-left">
       📚 Chủ đề:
@@ -61,7 +62,7 @@ $(document).ready(function () {
   $('#filter-topic').on('change', function () {
     mcTable.column(1).search(this.value).draw();
   });
-
+}
   // Tìm kiếm tổng (toàn bảng)
   $('#mcTable_filter input[type="search"]').on('keyup change', function () {
     mcTable.search(this.value).draw();
