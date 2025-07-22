@@ -1,72 +1,84 @@
 document.addEventListener("DOMContentLoaded", function () {
   const btnViewList = document.getElementById("mc_view_list");
+  const tableWrapper = document.getElementById("mcTableWrapper");
   const btnReset = document.getElementById("mc_reset");
-  const btnTogglePreview = document.getElementById("mc_toggle_preview");
+  const form = document.getElementById("mcForm");
+  const imagePreview = document.querySelector(".mc-image-preview img");
+  const previewFull = document.getElementById("mcPreviewContent");
+  const btnSave = document.getElementById("mc_save");
+  const btnDelete = document.getElementById("mc_delete");
 
-  const iframe = document.getElementById("mcTableFrame");
-  const form = document.getElementById("mc_form");
-  const imagePreview = document.getElementById("mc_image_preview");
-  const fullPreview = document.getElementById("mc_preview_full");
-
-  // === 1. Ẩn/Hiện iframe danh sách ===
-  if (btnViewList && iframe) {
+  // 1. Ẩn/hiện bảng danh sách
+  if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
-      const isHidden =
-        iframe.style.display === "none" ||
-        getComputedStyle(iframe).display === "none";
-      iframe.style.display = isHidden ? "block" : "none";
-      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
+      const isHidden = getComputedStyle(tableWrapper).display === "none";
+      tableWrapper.style.display = isHidden ? "block" : "none";
+      btnViewList.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   }
 
-  // === 2. Đặt lại toàn bộ form ===
+  // 2. Làm lại form
   if (btnReset && form) {
     btnReset.addEventListener("click", function () {
       form.reset();
 
-      // Xóa ảnh minh hoạ
+      // Xoá ảnh minh hoạ nếu có
       if (imagePreview) {
         imagePreview.src = "";
-        imagePreview.style.display = "none";
       }
 
-      // Xóa xem trước toàn bộ
-      if (fullPreview) {
-        fullPreview.innerHTML = "";
-        fullPreview.style.display = "none";
+      // Xoá xem trước toàn bộ nếu có
+      if (previewFull) {
+        previewFull.innerHTML = "";
       }
 
-      // Focus lại vào trường đầu tiên
+      // Ẩn xem trước toàn bộ
+      const previewZone = document.getElementById("mcPreview");
+      if (previewZone) {
+        previewZone.style.display = "none";
+      }
+
+      // Focus vào input đầu tiên
       const firstInput = form.querySelector("input, textarea, select");
       if (firstInput) firstInput.focus();
     });
   }
 
-  // === 3. Ẩn/Hiện xem trước toàn bộ ===
-  if (btnTogglePreview && fullPreview) {
-    btnTogglePreview.addEventListener("click", function () {
-      const isHidden =
-        fullPreview.style.display === "none" ||
-        getComputedStyle(fullPreview).display === "none";
-      fullPreview.style.display = isHidden ? "block" : "none";
-      this.textContent = isHidden ? "Ẩn xem trước" : "Xem trước toàn bộ";
-
-      // Kích hoạt MathJax (nếu có công thức)
-      if (typeof MathJax !== "undefined" && MathJax.typeset) {
-        MathJax.typeset();
-      }
+  // 3. Lưu câu hỏi
+  if (btnSave && form) {
+    btnSave.addEventListener("click", function () {
+      // Bạn có thể thêm kiểm tra hợp lệ ở đây nếu cần
+      form.submit();
     });
   }
 
-  // === 4. Tự hiện iframe khi nhận postMessage từ bảng ===
-  window.addEventListener("message", function (event) {
-    if (event.data && event.data.type === "mc_select_row") {
-      if (iframe && iframe.style.display === "none") {
-        iframe.style.display = "block";
-        if (btnViewList) btnViewList.textContent = "Ẩn danh sách";
+  // 4. Xoá câu hỏi
+  if (btnDelete) {
+    btnDelete.addEventListener("click", function () {
+      const mcIdField = document.getElementById("mc_id");
+      if (!mcIdField || !mcIdField.value) {
+        alert("Không có câu hỏi nào để xoá.");
+        return;
       }
-    }
-  });
 
-  // === 5. (Tuỳ chọn mở rộng) Các nút như Lưu, Xóa có thể viết thêm ở đây ===
+      if (confirm("Bạn có chắc muốn xoá câu hỏi này không?")) {
+        const formData = new FormData();
+        formData.append("delete_mc_id", mcIdField.value);
+
+        fetch("mc_delete.php", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+          alert("Câu hỏi đã được xoá.");
+          window.location.href = "mc_form.php";
+        })
+        .catch(error => {
+          console.error("Lỗi khi xoá:", error);
+          alert("Đã xảy ra lỗi khi xoá.");
+        });
+      }
+    });
+  }
 });
