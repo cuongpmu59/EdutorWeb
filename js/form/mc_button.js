@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // 1. Ẩn/hiện bảng danh sách
   if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
-      const isHidden = getComputedStyle(mcTableFrame).display === "none";
-      mcTableFrame.style.display = isHidden ? "block" : "none";
+      const isHidden = getComputedStyle(tableWrapper).display === "none";
+      tableWrapper.style.display = isHidden ? "block" : "none";
       btnViewList.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   }
