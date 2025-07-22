@@ -80,9 +80,11 @@ if (!empty($_GET['mc_id'])) {
 
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
-              <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
+              <button type="button" class="toggle-preview" data-target="mc_question">
+                <i class="fa fa-eye"></i></button>
             </label>
-            <textarea id="mc_question" name="question" required><?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
+            <textarea id="mc_question" name="question" required>
+              <?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
