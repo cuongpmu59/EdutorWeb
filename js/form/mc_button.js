@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('mcForm');
+  if (!form) {
+    console.warn("Không tìm thấy form #mcForm");
+    return;
+  }
 
   // === Nút Lưu ===
   const btnSave = document.getElementById('mc_save');
@@ -17,17 +21,22 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
           if (data.success) {
             alert('Lưu câu hỏi thành công!');
+
             if (!form.mc_id?.value) {
               form.reset();
-              document.querySelector('.mc-image-preview').innerHTML = '';
+
+              const imagePreview = document.querySelector('.mc-image-preview');
+              if (imagePreview) imagePreview.innerHTML = '';
+
               const existing = form.querySelector('input[name="existing_image"]');
               if (existing) existing.remove();
+
               document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
             }
 
-            // Gửi thông báo cho bảng (nếu cần reload)
+            // Gửi thông báo reload bảng
             const iframe = document.getElementById("mcTableFrame");
-            if (iframe) {
+            if (iframe?.contentWindow) {
               iframe.contentWindow.postMessage({ type: 'mc_reload' }, '*');
             }
           } else {
@@ -71,9 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
     btnReset.addEventListener('click', function () {
       if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
         form.reset();
-        document.querySelector('.mc-image-preview').innerHTML = '';
+
+        const imagePreview = document.querySelector('.mc-image-preview');
+        if (imagePreview) imagePreview.innerHTML = '';
+
         const existing = form.querySelector('input[name="existing_image"]');
         if (existing) existing.remove();
+
         document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
       }
     });
@@ -83,15 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
 
-  if (!btnViewList || !tableWrapper) {
-    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
-  } else {
+  if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
       const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-
       tableWrapper.style.display = isHidden ? "block" : "none";
       this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
+  } else {
+    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
   }
 
   // === Nút Làm đề ===
