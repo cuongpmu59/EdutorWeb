@@ -10,7 +10,13 @@ $(document).ready(function () {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
   
-        const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
+        const requiredFields = [
+          'mc_topic', 'mc_question',
+          'mc_answer1', 'mc_answer2',
+          'mc_answer3', 'mc_answer4',
+          'mc_correct_answer'
+        ];
+  
         const missingFields = requiredFields.filter(f => !(f in jsonData[0]));
         if (missingFields.length > 0) {
           alert("❌ Thiếu các cột bắt buộc: " + missingFields.join(', '));
@@ -25,22 +31,25 @@ $(document).ready(function () {
           success: function (res) {
             alert("✅ Đã nhập " + res.inserted + " câu hỏi!");
   
-            if (typeof mcTable !== 'undefined' && Array.isArray(res.data)) {
+            if (Array.isArray(res.data)) {
               res.data.forEach(row => {
-                mcTable.row.add([
-                  `<td data-raw="${row.mc_id}">${row.mc_id}</td>`,
-                  `<td data-raw="${row.mc_topic}">${row.mc_topic}</td>`,
-                  `<td data-raw="${row.mc_question}">${row.mc_question}</td>`,
-                  `<td data-raw="${row.mc_answer1}">${row.mc_answer1}</td>`,
-                  `<td data-raw="${row.mc_answer2}">${row.mc_answer2}</td>`,
-                  `<td data-raw="${row.mc_answer3}">${row.mc_answer3}</td>`,
-                  `<td data-raw="${row.mc_answer4}">${row.mc_answer4}</td>`,
-                  `<td data-raw="${row.mc_correct_answer}">${row.mc_correct_answer}</td>`,
+                window.mcTable.row.add([
+                  row.mc_id,
+                  row.mc_topic,
+                  row.mc_question,
+                  row.mc_answer1,
+                  row.mc_answer2,
+                  row.mc_answer3,
+                  row.mc_answer4,
+                  row.mc_correct_answer,
                   row.mc_image_url
-                    ? `<td><img src="${row.mc_image_url}" class="thumb" onerror="this.style.display='none'"></td>`
-                    : `<td></td>`
+                    ? `<img src="${row.mc_image_url}" class="thumb" onerror="this.style.display='none'>`
+                    : ''
                 ]).draw(false);
               });
+  
+              // Cập nhật MathJax cho các công thức vừa thêm
+              if (window.MathJax) MathJax.typesetPromise();
             }
           },
           error: function () {
@@ -48,7 +57,6 @@ $(document).ready(function () {
           }
         });
       };
-  
       reader.readAsArrayBuffer(file);
     });
   });
