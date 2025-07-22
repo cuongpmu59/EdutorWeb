@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/db_connection.php';
 header('Content-Type: application/json');
 
 if (!isset($conn)) {
@@ -12,6 +12,7 @@ if (!isset($conn)) {
 $rawData = file_get_contents('php://input');
 $data = json_decode($rawData, true);
 
+// Kiểm tra dữ liệu hợp lệ
 if (!is_array($data) || count($data) === 0) {
   http_response_code(400);
   echo json_encode(['error' => '❌ Dữ liệu không hợp lệ.']);
@@ -19,7 +20,7 @@ if (!is_array($data) || count($data) === 0) {
 }
 
 $inserted = 0;
-$returnData = [];
+$rowsInserted = [];
 
 try {
   $stmt = $conn->prepare("INSERT INTO mc_questions 
@@ -27,7 +28,8 @@ try {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
   foreach ($data as $row) {
-    $topic   = trim($row['mc_topic'] ?? '');
+    // Đảm bảo tất cả trường đều tồn tại, nếu không gán giá trị mặc định
+    $topic   = trim($row['mc_topic']   ?? '');
     $question = trim($row['mc_question'] ?? '');
     $a1      = trim($row['mc_answer1'] ?? '');
     $a2      = trim($row['mc_answer2'] ?? '');
@@ -36,15 +38,16 @@ try {
     $correct = strtoupper(trim($row['mc_correct_answer'] ?? ''));
     $image   = trim($row['mc_image_url'] ?? '');
 
-    if (!$topic || !$question || !$a1 || !$a2 || !$a3 || !$a4 || !in_array($correct, ['A','B','C','D'])) {
+    // Bỏ qua dòng nếu thiếu thông tin tối thiểu
+    if (!$topic || !$question || !$a1 || !$a2 || !$a3 || !$a4 || !in_array($correct, ['A', 'B', 'C', 'D'])) {
       continue;
     }
 
     $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $image]);
 
-    $mc_id = $conn->lastInsertId(); // ✅ Lấy ID vừa thêm
-
-    $returnData[] = [
+    // Lấy ID vừa chèn và thêm vào mảng dữ liệu trả về
+    $mc_id = $conn->lastInsertId();
+    $rowsInserted[] = [
       'mc_id' => $mc_id,
       'mc_topic' => $topic,
       'mc_question' => $question,
@@ -59,8 +62,7 @@ try {
     $inserted++;
   }
 
-  echo json_encode(['inserted' => $inserted, 'data' => $returnData]);
-
+  echo json_encode(['inserted' => $inserted, 'data' => $rowsInserted]);
 } catch (Exception $e) {
   http_response_code(500);
   echo json_encode(['error' => '❌ Lỗi khi chèn dữ liệu: ' . $e->getMessage()]);
