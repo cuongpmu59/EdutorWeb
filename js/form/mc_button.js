@@ -1,116 +1,72 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('mcForm');
-  if (!form) {
-    console.warn("Không tìm thấy form #mcForm");
-    return;
-  }
+document.addEventListener("DOMContentLoaded", function () {
+  const btnViewList = document.getElementById("mc_view_list");
+  const btnReset = document.getElementById("mc_reset");
+  const btnTogglePreview = document.getElementById("mc_toggle_preview");
 
-  // === Nút Lưu ===
-  const btnSave = document.getElementById('mc_save');
-  if (btnSave) {
-    btnSave.addEventListener('click', function () {
-      if (!form.reportValidity()) return;
+  const iframe = document.getElementById("mcTableFrame");
+  const form = document.getElementById("mc_form");
+  const imagePreview = document.getElementById("mc_image_preview");
+  const fullPreview = document.getElementById("mc_preview_full");
 
-      const formData = new FormData(form);
-
-      fetch('../../includes/save_question.php', {
-        method: 'POST',
-        body: formData
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert('Lưu câu hỏi thành công!');
-
-            if (!form.mc_id?.value) {
-              form.reset();
-
-              const imagePreview = document.querySelector('.mc-image-preview');
-              if (imagePreview) imagePreview.innerHTML = '';
-
-              const existing = form.querySelector('input[name="existing_image"]');
-              if (existing) existing.remove();
-
-              document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
-            }
-
-            // Gửi thông báo reload bảng
-            const iframe = document.getElementById("mcTableFrame");
-            if (iframe?.contentWindow) {
-              iframe.contentWindow.postMessage({ type: 'mc_reload' }, '*');
-            }
-          } else {
-            alert('Lỗi khi lưu: ' + (data.message || 'Không xác định'));
-          }
-        })
-        .catch(err => {
-          alert('Lỗi hệ thống: ' + err);
-        });
+  // === 1. Ẩn/Hiện iframe danh sách ===
+  if (btnViewList && iframe) {
+    btnViewList.addEventListener("click", function () {
+      const isHidden =
+        iframe.style.display === "none" ||
+        getComputedStyle(iframe).display === "none";
+      iframe.style.display = isHidden ? "block" : "none";
+      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   }
 
-  // === Nút Xoá ===
-  const btnDelete = document.getElementById('mc_delete');
-  if (btnDelete) {
-    btnDelete.addEventListener('click', function () {
-      const id = document.getElementById('mc_id')?.value;
-      if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+  // === 2. Đặt lại toàn bộ form ===
+  if (btnReset && form) {
+    btnReset.addEventListener("click", function () {
+      form.reset();
 
-      fetch('../../includes/delete_question.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mc_id: id })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert('Đã xóa thành công!');
-            window.location.href = 'mc_form.php';
-          } else {
-            alert('Không thể xóa: ' + (data.message || 'Lỗi'));
-          }
-        })
-        .catch(err => alert('Lỗi hệ thống: ' + err));
+      // Xóa ảnh minh hoạ
+      if (imagePreview) {
+        imagePreview.src = "";
+        imagePreview.style.display = "none";
+      }
+
+      // Xóa xem trước toàn bộ
+      if (fullPreview) {
+        fullPreview.innerHTML = "";
+        fullPreview.style.display = "none";
+      }
+
+      // Focus lại vào trường đầu tiên
+      const firstInput = form.querySelector("input, textarea, select");
+      if (firstInput) firstInput.focus();
     });
   }
 
-  // === Nút Làm lại ===
-  const btnReset = document.getElementById('mc_reset');
-  if (btnReset) {
-    btnReset.addEventListener('click', function () {
-      if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
-        form.reset();
+  // === 3. Ẩn/Hiện xem trước toàn bộ ===
+  if (btnTogglePreview && fullPreview) {
+    btnTogglePreview.addEventListener("click", function () {
+      const isHidden =
+        fullPreview.style.display === "none" ||
+        getComputedStyle(fullPreview).display === "none";
+      fullPreview.style.display = isHidden ? "block" : "none";
+      this.textContent = isHidden ? "Ẩn xem trước" : "Xem trước toàn bộ";
 
-        const imagePreview = document.querySelector('.mc-image-preview');
-        if (imagePreview) imagePreview.innerHTML = '';
-
-        const existing = form.querySelector('input[name="existing_image"]');
-        if (existing) existing.remove();
-
-        document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
+      // Kích hoạt MathJax (nếu có công thức)
+      if (typeof MathJax !== "undefined" && MathJax.typeset) {
+        MathJax.typeset();
       }
     });
   }
 
-  // === Nút Ẩn/Hiện danh sách ===
-  const btnViewList = document.getElementById("mc_view_list");
-  const tableWrapper = document.getElementById("mcTableWrapper");
+  // === 4. Tự hiện iframe khi nhận postMessage từ bảng ===
+  window.addEventListener("message", function (event) {
+    if (event.data && event.data.type === "mc_select_row") {
+      if (iframe && iframe.style.display === "none") {
+        iframe.style.display = "block";
+        if (btnViewList) btnViewList.textContent = "Ẩn danh sách";
+      }
+    }
+  });
 
-  if (btnViewList && tableWrapper) {
-    btnViewList.addEventListener("click", function () {
-      const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-      tableWrapper.style.display = isHidden ? "block" : "none";
-      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
-    });
-  } else {
-    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
-  }
-
-  // === Nút Làm đề ===
-  const btnExam = document.getElementById('mc_preview_exam');
-  if (btnExam) {
-    btnExam.addEventListener('click', function () {
-      window.open('mc_exam_preview.php', '_blank');
-    });
-  }
+  // === 5. (Tuỳ chọn mở rộng) Các nút như Lưu, Xóa có thể viết thêm ở đây ===
 });
