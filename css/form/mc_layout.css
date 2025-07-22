@@ -95,3 +95,32 @@ h2 {
 #mcTogglePreview:hover {
   color: #000;
 }
+
+/* --- Input đáp án A–D & dropdown đáp án đúng (hiển thị ngang) --- */
+.mc-inline-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mc-inline-field label {
+  min-width: 110px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.mc-inline-field input[type="text"],
+.mc-inline-field select {
+  flex: 1;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.mc-inline-field .toggle-preview {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 16px;
+}
