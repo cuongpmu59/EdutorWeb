@@ -4,28 +4,31 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-// Kết nối CSDL
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-// Biến chứa dữ liệu câu hỏi (nếu có)
 $mc = null;
 
 // Xử lý lưu form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic   = $_POST['topic'] ?? '';
+    $topic    = $_POST['topic'] ?? '';
     $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct = $_POST['answer'] ?? '';
+    $answer1  = $_POST['answer1'] ?? '';
+    $answer2  = $_POST['answer2'] ?? '';
+    $answer3  = $_POST['answer3'] ?? '';
+    $answer4  = $_POST['answer4'] ?? '';
+    $correct  = $_POST['answer'] ?? '';
     $image_url = '';
 
-    // Xử lý ảnh tải lên
+    // Kiểm tra hợp lệ A–D
+    if (!in_array($correct, ['A', 'B', 'C', 'D'])) {
+        die('Đáp án đúng không hợp lệ.');
+    }
+
+    // Xử lý ảnh
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../../uploads/';
-        $filename = time() . '_' . basename($_FILES['image']['name']);
-        $filepath = $uploadDir . $filename;
+        $filename  = time() . '_' . basename($_FILES['image']['name']);
+        $filepath  = $uploadDir . $filename;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $filepath)) {
             $image_url = '../../uploads/' . $filename;
         }
@@ -46,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Xử lý truy vấn mc_id nếu có
+// Truy vấn nếu có mc_id
 if (!empty($_GET['mc_id'])) {
     $id = (int)$_GET['mc_id'];
     $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
@@ -97,9 +100,13 @@ if (!empty($_GET['mc_id'])) {
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
-          <?php for ($i = 1; $i <= 4; $i++): ?>
+          <?php
+            $labels = ['A', 'B', 'C', 'D'];
+            for ($i = 1; $i <= 4; $i++): 
+              $label = $labels[$i - 1];
+          ?>
             <div class="mc-field">
-              <label for="mc_answer<?= $i ?>">Đáp án <?= $i ?>.
+              <label for="mc_answer<?= $i ?>">Đáp án <?= $label ?>.
                 <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
               </label>
               <input type="text"
@@ -114,9 +121,11 @@ if (!empty($_GET['mc_id'])) {
           <div class="mc-field">
             <label for="mc_correct_answer">Đáp án đúng:</label>
             <select id="mc_correct_answer" name="answer" required>
-              <?php for ($i = 1; $i <= 4; $i++): ?>
-                <option value="<?= $i ?>" <?= ((int)($mc['mc_correct_answer'] ?? 0) === $i) ? 'selected' : '' ?>><?= $i ?></option>
-              <?php endfor; ?>
+              <?php foreach (['A', 'B', 'C', 'D'] as $label): 
+                $selected = (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '';
+              ?>
+                <option value="<?= $label ?>" <?= $selected ?>><?= $label ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
         </div>
