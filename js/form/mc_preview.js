@@ -9,11 +9,15 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!input || !preview) return;
 
       if (preview.style.display === 'none' || !preview.style.display) {
-        // Gán nội dung thô vào preview
-        preview.textContent = input.value;
+        // Gán nội dung (đã escape HTML) để MathJax render
+        preview.innerHTML = input.value
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\n/g, "<br>");
+
         preview.style.display = 'block';
 
-        // Kích hoạt lại MathJax để render LaTeX
         if (window.MathJax && MathJax.typesetPromise) {
           MathJax.typesetPromise([preview]).catch(err => console.error(err.message));
         }
@@ -34,8 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const topic = document.getElementById('mc_topic')?.value || '';
         const question = document.getElementById('mc_question')?.value || '';
         const opts = ['A', 'B', 'C', 'D'].map(letter => {
-          const value = document.getElementById(`mc_answer${letterToIndex(letter)}`)?.value || '';
-          return `<li><strong>${letter}.</strong> ${value}</li>`;
+          const idx = letterToIndex(letter);
+          const value = document.getElementById(`mc_answer${idx}`)?.value || '';
+          return `<li><strong>${letter}.</strong> ${escapeHTML(value)}</li>`;
         }).join('');
 
         let imageHTML = '';
@@ -46,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         previewContent.innerHTML = `
           <div class="preview-block">
-            <h4>Chủ đề: ${topic}</h4>
-            <p><strong>Câu hỏi:</strong> ${question}</p>
+            <h4>Chủ đề: ${escapeHTML(topic)}</h4>
+            <p><strong>Câu hỏi:</strong> ${escapeHTML(question)}</p>
             <ul class="preview-options">${opts}</ul>
             ${imageHTML}
           </div>
@@ -63,8 +68,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Chuyển từ A–D sang index 1–4
   function letterToIndex(letter) {
     const map = { A: 1, B: 2, C: 3, D: 4 };
     return map[letter] || 1;
+  }
+
+  // Escape để tránh lỗi với innerHTML
+  function escapeHTML(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>");
   }
 });
