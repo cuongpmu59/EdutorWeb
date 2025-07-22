@@ -94,7 +94,7 @@ if (!empty($_GET['mc_id'])) {
             $label = $labels[$i - 1];
           ?>
             <div class="mc-field mc-inline-field">
-              <label for="mc_answer<?= $i ?>">Đáp án <?= $label ?>.</label>
+              <label for="mc_answer<?= $i ?>"><?= $label ?>.</label>
               <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
               <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
               <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
