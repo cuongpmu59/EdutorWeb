@@ -55,22 +55,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Nút Ẩn/Hiện danh sách
+  // Nút Ẩn/Hiện danh sách (có kiểm tra chắc chắn phần tử tồn tại)
+document.addEventListener('DOMContentLoaded', function () {
   const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
-  if (btnViewList && tableWrapper) {
-    btnViewList.addEventListener("click", function () {
-      if (tableWrapper.style.display === "none" || tableWrapper.style.display === "") {
-        tableWrapper.style.display = "block";
-        this.textContent = "Ẩn danh sách";
-      } else {
-        tableWrapper.style.display = "none";
-        this.textContent = "Hiện danh sách";
-      }
-    });
+
+  if (!btnViewList || !tableWrapper) {
+    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
+    return;
   }
 
-  // Nút Làm đề
+  btnViewList.addEventListener("click", function () {
+    const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
+
+    tableWrapper.style.display = isHidden ? "block" : "none";
+    this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
+  });
+});
+
+// Nút Làm đề
   document.getElementById('mc_preview_exam').addEventListener('click', function () {
     window.open('mc_exam_preview.php', '_blank');
   });
