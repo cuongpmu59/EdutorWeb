@@ -54,8 +54,6 @@ if (!empty($_GET['mc_id'])) {
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
-  <link rel="stylesheet" href="../../css/form/mc_inline.css">
-
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
