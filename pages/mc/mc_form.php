@@ -8,27 +8,20 @@ require_once __DIR__ . '/../../includes/db_connection.php';
 
 $mc = null;
 
-// Xử lý lưu form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic    = $_POST['topic'] ?? '';
+    $topic   = $_POST['topic'] ?? '';
     $question = $_POST['question'] ?? '';
-    $answer1  = $_POST['answer1'] ?? '';
-    $answer2  = $_POST['answer2'] ?? '';
-    $answer3  = $_POST['answer3'] ?? '';
-    $answer4  = $_POST['answer4'] ?? '';
-    $correct  = $_POST['answer'] ?? '';
+    $answer1 = $_POST['answer1'] ?? '';
+    $answer2 = $_POST['answer2'] ?? '';
+    $answer3 = $_POST['answer3'] ?? '';
+    $answer4 = $_POST['answer4'] ?? '';
+    $correct = $_POST['answer'] ?? '';
     $image_url = '';
 
-    // Kiểm tra hợp lệ A–D
-    if (!in_array($correct, ['A', 'B', 'C', 'D'])) {
-        die('Đáp án đúng không hợp lệ.');
-    }
-
-    // Xử lý ảnh
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../../uploads/';
-        $filename  = time() . '_' . basename($_FILES['image']['name']);
-        $filepath  = $uploadDir . $filename;
+        $filename = time() . '_' . basename($_FILES['image']['name']);
+        $filepath = $uploadDir . $filename;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $filepath)) {
             $image_url = '../../uploads/' . $filename;
         }
@@ -36,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image_url = $_POST['existing_image'];
     }
 
-    // Thêm mới hoặc cập nhật
     if (!empty($_POST['mc_id'])) {
         $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
         $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, (int)$_POST['mc_id']]);
@@ -49,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Truy vấn nếu có mc_id
 if (!empty($_GET['mc_id'])) {
     $id = (int)$_GET['mc_id'];
     $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
@@ -63,8 +54,8 @@ if (!empty($_GET['mc_id'])) {
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
+  <link rel="stylesheet" href="../../css/form/mc_inline.css">
 
-  <!-- MathJax -->
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -72,8 +63,6 @@ if (!empty($_GET['mc_id'])) {
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
-
-  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -85,7 +74,6 @@ if (!empty($_GET['mc_id'])) {
       </h2>
 
       <div id="mcMainContent" class="mc-columns">
-        <!-- Cột trái -->
         <div class="mc-col mc-col-left">
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
@@ -101,36 +89,28 @@ if (!empty($_GET['mc_id'])) {
           </div>
 
           <?php
-            $labels = ['A', 'B', 'C', 'D'];
-            for ($i = 1; $i <= 4; $i++): 
-              $label = $labels[$i - 1];
+          $labels = ['A', 'B', 'C', 'D'];
+          for ($i = 1; $i <= 4; $i++):
+            $label = $labels[$i - 1];
           ?>
-            <div class="mc-field">
-              <label for="mc_answer<?= $i ?>"><?= $label ?>.
-                <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
-              </label>
-              <input type="text"
-                id="mc_answer<?= $i ?>"
-                name="answer<?= $i ?>"
-                required
-                value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
+            <div class="mc-field mc-inline-field">
+              <label for="mc_answer<?= $i ?>">Đáp án <?= $label ?>.</label>
+              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
+              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
               <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
             </div>
           <?php endfor; ?>
 
-          <div class="mc-field">
+          <div class="mc-field mc-inline-field">
             <label for="mc_correct_answer">Đáp án đúng:</label>
             <select id="mc_correct_answer" name="answer" required>
-              <?php foreach (['A', 'B', 'C', 'D'] as $label): 
-                $selected = (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '';
-              ?>
-                <option value="<?= $label ?>" <?= $selected ?>><?= $label ?></option>
+              <?php foreach ($labels as $label): ?>
+                <option value="<?= $label ?>" <?= (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '' ?>><?= $label ?></option>
               <?php endforeach; ?>
             </select>
           </div>
         </div>
 
-        <!-- Cột phải -->
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
@@ -177,7 +157,6 @@ if (!empty($_GET['mc_id'])) {
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
