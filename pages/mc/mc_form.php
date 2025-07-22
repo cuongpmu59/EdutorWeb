@@ -102,7 +102,7 @@ if (!empty($_GET['mc_id'])) {
           <?php endfor; ?>
 
           <div class="mc-field mc-inline-field">
-            <label for="mc_correct_answer">Đáp án đúng:</label>
+            <label for="mc_correct_answer">Đáp án:</label>
             <select id="mc_correct_answer" name="answer" required>
               <?php foreach ($labels as $label): ?>
                 <option value="<?= $label ?>" <?= (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '' ?>><?= $label ?></option>
