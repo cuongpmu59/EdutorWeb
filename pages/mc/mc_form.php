@@ -123,7 +123,7 @@ if (!empty($_GET['mc_id'])) {
     </form>
 
     <div id="mcTableWrapper" style="display: block;">
-      <iframe id="mcTableFrame" src="pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
+      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 
     <div id="mcPreview" class="mc-preview-zone" style="display:none;">
