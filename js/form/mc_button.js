@@ -94,16 +94,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
-  const tableWrapper = document.getElementById("mcTableWrapper");
+  const mcTableFrame = document.getElementById("mcTableFrame");
 
-  if (btnViewList && tableWrapper) {
+  if (btnViewList && mcTableFrame) {
     btnViewList.addEventListener("click", function () {
       const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-      tableWrapper.style.display = isHidden ? "block" : "none";
+      mcTableFrame.style.display = isHidden ? "block" : "none";
       this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   } else {
-    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
+    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableFrame)");
   }
 
   // === Nút Làm đề ===
