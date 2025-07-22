@@ -1,84 +1,116 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('mcForm');
+  if (!form) {
+    console.warn("Không tìm thấy form #mcForm");
+    return;
+  }
+
+  // === Nút Lưu ===
+  const btnSave = document.getElementById('mc_save');
+  if (btnSave) {
+    btnSave.addEventListener('click', function () {
+      if (!form.reportValidity()) return;
+
+      const formData = new FormData(form);
+
+      fetch('../../includes/save_question.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Lưu câu hỏi thành công!');
+
+            if (!form.mc_id?.value) {
+              form.reset();
+
+              const imagePreview = document.querySelector('.mc-image-preview');
+              if (imagePreview) imagePreview.innerHTML = '';
+
+              const existing = form.querySelector('input[name="existing_image"]');
+              if (existing) existing.remove();
+
+              document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
+            }
+
+            // Gửi thông báo reload bảng
+            const iframe = document.getElementById("mcTableFrame");
+            if (iframe?.contentWindow) {
+              iframe.contentWindow.postMessage({ type: 'mc_reload' }, '*');
+            }
+          } else {
+            alert('Lỗi khi lưu: ' + (data.message || 'Không xác định'));
+          }
+        })
+        .catch(err => {
+          alert('Lỗi hệ thống: ' + err);
+        });
+    });
+  }
+
+  // === Nút Xoá ===
+  const btnDelete = document.getElementById('mc_delete');
+  if (btnDelete) {
+    btnDelete.addEventListener('click', function () {
+      const id = document.getElementById('mc_id')?.value;
+      if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+
+      fetch('../../includes/delete_question.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mc_id: id })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Đã xóa thành công!');
+            window.location.href = 'mc_form.php';
+          } else {
+            alert('Không thể xóa: ' + (data.message || 'Lỗi'));
+          }
+        })
+        .catch(err => alert('Lỗi hệ thống: ' + err));
+    });
+  }
+
+  // === Nút Làm lại ===
+  const btnReset = document.getElementById('mc_reset');
+  if (btnReset) {
+    btnReset.addEventListener('click', function () {
+      if (confirm('Bạn có chắc muốn làm lại toàn bộ?')) {
+        form.reset();
+
+        const imagePreview = document.querySelector('.mc-image-preview');
+        if (imagePreview) imagePreview.innerHTML = '';
+
+        const existing = form.querySelector('input[name="existing_image"]');
+        if (existing) existing.remove();
+
+        document.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
+      }
+    });
+  }
+
+  // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
   const tableWrapper = document.getElementById("mcTableWrapper");
-  const btnReset = document.getElementById("mc_reset");
-  const form = document.getElementById("mcForm");
-  const imagePreview = document.querySelector(".mc-image-preview img");
-  const previewFull = document.getElementById("mcPreviewContent");
-  const btnSave = document.getElementById("mc_save");
-  const btnDelete = document.getElementById("mc_delete");
 
-  // 1. Ẩn/hiện bảng danh sách
   if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
-      const isHidden = getComputedStyle(tableWrapper).display === "none";
+      const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
       tableWrapper.style.display = isHidden ? "block" : "none";
-      btnViewList.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
+      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
+  } else {
+    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
   }
 
-  // 2. Làm lại form
-  if (btnReset && form) {
-    btnReset.addEventListener("click", function () {
-      form.reset();
-
-      // Xoá ảnh minh hoạ nếu có
-      if (imagePreview) {
-        imagePreview.src = "";
-      }
-
-      // Xoá xem trước toàn bộ nếu có
-      if (previewFull) {
-        previewFull.innerHTML = "";
-      }
-
-      // Ẩn xem trước toàn bộ
-      const previewZone = document.getElementById("mcPreview");
-      if (previewZone) {
-        previewZone.style.display = "none";
-      }
-
-      // Focus vào input đầu tiên
-      const firstInput = form.querySelector("input, textarea, select");
-      if (firstInput) firstInput.focus();
-    });
-  }
-
-  // 3. Lưu câu hỏi
-  if (btnSave && form) {
-    btnSave.addEventListener("click", function () {
-      // Bạn có thể thêm kiểm tra hợp lệ ở đây nếu cần
-      form.submit();
-    });
-  }
-
-  // 4. Xoá câu hỏi
-  if (btnDelete) {
-    btnDelete.addEventListener("click", function () {
-      const mcIdField = document.getElementById("mc_id");
-      if (!mcIdField || !mcIdField.value) {
-        alert("Không có câu hỏi nào để xoá.");
-        return;
-      }
-
-      if (confirm("Bạn có chắc muốn xoá câu hỏi này không?")) {
-        const formData = new FormData();
-        formData.append("delete_mc_id", mcIdField.value);
-
-        fetch("mc_delete.php", {
-          method: "POST",
-          body: formData
-        })
-        .then(response => response.text())
-        .then(result => {
-          alert("Câu hỏi đã được xoá.");
-          window.location.href = "mc_form.php";
-        })
-        .catch(error => {
-          console.error("Lỗi khi xoá:", error);
-          alert("Đã xảy ra lỗi khi xoá.");
-        });
-      }
+  // === Nút Làm đề ===
+  const btnExam = document.getElementById('mc_preview_exam');
+  if (btnExam) {
+    btnExam.addEventListener('click', function () {
+      window.open('mc_exam_preview.php', '_blank');
     });
   }
 });
