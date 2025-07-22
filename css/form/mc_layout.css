@@ -1,102 +1,61 @@
-/* css/form/mc_layout.css */
-
-/* Vùng chứa tổng thể */
-.container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Bố cục 2 cột */
+/* Layout chính của form chia 2 cột */
 .mc-columns {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: row;
+  gap: 30px;
+  margin-top: 20px;
 }
 
-/* Cột trái */
+/* Cột trái chứa nội dung chính */
 .mc-col-left {
   flex: 2;
-  min-width: 300px;
 }
 
-/* Cột phải */
+/* Cột phải chứa ảnh và các nút thao tác */
 .mc-col-right {
   flex: 1;
-  min-width: 260px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 10px; /* Giảm khoảng cách giữa ảnh và nút */
 }
 
-/* Trường nhập liệu */
+/* Ô nhập liệu và textarea */
 .mc-field {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-/* Input và textarea */
-.mc-field input[type="text"],
-.mc-field textarea,
-.mc-field select {
+.mc-field label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.mc-field textarea {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 15px;
-  box-sizing: border-box;
+  height: 80px;
+  padding: 8px;
+  font-size: 14px;
   resize: vertical;
 }
 
-/* textarea lớn hơn */
-.mc-field textarea {
-  height: 100px;
+.mc-field input[type="text"],
+.mc-field select {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
 }
 
-/* TIÊU ĐỀ FORM */
-h2 {
-  margin-top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Preview từng dòng */
+.preview-box {
+  margin-top: 5px;
+  padding: 8px;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  font-style: italic;
+  font-size: 14px;
 }
 
-#mcTogglePreview {
-  cursor: pointer;
-  color: #007bff;
-}
-
-/* ĐÁP ÁN */
-#mc_answer {
-  font-weight: bold;
-}
-
-/* CHỈNH MÀU INPUT ĐANG ACTIVE */
-.mc-field input:focus,
-.mc-field textarea:focus,
-.mc-field select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 3px rgba(0,123,255,0.4);
-}
-
-
-#mcTogglePreview {
-  cursor: pointer;
-  margin-left: 10px;
-  color: #666;
-  font-size: 0.9em;
-}
-
-#mcTogglePreview:hover {
-  color: #000;
-}
-
-/* --- Input đáp án A–D & dropdown đáp án đúng (hiển thị ngang) --- */
+/* Bố trí các input đáp án A–D + nút preview cùng hàng */
 .mc-inline-field {
   display: flex;
   align-items: center;
@@ -123,4 +82,62 @@ h2 {
   cursor: pointer;
   color: #007bff;
   font-size: 16px;
+}
+
+/* Khu vực ảnh */
+.mc-image-zone {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+}
+
+.mc-image-zone h4 {
+  margin-top: 0;
+}
+
+.mc-image-preview img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.mc-image-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.mc-image-buttons button,
+.mc-image-buttons .btn-upload {
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Khu vực nút thao tác */
+.mc-buttons {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #f1f1f1;
+}
+
+.mc-buttons h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.mc-buttons button {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Xem trước toàn bộ */
+.mc-preview-zone {
+  margin-top: 30px;
+  border-top: 2px dashed #ccc;
+  padding-top: 20px;
 }
