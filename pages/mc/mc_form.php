@@ -106,7 +106,7 @@ if (!empty($_GET['mc_id'])) {
               $label = $labels[$i - 1];
           ?>
             <div class="mc-field">
-              <label for="mc_answer<?= $i ?>">Đáp án <?= $label ?>.
+              <label for="mc_answer<?= $i ?>"><?= $label ?>.
                 <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
               </label>
               <input type="text"
