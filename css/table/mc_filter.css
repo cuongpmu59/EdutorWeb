@@ -1,75 +1,65 @@
 .mc-filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9f9fb;
-    border-radius: 12px;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    gap: 16px;
-  }
-  
-  .search-box, .filter-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* Icon */
-  .search-box::before {
-    content: "🔍";
-    font-size: 16px;
-  }
-  .filter-box label::before {
-    content: "📁";
-    margin-right: 4px;
-  }
-  
-  /* Input & Select */
-  .mc-filter-container input[type="search"],
-  .mc-filter-container select {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background: #fff;
-    min-width: 220px;
-  }
-  
-  /* Hover & Focus */
-  .mc-filter-container input[type="search"]:hover,
-  .mc-filter-container select:hover {
-    border-color: #66afe9;
-  }
-  .mc-filter-container input[type="search"]:focus,
-  .mc-filter-container select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    outline: none;
-  }
-  
-  /* Responsive */
-  @media (max-width: 600px) {
-    .mc-filter-container {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .search-box, .filter-box {
-      width: 100%;
-    }
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9fb;
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  gap: 16px;
+  font-size: 1rem;
+}
+
+/* Hộp tìm kiếm và hộp chọn lọc */
+.search-box, .filter-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon giả lập trước input */
+.search-box::before {
+  content: "🔍";
+  font-size: 16px;
+}
+.filter-box label::before {
+  content: "📁";
+  margin-right: 4px;
+}
+
+/* Input tìm kiếm và select lọc */
+.mc-filter-container input[type="search"],
+.mc-filter-container select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  min-width: 220px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover & Focus */
+.mc-filter-container input[type="search"]:hover,
+.mc-filter-container select:hover {
+  border-color: #66afe9;
+}
+.mc-filter-container input[type="search"]:focus,
+.mc-filter-container select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
   .mc-filter-container {
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  #topicFilter {
-    padding: 4px 8px;
-    font-size: 1rem;
-    margin-left: 8px;
+  .search-box, .filter-box {
+    width: 100%;
   }
-  
+}
