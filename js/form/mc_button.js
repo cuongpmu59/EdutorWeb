@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const formData = new FormData(form);
 
-      fetch('../../includes/save_question.php', {
+      fetch('../../includes/mc_save.php', {
         method: 'POST',
         body: formData
       })
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const id = document.getElementById('mc_id')?.value;
       if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
 
-      fetch('../../includes/delete_question.php', {
+      fetch('../../includes/mc_delete.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mc_id: id })
@@ -94,16 +94,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
-  const mcTableFrame = document.getElementById("mcTableFrame");
+  const tableWrapper = document.getElementById("mcTableFrame");
 
-  if (btnViewList && mcTableFrame) {
+  if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
       const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-      mcTableFrame.style.display = isHidden ? "block" : "none";
+      tableWrapper.style.display = isHidden ? "block" : "none";
       this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   } else {
-    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableFrame)");
+    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
   }
 
   // === Nút Làm đề ===
