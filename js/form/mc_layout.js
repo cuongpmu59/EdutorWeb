@@ -1,59 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const viewListBtn = document.getElementById('mc_view_list');
-    if (viewListBtn) {
-      viewListBtn.addEventListener('click', () => {
-        window.location.href = 'mc_list.php';
-      });
-    }
-  
-    const mcIdField = document.getElementById('mc_id');
-    if (mcIdField) {
-      const id = mcIdField.value;
-  
-      fetch(`api/get_mc_question.php?mc_id=${id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data || !data.mc_id) {
-            console.error("Không tìm thấy dữ liệu câu hỏi");
-            return;
-          }
-  
-          document.getElementById('mc_topic').value = data.mc_topic || '';
-          document.getElementById('mc_question').value = data.mc_question || '';
-  
-          ['A', 'B', 'C', 'D'].forEach(opt => {
-            const el = document.getElementById(`mc_opt_${opt}`);
-            if (el) el.value = data[`mc_opt_${opt}`] || '';
-          });
-  
-          const answerEl = document.getElementById('mc_answer');
-          if (answerEl) answerEl.value = data.mc_answer || '';
-  
-          const imagePreview = document.querySelector('.mc-image-preview');
-          if (imagePreview && data.mc_image_url) {
-            imagePreview.innerHTML = `<img src="${data.mc_image_url}" alt="Ảnh minh hoạ">`;
-          }
-        })
-        .catch(err => {
-          console.error("Lỗi khi load câu hỏi:", err);
-        });
-    }
-  });
-  
-  document.addEventListener("DOMContentLoaded", function () {
-    const toggleBtn = document.getElementById("mcTogglePreview");
-    const mainContent = document.getElementById("mcMainContent");
-  
-    toggleBtn.addEventListener("click", function () {
-      if (mainContent.style.display === "none") {
-        mainContent.style.display = "flex";
-        toggleBtn.title = "Ẩn nội dung";
-        toggleBtn.querySelector("i").classList.replace("fa-eye", "fa-eye-slash");
-      } else {
-        mainContent.style.display = "none";
-        toggleBtn.title = "Hiển thị nội dung";
-        toggleBtn.querySelector("i").classList.replace("fa-eye-slash", "fa-eye");
-      }
-    });
-  });
-  
+document.getElementById('mc_view_list').addEventListener('click', () => {
+  const wrapper = document.getElementById('mcTableWrapper');
+  if (wrapper.style.display === 'none' || wrapper.style.display === '') {
+    wrapper.style.display = 'block';
+  } else {
+    wrapper.style.display = 'none';
+  }
+});
