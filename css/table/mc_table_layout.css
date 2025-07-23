@@ -1,0 +1,34 @@
+/* === BẢNG CÂU HỎI (BỐ CỤC & ĐỊNH DẠNG) === */
+table#mcTable {
+    font-size: 14px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  /* Tiêu đề cột */
+  #mcTable thead th {
+    background: #f0f0f8;
+    text-align: center;
+    padding: 8px 12px;
+  }
+  
+  /* Nội dung ô */
+  #mcTable tbody td {
+    padding: 8px 12px;
+    vertical-align: top;
+  }
+  
+  /* Dòng đang chọn */
+  #mcTable tbody tr.selected {
+    background-color: #dff0ff !important;
+  }
+  
+  /* Ảnh thu nhỏ trong bảng */
+  #mcTable img.thumb {
+    width: 60px;
+    height: auto;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  
