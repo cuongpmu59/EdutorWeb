@@ -1,5 +1,9 @@
 $(document).ready(function () {
-  const table = $('#mcTable').DataTable({
+  // Lưu biến để dùng lại
+  let table;
+
+  // Khởi tạo bảng với AJAX
+  table = $('#mcTable').DataTable({
     ajax: {
       url: '../../api/mc/get_all.php',
       dataSrc: ''
@@ -16,40 +20,66 @@ $(document).ready(function () {
       {
         data: 'mc_image_url',
         render: function (data) {
-          if (!data) return '';
-          return `<img src="${data}" class="thumb" onerror="this.style.display='none'">`;
+          if (data) {
+            return `<img src="${data}" class="thumb" onerror="this.style.display='none'">`;
+          } else {
+            return '';
+          }
         }
       }
     ],
-    createdRow: function (row, data) {
-      const fields = [
-        'mc_id', 'mc_topic', 'mc_question',
-        'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4',
-        'mc_correct_answer', 'mc_image_url'
-      ];
-      $('td', row).each(function (index) {
-        $(this).attr('data-raw', data[fields[index]]);
-      });
-    },
     responsive: true,
-    scrollX: true,
-    initComplete: function (settings, json) {
-      const topics = [...new Set(json.map(q => q.mc_topic).filter(Boolean))].sort();
-      const $filter = $('#topicFilter');
-      if ($filter.length > 0) {
-        topics.forEach(topic => {
-          $filter.append(`<option value="${topic}">${topic}</option>`);
-        });
-
-        $filter.on('change', function () {
-          const selected = $(this).val();
-          if (selected) {
-            table.column(1).search('^' + selected + '$', true, false).draw();
-          } else {
-            table.column(1).search('').draw();
-          }
-        });
+    dom: 'Bfrtip',
+    buttons: [
+      {
+        extend: 'excelHtml5',
+        title: 'Cau_Hoi_Trac_Nghiem',
+        text: '📥 Xuất Excel',
+        exportOptions: {
+          columns: ':visible'
+        }
+      },
+      {
+        extend: 'print',
+        text: '🖨 In bảng'
       }
+    ],
+    language: {
+      search: '🔍 Tìm kiếm:',
+      lengthMenu: 'Hiển thị _MENU_ dòng',
+      info: 'Hiển thị _START_ đến _END_ trong _TOTAL_ dòng',
+      paginate: {
+        previous: '←',
+        next: '→'
+      },
+      zeroRecords: 'Không tìm thấy kết quả'
+    },
+    initComplete: function () {
+      // Sau khi bảng khởi tạo: render công thức + tạo bộ lọc chủ đề
+      MathJax.typeset();
+
+      const api = this.api();
+      const topics = new Set();
+
+      api.column(1).data().each(function (d) {
+        if (d) topics.add(d);
+      });
+
+      const select = $('#topicFilter');
+      select.append(`<option value="">Tất cả</option>`);
+      [...topics].sort().forEach(topic => {
+        select.append(`<option value="${topic}">${topic}</option>`);
+      });
+
+      select.on('change', function () {
+        const val = $.fn.dataTable.util.escapeRegex($(this).val());
+        api.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
+      });
     }
+  });
+
+  // Re-render MathJax sau mỗi lần vẽ lại bảng
+  $('#mcTable').on('draw.dt', function () {
+    MathJax.typeset();
   });
 });
