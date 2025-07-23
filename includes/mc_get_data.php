@@ -1,71 +1,28 @@
 <?php
-require_once __DIR__ . '/db_connection.php';
+require_once '../db_connection.php'; // Đảm bảo file kết nối DB đúng đường dẫn
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
+$pdo = getDbConnection(); // Hàm từ db_connection.php
+
+// Nếu có mc_id → lấy 1 dòng
 if (isset($_GET['mc_id'])) {
-    // Giao diện form: trả dữ liệu câu hỏi theo ID
-    $mc_id = (int)$_GET['mc_id'];
-
-    $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
+    $mc_id = intval($_GET['mc_id']);
+    $stmt = $pdo->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
     $stmt->execute([$mc_id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($row) {
-        echo json_encode(['success' => true, 'data' => $row]);
+    if ($data) {
+        $data['mc_image_url'] = $data['mc_image'] ? "../../uploads/" . $data['mc_image'] : null;
+        echo json_encode(['success' => true, 'data' => $data]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Không tìm thấy câu hỏi']);
     }
     exit;
 }
 
-// Dưới đây là phần cho bảng DataTables
-$searchValue = $_GET['search']['value'] ?? '';
-$start       = (int)($_GET['start'] ?? 0);
-$length      = (int)($_GET['length'] ?? 10);
-$orderColumn = $_GET['order'][0]['column'] ?? 0;
-$orderDir    = $_GET['order'][0]['dir'] ?? 'asc';
+// Nếu không có mc_id → xuất toàn bộ (cho DataTables)
+$stmt = $pdo->query("SELECT mc_id, mc_topic, mc_question FROM mc_questions ORDER BY mc_id DESC");
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$columns = ['mc_id', 'mc_topic', 'mc_question', 'mc_correct_answer', 'mc_image_url'];
-$orderBy = $columns[$orderColumn] ?? 'mc_id';
-$orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
-
-// Đếm tổng số bản ghi
-$totalQuery = $conn->query("SELECT COUNT(*) FROM mc_questions");
-$totalRecords = $totalQuery->fetchColumn();
-
-// Lọc theo từ khóa tìm kiếm
-$where = '';
-$params = [];
-
-if (!empty($searchValue)) {
-    $where = "WHERE mc_topic LIKE ? OR mc_question LIKE ?";
-    $params[] = "%$searchValue%";
-    $params[] = "%$searchValue%";
-}
-
-$dataQuery = $conn->prepare("
-    SELECT * FROM mc_questions
-    $where
-    ORDER BY $orderBy $orderDir
-    LIMIT $start, $length
-");
-$dataQuery->execute($params);
-$data = $dataQuery->fetchAll(PDO::FETCH_ASSOC);
-
-// Đếm số bản ghi sau khi lọc
-if ($where) {
-    $filteredQuery = $conn->prepare("SELECT COUNT(*) FROM mc_questions $where");
-    $filteredQuery->execute($params);
-    $filtered = $filteredQuery->fetchColumn();
-} else {
-    $filtered = $totalRecords;
-}
-
-// Trả về kết quả cho DataTables
-echo json_encode([
-    'draw' => (int)($_GET['draw'] ?? 0),
-    'recordsTotal' => $totalRecords,
-    'recordsFiltered' => $filtered,
-    'data' => $data
-]);
+echo json_encode(['data' => $rows]);
