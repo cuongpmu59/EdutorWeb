@@ -30,3 +30,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+document.getElementById('mc_image').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  const previewZone = document.querySelector('.mc-image-preview');
+  if (!file || !file.type.startsWith('image/')) return;
+
+  const reader = new FileReader();
+  reader.onload = function (evt) {
+    const img = document.createElement('img');
+    img.src = evt.target.result;
+    img.classList.add('fade-in'); // THÊM DÒNG NÀY
+
+    previewZone.innerHTML = '';
+    previewZone.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+});
+
+
