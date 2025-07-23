@@ -1,75 +1,33 @@
 $(document).ready(function () {
-    window.mcTable = $('#mcTable').DataTable({
-      scrollX: true,
-      dom: '<"top-controls"Bf>rtip',
-      fixedHeader: true,
-      pageLength: 10,
-      lengthMenu: [10, 25, 50, 100],
-      buttons: [
-        {
-          extend: 'excelHtml5',
-          text: '⬇️ Xuất Excel',
-          title: 'mc_questions',
-          exportOptions: { columns: ':visible' }
-        },
-        {
-          extend: 'print',
-          text: '🖨️ In bảng',
-          exportOptions: { columns: ':visible' }
-        },
-        {
-          text: '📥 Nhập Excel',
-          action: function () { $('#excelFile').click(); }
-        }
-      ]
-    });
-  
-    // Tùy biến bộ lọc chủ đề và ô tìm kiếm
-    $('#mcTable_filter').html(`
-      <div class="filter-left">
-        📚 Chủ đề:
-        <select id="filter-topic">
-          <option value="">-- Tất cả --</option>
-        </select>
-      </div>
-      <div class="filter-right">
-        🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
-      </div>
-    `);
-  
-    // Tải dữ liệu chủ đề từ PHP
-    $.get('includes/mc_filter.php', function (options) {
-      $('#filter-topic').append(options);
-    });
-  
-    // Lọc theo chủ đề
-    $('#filter-topic').on('change', function () {
-      mcTable.column(1).search(this.value).draw();
-    });
-  
-    // Tìm kiếm tổng
-    $('#mcTable_filter input[type="search"]').on('keyup change', function () {
-      mcTable.search(this.value).draw();
-    });
-  
-    // Tìm kiếm không dấu
-    $.fn.dataTable.ext.type.search.string = function (data) {
-      return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    };
-  
-    // Sau khi vẽ bảng
-    mcTable.on('draw', function () {
-      if (window.MathJax) MathJax.typesetPromise();
-  
-      if (!mcTable.row('.selected').node()) {
-        const firstRow = mcTable.row(0);
-        if (firstRow.node()) {
-          $(firstRow.node()).addClass('selected');
-          if (typeof sendRowData === 'function') {
-            sendRowData(firstRow);
-          }
+  const table = $('#mcTable').DataTable({
+    ajax: {
+      url: '../../api/mc/get_all.php',
+      dataSrc: ''
+    },
+    columns: [
+      { data: 'mc_id' },
+      { data: 'mc_topic' },
+      { data: 'mc_question' },
+      { data: 'mc_answer1' },
+      { data: 'mc_answer2' },
+      { data: 'mc_answer3' },
+      { data: 'mc_answer4' },
+      { data: 'mc_correct_answer' },
+      {
+        data: 'mc_image_url',
+        render: function (data) {
+          if (!data) return '';
+          return `<img src="${data}" class="thumb" onerror="this.style.display='none'">`;
         }
       }
-    });
+    ],
+    createdRow: function (row, data) {
+      const fields = ['mc_id', 'mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer', 'mc_image_url'];
+      $('td', row).each(function (index) {
+        $(this).attr('data-raw', data[fields[index]]);
+      });
+    },
+    responsive: true,
+    scrollX: true
   });
-  
+});
