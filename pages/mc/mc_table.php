@@ -1,17 +1,6 @@
 <?php
-require_once __DIR__ . '/../../includes/db_connection.php';
-if (!isset($conn)) {
-  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
-}
+// Không cần truy vấn dữ liệu ở đây nữa
 header("X-Frame-Options: SAMEORIGIN");
-
-try {
-  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
-  $stmt->execute();
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-  $rows = [];
-}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -22,15 +11,13 @@ try {
   <!-- Thư viện CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-
-  <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
 
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Excel xử lý -->
+  <!-- Xử lý file Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -47,23 +34,7 @@ try {
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($rows as $q): ?>
-        <tr>
-          <td data-raw="<?= $q['mc_id'] ?>"><?= $q['mc_id'] ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_topic']) ?>"><?= htmlspecialchars($q['mc_topic']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_question']) ?>"><?= htmlspecialchars($q['mc_question']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer1']) ?>"><?= htmlspecialchars($q['mc_answer1']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer2']) ?>"><?= htmlspecialchars($q['mc_answer2']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer3']) ?>"><?= htmlspecialchars($q['mc_answer3']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_answer4']) ?>"><?= htmlspecialchars($q['mc_answer4']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
-          <td data-raw="<?= htmlspecialchars($q['mc_image_url']) ?>">
-            <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
-            <?php endif; ?>
-          </td>
-        </tr>
-      <?php endforeach; ?>
+      <!-- Dữ liệu sẽ được load bằng AJAX -->
     </tbody>
   </table>
 </div>
