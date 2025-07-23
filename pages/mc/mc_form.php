@@ -15,7 +15,6 @@ if (!empty($_GET['mc_id'])) {
     $mc = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$mc) {
-        // Nếu không tìm thấy câu hỏi, chuyển về form trống
         header('Location: mc_form.php');
         exit;
     }
@@ -38,7 +37,7 @@ if (!empty($_GET['mc_id'])) {
 </head>
 <body>
   <div class="container">
-    <form id="mcForm" method="POST" enctype="multipart/form-data" action="handle_mc_form.php">
+    <form id="mcForm" method="POST" enctype="multipart/form-data" action="../../includes/save.php">
       <h2>
         Câu hỏi trắc nghiệm
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
@@ -117,6 +116,9 @@ if (!empty($_GET['mc_id'])) {
       <?php if (!empty($mc['mc_id'])): ?>
         <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
       <?php endif; ?>
+
+      <!-- Trường ẩn định danh loại form -->
+      <input type="hidden" name="form_type" value="mc_question">
     </form>
 
     <div id="mcTableWrapper" style="display:none;">
