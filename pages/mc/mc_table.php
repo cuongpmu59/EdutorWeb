@@ -1,5 +1,4 @@
 <?php
-// Không cần truy vấn dữ liệu ở đây nữa
 header("X-Frame-Options: SAMEORIGIN");
 ?>
 <!DOCTYPE html>
@@ -11,7 +10,10 @@ header("X-Frame-Options: SAMEORIGIN");
   <!-- Thư viện CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
+  <!-- Giao diện riêng -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
+  <link rel="stylesheet" href="../../css/table/mc_filter.css"> <!-- nếu đã tách riêng -->
 
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -24,6 +26,15 @@ header("X-Frame-Options: SAMEORIGIN");
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
+<!-- Bộ lọc chủ đề -->
+<div class="mc-filter-container">
+  <label for="topicFilter">🔍 Lọc theo chủ đề:</label>
+  <select id="topicFilter">
+    <option value="">-- Tất cả --</option>
+  </select>
+</div>
+
+<!-- Bảng dữ liệu -->
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
@@ -34,7 +45,7 @@ header("X-Frame-Options: SAMEORIGIN");
       </tr>
     </thead>
     <tbody>
-      <!-- Dữ liệu sẽ được load bằng AJAX -->
+      <!-- Dữ liệu được tải bằng AJAX -->
     </tbody>
   </table>
 </div>
@@ -55,7 +66,7 @@ header("X-Frame-Options: SAMEORIGIN");
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-<!-- Script chính -->
+<!-- Script tách riêng -->
 <script src="../../js/table/mc_table_function.js"></script>
 <script src="../../js/table/mc_table_image.js"></script>
 <script src="../../js/table/mc_table_transmittion.js"></script>
