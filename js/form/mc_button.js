@@ -95,21 +95,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
-const tableWrapper = document.getElementById("mcTableWrapper");
+  const tableWrapper = document.getElementById("mcTableWrapper");
 
 if (btnViewList && tableWrapper) {
   btnViewList.addEventListener("click", function () {
-    const isHidden = tableWrapper.classList.contains("hidden");
+    const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
     if (isHidden) {
-      tableWrapper.classList.remove("hidden");
-      tableWrapper.classList.add("visible");
+      tableWrapper.style.display = "block";
+      const iframe = document.getElementById("mcTableFrame");
+      if (iframe && !iframe.src.includes("mc_table.php")) {
+        // Lấy đường dẫn tuyệt đối từ trang hiện tại
+        const basePath = window.location.pathname.replace(/\/[^\/]*$/, '/');
+        iframe.src = basePath + "mc_table.php";
+      }
       this.textContent = "Ẩn danh sách";
     } else {
-      tableWrapper.classList.remove("visible");
-      tableWrapper.classList.add("hidden");
+      tableWrapper.style.display = "none";
       this.textContent = "Hiện danh sách";
     }
   });
+  
 }
 
   // === Nút Làm đề ===
