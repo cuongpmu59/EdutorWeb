@@ -100,9 +100,14 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
       const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-      tableWrapper.style.display = isHidden ? "block" : "none";
-      this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
-    });
+      if (isHidden) {
+        tableWrapper.style.display = "block";
+        this.textContent = "Ẩn danh sách";
+      } else {
+        tableWrapper.style.display = "none";
+        this.textContent = "Hiện danh sách";
+      }
+          });
   } else {
     console.warn("Không tìm thấy nút hoặc iframe bảng (mc_view_list hoặc tableWrapper)");
   }
