@@ -141,3 +141,14 @@
   border-top: 2px dashed #ccc;
   padding-top: 20px;
 }
+
+#mcTableWrapper.hidden {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+#mcTableWrapper.visible {
+  visibility: visible;
+  height: auto;
+}
