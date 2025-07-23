@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
-  const tableWrapper = document.getElementById("mcTableFrame");
+  const tableWrapper = document.getElementById("mcTableWrapper");
 
   if (btnViewList && tableWrapper) {
     btnViewList.addEventListener("click", function () {
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
       this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   } else {
-    console.warn("Không tìm thấy nút hoặc iframe bảng (mc_view_list hoặc mcTableFrame)");
+    console.warn("Không tìm thấy nút hoặc iframe bảng (mc_view_list hoặc tableWrapper)");
   }
 
   // === Nút Làm đề ===
