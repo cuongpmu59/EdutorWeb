@@ -8,44 +8,17 @@ require_once __DIR__ . '/../../includes/db_connection.php';
 
 $mc = null;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic   = $_POST['topic'] ?? '';
-    $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct = $_POST['answer'] ?? '';
-    $image_url = '';
-
-    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../../uploads/';
-        $filename = time() . '_' . basename($_FILES['image']['name']);
-        $filepath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $filepath)) {
-            $image_url = '../../uploads/' . $filename;
-        }
-    } elseif (!empty($_POST['existing_image'])) {
-        $image_url = $_POST['existing_image'];
-    }
-
-    if (!empty($_POST['mc_id'])) {
-        $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, (int)$_POST['mc_id']]);
-    } else {
-        $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url]);
-    }
-
-    header('Location: mc_form.php');
-    exit;
-}
-
 if (!empty($_GET['mc_id'])) {
     $id = (int)$_GET['mc_id'];
     $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
     $stmt->execute([$id]);
     $mc = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$mc) {
+        // Nếu không tìm thấy câu hỏi, chuyển về form trống
+        header('Location: mc_form.php');
+        exit;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -65,7 +38,7 @@ if (!empty($_GET['mc_id'])) {
 </head>
 <body>
   <div class="container">
-    <form id="mcForm" method="POST" enctype="multipart/form-data">
+    <form id="mcForm" method="POST" enctype="multipart/form-data" action="handle_mc_form.php">
       <h2>
         Câu hỏi trắc nghiệm
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
@@ -83,8 +56,7 @@ if (!empty($_GET['mc_id'])) {
               <button type="button" class="toggle-preview" data-target="mc_question">
                 <i class="fa fa-eye"></i></button>
             </label>
-            <textarea id="mc_question" name="question" required>
-              <?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
+            <textarea id="mc_question" name="question" required><?= trim(htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES)) ?></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
