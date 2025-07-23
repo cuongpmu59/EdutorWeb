@@ -96,7 +96,7 @@ session_start();
       <input type="hidden" name="form_type" value="mc_question">
     </form>
 
-    <div id="mcTableWrapper" style="display:none;">
+    <div id="mcTableWrapper" style="display:block;">
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 
