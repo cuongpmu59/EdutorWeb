@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const imagePreviewContainer = document.querySelector('.mc-image-preview');
   const removeBtn = document.getElementById('mc_remove_image');
 
-  // Xem trước ảnh khi chọn ảnh mới
   fileInput.addEventListener('change', function () {
     const file = this.files[0];
     if (!file || !file.type.startsWith('image/')) return;
@@ -13,14 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const img = document.createElement('img');
       img.src = e.target.result;
       img.alt = 'Ảnh xem trước';
-      img.classList.add('fade-in'); // Thêm hiệu ứng
-      imagePreviewContainer.innerHTML = '';
+      img.classList.add('fade-in');
+
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'image-name';
+      nameDiv.textContent = file.name;
+
+      imagePreviewContainer.innerHTML = ''; // Xoá ảnh cũ
       imagePreviewContainer.appendChild(img);
+      imagePreviewContainer.appendChild(nameDiv); // Thêm tên ảnh
     };
     reader.readAsDataURL(file);
   });
 
-  // Xoá ảnh đang hiển thị
   removeBtn.addEventListener('click', function () {
     imagePreviewContainer.innerHTML = '';
     fileInput.value = '';
