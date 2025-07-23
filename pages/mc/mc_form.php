@@ -111,6 +111,5 @@ session_start();
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_button.js"></script>
   <script src="../../js/form/mc_listener.js"></script>
-  <script src="../../js/form/mc_fetch.js"></script> <!-- Mới thêm -->
 </body>
 </html>
