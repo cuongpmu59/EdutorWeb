@@ -41,11 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
       if (previewZone.style.display === 'none' || !previewZone.style.display) {
         const topic = document.getElementById('mc_topic')?.value || '';
         const question = document.getElementById('mc_question')?.value || '';
+
         const opts = ['A', 'B', 'C', 'D'].map(letter => {
-          const idx = letterToIndex(letter);
-          const value = document.getElementById(`mc_answer${idx}`)?.value || '';
-          return `<li><strong>${letter}.</strong> ${escapeHTML(value)}</li>`;
+        const idx = letterToIndex(letter);
+        const value = document.getElementById(`mc_answer${idx}`)?.value || '';
+        return `<li>${letter} ${escapeHTML(value)}</li>`; 
         }).join('');
+
 
         let imageHTML = '';
         const imgEl = document.querySelector('.mc-image-preview img');
