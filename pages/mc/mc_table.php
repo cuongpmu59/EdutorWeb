@@ -12,7 +12,7 @@ header("X-Frame-Options: SAMEORIGIN");
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 
   <!-- Giao diện riêng -->
-  <link rel="stylesheet" href="../../css/table/table_ui.css">
+  <link rel="stylesheet" href="../../css/table/mc_table.css">
   <link rel="stylesheet" href="../../css/table/mc_filter.css"> 
 
   <!-- MathJax -->
