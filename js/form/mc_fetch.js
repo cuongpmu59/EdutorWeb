@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const mc_id = urlParams.get('mc_id');
     if (mc_id) {
-      fetch(`../../includes/get_mc_question.php?mc_id=${mc_id}`)
+      fetch(`../../includes/get_mc_data.php?mc_id=${mc_id}`)
         .then(res => res.json())
         .then(data => {
           if (data && data.mc_id) {
