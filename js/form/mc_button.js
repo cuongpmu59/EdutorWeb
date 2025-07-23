@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if (data.success) {
             alert('Lưu câu hỏi thành công!');
 
+            // Nếu là thêm mới (mc_id rỗng), thì reset form
             if (!form.mc_id?.value) {
               form.reset();
 
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
       this.textContent = isHidden ? "Ẩn danh sách" : "Hiện danh sách";
     });
   } else {
-    console.warn("Không tìm thấy nút hoặc vùng bảng danh sách (mc_view_list hoặc mcTableWrapper)");
+    console.warn("Không tìm thấy nút hoặc iframe bảng (mc_view_list hoặc mcTableFrame)");
   }
 
   // === Nút Làm đề ===
