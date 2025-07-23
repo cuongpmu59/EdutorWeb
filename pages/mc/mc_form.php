@@ -97,7 +97,7 @@ session_start();
     </form>
 
     <div id="mcTableWrapper" class="visible">
-      <iframe id="mcTableFrame" src="/pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
+      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 
 
