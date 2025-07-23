@@ -95,25 +95,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // === Nút Ẩn/Hiện danh sách ===
   const btnViewList = document.getElementById("mc_view_list");
-  const tableWrapper = document.getElementById("mcTableWrapper");
+const tableWrapper = document.getElementById("mcTableWrapper");
 
-  if (btnViewList && tableWrapper) {
-    btnViewList.addEventListener("click", function () {
-      const isHidden = tableWrapper.style.display === "none" || getComputedStyle(tableWrapper).display === "none";
-      if (isHidden) {
-        tableWrapper.classList.remove("hidden-wrapper");
-        tableWrapper.classList.add("visible-wrapper");
-        this.textContent = "Ẩn danh sách";
-      } else {
-        tableWrapper.classList.remove("visible-wrapper");
-        tableWrapper.classList.add("hidden-wrapper");
-        this.textContent = "Hiện danh sách";
-      }
-      
-          });
-  } else {
-    console.warn("Không tìm thấy nút hoặc iframe bảng (mc_view_list hoặc tableWrapper)");
-  }
+if (btnViewList && tableWrapper) {
+  btnViewList.addEventListener("click", function () {
+    const isHidden = tableWrapper.classList.contains("hidden");
+    if (isHidden) {
+      tableWrapper.classList.remove("hidden");
+      tableWrapper.classList.add("visible");
+      this.textContent = "Ẩn danh sách";
+    } else {
+      tableWrapper.classList.remove("visible");
+      tableWrapper.classList.add("hidden");
+      this.textContent = "Hiện danh sách";
+    }
+  });
+}
 
   // === Nút Làm đề ===
   const btnExam = document.getElementById('mc_preview_exam');
