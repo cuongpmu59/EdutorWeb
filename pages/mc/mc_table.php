@@ -13,25 +13,31 @@ header("X-Frame-Options: SAMEORIGIN");
 
   <!-- Giao diện riêng -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
-  <link rel="stylesheet" href="../../css/table/mc_filter.css"> 
+  <link rel="stylesheet" href="../../css/table/mc_filter.css"> <!-- nếu bạn tách riêng -->
+  <link rel="stylesheet" href="../../css/table_ui.css"> <!-- nếu bạn gộp -->
 
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Xử lý file Excel -->
+  <!-- Thư viện xử lý Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
-<!-- Bộ lọc chủ đề -->
+<!-- Bộ lọc và tìm kiếm -->
 <div class="mc-filter-container">
-  <label for="topicFilter">🔍 Lọc theo chủ đề:</label>
-  <select id="topicFilter">
-    <option value="">-- Tất cả --</option>
-  </select>
+  <div class="search-box">
+    <input type="search" id="mcSearchBox" placeholder="Tìm kiếm...">
+  </div>
+  <div class="filter-box">
+    <label for="topicFilter">Chủ đề:</label>
+    <select id="topicFilter">
+      <option value="">-- Tất cả --</option>
+    </select>
+  </div>
 </div>
 
 <!-- Bảng dữ liệu -->
@@ -45,7 +51,7 @@ header("X-Frame-Options: SAMEORIGIN");
       </tr>
     </thead>
     <tbody>
-      <!-- Dữ liệu được tải bằng AJAX -->
+      <!-- Dữ liệu sẽ được load bằng AJAX -->
     </tbody>
   </table>
 </div>
@@ -55,10 +61,10 @@ header("X-Frame-Options: SAMEORIGIN");
   <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
 </div>
 
-<!-- File Excel -->
+<!-- Nhập file Excel -->
 <input type="file" id="excelFile" accept=".xlsx" />
 
-<!-- Thư viện JS ngoài -->
+<!-- JS thư viện ngoài -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
@@ -66,7 +72,7 @@ header("X-Frame-Options: SAMEORIGIN");
 <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-<!-- Script tách riêng -->
+<!-- JS xử lý riêng -->
 <script src="../../js/table/mc_table_function.js"></script>
 <script src="../../js/table/mc_table_image.js"></script>
 <script src="../../js/table/mc_table_transmittion.js"></script>
