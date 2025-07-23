@@ -33,3 +33,13 @@
   line-height: 1.6;
   color: #222;
 }
+
+.preview-image img {
+  max-width: 100%;
+  max-height: 200px; /* ❗ Giới hạn chiều cao ảnh */
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
