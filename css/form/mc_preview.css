@@ -43,3 +43,8 @@
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+.preview-options li {
+  margin: 6px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
