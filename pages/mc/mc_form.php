@@ -1,24 +1,5 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
-
-require_once __DIR__ . '/../../includes/db_connection.php';
-
-$mc = null;
-
-if (!empty($_GET['mc_id'])) {
-    $id = (int)$_GET['mc_id'];
-    $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
-    $stmt->execute([$id]);
-    $mc = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$mc) {
-        header('Location: mc_form.php');
-        exit;
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -26,6 +7,7 @@ if (!empty($_GET['mc_id'])) {
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
+
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -47,7 +29,7 @@ if (!empty($_GET['mc_id'])) {
         <div class="mc-col mc-col-left">
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
-            <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
+            <input type="text" id="mc_topic" name="topic" required value="">
           </div>
 
           <div class="mc-field">
@@ -55,7 +37,7 @@ if (!empty($_GET['mc_id'])) {
               <button type="button" class="toggle-preview" data-target="mc_question">
                 <i class="fa fa-eye"></i></button>
             </label>
-            <textarea id="mc_question" name="question" required><?= trim(htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES)) ?></textarea>
+            <textarea id="mc_question" name="question" required></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
@@ -67,7 +49,7 @@ if (!empty($_GET['mc_id'])) {
             <div class="mc-field mc-inline-field">
               <label for="mc_answer<?= $i ?>"><?= $label ?>.</label>
               <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
-              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
+              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="">
               <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
             </div>
           <?php endfor; ?>
@@ -76,7 +58,7 @@ if (!empty($_GET['mc_id'])) {
             <label for="mc_correct_answer">Đáp án:</label>
             <select id="mc_correct_answer" name="answer" required>
               <?php foreach ($labels as $label): ?>
-                <option value="<?= $label ?>" <?= (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '' ?>><?= $label ?></option>
+                <option value="<?= $label ?>"><?= $label ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -85,11 +67,8 @@ if (!empty($_GET['mc_id'])) {
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
-            <div class="mc-image-preview">
-              <?php if (!empty($mc['mc_image_url'])): ?>
-                <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
-              <?php endif; ?>
-            </div>
+            <div class="mc-image-preview"></div>
+
             <div class="mc-image-buttons">
               <label class="btn-upload">
                 Tải ảnh
@@ -97,9 +76,6 @@ if (!empty($_GET['mc_id'])) {
               </label>
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
-            <?php if (!empty($mc['mc_image_url'])): ?>
-              <input type="hidden" name="existing_image" value="<?= htmlspecialchars($mc['mc_image_url']) ?>">
-            <?php endif; ?>
           </div>
 
           <div class="mc-buttons">
@@ -113,9 +89,8 @@ if (!empty($_GET['mc_id'])) {
         </div>
       </div>
 
-      <?php if (!empty($mc['mc_id'])): ?>
-        <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
-      <?php endif; ?>
+      <!-- Trường hidden sẽ được thêm bằng JS nếu có mc_id -->
+      <!-- <input type="hidden" name="mc_id" id="mc_id" value=""> -->
 
       <!-- Trường ẩn định danh loại form -->
       <input type="hidden" name="form_type" value="mc_question">
@@ -136,5 +111,6 @@ if (!empty($_GET['mc_id'])) {
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_button.js"></script>
   <script src="../../js/form/mc_listener.js"></script>
+  <script src="../../js/form/mc_fetch.js"></script> <!-- Mới thêm -->
 </body>
 </html>
