@@ -53,7 +53,13 @@ header("X-Frame-Options: SAMEORIGIN");
 </div>
 
 <!-- Nhập Excel -->
-<input type="file" id="excelFile" accept=".xlsx" style="margin-top:20px;" />
+<!-- <input type="file" id="excelFile" accept=".xlsx" style="margin-top:20px;" /> -->
+
+<!-- Nhập Excel -->
+<div style="margin: 10px 0;">
+  <input type="file" id="excelFile" accept=".xlsx" />
+</div>
+
 
 <!-- JS ngoài -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
