@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
-require_once __DIR__ . '/../../includes/mc_save.php'; 
+// require_once __DIR__ . '/../../includes/mc_save.php'; 
 ?>
 
 <!DOCTYPE html>
