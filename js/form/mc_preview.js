@@ -52,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return `<li>${letter} ${escapeHTML(value)}</li>`; 
         }).join('');
 
-
-        
-
         previewContent.innerHTML = `
           <div class="preview-block">
             <h4>Chủ đề: ${escapeHTML(topic)}</h4>
