@@ -3,46 +3,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
-
 require_once __DIR__ . '/../../includes/db_connection.php';
-
-// Chỉ xử lý POST (Lưu hoặc Cập nhật)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic     = $_POST['topic'] ?? '';
-    $question  = $_POST['question'] ?? '';
-    $answer1   = $_POST['answer1'] ?? '';
-    $answer2   = $_POST['answer2'] ?? '';
-    $answer3   = $_POST['answer3'] ?? '';
-    $answer4   = $_POST['answer4'] ?? '';
-    $correct   = $_POST['answer'] ?? '';
-    $image_url = '';
-
-    // Xử lý ảnh tải lên
-    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../../uploads/';
-        $filename = time() . '_' . basename($_FILES['image']['name']);
-        $filepath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $filepath)) {
-            $image_url = '../../uploads/' . $filename;
-        }
-    } elseif (!empty($_POST['existing_image'])) {
-        $image_url = $_POST['existing_image'];
-    }
-
-    if (!empty($_POST['mc_id'])) {
-        // Cập nhật
-        $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, (int)$_POST['mc_id']]);
-    } else {
-        // Thêm mới
-        $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url]);
-    }
-
-    header('Location: mc_form.php');
-    exit;
-}
+require_once __DIR__ . '/../../includes/mc_save.php'; 
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -156,5 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_fetch_data.js"></script>
+  <script src="../../js/form/mc_button_action.js"></script>
+
 </body>
 </html>
