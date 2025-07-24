@@ -122,6 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+// ======================= CHẶN TRUY CẬP TRỰC TIẾP ===========================
 http_response_code(403);
 echo '<h3 style="font-family: sans-serif; color: #c00;">Truy cập không hợp lệ. Đây là endpoint xử lý, không hỗ trợ truy cập trực tiếp.</h3>';
 exit;
