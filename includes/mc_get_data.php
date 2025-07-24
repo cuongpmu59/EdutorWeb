@@ -1,28 +1,48 @@
 <?php
-require_once '../db_connection.php'; // Đảm bảo file kết nối DB đúng đường dẫn
+require_once '../db_connection.php';
 
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 
-$pdo = getDbConnection(); // Hàm từ db_connection.php
-
-// Nếu có mc_id → lấy 1 dòng
 if (isset($_GET['mc_id'])) {
+    // Lấy 1 câu hỏi theo mc_id
     $mc_id = intval($_GET['mc_id']);
-    $stmt = $pdo->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
-    $stmt->execute([$mc_id]);
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($data) {
-        $data['mc_image_url'] = $data['mc_image'] ? "../../uploads/" . $data['mc_image'] : null;
-        echo json_encode(['success' => true, 'data' => $data]);
+    $stmt = $conn->prepare("SELECT * FROM multiple_choice WHERE mc_id = ?");
+    $stmt->bind_param("i", $mc_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        echo json_encode([
+            'success' => true,
+            'data' => $row
+        ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Không tìm thấy câu hỏi']);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Không tìm thấy câu hỏi.'
+        ]);
     }
+
+    $stmt->close();
+    $conn->close();
     exit;
 }
 
-// Nếu không có mc_id → xuất toàn bộ (cho DataTables)
-$stmt = $pdo->query("SELECT mc_id, mc_topic, mc_question FROM mc_questions ORDER BY mc_id DESC");
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Truy xuất tất cả câu hỏi cho DataTables
+$sql = "SELECT mc_id, mc_topic, mc_question FROM multiple_choice ORDER BY mc_id DESC";
+$result = $conn->query($sql);
 
-echo json_encode(['data' => $rows]);
+$data = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+}
+
+echo json_encode([
+    'success' => true,
+    'data' => $data
+]);
+
+$conn->close();
