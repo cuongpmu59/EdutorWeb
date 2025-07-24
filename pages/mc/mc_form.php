@@ -9,7 +9,6 @@ require_once __DIR__ . '/../../includes/db_connection.php';
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
-  <link rel="stylesheet" href="../../css/form/mc_inline.css">
 
   <script>
     window.MathJax = {
