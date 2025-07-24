@@ -41,19 +41,19 @@ document.addEventListener('DOMContentLoaded', function () {
       if (previewZone.style.display === 'none' || !previewZone.style.display) {
         const topic = document.getElementById('mc_topic')?.value || '';
         const question = document.getElementById('mc_question')?.value || '';
-
-        const opts = ['A', 'B', 'C', 'D'].map(letter => {
+        let imageHTML = '';
+        const imgEl = document.querySelector('.mc-image-preview img');
+        if (imgEl && imgEl.src) {
+          imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
+        }
+        const opts = ['A.', 'B.', 'C.', 'D.'].map(letter => {
         const idx = letterToIndex(letter);
         const value = document.getElementById(`mc_answer${idx}`)?.value || '';
         return `<li>${letter} ${escapeHTML(value)}</li>`; 
         }).join('');
 
 
-        let imageHTML = '';
-        const imgEl = document.querySelector('.mc-image-preview img');
-        if (imgEl && imgEl.src) {
-          imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
-        }
+        
 
         previewContent.innerHTML = `
           <div class="preview-block">
