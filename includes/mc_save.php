@@ -3,20 +3,17 @@ require_once __DIR__ . '/db_connection.php';
 require_once 'env/config.php';
 
 use Cloudinary\Cloudinary;
-use Cloudinary\Api\Upload\UploadApi;
 
 $cloudinary = new Cloudinary([
     'cloud' => [
-        'cloud_name' => CLOUD_NAME,
-        'api_key'    => API_KEY,
-        'api_secret' => API_SECRET,
+        'cloud_name' => CLOUDINARY_CLOUD_NAME,
+        'api_key'    => CLOUDINARY_API_KEY,
+        'api_secret' => CLOUDINARY_API_SECRET,
     ],
-    'url' => [
-        'secure' => true
-    ]
+    'url' => ['secure' => true]
 ]);
 
-function uploadImageToCloudinary($filePath, $publicId = null) {
+function uploadImage($tmpPath, $publicId = null): array {
     global $cloudinary;
     $options = ['folder' => 'mc_images'];
     if ($publicId) {
@@ -24,34 +21,47 @@ function uploadImageToCloudinary($filePath, $publicId = null) {
         $options['overwrite'] = true;
     }
 
-    $response = $cloudinary->uploadApi()->upload($filePath, $options);
-    return [
-        'url' => $response['secure_url'] ?? '',
-        'public_id' => $response['public_id'] ?? ''
-    ];
-}
-
-function deleteCloudinaryImage($publicId) {
-    global $cloudinary;
-    if ($publicId) {
-        try {
-            $cloudinary->uploadApi()->destroy($publicId);
-        } catch (Exception $e) {
-            // Bỏ qua lỗi
-        }
+    try {
+        $response = $cloudinary->uploadApi()->upload($tmpPath, $options);
+        return [
+            'url' => $response['secure_url'] ?? '',
+            'public_id' => $response['public_id'] ?? ''
+        ];
+    } catch (Exception $e) {
+        return ['url' => '', 'public_id' => ''];
     }
 }
 
-function handleImageUpload($inputName = 'image', $existingUrl = '', $existingId = '') {
+function deleteImage($publicId) {
+    global $cloudinary;
+    if (!$publicId) return;
+    try {
+        $cloudinary->uploadApi()->destroy($publicId);
+    } catch (Exception $e) {
+        // Ignore error
+    }
+}
+
+function processImageUpload(string $inputName, string $existingUrl = '', string $existingId = ''): array {
     if (!empty($_FILES[$inputName]['name']) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
-        if ($existingId) deleteCloudinaryImage($existingId);
-        $tempPath = $_FILES[$inputName]['tmp_name'];
-        return uploadImageToCloudinary($tempPath);
+        deleteImage($existingId);
+        return uploadImage($_FILES[$inputName]['tmp_name']);
     }
     return ['url' => $existingUrl, 'public_id' => $existingId];
 }
 
-// Xử lý POST
+function renameImage($oldId, $newId): array {
+    global $cloudinary;
+    try {
+        $cloudinary->uploadApi()->rename($oldId, $newId, ['overwrite' => true]);
+        $newUrl = $cloudinary->image($newId)->toUrl();
+        return ['url' => $newUrl, 'public_id' => $newId];
+    } catch (Exception $e) {
+        return ['url' => '', 'public_id' => $oldId];
+    }
+}
+
+// ======================= XỬ LÝ POST ===========================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $topic    = $_POST['topic']    ?? '';
     $question = $_POST['question'] ?? '';
@@ -64,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldUrl   = $_POST['existing_image'] ?? '';
     $oldId    = $_POST['public_id']      ?? '';
 
-    $image = handleImageUpload('image', $oldUrl, $oldId);
+    $image = processImageUpload('image', $oldUrl, $oldId);
     $imageUrl = $image['url'];
     $publicId = $image['public_id'];
 
@@ -79,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE mc_id=?
             ");
             $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId, (int)$mc_id]);
+
         } else {
             // Thêm mới
             $stmt = $conn->prepare("
@@ -90,23 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId]);
             $mc_id = $conn->lastInsertId();
 
-            // Đổi tên ảnh nếu có
+            // Đổi tên ảnh nếu cần
             if ($publicId && $mc_id) {
                 $newId = "mc_images/mc_$mc_id";
-                $cloudinary->uploadApi()->rename($publicId, $newId, ['overwrite' => true]);
-
-                // Cập nhật lại CSDL
-                $stmt = $conn->prepare("
-                    UPDATE mc_questions 
-                    SET mc_image_url=?, mc_image_public_id=? 
-                    WHERE mc_id=?
-                ");
-                $newUrl = $cloudinary->image($newId)->toUrl();
-                $stmt->execute([$newUrl, $newId, $mc_id]);
+                $renamed = renameImage($publicId, $newId);
+                if ($renamed['url']) {
+                    $stmt = $conn->prepare("UPDATE mc_questions SET mc_image_url=?, mc_image_public_id=? WHERE mc_id=?");
+                    $stmt->execute([$renamed['url'], $renamed['public_id'], $mc_id]);
+                }
             }
         }
 
-        // Trả về JSON nếu gọi qua AJAX
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'mc_id' => $mc_id]);
         exit;
