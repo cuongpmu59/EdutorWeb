@@ -142,6 +142,52 @@
   padding-top: 20px;
 }
 
+/* Dùng cho các trường nằm cùng hàng: label, input, icon */
+.mc-inline-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Label chiếm độ rộng tối thiểu, không bị đè */
+.mc-inline-field label {
+  min-width: 80px;
+  font-weight: bold;
+}
+
+/* Nút con mắt */
+.mc-inline-field .toggle-preview {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  padding: 0;
+}
+
+.mc-inline-field .toggle-preview:hover {
+  color: #000;
+}
+
+/* Input đáp án */
+.mc-inline-field input[type="text"] {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Preview box dưới mỗi đáp án */
+.mc-inline-field .preview-box {
+  margin-top: 4px;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  padding: 6px;
+  font-style: italic;
+}
+
+
 #mcTableWrapper.hidden {
   visibility: hidden;
   height: 0;
