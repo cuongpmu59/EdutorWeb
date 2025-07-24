@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/db_connection.php';
-require_once __DIR__ . '/config.php';
+require_once 'env/config.php';
 
 use Cloudinary\Cloudinary;
 use Cloudinary\Api\Upload\UploadApi;
