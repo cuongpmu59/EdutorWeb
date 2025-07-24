@@ -26,6 +26,11 @@ require_once __DIR__ . '/../../includes/db_connection.php';
         Câu hỏi trắc nghiệm
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
       </h2>
+      <!-- Xem trước toàn bộ -->
+      <div id="mcPreview" class="mc-preview-zone" style="display:none;">
+        <h3>Xem trước toàn bộ</h3>
+        <div id="mcPreviewContent"></div>
+      </div>
 
       <div id="mcMainContent" class="mc-columns">
         <!-- Cột trái -->
@@ -57,7 +62,7 @@ require_once __DIR__ . '/../../includes/db_connection.php';
           <?php endfor; ?>
 
           <div class="mc-field mc-inline-field">
-            <label for="mc_correct_answer">Đáp án đúng:</label>
+            <label for="mc_correct_answer">Đáp án:</label>
             <select id="mc_correct_answer" name="answer" required>
               <?php foreach ($labels as $label): ?>
                 <option value="<?= $label ?>"><?= $label ?></option>
@@ -101,12 +106,6 @@ require_once __DIR__ . '/../../includes/db_connection.php';
     <!-- iframe bảng -->
     <div id="mcTableWrapper" style="display:none;">
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
-    </div>
-
-    <!-- Xem trước toàn bộ -->
-    <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-      <h3>Xem trước toàn bộ</h3>
-      <div id="mcPreviewContent"></div>
     </div>
   </div>
 
