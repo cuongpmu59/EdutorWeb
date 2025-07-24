@@ -1,52 +1,32 @@
-// Xem trước từng trường (câu hỏi, đáp án)
-document.querySelectorAll('.toggle-preview').forEach(button => {
-  button.addEventListener('click', () => {
-    const targetId = button.getAttribute('data-target');
-    const input = document.getElementById(targetId);
-    const previewBox = document.getElementById(`preview-${targetId}`);
+document.addEventListener('DOMContentLoaded', function () {
+  const fileInput = document.getElementById('mc_image');
+  const imagePreviewContainer = document.querySelector('.mc-image-preview');
+  const removeBtn = document.getElementById('mc_remove_image');
 
-    if (previewBox.style.display === 'none') {
-      previewBox.innerHTML = input.value;
-      previewBox.style.display = 'block';
-      if (window.MathJax && MathJax.typeset) MathJax.typeset([previewBox]);
-    } else {
-      previewBox.style.display = 'none';
+  // Xem trước ảnh khi chọn ảnh mới
+  fileInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      imagePreviewContainer.innerHTML = `<img src="${e.target.result}" alt="Ảnh xem trước">`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Xoá ảnh đang hiển thị
+  removeBtn.addEventListener('click', function () {
+    // Xoá ảnh trong preview
+    imagePreviewContainer.innerHTML = '';
+
+    // Xoá file input nếu có file mới đang chọn
+    fileInput.value = '';
+
+    // Xoá input hidden nếu đang sửa (có ảnh cũ)
+    const hiddenInput = document.querySelector('input[name="existing_image"]');
+    if (hiddenInput) {
+      hiddenInput.remove();
     }
   });
-});
-
-// Xem trước toàn bộ nội dung
-document.getElementById('mcTogglePreview').addEventListener('click', () => {
-  const previewZone = document.getElementById('mcPreview');
-  const previewContent = document.getElementById('mcPreviewContent');
-
-  if (previewZone.style.display === 'none' || previewZone.style.display === '') {
-    const topic = document.getElementById('mc_topic').value;
-    const question = document.getElementById('mc_question').value;
-    const answers = [];
-    for (let i = 1; i <= 4; i++) {
-      answers.push(document.getElementById(`mc_answer${i}`).value);
-    }
-    const correct = document.getElementById('mc_correct_answer').value;
-
-    let html = `<p><strong>Chủ đề:</strong> ${topic}</p>`;
-    html += `<p><strong>Câu hỏi:</strong><br>${question}</p>`;
-    answers.forEach((ans, index) => {
-      const label = String.fromCharCode(65 + index);
-      const mark = (label === correct) ? '✅' : '';
-      html += `<p><strong>${label}.</strong> ${ans} ${mark}</p>`;
-    });
-
-    const img = document.querySelector('.mc-image-preview img');
-    if (img) {
-      html += `<p><img src="${img.src}" alt="Hình minh hoạ" style="max-width:300px;"></p>`;
-    }
-
-    previewContent.innerHTML = html;
-    previewZone.style.display = 'block';
-
-    if (window.MathJax && MathJax.typeset) MathJax.typeset([previewContent]);
-  } else {
-    previewZone.style.display = 'none';
-  }
 });
