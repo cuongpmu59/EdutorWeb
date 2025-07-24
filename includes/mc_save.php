@@ -1,6 +1,11 @@
 <?php
+// Bật hiển thị lỗi khi debug (chỉ nên dùng khi phát triển)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../env/config.php';
 require_once __DIR__ . '/db_connection.php';
-require_once 'env/config.php';
 
 use Cloudinary\Cloudinary;
 
@@ -38,7 +43,7 @@ function deleteImage($publicId) {
     try {
         $cloudinary->uploadApi()->destroy($publicId);
     } catch (Exception $e) {
-        // Ignore error
+        // Bỏ qua lỗi xoá
     }
 }
 
@@ -101,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId]);
             $mc_id = $conn->lastInsertId();
 
-            // Đổi tên ảnh nếu cần
+            // Đổi tên ảnh nếu có
             if ($publicId && $mc_id) {
                 $newId = "mc_images/mc_$mc_id";
                 $renamed = renameImage($publicId, $newId);
@@ -125,5 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ======================= CHẶN TRUY CẬP TRỰC TIẾP ===========================
 http_response_code(403);
-echo '<h3 style="font-family: sans-serif; color: #c00;">Truy cập không hợp lệ. Đây là endpoint xử lý, không hỗ trợ truy cập trực tiếp.</h3>';
+echo '<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>403 Forbidden</title></head>
+<body style="font-family: sans-serif; padding: 2rem; color: #c00;">
+<h2>🚫 Truy cập không hợp lệ</h2>
+<p>Đây là endpoint xử lý nội bộ. Vui lòng không truy cập trực tiếp.</p>
+</body></html>';
 exit;
