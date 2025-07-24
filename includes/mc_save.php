@@ -1,10 +1,9 @@
 <?php
 require_once __DIR__ . '/db_connection.php';
-require_once __DIR__ . '/config.php'; // File chứa cấu hình Cloudinary
+require_once __DIR__ . '/config.php';
 
 use Cloudinary\Cloudinary;
 use Cloudinary\Api\Upload\UploadApi;
-use Cloudinary\Api\Admin\AdminApi;
 
 $cloudinary = new Cloudinary([
     'cloud' => [
@@ -19,10 +18,7 @@ $cloudinary = new Cloudinary([
 
 function uploadImageToCloudinary($filePath, $publicId = null) {
     global $cloudinary;
-
-    $options = [
-        'folder' => 'mc_images'
-    ];
+    $options = ['folder' => 'mc_images'];
     if ($publicId) {
         $options['public_id'] = $publicId;
         $options['overwrite'] = true;
@@ -41,87 +37,83 @@ function deleteCloudinaryImage($publicId) {
         try {
             $cloudinary->uploadApi()->destroy($publicId);
         } catch (Exception $e) {
-            // Không làm gì nếu xoá thất bại
+            // Bỏ qua lỗi
         }
     }
 }
 
-function handleImageUpload($inputName = 'image', $existingImageUrl = '', $existingPublicId = '') {
+function handleImageUpload($inputName = 'image', $existingUrl = '', $existingId = '') {
     if (!empty($_FILES[$inputName]['name']) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
-        // Nếu có ảnh cũ thì xoá
-        if ($existingPublicId) {
-            deleteCloudinaryImage($existingPublicId);
-        }
-
+        if ($existingId) deleteCloudinaryImage($existingId);
         $tempPath = $_FILES[$inputName]['tmp_name'];
         return uploadImageToCloudinary($tempPath);
     }
-
-    // Không upload mới -> giữ ảnh cũ
-    return [
-        'url' => $existingImageUrl,
-        'public_id' => $existingPublicId
-    ];
+    return ['url' => $existingUrl, 'public_id' => $existingId];
 }
 
-// --- Xử lý POST ---
+// Xử lý POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic     = $_POST['topic'] ?? '';
-    $question  = $_POST['question'] ?? '';
-    $answer1   = $_POST['answer1'] ?? '';
-    $answer2   = $_POST['answer2'] ?? '';
-    $answer3   = $_POST['answer3'] ?? '';
-    $answer4   = $_POST['answer4'] ?? '';
-    $correct   = $_POST['answer'] ?? '';
-    $mc_id     = $_POST['mc_id'] ?? '';
-    $existing_image_url = $_POST['existing_image'] ?? '';
-    $existing_public_id = $_POST['public_id'] ?? '';
+    $topic    = $_POST['topic']    ?? '';
+    $question = $_POST['question'] ?? '';
+    $a1       = $_POST['answer1']  ?? '';
+    $a2       = $_POST['answer2']  ?? '';
+    $a3       = $_POST['answer3']  ?? '';
+    $a4       = $_POST['answer4']  ?? '';
+    $correct  = $_POST['answer']   ?? '';
+    $mc_id    = $_POST['mc_id']    ?? '';
+    $oldUrl   = $_POST['existing_image'] ?? '';
+    $oldId    = $_POST['public_id']      ?? '';
 
-    // Upload ảnh nếu có
-    $imageData = handleImageUpload('image', $existing_image_url, $existing_public_id);
-    $image_url = $imageData['url'];
-    $public_id = $imageData['public_id'];
+    $image = handleImageUpload('image', $oldUrl, $oldId);
+    $imageUrl = $image['url'];
+    $publicId = $image['public_id'];
 
     try {
-        if (!empty($mc_id)) {
+        if ($mc_id) {
             // Cập nhật
             $stmt = $conn->prepare("
-                UPDATE mc_questions 
-                SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=?, mc_image_public_id=?
+                UPDATE mc_questions SET 
+                    mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, 
+                    mc_answer3=?, mc_answer4=?, mc_correct_answer=?, 
+                    mc_image_url=?, mc_image_public_id=?
                 WHERE mc_id=?
             ");
-            $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, $public_id, (int)$mc_id]);
+            $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId, (int)$mc_id]);
         } else {
             // Thêm mới
             $stmt = $conn->prepare("
                 INSERT INTO mc_questions 
-                (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url, mc_image_public_id) 
+                (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
+                 mc_correct_answer, mc_image_url, mc_image_public_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
-            $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, $public_id]);
+            $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId]);
             $mc_id = $conn->lastInsertId();
 
-            // Nếu có ảnh thì đổi tên public_id thành mc_{mc_id}
-            if ($public_id && $mc_id) {
-                $new_public_id = "mc_images/mc_" . $mc_id;
-                $cloudinary->uploadApi()->rename($public_id, $new_public_id, ["overwrite" => true]);
+            // Đổi tên ảnh nếu có
+            if ($publicId && $mc_id) {
+                $newId = "mc_images/mc_$mc_id";
+                $cloudinary->uploadApi()->rename($publicId, $newId, ['overwrite' => true]);
 
-                $new_url = 'https://res.cloudinary.com/' . CLOUD_NAME . '/image/upload/v' . time() . '/' . $new_public_id;
-
-                // Cập nhật lại đường dẫn và public_id mới
+                // Cập nhật lại CSDL
                 $stmt = $conn->prepare("
                     UPDATE mc_questions 
                     SET mc_image_url=?, mc_image_public_id=? 
                     WHERE mc_id=?
                 ");
-                $stmt->execute([$new_url, $new_public_id, $mc_id]);
+                $newUrl = $cloudinary->image($newId)->toUrl();
+                $stmt->execute([$newUrl, $newId, $mc_id]);
             }
         }
 
-        header('Location: ../pages/mc/mc_form.php');
+        // Trả về JSON nếu gọi qua AJAX
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'mc_id' => $mc_id]);
         exit;
+
     } catch (PDOException $e) {
-        echo 'Lỗi lưu dữ liệu: ' . $e->getMessage();
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Lỗi: ' . $e->getMessage()]);
         exit;
     }
 }
