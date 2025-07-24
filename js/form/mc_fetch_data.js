@@ -1,7 +1,7 @@
 function fetchQuestionById(mc_id) {
   if (!mc_id) return;
 
-  fetch(`../api/mc/mc_get_data.php?mc_id=${mc_id}`)
+  fetch(`../../api/mc/mc_get_data.php?mc_id=${mc_id}`)
     .then(res => res.json())
     .then(res => {
       if (!res.success || !res.data) {
