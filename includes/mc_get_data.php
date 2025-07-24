@@ -1,5 +1,5 @@
 <?php
-require_once '../db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 header('Content-Type: application/json; charset=utf-8');
 error_reporting(E_ALL);
