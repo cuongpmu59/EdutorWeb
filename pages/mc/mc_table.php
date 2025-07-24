@@ -58,15 +58,26 @@ require_once '../../db_connection.php';
         ],
         dom: 'Bfrtip',
         buttons: ['excel'],
-        pageLength: 10
+        pageLength: 10,
+        language: {
+          search: "Tìm kiếm:",
+          lengthMenu: "Hiển thị _MENU_ mục",
+          info: "Hiển thị _START_ đến _END_ trong tổng _TOTAL_ mục",
+          paginate: {
+            first: "Đầu",
+            last: "Cuối",
+            next: "Tiếp",
+            previous: "Trước"
+          }
+        }
       });
 
-      // Tìm kiếm
+      // Tìm kiếm theo input
       $('#mcSearchBox').on('keyup', function () {
         table.search(this.value).draw();
       });
 
-      // Lọc chủ đề khi có dữ liệu mới
+      // Tạo danh sách chủ đề sau khi nhận dữ liệu
       table.on('xhr', function () {
         const data = table.ajax.json().data;
         const topics = [...new Set(data.map(item => item.mc_topic))].sort();
@@ -77,12 +88,12 @@ require_once '../../db_connection.php';
         });
       });
 
+      // Lọc theo chủ đề
       $('#mcTopicFilter').on('change', function () {
-        const val = $(this).val();
-        table.column(1).search(val).draw();
+        table.column(1).search(this.value).draw();
       });
 
-      // Gửi dữ liệu dòng được chọn về form cha qua postMessage
+      // Gửi postMessage về form cha khi chọn dòng
       $('#mcTable tbody').on('click', 'tr', function () {
         const rowData = table.row(this).data();
         if (rowData && rowData.mc_id) {
