@@ -38,8 +38,5 @@ function fillForm(data) {
     MathJax.typeset();
   }
 }
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('formContainer');
-  if (form) form.style.display = 'block'; // ép hiện
-});
+
 
