@@ -66,7 +66,7 @@ require_once '../../db_connection.php';
         table.search(this.value).draw();
       });
 
-      // Lọc chủ đề
+      // Lọc chủ đề khi có dữ liệu mới
       table.on('xhr', function () {
         const data = table.ajax.json().data;
         const topics = [...new Set(data.map(item => item.mc_topic))].sort();
@@ -82,10 +82,10 @@ require_once '../../db_connection.php';
         table.column(1).search(val).draw();
       });
 
-      // Gửi postMessage khi click vào 1 dòng
+      // Gửi dữ liệu dòng được chọn về form cha qua postMessage
       $('#mcTable tbody').on('click', 'tr', function () {
         const rowData = table.row(this).data();
-        if (window.parent && rowData && rowData.mc_id) {
+        if (rowData && rowData.mc_id) {
           window.parent.postMessage({
             type: 'mc_select_row',
             data: { mc_id: rowData.mc_id }
