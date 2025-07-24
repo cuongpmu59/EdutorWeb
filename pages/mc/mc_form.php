@@ -28,7 +28,6 @@ require_once __DIR__ . '/../../includes/db_connection.php';
       </h2>
       <!-- Xem trước toàn bộ -->
       <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-        <!-- <h3>Xem trước toàn bộ</h3> -->
         <div id="mcPreviewContent"></div>
       </div>
 
