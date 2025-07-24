@@ -160,8 +160,7 @@
 .mc-inline-field .toggle-preview {
   background: none;
   border: none;
-  /* cursor: pointer; */
-  color: #666;
+  color: #007bff;
   font-size: 14px;
   padding: 0;
 }
