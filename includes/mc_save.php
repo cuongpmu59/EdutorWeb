@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/db_connection.php';
-require_once __DIR__ . '/cloudinary_config.php'; // File chứa cấu hình Cloudinary
+require_once __DIR__ . '/config.php'; // File chứa cấu hình Cloudinary
 
 use Cloudinary\Cloudinary;
 use Cloudinary\Api\Upload\UploadApi;
