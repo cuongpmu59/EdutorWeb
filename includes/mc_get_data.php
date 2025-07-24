@@ -18,7 +18,7 @@ try {
             exit;
         }
 
-        $stmt = $conn->prepare("SELECT * FROM multiple_choice WHERE mc_id = ?");
+        $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
         $stmt->execute([$mc_id]);
         $row = $stmt->fetch();
 
