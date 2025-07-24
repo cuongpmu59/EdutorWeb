@@ -2,9 +2,11 @@
 require_once '../db_connection.php';
 
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+// Nếu có mc_id, trả về một câu hỏi
 if (isset($_GET['mc_id'])) {
-    // Lấy 1 câu hỏi theo mc_id
     $mc_id = intval($_GET['mc_id']);
 
     $stmt = $conn->prepare("SELECT * FROM multiple_choice WHERE mc_id = ?");
@@ -29,20 +31,10 @@ if (isset($_GET['mc_id'])) {
     exit;
 }
 
-// Truy xuất tất cả câu hỏi cho DataTables
-$sql = "SELECT mc_id, mc_topic, mc_question FROM multiple_choice ORDER BY mc_id DESC";
-$result = $conn->query($sql);
-
-$data = [];
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-}
-
+// Nếu không có mc_id, có thể dùng cho các mục đích khác (nếu cần)
 echo json_encode([
-    'success' => true,
-    'data' => $data
+    'success' => false,
+    'message' => 'Thiếu mc_id'
 ]);
-
 $conn->close();
+exit;
