@@ -1,5 +1,4 @@
 <?php
-// includes/db_connection.php
 require_once __DIR__ . '/../env/dotenv.php'; // Nạp hàm env()
 
 $host    = env('DB_HOST', 'localhost');
