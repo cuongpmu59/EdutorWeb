@@ -6,18 +6,18 @@ session_start();
 
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-$mc = null;
-
+// Chỉ xử lý POST (Lưu hoặc Cập nhật)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic   = $_POST['topic'] ?? '';
-    $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct = $_POST['answer'] ?? '';
+    $topic     = $_POST['topic'] ?? '';
+    $question  = $_POST['question'] ?? '';
+    $answer1   = $_POST['answer1'] ?? '';
+    $answer2   = $_POST['answer2'] ?? '';
+    $answer3   = $_POST['answer3'] ?? '';
+    $answer4   = $_POST['answer4'] ?? '';
+    $correct   = $_POST['answer'] ?? '';
     $image_url = '';
 
+    // Xử lý ảnh tải lên
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../../uploads/';
         $filename = time() . '_' . basename($_FILES['image']['name']);
@@ -30,22 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($_POST['mc_id'])) {
+        // Cập nhật
         $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
         $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, (int)$_POST['mc_id']]);
     } else {
+        // Thêm mới
         $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url]);
     }
 
     header('Location: mc_form.php');
     exit;
-}
-
-if (!empty($_GET['mc_id'])) {
-    $id = (int)$_GET['mc_id'];
-    $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
-    $stmt->execute([$id]);
-    $mc = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
@@ -74,17 +69,18 @@ if (!empty($_GET['mc_id'])) {
       </h2>
 
       <div id="mcMainContent" class="mc-columns">
+        <!-- Cột trái -->
         <div class="mc-col mc-col-left">
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
-            <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
+            <input type="text" id="mc_topic" name="topic" required value="">
           </div>
 
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
               <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
             </label>
-            <textarea id="mc_question" name="question" required><?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
+            <textarea id="mc_question" name="question" required></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
@@ -96,7 +92,7 @@ if (!empty($_GET['mc_id'])) {
             <div class="mc-field mc-inline-field">
               <label for="mc_answer<?= $i ?>"><?= $label ?>.</label>
               <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
-              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
+              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="">
               <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
             </div>
           <?php endfor; ?>
@@ -105,19 +101,18 @@ if (!empty($_GET['mc_id'])) {
             <label for="mc_correct_answer">Đáp án đúng:</label>
             <select id="mc_correct_answer" name="answer" required>
               <?php foreach ($labels as $label): ?>
-                <option value="<?= $label ?>" <?= (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '' ?>><?= $label ?></option>
+                <option value="<?= $label ?>"><?= $label ?></option>
               <?php endforeach; ?>
             </select>
           </div>
         </div>
 
+        <!-- Cột phải -->
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
-              <?php if (!empty($mc['mc_image_url'])): ?>
-                <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
-              <?php endif; ?>
+              <img id="mc_image_preview" src="" alt="Hình minh hoạ" style="display:none;">
             </div>
             <div class="mc-image-buttons">
               <label class="btn-upload">
@@ -126,9 +121,7 @@ if (!empty($_GET['mc_id'])) {
               </label>
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
-            <?php if (!empty($mc['mc_image_url'])): ?>
-              <input type="hidden" name="existing_image" value="<?= htmlspecialchars($mc['mc_image_url']) ?>">
-            <?php endif; ?>
+            <input type="hidden" name="existing_image" id="existing_image" value="">
           </div>
 
           <div class="mc-buttons">
@@ -142,26 +135,26 @@ if (!empty($_GET['mc_id'])) {
         </div>
       </div>
 
-      <?php if (!empty($mc['mc_id'])): ?>
-        <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
-      <?php endif; ?>
+      <!-- Hidden: mc_id để cập nhật -->
+      <input type="hidden" id="mc_id" name="mc_id" value="">
     </form>
 
+    <!-- iframe bảng -->
     <div id="mcTableWrapper" style="display:none;">
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 
+    <!-- Xem trước toàn bộ -->
     <div id="mcPreview" class="mc-preview-zone" style="display:none;">
       <h3>Xem trước toàn bộ</h3>
       <div id="mcPreviewContent"></div>
     </div>
   </div>
 
+  <!-- JavaScript xử lý -->
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
-  <script src="../../js/form/mc_button.js"></script>
-  <script src="../../js/form/mc_preview_all.js"></script>
-  <script src="../../js/form/mc_listener.js"></script>
+  <script src="../../js/form/mc_fetch_data.js"></script>
 </body>
 </html>
