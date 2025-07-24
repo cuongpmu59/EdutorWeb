@@ -37,7 +37,7 @@ try {
     }
 
     // Nếu không có mc_id => trả về toàn bộ danh sách rút gọn
-    $stmt = $conn->query("SELECT mc_id, mc_topic, mc_question FROM multiple_choice ORDER BY mc_id DESC");
+    $stmt = $conn->query("SELECT mc_id, mc_topic, mc_question FROM mc_questions ORDER BY mc_id DESC");
     $rows = $stmt->fetchAll();
 
     echo json_encode([
