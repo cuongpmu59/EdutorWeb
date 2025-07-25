@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const previewImage = document.getElementById('mc_image_preview');
   const imagePreviewContainer = document.querySelector('.mc-image-preview');
   const existingInput = document.getElementById('existing_image');
+  const publicIdInput = document.getElementById('public_id');
   const removeBtn = document.getElementById('mc_remove_image');
 
-  // ===== Tạo label tên file nếu chưa có =====
+  // Tạo label hiển thị tên file nếu chưa có
   let filenameLabel = document.getElementById('image_filename');
   if (!filenameLabel) {
     filenameLabel = document.createElement('span');
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     imagePreviewContainer.appendChild(filenameLabel);
   }
 
-  // ===== Upload ảnh và xem trước =====
+  // ===== Xem trước và upload ảnh lên server =====
   fileInput.addEventListener('change', () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -26,12 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('image', file);
 
     const mcId = document.getElementById('mc_id')?.value;
-    const oldUrl = document.getElementById('existing_image').value;
-    const oldPublicId = document.getElementById('public_id')?.value;
-
     if (mcId) formData.append('mc_id', mcId);
+
+    const oldUrl = existingInput.value;
+    const oldId = publicIdInput.value;
+
     if (oldUrl) formData.append('existing_image', oldUrl);
-    if (oldPublicId) formData.append('public_id', oldPublicId);
+    if (oldId) formData.append('public_id', oldId);
 
     fetch('includes/mc_image.php', {
       method: 'POST',
@@ -43,10 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
           previewImage.src = data.url;
           previewImage.style.display = 'block';
           filenameLabel.textContent = file.name;
-
-          // Cập nhật input ẩn
-          document.getElementById('existing_image').value = data.url;
-          document.getElementById('public_id').value = data.public_id;
+          existingInput.value = data.url;
+          publicIdInput.value = data.public_id;
         } else {
           alert('❌ Upload ảnh thất bại!');
           previewImage.style.display = 'none';
@@ -60,13 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // ===== Xoá ảnh khỏi preview và reset input =====
+  // ===== Xoá ảnh khỏi preview và input =====
   removeBtn?.addEventListener('click', () => {
     previewImage.src = '';
     previewImage.style.display = 'none';
     fileInput.value = '';
-    document.getElementById('existing_image').value = '';
-    document.getElementById('public_id').value = '';
+    existingInput.value = '';
+    publicIdInput.value = '';
     filenameLabel.textContent = '';
   });
 });
