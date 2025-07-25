@@ -34,6 +34,13 @@ header("X-Frame-Options: SAMEORIGIN");
   </div>
 </div>
 
+<!-- Nhập Excel -->
+<div class="excel-import-box" style="margin: 10px 0;">
+  <button id="importExcelBtn">📥 Nhập từ Excel</button>
+  <input type="file" id="excelFile" accept=".xlsx" style="display: none;" />
+</div>
+
+
 <!-- Bảng dữ liệu -->
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -46,12 +53,6 @@ header("X-Frame-Options: SAMEORIGIN");
     </thead>
     <tbody></tbody>
   </table>
-</div>
-
-<!-- Nhập Excel -->
-<div class="excel-import-box" style="margin: 10px 0;">
-  <label for="excelFile">📥 Nhập từ Excel:</label>
-  <input type="file" id="excelFile" accept=".xlsx" />
 </div>
 
 <!-- Modal xem ảnh -->
