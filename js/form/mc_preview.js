@@ -14,7 +14,7 @@ function updatePreview(id) {
   if (!inputEl || !previewEl) return;
 
   const value = inputEl.value.trim();
-  previewEl.innerHTML = value ? `\\(${value}\\)` : '';
+  previewEl.innerHTML = value; // Giữ nguyên text, kể cả dấu $...$ cho MathJax
 
   if (window.MathJax) {
     MathJax.typesetPromise([previewEl]);
@@ -31,7 +31,7 @@ function updateFullPreview() {
 
   previewFields.forEach(({ id, label }) => {
     const value = document.getElementById(id)?.value.trim() || '';
-    html += `<p><strong>${label}:</strong> \\(${value}\\)</p>`;
+    html += `<p><strong>${label}:</strong> ${value}</p>`; // Không thêm \\(...\\)
   });
 
   html += `<p><strong>Đáp án đúng:</strong> ${correct}</p>`;
