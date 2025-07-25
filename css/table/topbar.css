@@ -1,0 +1,92 @@
+/* ==============================
+   TOPBAR - Thanh điều khiển đẹp hơn
+============================== */
+
+/* ==== Nút chuẩn ==== */
+.topbar button,
+.topbar input[type="button"],
+.topbar input[type="submit"] {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--btn-bg, #007BFF);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.topbar button:hover,
+.topbar input[type="button"]:hover,
+.topbar input[type="submit"]:hover {
+  background-color: var(--btn-hover, #0056b3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.topbar button:active,
+.topbar input[type="button"]:active,
+.topbar input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ==== Ô input tìm kiếm ==== */
+.topbar input[type="search"] {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 180px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.topbar input[type="search"]:focus {
+  border-color: var(--btn-bg, #007BFF);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* ==== Dropdown lọc ==== */
+.topbar select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.topbar select:focus {
+  border-color: var(--btn-bg, #007BFF);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* ==== Dark mode support ==== */
+body.dark .topbar {
+  background-color: var(--bg-dark, #2c2c2c);
+  border-color: #444;
+}
+
+body.dark .topbar input,
+body.dark .topbar select {
+  background-color: var(--input-dark, #3a3a3a);
+  color: var(--color-light, #f5f5f5);
+  border-color: #555;
+}
+
+body.dark .topbar button {
+  background-color: var(--btn-bg-dark, #3498db);
+  color: white;
+}
+
+body.dark .topbar button:hover {
+  background-color: var(--btn-hover-dark, #217dbb);
+}
