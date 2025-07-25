@@ -76,7 +76,9 @@ require_once __DIR__ . '/../../includes/db_connection.php';
             <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
               <img id="mc_image_preview" src="" alt="Hình minh hoạ" style="display:none;">
+              <div class="image-name">ten_file.jpg</div>
             </div>
+
             <div class="mc-image-buttons">
               <label class="btn-upload">
                 Tải ảnh
