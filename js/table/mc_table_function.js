@@ -1,28 +1,29 @@
 $(document).ready(function () {
   // Khởi tạo bảng với AJAX
-  const table = $('#mcTable').DataTable({
-    ajax: {
-      url: '../../api/mc/get_all.php',
-      dataSrc: ''
-    },
+  $('#mcTable').DataTable({
+    data: [], // dữ liệu sẽ được load sau qua AJAX
     columns: [
-      { data: 'mc_id' },
-      { data: 'mc_topic' },
-      { data: 'mc_question' },
-      { data: 'mc_answer1' },
-      { data: 'mc_answer2' },
-      { data: 'mc_answer3' },
-      { data: 'mc_answer4' },
-      { data: 'mc_correct_answer' },
+      { data: 'id' },
+      { data: 'topic' },
+      { data: 'question' },
+      { data: 'answer1' },
+      { data: 'answer2' },
+      { data: 'answer3' },
+      { data: 'answer4' },
+      { data: 'correct' },
       {
-        data: 'mc_image_url',
-        render: function (data) {
-          if (data) {
-            return `<img src="${data}" class="mc-thumbnail" data-full="${data}" onerror="this.style.display='none'">`;
-          } else {
-            return '';
-          }
-        }
+        data: 'image',
+        render: function (data, type, row) {
+          if (!data) return '';
+          
+          // Xử lý thumb từ link gốc Cloudinary
+          const thumbUrl = data.replace("/upload/", "/upload/c_thumb,w_60,h_60/");
+          const fullUrl = data;
+  
+          return `<img src="${thumbUrl}" class="mc-thumbnail" data-full="${fullUrl}" alt="Ảnh" />`;
+        },
+        orderable: false,
+        searchable: false
       }
     ],
     responsive: true,
