@@ -52,8 +52,8 @@ require_once __DIR__ . '/../../includes/db_connection.php';
             $label = $labels[$i - 1];
           ?>
             <div class="mc-field mc-inline-field">
-              <label for="mc_answer<?= $i ?>"><?= $label ?>.</label>
-              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
+              <label for="mc_answer<?= $i ?>"><?= $label ?>.
+              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button></label>
               <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="">
               <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
             </div>
