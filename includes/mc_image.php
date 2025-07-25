@@ -6,8 +6,6 @@ require_once __DIR__ . '/../env/config.php';
 require_once __DIR__ . '/../vendor/autoload.php'; // Đảm bảo Cloudinary SDK được autoload
 
 use Cloudinary\Cloudinary;
-echo 'Cloud: ' . CLOUDINARY_CLOUD_NAME;
-exit;
 
 // Kiểm tra nếu gọi trực tiếp không phải POST thì chặn
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
