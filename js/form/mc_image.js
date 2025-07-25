@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (oldUrl) formData.append('existing_image', oldUrl);
     if (oldPublicId) formData.append('public_id', oldPublicId);
 
-    fetch('includes/mc_image.php', {
+    fetch('../../includes/mc_image.php', {
       method: 'POST',
       body: formData
     })
