@@ -1,9 +1,6 @@
 $(document).ready(function () {
-  // Lưu biến để dùng lại
-  let table;
-
   // Khởi tạo bảng với AJAX
-  table = $('#mcTable').DataTable({
+  const table = $('#mcTable').DataTable({
     ajax: {
       url: '../../api/mc/get_all.php',
       dataSrc: ''
@@ -21,7 +18,7 @@ $(document).ready(function () {
         data: 'mc_image_url',
         render: function (data) {
           if (data) {
-            return `<img src="${data}" class="thumb" onerror="this.style.display='none'">`;
+            return `<img src="${data}" class="mc-thumbnail" data-full="${data}" onerror="this.style.display='none'">`;
           } else {
             return '';
           }
