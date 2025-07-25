@@ -1,12 +1,30 @@
 <?php
-require_once __DIR__ . '/db_connection.php';
+require_once __DIR__ . '/../db_connection.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
+use Dotenv\Dotenv;
+
+// Tải biến môi trường
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../env');
+$dotenv->load();
+
+// Cấu hình Cloudinary
+$cloudinary = new Cloudinary([
+    'cloud' => [
+        'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
+        'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
+        'api_secret' => $_ENV['CLOUDINARY_API_SECRET'],
+    ]
+]);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(403);
-    echo '<h3 style="font-family: sans-serif; color: #c00;">Truy cập không hợp lệ. Đây là endpoint xử lý, không hỗ trợ truy cập trực tiếp.</h3>';
+    echo '<h3 style="font-family: sans-serif; color: #c00;">Truy cập không hợp lệ.</h3>';
     exit;
 }
 
+// Lấy dữ liệu từ form
 $topic    = $_POST['topic']    ?? '';
 $question = $_POST['question'] ?? '';
 $a1       = $_POST['answer1']  ?? '';
@@ -42,7 +60,6 @@ try {
         $mc_id = $conn->lastInsertId();
     }
 
-    // ==================== TRẢ VỀ KẾT QUẢ ====================
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'mc_id' => $mc_id]);
     exit;
