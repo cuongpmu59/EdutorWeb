@@ -1,83 +1,75 @@
 $(document).ready(function () {
-  // Khởi tạo bảng với AJAX
-  $('#mcTable').DataTable({
-  data: [], // dữ liệu sẽ được load sau qua AJAX
-  columns: [
-    { data: 'id' },
-    { data: 'topic' },
-    { data: 'question' },
-    { data: 'answer1' },
-    { data: 'answer2' },
-    { data: 'answer3' },
-    { data: 'answer4' },
-    { data: 'correct' },
-    {
-      data: 'image',
-      render: function (data, type, row) {
-        if (!data) return '';
-        
-        // Xử lý thumb từ link gốc Cloudinary
-        const thumbUrl = data.replace("/upload/", "/upload/c_thumb,w_60,h_60/");
-        const fullUrl = data;
-
-        return `<img src="${thumbUrl}" class="mc-thumbnail" data-full="${fullUrl}" alt="Ảnh" />`;
-      },
-      orderable: false,
-      searchable: false
-    }
-  ],
-    responsive: true,
-    dom: 'Bfrtip',
-    buttons: [
-      {
-        extend: 'excelHtml5',
-        title: 'Cau_Hoi_Trac_Nghiem',
-        text: '📥 Xuất Excel',
-        exportOptions: {
-          columns: ':visible'
+    window.mcTable = $('#mcTable').DataTable({
+      scrollX: true,
+      dom: '<"top-controls"Bf>rtip',
+      fixedHeader: true,
+      pageLength: 10,
+      lengthMenu: [10, 25, 50, 100],
+      buttons: [
+        {
+          extend: 'excelHtml5',
+          text: '⬇️ Xuất Excel',
+          title: 'mc_questions',
+          exportOptions: { columns: ':visible' }
+        },
+        {
+          extend: 'print',
+          text: '🖨️ In bảng',
+          exportOptions: { columns: ':visible' }
+        },
+        {
+          text: '📥 Nhập Excel',
+          action: function () { $('#excelFile').click(); }
         }
-      },
-      {
-        extend: 'print',
-        text: '🖨 In bảng'
+      ]
+    });
+  
+    // Tùy biến bộ lọc chủ đề và ô tìm kiếm
+    $('#mcTable_filter').html(`
+      <div class="filter-left">
+        📚 Chủ đề:
+        <select id="filter-topic">
+          <option value="">-- Tất cả --</option>
+        </select>
+      </div>
+      <div class="filter-right">
+        🔍 Tìm kiếm: <input type="search" class="form-control input-sm" placeholder="">
+      </div>
+    `);
+  
+    // Tải dữ liệu chủ đề từ PHP
+    $.get('includes/mc_filter.php', function (options) {
+      $('#filter-topic').append(options);
+    });
+  
+    // Lọc theo chủ đề
+    $('#filter-topic').on('change', function () {
+      mcTable.column(1).search(this.value).draw();
+    });
+  
+    // Tìm kiếm tổng
+    $('#mcTable_filter input[type="search"]').on('keyup change', function () {
+      mcTable.search(this.value).draw();
+    });
+  
+    // Tìm kiếm không dấu
+    $.fn.dataTable.ext.type.search.string = function (data) {
+      return !data ? '' : data.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    };
+  
+    // Sau khi vẽ bảng
+    mcTable.on('draw', function () {
+      if (window.MathJax) MathJax.typesetPromise();
+  
+      if (!mcTable.row('.selected').node()) {
+        const firstRow = mcTable.row(0);
+        if (firstRow.node()) {
+          $(firstRow.node()).addClass('selected');
+          if (typeof sendRowData === 'function') {
+            sendRowData(firstRow);
+          }
+        }
       }
-    ],
-    language: {
-      search: '🔍 Tìm kiếm:',
-      lengthMenu: 'Hiển thị _MENU_ dòng',
-      info: 'Hiển thị _START_ đến _END_ trong _TOTAL_ dòng',
-      paginate: {
-        previous: '←',
-        next: '→'
-      },
-      zeroRecords: 'Không tìm thấy kết quả'
-    },
-    initComplete: function () {
-      // Sau khi bảng khởi tạo: render công thức + tạo bộ lọc chủ đề
-      MathJax.typeset();
-
-      const api = this.api();
-      const topics = new Set();
-
-      api.column(1).data().each(function (d) {
-        if (d) topics.add(d);
-      });
-
-      const select = $('#topicFilter');
-      select.append(`<option value="">Tất cả</option>`);
-      [...topics].sort().forEach(topic => {
-        select.append(`<option value="${topic}">${topic}</option>`);
-      });
-
-      select.on('change', function () {
-        const val = $.fn.dataTable.util.escapeRegex($(this).val());
-        api.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
-      });
-    }
+    });
   });
-
-  // Re-render MathJax sau mỗi lần vẽ lại bảng
-  $('#mcTable').on('draw.dt', function () {
-    MathJax.typeset();
-  });
-});
+  
