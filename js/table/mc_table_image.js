@@ -1,14 +1,13 @@
-$(document).ready(function () {
-    $(document).on('click', '.thumb', function () {
-      const src = $(this).attr('src');
-      if (src) {
-        $('#imgModalContent').attr('src', src);
-        $('#imgModal').fadeIn();
-      }
-    });
-  
-    $('#imgModal').on('click', function () {
-      $(this).fadeOut();
-    });
-  });
-  
+$(document).on("click", ".mc-thumbnail", function () {
+  const fullSrc = $(this).data("full");
+  $("#imgModalContent").attr("src", fullSrc);
+  $("#imgModal").css("display", "flex");
+});
+
+// Click ra ngoài để đóng modal
+$("#imgModal").on("click", function (e) {
+  if (e.target.id === "imgModal" || e.target.id === "imgModalContent") {
+    $(this).hide();
+    $("#imgModalContent").attr("src", ""); // reset
+  }
+});
