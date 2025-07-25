@@ -5,6 +5,7 @@ header("X-Frame-Options: SAMEORIGIN");
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
 
   <!-- CSS ngoài -->
@@ -13,7 +14,7 @@ header("X-Frame-Options: SAMEORIGIN");
   <link rel="stylesheet" href="../../css/table/mc_table.css">
   <link rel="stylesheet" href="../../css/table/mc_filter.css">
 
-  <!-- Thư viện hỗ trợ MathJax và Excel -->
+  <!-- MathJax và Excel -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -22,10 +23,10 @@ header("X-Frame-Options: SAMEORIGIN");
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 
-<!-- Bộ lọc tìm kiếm & chủ đề -->
+<!-- Bộ lọc + tìm kiếm -->
 <div class="mc-filter-container">
   <div class="search-box">
-    <input type="search" placeholder="Tìm kiếm trong bảng..." />
+    <input type="search" id="mcSearchInput" placeholder="Tìm kiếm trong bảng..." />
   </div>
   <div class="filter-box">
     <label for="topicFilter">Chủ đề:</label>
@@ -47,19 +48,16 @@ header("X-Frame-Options: SAMEORIGIN");
   </table>
 </div>
 
+<!-- Nhập Excel -->
+<div class="excel-import-box" style="margin: 10px 0;">
+  <label for="excelFile">📥 Nhập từ Excel:</label>
+  <input type="file" id="excelFile" accept=".xlsx" />
+</div>
+
 <!-- Modal xem ảnh -->
 <div id="imgModal" style="display:none; position:fixed;top:0;left:0;width:100%;height:100%;background:#000000bb;align-items:center;justify-content:center;z-index:1000;">
   <img id="imgModalContent" src="" style="max-width:90%;max-height:90%;border:4px solid white;box-shadow:0 0 10px white;">
 </div>
-
-<!-- Nhập Excel -->
-<!-- <input type="file" id="excelFile" accept=".xlsx" style="margin-top:20px;" /> -->
-
-<!-- Nhập Excel -->
-<div style="margin: 10px 0;">
-  <input type="file" id="excelFile" accept=".xlsx" />
-</div>
-
 
 <!-- JS ngoài -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
