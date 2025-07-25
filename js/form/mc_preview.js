@@ -1,88 +1,111 @@
-document.addEventListener('DOMContentLoaded', function () {
-  // Xem trước từng phần tử (câu hỏi hoặc đáp án) — hỗ trợ auto-preview khi đang gõ
-  document.querySelectorAll('.toggle-preview').forEach(btn => {
-    btn.addEventListener('click', function () {
-      const targetId = this.dataset.target;
-      const input = document.getElementById(targetId);
-      const preview = document.getElementById(`preview-${targetId}`);
+// Danh sách các trường liên quan
+const previewFields = [
+  { id: 'mc_question', label: 'Câu hỏi' },
+  { id: 'mc_answer1', label: 'A' },
+  { id: 'mc_answer2', label: 'B' },
+  { id: 'mc_answer3', label: 'C' },
+  { id: 'mc_answer4', label: 'D' }
+];
 
-      if (!input || !preview) return;
+// Cập nhật preview cho từng trường riêng lẻ
+function updatePreview(id) {
+  const inputEl = document.getElementById(id);
+  const previewEl = document.getElementById(`preview-${id}`);
+  if (!inputEl || !previewEl) return;
 
-      const updatePreview = () => {
-        preview.innerHTML = escapeHTML(input.value);
-        if (window.MathJax && MathJax.typesetPromise) {
-          MathJax.typesetPromise([preview]).catch(err => console.error(err.message));
-        }
-      };
+  const value = inputEl.value.trim();
+  previewEl.innerHTML = value ? `\\(${value}\\)` : '';
 
-      if (preview.style.display === 'none' || !preview.style.display) {
-        preview.style.display = 'block';
-        updatePreview();
-        input.addEventListener('input', updatePreview);
-        // Gắn hàm để có thể huỷ sau này
-        input._mc_preview_listener = updatePreview;
-      } else {
-        preview.style.display = 'none';
-        if (input._mc_preview_listener) {
-          input.removeEventListener('input', input._mc_preview_listener);
-          delete input._mc_preview_listener;
-        }
+  if (window.MathJax) {
+    MathJax.typesetPromise([previewEl]);
+  }
+}
+
+// Cập nhật toàn bộ nội dung vào mcPreviewContent
+function updateFullPreview() {
+  const topic = document.getElementById('mc_topic')?.value.trim() || '';
+  const answerSelect = document.getElementById('mc_correct_answer');
+  const correct = answerSelect ? answerSelect.value : '';
+
+  let html = `<p><strong>Chủ đề:</strong> ${topic}</p>`;
+
+  previewFields.forEach(({ id, label }) => {
+    const value = document.getElementById(id)?.value.trim() || '';
+    html += `<p><strong>${label}:</strong> \\(${value}\\)</p>`;
+  });
+
+  html += `<p><strong>Đáp án đúng:</strong> ${correct}</p>`;
+
+  const fullPreviewEl = document.getElementById('mcPreviewContent');
+  if (fullPreviewEl) {
+    fullPreviewEl.innerHTML = html;
+    if (window.MathJax) {
+      MathJax.typesetPromise([fullPreviewEl]);
+    }
+  }
+}
+
+// Thiết lập sự kiện input realtime cho tất cả trường
+function setupRealtimePreview() {
+  previewFields.forEach(({ id }) => {
+    const inputEl = document.getElementById(id);
+    if (inputEl) {
+      inputEl.addEventListener('input', () => {
+        updatePreview(id);
+        updateFullPreview();
+      });
+    }
+  });
+
+  // Cập nhật thêm khi chọn đáp án đúng
+  const correctAnswerEl = document.getElementById('mc_correct_answer');
+  if (correctAnswerEl) {
+    correctAnswerEl.addEventListener('change', updateFullPreview);
+  }
+
+  // Chủ đề cũng cập nhật realtime
+  const topicEl = document.getElementById('mc_topic');
+  if (topicEl) {
+    topicEl.addEventListener('input', updateFullPreview);
+  }
+}
+
+// Thiết lập nút con mắt ẩn/hiện preview từng trường
+function setupPreviewToggle() {
+  const toggleButtons = document.querySelectorAll('.toggle-preview');
+  toggleButtons.forEach(button => {
+    const targetId = button.getAttribute('data-target');
+    const previewEl = document.getElementById(`preview-${targetId}`);
+
+    button.addEventListener('click', () => {
+      if (!previewEl) return;
+      const isVisible = previewEl.style.display === 'block';
+      previewEl.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        updatePreview(targetId);
       }
     });
   });
+}
 
-  // Xem trước toàn bộ nội dung
-  const toggleBtn = document.getElementById('mcTogglePreview');
-  const previewZone = document.getElementById('mcPreview');
-  const previewContent = document.getElementById('mcPreviewContent');
+// Thiết lập toggle xem trước toàn bộ
+function setupFullPreviewToggle() {
+  const btn = document.getElementById('mcTogglePreview');
+  const zone = document.getElementById('mcPreview');
 
-  if (toggleBtn && previewZone && previewContent) {
-    toggleBtn.addEventListener('click', function () {
-      if (previewZone.style.display === 'none' || !previewZone.style.display) {
-        const topic = document.getElementById('mc_topic')?.value || '';
-        const question = document.getElementById('mc_question')?.value || '';
-        let imageHTML = '';
-        const imgEl = document.querySelector('.mc-image-preview img');
-        if (imgEl && imgEl.src) {
-          imageHTML = `<div class="preview-image"><img src="${imgEl.src}" alt="Hình minh hoạ"></div>`;
-        }
-        const opts = ['A.', 'B.', 'C.', 'D.'].map(letter => {
-        const idx = letterToIndex(letter);
-        const value = document.getElementById(`mc_answer${idx}`)?.value || '';
-        return `<li>${letter} ${escapeHTML(value)}</li>`; 
-        }).join('');
-
-        previewContent.innerHTML = `
-          <div class="preview-block">
-            <h4>Chủ đề: ${escapeHTML(topic)}</h4>
-            <p><strong>Câu hỏi:</strong> ${escapeHTML(question)}</p>
-            <ul class="preview-options">${opts}</ul>
-            ${imageHTML}
-          </div>
-        `;
-        previewZone.style.display = 'block';
-
-        if (window.MathJax && MathJax.typesetPromise) {
-          MathJax.typesetPromise([previewContent]).catch(err => console.error(err.message));
-        }
-      } else {
-        previewZone.style.display = 'none';
-      }
+  if (btn && zone) {
+    btn.addEventListener('click', () => {
+      const isVisible = zone.style.display === 'block';
+      zone.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) updateFullPreview();
     });
   }
+}
 
-  // Chuyển từ A–D sang index 1–4
-  function letterToIndex(letter) {
-    const map = { A: 1, B: 2, C: 3, D: 4 };
-    return map[letter] || 1;
-  }
-
-  // Escape để tránh lỗi với innerHTML
-  function escapeHTML(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\n/g, "<br>");
-  }
+// Khởi tạo tất cả khi DOM sẵn sàng
+document.addEventListener('DOMContentLoaded', () => {
+  setupRealtimePreview();
+  setupPreviewToggle();
+  setupFullPreviewToggle();
 });
