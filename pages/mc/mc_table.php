@@ -11,8 +11,7 @@ header("X-Frame-Options: SAMEORIGIN");
   <!-- CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-  <link rel="stylesheet" href="../../css/table/mc_table.css">
-  <link rel="stylesheet" href="../../css/table/mc_filter.css">
+  <link rel="stylesheet" href="../../css/table/table_ui.css">
 
   <!-- MathJax và Excel -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -25,9 +24,6 @@ header("X-Frame-Options: SAMEORIGIN");
 
 <!-- Bộ lọc + tìm kiếm -->
 <div class="mc-filter-container">
-  <div class="search-box">
-    <input type="search" id="mcSearchInput" placeholder="Tìm kiếm trong bảng..." />
-  </div>
   <div class="filter-box">
     <label for="topicFilter">Chủ đề:</label>
     <select id="topicFilter"></select>
