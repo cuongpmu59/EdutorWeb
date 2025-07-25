@@ -1,12 +1,9 @@
-/* css/form/mc_preview.css */
-
 /* Hộp xem trước ngay dưới input/textarea */
 .preview-box {
   margin-top: 8px;
   padding: 10px;
   border: 1px dashed #999;
   background-color: #f9f9f9;
-  font-style: italic;
   color: #333;
   border-radius: 5px;
   font-size: 15px;
