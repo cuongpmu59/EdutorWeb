@@ -49,6 +49,7 @@ function uploadImage($tmpPath, $cloudinary, $publicId = null): array {
             'public_id' => $res['public_id'] ?? ''
         ];
     } catch (Exception $e) {
+        error_log('[Cloudinary Upload Error] ' . $e->getMessage()); // GHI LẠI LỖI
         return ['url' => '', 'public_id' => ''];
     }
 }
