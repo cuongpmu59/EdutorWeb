@@ -1,27 +1,12 @@
-/* === ẢNH TRONG BẢNG === */
-#mcTable img.thumb {
+.mc-thumbnail {
   width: 60px;
-  height: auto;
+  height: 60px;
+  object-fit: cover;
   cursor: pointer;
   border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease-in-out;
 }
 
-/* === MODAL ẢNH PHÓNG TO === */
-#imgModal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-#imgModalContent {
-  max-width: 90%;
-  max-height: 90%;
-  border: 4px solid white;
-  box-shadow: 0 0 15px white;
+.mc-thumbnail:hover {
+  transform: scale(1.05);
 }
