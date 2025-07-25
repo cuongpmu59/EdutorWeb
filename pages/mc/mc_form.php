@@ -87,8 +87,8 @@ require_once __DIR__ . '/../../includes/db_connection.php';
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
             <input type="hidden" name="existing_image" id="existing_image" value="">
+            <input type="hidden" name="public_id" id="public_id" value="">
           </div>
-
           <div class="mc-buttons">
             <h4>Thao tác</h4>
             <button type="submit" id="mc_save">Lưu</button>
