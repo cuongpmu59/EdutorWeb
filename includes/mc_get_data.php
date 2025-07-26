@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../env/dotenv.php'; 
 require_once __DIR__ . '/db_connection.php';
 
-
 header('Content-Type: application/json');
 
 if (!isset($_GET['mc_id']) || !is_numeric($_GET['mc_id'])) {
@@ -18,7 +17,7 @@ try {
   $question = $stmt->fetch(PDO::FETCH_ASSOC);
 
   if ($question) {
-    echo json_encode($question);
+    echo json_encode(['data' => $question]); // ✅ Bọc vào 'data'
   } else {
     echo json_encode(['error' => 'Không tìm thấy câu hỏi']);
   }
