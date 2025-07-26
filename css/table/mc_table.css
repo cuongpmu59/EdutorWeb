@@ -7,7 +7,7 @@
   #mcTable tbody tr.selected {
     background-color: #e0f7fa !important;
   }
-  
+    
   div.dataTables_filter {
     display: flex;
     justify-content: space-between;
