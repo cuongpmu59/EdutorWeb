@@ -31,7 +31,7 @@ function updateFullPreview() {
 
   previewFields.forEach(({ id, label }) => {
     const value = document.getElementById(id)?.value.trim() || '';
-    html += `<p><strong>${label}:</strong> ${value}</p>`; // Không thêm \\(...\\)
+    html += `<p><strong>${label}. </strong> ${value}</p>`; // Không thêm \\(...\\)
   });
 
   html += `<p><strong>Đáp án đúng:</strong> ${correct}</p>`;
