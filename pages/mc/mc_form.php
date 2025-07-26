@@ -80,6 +80,9 @@ if (!empty($_GET['mc_id'])) {
         Câu hỏi trắc nghiệm
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
       </h2>
+      <div id="mcPreview" class="mc-preview-zone" style="display:none;">
+      <div id="mcPreviewContent"></div>
+      </div>
 
       <div id="mcMainContent" class="mc-columns">
         <div class="mc-col mc-col-left">
@@ -158,12 +161,7 @@ if (!empty($_GET['mc_id'])) {
     <div id="mcTableWrapper" style="display:none;">
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
-
-    <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-      <h3>Xem trước toàn bộ</h3>
-      <div id="mcPreviewContent"></div>
-    </div>
-  </div>
+</div>
 
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
