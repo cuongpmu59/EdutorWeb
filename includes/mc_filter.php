@@ -1,6 +1,12 @@
 <?php
 // Kết nối CSDL
-require_once __DIR__ . '/../../includes/db_connection.php';
+try {
+    require_once __DIR__ . '/../../includes/db_connection.php';
+} catch (Throwable $e) {
+    echo '<option value="">❌ Lỗi kết nối: ' . htmlspecialchars($e->getMessage()) . '</option>';
+    exit;
+}
+
 
 // Thiết lập header để trình duyệt hiểu đây là HTML
 header('Content-Type: text/html; charset=UTF-8');
