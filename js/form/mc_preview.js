@@ -97,7 +97,7 @@ function setupFullPreviewToggle() {
   if (btn && zone) {
     btn.addEventListener('click', () => {
       const isVisible = zone.style.display === 'block';
-      zone.style.display = isVisible ? 'none' : 'block';
+      zone.style.display = isVisible ? 'none' : 'flex';
       if (!isVisible) updateFullPreview();
     });
   }
