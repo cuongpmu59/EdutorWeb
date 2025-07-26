@@ -18,6 +18,7 @@ try {
 <head>
   <meta charset="UTF-8">
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
+  <?php require_once __DIR__ . '/mc_filter.php'; ?>
 
   <!-- Thư viện CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
