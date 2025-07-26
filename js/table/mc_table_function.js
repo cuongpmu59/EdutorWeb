@@ -37,7 +37,7 @@ $(document).ready(function () {
       `);
 
       // Tải dữ liệu chủ đề từ PHP
-      $.get('/includes/mc_filter.php', function (options) {
+      $.get('../../includes/mc_filter.php', function (options) {
         $('#filter-topic').append(options);
       });
 
