@@ -14,7 +14,7 @@ function updatePreview(id) {
   if (!inputEl || !previewEl) return;
 
   const value = inputEl.value.trim();
-  previewEl.innerHTML = value; // Giữ nguyên text, kể cả dấu $...$ cho MathJax
+  previewEl.innerHTML = value; // Giữ nguyên cả text lẫn LaTeX
 
   if (window.MathJax) {
     MathJax.typesetPromise([previewEl]);
@@ -31,7 +31,7 @@ function updateFullPreview() {
 
   previewFields.forEach(({ id, label }) => {
     const value = document.getElementById(id)?.value.trim() || '';
-    html += `<p><strong>${label}. </strong> ${value}</p>`; // Không thêm \\(...\\)
+    html += `<p><strong>${label}. </strong> ${value}</p>`;
   });
 
   html += `<p><strong>Đáp án đúng:</strong> ${correct}</p>`;
@@ -57,13 +57,13 @@ function setupRealtimePreview() {
     }
   });
 
-  // Cập nhật thêm khi chọn đáp án đúng
+  // Cập nhật khi chọn đáp án đúng
   const correctAnswerEl = document.getElementById('mc_correct_answer');
   if (correctAnswerEl) {
     correctAnswerEl.addEventListener('change', updateFullPreview);
   }
 
-  // Chủ đề cũng cập nhật realtime
+  // Cập nhật khi thay đổi chủ đề
   const topicEl = document.getElementById('mc_topic');
   if (topicEl) {
     topicEl.addEventListener('input', updateFullPreview);
@@ -79,7 +79,7 @@ function setupPreviewToggle() {
 
     button.addEventListener('click', () => {
       if (!previewEl) return;
-      const isVisible = previewEl.style.display === 'block';
+      const isVisible = window.getComputedStyle(previewEl).display !== 'none';
       previewEl.style.display = isVisible ? 'none' : 'block';
 
       if (!isVisible) {
@@ -96,9 +96,14 @@ function setupFullPreviewToggle() {
 
   if (btn && zone) {
     btn.addEventListener('click', () => {
-      const isVisible = zone.style.display === 'block';
-      zone.style.display = isVisible ? 'none' : 'flex';
-      if (!isVisible) updateFullPreview();
+      const isVisible = window.getComputedStyle(zone).display !== 'none';
+
+      if (isVisible) {
+        zone.style.display = 'none';
+      } else {
+        zone.style.display = 'flex';  // hoặc 'block' tùy layout CSS
+        updateFullPreview();
+      }
     });
   }
 }
