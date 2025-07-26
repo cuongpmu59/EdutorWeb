@@ -1,21 +1,17 @@
 .mc-filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9f9fb;
-    border-radius: 12px;
-    padding: 12px 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    gap: 16px;
-  }
-  
-  .search-box, .filter-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-box, .search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
   
   /* Icon */
   .search-box::before {
