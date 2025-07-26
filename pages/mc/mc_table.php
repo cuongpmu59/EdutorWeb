@@ -25,6 +25,8 @@ try {
 
   <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
+  <link rel="stylesheet" href="../../css/table/mc_table_filter.css">
+
 
   <!-- MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -36,7 +38,6 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<?php require_once __DIR__ . '/mc_filter.php'; ?>
 <div class="mc-filter-container"> 
   <div class="filter-box">
     <label for="topicFilter">🔍 Chủ đề:</label>
