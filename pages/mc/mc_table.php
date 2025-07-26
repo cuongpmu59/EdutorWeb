@@ -38,7 +38,6 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<?php require_once __DIR__ . '/mc_filter.php'; ?>
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
