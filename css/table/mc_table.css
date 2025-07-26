@@ -4,7 +4,7 @@
     cursor: pointer;
   }
   
-  #mcTable tbody tr.selected {
+  /* #mcTable tbody tr.selected {
     background-color: #e0f7fa !important;
   }
     
@@ -29,4 +29,4 @@
   #excelFile {
     display: none;
   }
-  
+   */
