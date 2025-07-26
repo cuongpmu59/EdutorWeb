@@ -25,7 +25,7 @@ try {
 
   <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
-  <link rel="stylesheet" href="../../css/table/mc_table_filter.css">
+  <link rel="stylesheet" href="../../css/table/mc_filter.css">
 
 
   <!-- MathJax -->
