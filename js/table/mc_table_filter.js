@@ -1,20 +1,16 @@
-$(document).ready(function () {
-    const table = $('#mcTable').DataTable();
+// Tải danh sách chủ đề vào select
+function loadTopicOptions() {
+    fetch('../../includes/mc_topic_options.php')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('topicFilter').innerHTML = html;
+      })
+      .catch(error => {
+        console.error('Lỗi khi tải danh sách chủ đề:', error);
+      });
+  }
   
-    // Load danh sách chủ đề từ server
-    $.get('../../includes/mc_filter.php', function (html) {
-      $('#topicFilter').append(html);
-    });
-  
-    // Lọc theo chủ đề (cột 1 là chủ đề)
-    $('#topicFilter').on('change', function () {
-      const val = $(this).val();
-      table.column(1).search(val).draw();
-    });
-  
-    // Lọc theo ô tìm kiếm tổng quát
-    $('#tableSearch').on('input', function () {
-      table.search(this.value).draw();
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    loadTopicOptions();
   });
   
