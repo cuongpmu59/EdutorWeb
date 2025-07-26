@@ -38,20 +38,7 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<!-- <div class="mc-filter-container"> 
-  <div class="filter-box">
-    <label for="topicFilter">🔍 Chủ đề:</label>
-    <select id="topicFilter">
-      <option value="">-- Tất cả --</option> -->
-      <!-- Các <option> sẽ được nạp qua JS từ get_mc_topics.php -->
-    <!-- </select>
-  </div>
-  <div class="search-box">
-    <label for="tableSearch">Tìm kiếm:</label>
-    <input type="text" id="tableSearch" placeholder="Nhập từ khóa...">
-  </div>
-</div> -->
-
+<?php require_once __DIR__ . '/mc_filter.php'; ?>
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
