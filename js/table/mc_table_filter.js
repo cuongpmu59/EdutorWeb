@@ -1,4 +1,4 @@
-// Tải danh sách chủ đề vào dropdown
+// Hàm tải danh sách chủ đề từ PHP
 function loadTopicOptions() {
     fetch('../../ajax/mc_topic_options.php')
       .then(response => response.text())
@@ -13,26 +13,26 @@ function loadTopicOptions() {
   document.addEventListener('DOMContentLoaded', () => {
     const topicFilter = document.getElementById('topicFilter');
     const searchInput = document.getElementById('mcSearch');
+  
+    // Đảm bảo DataTable đã khởi tạo (phải gọi sau khi init ở file khác)
     const table = $('#mcTable').DataTable();
   
-    // Gọi hàm tải chủ đề
+    // Tải danh sách chủ đề
     loadTopicOptions();
   
-    // Lọc bảng theo chủ đề
+    // Lọc theo chủ đề (cột 1)
     if (topicFilter) {
       topicFilter.addEventListener('change', function () {
-        const value = this.value;
-        // Cột 1 là 'Chủ đề' trong bảng
-        table.column(1).search(value).draw();
+        const val = this.value;
+        table.column(1).search(val).draw();
       });
     }
   
-    // Lọc theo nội dung câu hỏi
+    // Tìm kiếm theo nội dung câu hỏi (cột 2)
     if (searchInput) {
       searchInput.addEventListener('input', function () {
-        const value = this.value;
-        // Cột 2 là 'Câu hỏi'
-        table.column(2).search(value).draw();
+        const val = this.value;
+        table.column(2).search(val).draw();
       });
     }
   });
