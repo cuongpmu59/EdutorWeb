@@ -1,6 +1,6 @@
 // Hàm tải danh sách chủ đề từ PHP
 function loadTopicOptions() {
-    fetch('../../ajax/mc_topic_options.php')
+    fetch('../../includes/mc_topic_options.php')
       .then(response => response.text())
       .then(html => {
         document.getElementById('topicFilter').innerHTML = html;
