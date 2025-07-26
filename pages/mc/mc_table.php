@@ -87,9 +87,9 @@ try {
 <!-- Script chính -->
 <script src="../../js/table/mc_table_function.js"></script>
 <script src="../../js/table/mc_table_image.js"></script>
-<script src="../../js/table/mc_table_transmittion.js"></script>
 <script src="../../js/table/mc_table_excel.js"></script>
 <script src="../../js/table/mc_table_arrow.js"></script>
+<script src="../../js/table/mc_table_transmittion.js"></script>
 
 </body>
 </html>
