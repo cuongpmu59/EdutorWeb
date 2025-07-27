@@ -12,7 +12,7 @@ export function initDataTable() {
     dom: 'Bfrtip', 
     paging: true,
     searching: true,
-    responsive: false,
+    responsive: true,
     language: {
       url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
     }
