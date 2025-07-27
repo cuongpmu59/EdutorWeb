@@ -1,10 +1,4 @@
-/* .thumb {
-    max-width: 50px;
-    max-height: 50px;
-    cursor: pointer;
-  } */
-  
-  /* Container tổng chứa bộ lọc và nút export */
+/* Container tổng chứa bộ lọc và nút export */
 .mc-filter-container {
   display: flex;
   justify-content: space-between;
@@ -39,4 +33,14 @@ button.mc-export-excel {
 
 button.mc-export-excel:hover {
   background-color: #157347;
+}
+
+/* Lọc theo chủ đề*/
+.yadcf-filter-wrapper {
+  padding: 4px;
+}
+select.yadcf-filter {
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
