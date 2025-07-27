@@ -5,13 +5,6 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
-// try {
-//   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
-//   $stmt->execute();
-//   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// } catch (Exception $e) {
-//   $rows = [];
-// }
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -25,7 +18,7 @@ header("X-Frame-Options: SAMEORIGIN");
 
   <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
-  <link rel="stylesheet" href="../../css/table/mc_filter.css">
+  <!-- <link rel="stylesheet" href="../../css/table/mc_filter.css"> -->
 
 
   <!-- MathJax -->
