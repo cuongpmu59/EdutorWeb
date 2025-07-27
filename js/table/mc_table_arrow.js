@@ -1,41 +1,55 @@
-$(document).on('keydown', function (e) {
-  if (!window.mcTable) return;
+document.addEventListener("DOMContentLoaded", function () {
+  const table = $('#mcTable').DataTable();
+  let currentRowIndex = 0;
 
-  const table = mcTable;
-  const rows = table.rows({ page: 'current' });
-  const total = rows.count();
-
-  if (!['ArrowUp', 'ArrowDown'].includes(e.key)) return;
-
-  e.preventDefault();
-
-  const selected = table.row('.selected');
-  let index = selected.index();
-
-  // Nếu chưa chọn dòng nào, mặc định chọn dòng đầu tiên
-  if (index === undefined || index === null || index < 0) {
-    index = 0;
-  } else {
-    if (e.key === 'ArrowUp') {
-      index = (index - 1 + total) % total;
-    } else if (e.key === 'ArrowDown') {
-      index = (index + 1) % total;
+  const highlightRow = (index) => {
+    $('#mcTable tbody tr').removeClass('row-selected');
+    const $rows = $('#mcTable tbody tr');
+    if (index >= 0 && index < $rows.length) {
+      const $row = $rows.eq(index);
+      $row.addClass('row-selected');
+      sendRowDataToParent($row);
+      $row[0].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
-  }
+  };
 
-  // Cập nhật highlight dòng
-  table.$('tr.selected').removeClass('selected');
-  const nextRow = table.row(index);
-  $(nextRow.node()).addClass('selected');
+  const sendRowDataToParent = ($row) => {
+    const $cells = $row.find('td');
+    if ($cells.length < 9) return;
 
-  // Cuộn dòng được chọn vào giữa khung bảng
-  nextRow.node().scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
+    const data = {
+      type: 'mc_select_row',  // tên sự kiện
+      mc_id: $cells.eq(0).data('raw'),
+      mc_topic: $cells.eq(1).data('raw'),
+      mc_question: $cells.eq(2).data('raw'),
+      mc_answer1: $cells.eq(3).data('raw'),
+      mc_answer2: $cells.eq(4).data('raw'),
+      mc_answer3: $cells.eq(5).data('raw'),
+      mc_answer4: $cells.eq(6).data('raw'),
+      mc_correct_answer: $cells.eq(7).data('raw'),
+      mc_image_url: $cells.eq(8).data('raw')
+    };
+
+    window.parent.postMessage(data, '*'); // gửi dữ liệu cho form cha
+  };
+
+  $(document).on('keydown', function (e) {
+    const rowCount = $('#mcTable tbody tr').length;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentRowIndex < rowCount - 1) {
+        currentRowIndex++;
+        highlightRow(currentRowIndex);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentRowIndex > 0) {
+        currentRowIndex--;
+        highlightRow(currentRowIndex);
+      }
+    }
   });
 
-  // Gửi dữ liệu dòng đang chọn về form cha
-  if (typeof sendRowData === 'function') {
-    sendRowData(nextRow);
-  }
+  // Tự động chọn dòng đầu tiên khi load
+  highlightRow(currentRowIndex);
 });
