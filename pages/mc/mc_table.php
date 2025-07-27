@@ -29,12 +29,12 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<div class="mc-filter-container">
-  <div class="filter-box">
+<!-- <div class="mc-filter-container">
+  <div class="filter-box"> -->
     <!-- ... bộ lọc chủ đề ... -->
-  </div>
+  <!-- </div> -->
   <div class="mc-export-container"></div> <!-- Nút export sẽ được gắn vào đây -->
-</div>
+<!-- </div> -->
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
