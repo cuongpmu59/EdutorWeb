@@ -5,6 +5,13 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
+try {
+  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+  $rows = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -95,7 +102,7 @@ header("X-Frame-Options: SAMEORIGIN");
 <script src="../../js/table/mc_table_image.js"></script>
 <script src="../../js/table/mc_table_excel.js"></script>
 <script src="../../js/table/mc_table_arrow.js"></script>
-<script src="../../js/table/mc_table_filter.js"></script>
+<!-- <script src="../../js/table/mc_table_filter.js"></script> -->
 
 
 </body>
