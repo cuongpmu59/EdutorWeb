@@ -51,3 +51,8 @@ select.yadcf-filter {
   border-radius: 4px;
   font-size: 0.9rem;
 }
+
+/* Tô sáng dòng đã chọn */
+#mcTable tbody tr.row-selected {
+  background-color: #d0f0ff !important;
+}
