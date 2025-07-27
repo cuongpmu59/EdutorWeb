@@ -19,25 +19,21 @@ try {
   <meta charset="UTF-8">
   <title>📋 Câu hỏi Nhiều lựa chọn</title>
 
-  <!-- Thư viện CSS ngoài -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
-
-  <!-- CSS giao diện -->
   <link rel="stylesheet" href="../../css/table/mc_table.css">
   <link rel="stylesheet" href="../../css/table/mc_filter.css">
 
-
-  <!-- MathJax -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <!-- Excel xử lý -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
+<div class="mc-filter-container">
+  <div class="filter-box">
+    <!-- ... bộ lọc chủ đề ... -->
+  </div>
+  <div class="mc-export-container"></div> <!-- Nút export sẽ được gắn vào đây -->
+</div>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
@@ -78,21 +74,24 @@ try {
 <!-- File Excel -->
 <input type="file" id="excelFile" accept=".xlsx" />
 
-<!-- Thư viện JS ngoài -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Thư viện CSS ngoài -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-<!-- Script chính -->
-<!-- <script src="../../js/table/mc_table_function.js"></script> -->
-<script src="../../js/table/mc_table_transmittion.js"></script>
-<script src="../../js/table/mc_table_image.js"></script>
-<script src="../../js/table/mc_table_excel.js"></script>
-<script src="../../js/table/mc_table_arrow.js"></script>
-<script src="../../js/table/mc_table_filter.js"></script>
+  <!-- Script chính -->
+  <!-- <script src="../../js/table/mc_table_function.js"></script> -->
+  <!-- <script src="../../js/table/mc_table_transmittion.js"></script>
+  <script src="../../js/table/mc_table_image.js"></script>
+  <script src="../../js/table/mc_table_excel.js"></script>
+  <script src="../../js/table/mc_table_arrow.js"></script>
+  <script src="../../js/table/mc_table_filter.js"></script> -->
+  <script src="../../js/table/mc_table.js"></script>
 
 
 </body>
