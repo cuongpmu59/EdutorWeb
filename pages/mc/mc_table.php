@@ -29,7 +29,8 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<div class="mc-export-container"></div> <!-- Nút export sẽ được gắn vào đây -->
+<div class="mc-export-container"></div> 
+<div id="yadcf-filter-container-topic"></div>
 
 <div class="table-wrapper">
   <table id="mcTable" class="display nowrap" style="width:100%">
