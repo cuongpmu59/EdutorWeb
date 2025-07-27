@@ -162,8 +162,8 @@ if (!empty($_GET['mc_id'])) {
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 </div>
-
-  <script src="../../js/form/mc_fetch_data.js"></script>
+  
+  <script src="../../js/form/mc_listener.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_layout.js"></script>
