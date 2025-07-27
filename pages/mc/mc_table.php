@@ -5,13 +5,13 @@ if (!isset($conn)) {
 }
 header("X-Frame-Options: SAMEORIGIN");
 
-try {
-  $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
-  $stmt->execute();
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-  $rows = [];
-}
+// try {
+//   $stmt = $conn->prepare("SELECT * FROM mc_questions ORDER BY mc_id DESC");
+//   $stmt->execute();
+//   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// } catch (Exception $e) {
+//   $rows = [];
+// }
 ?>
 <!DOCTYPE html>
 <html lang="vi">
