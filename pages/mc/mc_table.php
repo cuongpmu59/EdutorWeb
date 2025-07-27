@@ -87,7 +87,7 @@ try {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <!-- Script chính -->
-<script src="../../js/table/mc_table_function.js"></script>
+<!-- <script src="../../js/table/mc_table_function.js"></script> -->
 <script src="../../js/table/mc_table_transmittion.js"></script>
 <script src="../../js/table/mc_table_image.js"></script>
 <script src="../../js/table/mc_table_excel.js"></script>
