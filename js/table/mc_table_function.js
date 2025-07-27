@@ -37,9 +37,9 @@ $(document).ready(function () {
       `);
 
       // Tải dữ liệu chủ đề từ PHP
-      // $.get('../../includes/mc_filter.php', function (options) {
-      //   $('#filter-topic').append(options);
-      // });
+      $.get('../../includes/mc_filter.php', function (options) {
+        $('#filter-topic').append(options);
+      });
 
       // Lọc theo chủ đề
       $('#filter-topic').on('change', function () {
