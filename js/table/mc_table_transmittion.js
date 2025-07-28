@@ -1,21 +1,27 @@
-// Gửi mc_id của dòng được chọn về form cha
-function sendRowData(row) {
-  const $cells = $(row.node()).children('td');
-  const mc_id = $cells.eq(0).data('raw'); // Lấy mc_id từ data-raw trong ô đầu tiên
+$(document).ready(function () {
+  const table = $('#mc_table').DataTable();
 
-  if (mc_id) {
-    window.parent.postMessage({
+  $('#mc_table tbody').on('click', 'tr', function () {
+    const row = table.row(this).node();
+    const data = table.row(this).data();
+    if (!data) return;
+
+    // Lấy URL từ ảnh trong cột 8 (dùng jQuery tìm thẻ <img> trong cột 8 của dòng đó)
+    const imgSrc = $('td:eq(8) img', row).attr('src') || '';
+
+    const message = {
       type: 'mc_select_row',
-      data: { mc_id: mc_id }
-    }, '*');
-  }
-}
+      mc_id: data[0],
+      mc_topic: data[1],
+      mc_question: data[2],
+      mc_answer1: data[3],
+      mc_answer2: data[4],
+      mc_answer3: data[5],
+      mc_answer4: data[6],
+      mc_correct_answer: data[7],
+      mc_image_url: imgSrc
+    };
 
-// Xử lý sự kiện khi click vào một dòng trong bảng
-$('#mcTable tbody').on('click', 'tr', function () {
-  $('#mcTable tbody tr').removeClass('selected'); // Bỏ chọn các dòng khác
-  $(this).addClass('selected');                   // Đánh dấu dòng hiện tại
-
-  const row = mcTable.row(this);                  // Lấy đối tượng row từ DataTable
-  sendRowData(row);                               // Gửi dữ liệu về form cha
+    window.parent.postMessage(message, '*');
+  });
 });
