@@ -1,11 +1,15 @@
+// File: js/form/mc_listener.js
+
 window.addEventListener('message', function (event) {
-  const allowedOrigin = window.location.origin;
-  if (event.origin !== allowedOrigin) return; // Bảo mật: chỉ nhận message từ chính site
+  // Kiểm tra đúng origin để bảo mật
+  if (event.origin !== window.location.origin) return;
 
   const data = event.data;
 
+  // Log để debug
+  console.log("📥 Nhận được message từ iframe:", data);
+
   if (data.type === 'mc_select_row') {
-    // Gán nội dung vào các trường
     $('#mc_topic').val(data.mc_topic);
     $('#mc_question').val(data.mc_question);
     $('#mc_answer1').val(data.mc_answer1);
@@ -14,22 +18,16 @@ window.addEventListener('message', function (event) {
     $('#mc_answer4').val(data.mc_answer4);
     $('#mc_correct_answer').val(data.mc_correct_answer);
 
-    // Cập nhật ảnh minh hoạ
     if (data.mc_image_url) {
-      $('.mc-image-preview').html(`<img id="mc_preview_image" src="${data.mc_image_url}" alt="Hình minh hoạ">`);
+      $('#mc_preview_image').attr('src', data.mc_image_url).show();
     } else {
-      $('.mc-image-preview').empty();
+      $('#mc_preview_image').attr('src', '').hide();
     }
 
-    // Cập nhật hoặc thêm trường mc_id ẩn
-    const $mcId = $('#mc_id');
-    if ($mcId.length) {
-      $mcId.val(data.mc_id);
+    if ($('#mc_id').length) {
+      $('#mc_id').val(data.mc_id);
     } else {
       $('#mcForm').append(`<input type="hidden" id="mc_id" name="mc_id" value="${data.mc_id}">`);
     }
-
-    // Cuộn lên đầu form
-    document.getElementById('mcForm').scrollIntoView({ behavior: 'smooth' });
   }
 });
