@@ -58,8 +58,8 @@ try {
           <td data-raw="<?= htmlspecialchars($q['mc_correct_answer']) ?>"><?= htmlspecialchars($q['mc_correct_answer']) ?></td>
           <td data-raw="<?= htmlspecialchars($q['mc_image_url']) ?>">
             <?php if (!empty($q['mc_image_url'])): ?>
-              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" onerror="this.style.display='none'">
-            <?php endif; ?>
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" alt="Hình minh họa câu hỏi <?= $q['mc_id'] ?>" onerror="this.style.display='none'">
+              <?php endif; ?>
           </td>
         </tr>
       <?php endforeach; ?>
@@ -91,9 +91,9 @@ try {
   <script src="../../js/table/mc_table_transmittion.js"></script>
   <script src="../../js/table/mc_table_image.js"></script>
   <script src="../../js/table/mc_table_excel.js"></script>
-  <script src="../../js/table/mc_table_filter.js"></script> -->
+  <script src="../../js/table/mc_table_filter.js"></script> 
   <script src="../../js/table/mc_table.js"></script>
-  <script src="../../js/table/mc_table_arrow.js"></script> -->
+  <script src="../../js/table/mc_table_arrow.js"></script> 
 
 
 </body>
