@@ -69,7 +69,7 @@ try {
 </div>
 
 <!-- File Excel -->
-<!-- <input type="file" id="excelFile" accept=".xlsx" /> -->
+<input type="file" id="excelFile" accept=".xlsx" />
 
   <!-- Thư viện CSS ngoài -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
