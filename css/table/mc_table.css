@@ -56,3 +56,23 @@ select.yadcf-filter {
 #mcTable tbody tr.row-selected {
   background-color: #d0f0ff !important;
 }
+
+/* Toolbar của bảng */
+.mc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.mc-export-container .mc-export-excel {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mc-export-container .mc-export-excel:hover {
+  background-color: #45a049;
+}
