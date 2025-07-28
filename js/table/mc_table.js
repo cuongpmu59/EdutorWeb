@@ -32,3 +32,9 @@ export function initDataTable() {
 
   return table;
 }
+
+  // Tự động khởi động MathJax trong mỗi dòng DataTables
+
+  $('#mcTable').on('draw.dt', function () {
+    if (window.MathJax) MathJax.typeset();
+  });
