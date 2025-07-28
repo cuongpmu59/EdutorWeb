@@ -88,8 +88,8 @@ try {
   <script src="../../js/table/mc_table_image.js"></script>
   <script src="../../js/table/mc_table_excel.js"></script>
   <script src="../../js/table/mc_table_filter.js"></script> -->
-  <!-- <script src="../../js/table/mc_table.js"></script> -->
-   <script src="../../js/table/mc_table_arrow.js"></script> -->
+  <script src="../../js/table/mc_table.js"></script>
+  <script src="../../js/table/mc_table_arrow.js"></script> -->
 
 
 </body>
