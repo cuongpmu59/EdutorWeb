@@ -68,9 +68,9 @@ if (!empty($_GET['mc_id'])) {
       ignoreHtmlClass: 'tex2jax_ignore',
     }
   };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -164,7 +164,6 @@ if (!empty($_GET['mc_id'])) {
     </div>
 </div>
   
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../js/form/mc_listener.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
