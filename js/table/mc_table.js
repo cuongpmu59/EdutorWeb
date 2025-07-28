@@ -10,6 +10,7 @@ $(document).ready(function () {
 export function initDataTable() {
   const table = $('#mcTable').DataTable({
     dom: 'Bfrtip', 
+    buttons: [], 
     paging: true,
     searching: true,
     responsive: true,
