@@ -19,15 +19,15 @@ export function initDataTable() {
   });
 
   // ✅ Lọc bằng YADCF (ở cột 1 là "Chủ đề")
-//   yadcf.init(table, [
-//     {
-//       column_number: 1,
-//       filter_type: 'select',
-//       filter_container_id: 'yadcf-filter-container-topic',
-//       filter_default_label: 'Tất cả chủ đề',
-//       style_class: 'form-select form-select-sm'
-//     }
-//   ]);
+  yadcf.init(table, [
+    {
+      column_number: 1,
+      filter_type: 'select',
+      filter_container_id: 'yadcf-filter-container-topic',
+      filter_default_label: 'Tất cả chủ đề',
+      style_class: 'form-select form-select-sm'
+    }
+  ]);
 
-//   return table;
-// }
+  return table;
+}
