@@ -64,9 +64,6 @@ try {
               <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" alt="Hình minh họa câu hỏi <?= $q['mc_id'] ?>" onerror="this.style.display='none'">
               <?php endif; ?>
           </td>
-          <td>
-            <a href="mc_form.php?mc_id=<?= $q['mc_id'] ?>" title="Chỉnh sửa"><i class="fa fa-pen"></i></a>
-          </td>
         </tr>
       <?php endforeach; ?>
     </tbody>
