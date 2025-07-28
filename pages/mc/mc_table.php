@@ -83,7 +83,7 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/yadcf@0.9.4/jquery.dataTables.yadcf.js"></script>
 
   <!-- Script chính -->
-  <script src="../../js/table/mc_table_function.js"></script>
+  <!-- <script src="../../js/table/mc_table_function.js"></script> -->
   <!-- <script src="../../js/table/mc_table_transmittion.js"></script>
   <script src="../../js/table/mc_table_image.js"></script>
   <script src="../../js/table/mc_table_excel.js"></script>
