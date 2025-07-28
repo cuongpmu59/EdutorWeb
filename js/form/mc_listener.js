@@ -1,13 +1,12 @@
 // File: js/form/mc_listener.js
 
 window.addEventListener('message', function (event) {
-  // Kiểm tra đúng origin để bảo mật
+  // Kiểm tra đúng origin
   if (event.origin !== window.location.origin) return;
 
   const data = event.data;
 
-  // Log để debug
-  console.log("📥 Nhận được message từ iframe:", data);
+  console.log("📥 Nhận được message từ iframe:", data); // ✅ Đặt log bên trong
 
   if (data.type === 'mc_select_row') {
     $('#mc_topic').val(data.mc_topic);
