@@ -36,11 +36,6 @@ $(document).ready(function () {
         </div>
       `);
 
-      // Tải dữ liệu chủ đề từ PHP
-      // $.get('/../../includes/mc_filter.php', function (options) {
-      //   $('#filter-topic').append(options);
-      });
-
       // Lọc theo chủ đề
       $('#filter-topic').on('change', function () {
         table.column(1).search(this.value).draw();
