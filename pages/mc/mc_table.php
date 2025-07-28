@@ -31,12 +31,11 @@ try {
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
 <div class="mc-filter-container">
   <div class="filter-box" id="yadcf-filter-container-topic"></div>
-  <div class="mc-export-container"></div> 
 </div>
 
-<div id="yadcf-filter-container-topic"></div>
 <div id="mcTable_wrapper">
   <div class="mc-toolbar">
+    <div class="mc-export-container"></div> <!-- ✅ Gắn vào đây -->
   </div>
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
