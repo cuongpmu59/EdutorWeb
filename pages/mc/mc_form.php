@@ -163,6 +163,7 @@ if (!empty($_GET['mc_id'])) {
     </div>
 </div>
   
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../../js/form/mc_listener.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
