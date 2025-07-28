@@ -126,9 +126,10 @@ if (!empty($_GET['mc_id'])) {
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
-              <?php if (!empty($mc['mc_image_url'])): ?>
-                <img src="<?= htmlspecialchars($mc['mc_image_url']) ?>" alt="Hình minh hoạ">
-              <?php endif; ?>
+              <img id="mc_preview_image"
+              src="<?= !empty($mc['mc_image_url']) ? htmlspecialchars($mc['mc_image_url']) : '' ?>"
+              alt="Hình minh hoạ"
+              style="<?= !empty($mc['mc_image_url']) ? '' : 'display:none;' ?>">
             </div>
             <div class="mc-image-buttons">
               <label class="btn-upload">
