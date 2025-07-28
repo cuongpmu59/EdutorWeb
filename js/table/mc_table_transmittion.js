@@ -22,6 +22,6 @@ $(document).ready(function () {
       mc_image_url: imgSrc
     };
 
-    window.parent.postMessage(message, '*');
+    window.parent.postMessage(message, window.location.origin);
   });
 });
