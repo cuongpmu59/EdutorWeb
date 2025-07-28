@@ -10,8 +10,10 @@ try {
   $stmt->execute();
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
+  error_log("❌ SQL Error: " . $e->getMessage());
   $rows = [];
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -43,6 +45,7 @@ try {
         <th>ID</th><th>Chủ đề</th><th>Câu hỏi</th>
         <th>A</th><th>B</th><th>C</th><th>D</th>
         <th>Đáp án đúng</th><th>Ảnh</th>
+        <th>🛠️</th>
       </tr>
     </thead>
     <tbody>
@@ -60,6 +63,9 @@ try {
             <?php if (!empty($q['mc_image_url'])): ?>
               <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" class="thumb" alt="Hình minh họa câu hỏi <?= $q['mc_id'] ?>" onerror="this.style.display='none'">
               <?php endif; ?>
+          </td>
+          <td>
+            <a href="mc_form.php?mc_id=<?= $q['mc_id'] ?>" title="Chỉnh sửa"><i class="fa fa-pen"></i></a>
           </td>
         </tr>
       <?php endforeach; ?>
