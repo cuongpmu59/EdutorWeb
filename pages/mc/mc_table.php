@@ -29,10 +29,12 @@ try {
 <body>
 
 <h2>📋 Bảng câu hỏi nhiều lựa chọn</h2>
-<div class="mc-export-container"></div> 
-<div id="yadcf-filter-container-topic"></div>
 
-<div class="table-wrapper">
+<div id="yadcf-filter-container-topic"></div>
+<div id="mcTable_wrapper">
+  <div class="mc-toolbar">
+    <div class="mc-export-container"></div>
+  </div>
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
       <tr>
@@ -71,7 +73,7 @@ try {
 <!-- File Excel -->
 <input type="file" id="excelFile" accept=".xlsx" />
 
-  <!-- Thư viện CSS ngoài -->
+<!-- Thư viện CSS ngoài -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
