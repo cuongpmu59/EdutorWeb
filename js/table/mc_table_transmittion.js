@@ -5,7 +5,7 @@ $(document).ready(function () {
     if (!mc_id) return;
 
     $.ajax({
-      url: '../../includes/mc_fetch.php',
+      url: '../includes/mc_fetch.php',
       method: 'GET',
       data: { mc_id },
       dataType: 'json',
