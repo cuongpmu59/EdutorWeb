@@ -16,7 +16,7 @@ $(document).ready(function () {
         }
 
         // ✅ Gửi dữ liệu lên form bằng postMessage
-        window.parent.postMessage({ type: 'fill-form', data }, '*');
+        window.parent.postMessage({ type: 'fill-form', data: data.data }, '*');
       },
       error: function () {
         alert('❌ Lỗi khi lấy dữ liệu câu hỏi.');
