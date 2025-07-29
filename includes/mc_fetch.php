@@ -16,9 +16,12 @@ try {
 
     if ($row) {
         echo json_encode($row);
+        exit;
     } else {
         echo json_encode(['error' => 'Không tìm thấy']);
+        exit;
     }
 } catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);
+    exit;
 }
