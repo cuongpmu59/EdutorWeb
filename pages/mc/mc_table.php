@@ -85,7 +85,7 @@ try {
 
 <!-- Thư viện CSS ngoài -->
 <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
