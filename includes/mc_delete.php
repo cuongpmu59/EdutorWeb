@@ -1,78 +1,46 @@
 <?php
-require_once __DIR__ . '/../db_connection.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+session_start();
+require_once __DIR__ . '/db_connection.php';
 
-use Cloudinary\Cloudinary;
-use Dotenv\Dotenv;
-
-// Tải biến môi trường
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../env');
-$dotenv->load();
-
-// Cấu hình Cloudinary
-$cloudinary = new Cloudinary([
-    'cloud' => [
-        'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
-        'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
-        'api_secret' => $_ENV['CLOUDINARY_API_SECRET'],
-    ]
-]);
-
+// ✅ Kiểm tra phương thức gọi
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Truy cập không hợp lệ.']);
-    exit;
+    http_response_code(405);
+    exit('❌ Phương thức không hợp lệ.');
 }
 
-$mc_id = isset($_POST['mc_id']) ? (int)$_POST['mc_id'] : 0;
-
-if ($mc_id <= 0) {
-    echo json_encode(['success' => false, 'message' => 'mc_id không hợp lệ.']);
-    exit;
+// ✅ Lấy và kiểm tra mc_id
+$mc_id = (int)($_POST['mc_id'] ?? 0);
+if (!$mc_id) {
+    http_response_code(400);
+    exit('❌ Thiếu hoặc không hợp lệ mc_id.');
 }
 
 try {
-    // Lấy URL ảnh
+    // ✅ Lấy đường dẫn ảnh nếu có
     $stmt = $conn->prepare("SELECT mc_image_url FROM mc_questions WHERE mc_id = ?");
     $stmt->execute([$mc_id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($row && !empty($row['mc_image_url'])) {
-        $imageUrl = $row['mc_image_url'];
+    if (!$row) {
+        http_response_code(404);
+        exit('❌ Không tìm thấy câu hỏi.');
+    }
 
-        if (strpos($imageUrl, 'res.cloudinary.com') !== false) {
-            $publicId = extractCloudinaryPublicId($imageUrl);
-            if ($publicId) {
-                $cloudinary->uploadApi()->destroy($publicId);
-            }
-        } else {
-            // Ảnh cục bộ
-            $localPath = __DIR__ . '/../' . ltrim($imageUrl, '/');
-            if (file_exists($localPath)) {
-                unlink($localPath);
-            }
+    // ✅ Xoá file ảnh trên ổ đĩa (nếu có)
+    if (!empty($row['mc_image_url'])) {
+        $imagePath = realpath(__DIR__ . '/../' . $row['mc_image_url']);
+        if ($imagePath && file_exists($imagePath)) {
+            unlink($imagePath);
         }
     }
 
-    // Xoá bản ghi
+    // ✅ Xoá bản ghi khỏi CSDL
     $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = ?");
     $stmt->execute([$mc_id]);
 
-    echo json_encode(['success' => true, 'message' => 'Đã xoá câu hỏi và ảnh.']);
-    exit;
-
+    echo '✅ Đã xoá thành công';
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Lỗi khi xoá: ' . $e->getMessage()]);
-    exit;
-}
-
-// Hàm hỗ trợ
-function extractCloudinaryPublicId($url) {
-    $parts = parse_url($url);
-    if (!isset($parts['path'])) return null;
-
-    $path = $parts['path'];
-    $segments = explode('/', $path);
-    $filename = end($segments);
-    return preg_replace('/\.[^.]+$/', '', $filename); // bỏ đuôi file
+    error_log("❌ Lỗi xoá câu hỏi: " . $e->getMessage());
+    http_response_code(500);
+    echo '❌ Đã xảy ra lỗi khi xoá.';
 }
