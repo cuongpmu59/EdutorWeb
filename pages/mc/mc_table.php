@@ -27,6 +27,7 @@ try {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../../css/table/mc_table.css">
   <!-- <link rel="stylesheet" href="../../css/table/mc_filter.css"> -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 </head>
 <body>
@@ -83,7 +84,7 @@ try {
 <input type="file" id="excelFile" accept=".xlsx" />
 
 <!-- Thư viện CSS ngoài -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
