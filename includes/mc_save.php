@@ -1,71 +1,35 @@
 <?php
-require_once __DIR__ . '/../db_connection.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/db_connection.php';
 
-use Cloudinary\Cloudinary;
-use Dotenv\Dotenv;
-
-// Tải biến môi trường
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../env');
-$dotenv->load();
-
-// Cấu hình Cloudinary
-$cloudinary = new Cloudinary([
-    'cloud' => [
-        'cloud_name' => $_ENV['CLOUDINARY_CLOUD_NAME'],
-        'api_key'    => $_ENV['CLOUDINARY_API_KEY'],
-        'api_secret' => $_ENV['CLOUDINARY_API_SECRET'],
-    ]
-]);
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(403);
-    echo '<h3 style="font-family: sans-serif; color: #c00;">Truy cập không hợp lệ.</h3>';
-    exit;
-}
-
-// Lấy dữ liệu từ form
-$topic    = $_POST['topic']    ?? '';
-$question = $_POST['question'] ?? '';
-$a1       = $_POST['answer1']  ?? '';
-$a2       = $_POST['answer2']  ?? '';
-$a3       = $_POST['answer3']  ?? '';
-$a4       = $_POST['answer4']  ?? '';
-$correct  = $_POST['answer']   ?? '';
-$mc_id    = $_POST['mc_id']    ?? '';
-$imageUrl = $_POST['existing_image'] ?? '';
-$publicId = $_POST['public_id']      ?? '';
+header('Content-Type: application/json');
 
 try {
-    if ($mc_id) {
-        // ==================== CẬP NHẬT ====================
-        $stmt = $conn->prepare("
-            UPDATE mc_questions SET 
-                mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, 
-                mc_answer3=?, mc_answer4=?, mc_correct_answer=?, 
-                mc_image_url=?, mc_image_public_id=?
-            WHERE mc_id=?
-        ");
-        $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId, (int)$mc_id]);
+  $mc_id = $_POST['mc_id'] ?? null;
+  $topic = $_POST['mc_topic'] ?? '';
+  $question = $_POST['mc_question'] ?? '';
+  $a1 = $_POST['mc_answer1'] ?? '';
+  $a2 = $_POST['mc_answer2'] ?? '';
+  $a3 = $_POST['mc_answer3'] ?? '';
+  $a4 = $_POST['mc_answer4'] ?? '';
+  $correct = $_POST['mc_correct_answer'] ?? '';
+  $image_url = $_POST['mc_image_url'] ?? null;
 
-    } else {
-        // ==================== THÊM MỚI ====================
-        $stmt = $conn->prepare("
-            INSERT INTO mc_questions 
-            (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-             mc_correct_answer, mc_image_url, mc_image_public_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $imageUrl, $publicId]);
-        $mc_id = $conn->lastInsertId();
-    }
+  if (!$topic || !$question || !$a1 || !$a2 || !$a3 || !$a4 || !$correct) {
+    throw new Exception('Vui lòng nhập đầy đủ thông tin.');
+  }
 
-    header('Content-Type: application/json');
-    echo json_encode(['success' => true, 'mc_id' => $mc_id]);
-    exit;
+  if ($mc_id) {
+    // Cập nhật
+    $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
+    $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $image_url, $mc_id]);
+  } else {
+    // Thêm mới
+    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$topic, $question, $a1, $a2, $a3, $a4, $correct, $image_url]);
+    $mc_id = $conn->lastInsertId();
+  }
 
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Lỗi: ' . $e->getMessage()]);
-    exit;
+  echo json_encode(['success' => true, 'mc_id' => $mc_id]);
+} catch (Exception $e) {
+  echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
