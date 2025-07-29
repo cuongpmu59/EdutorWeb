@@ -1,73 +1,22 @@
-<?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-session_start();
-
-require_once __DIR__ . '/../../includes/db_connection.php';
-
-$mc = null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $topic   = $_POST['topic'] ?? '';
-    $question = $_POST['question'] ?? '';
-    $answer1 = $_POST['answer1'] ?? '';
-    $answer2 = $_POST['answer2'] ?? '';
-    $answer3 = $_POST['answer3'] ?? '';
-    $answer4 = $_POST['answer4'] ?? '';
-    $correct = $_POST['answer'] ?? '';
-    $image_url = '';
-
-    if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../../uploads/';
-        $filename = time() . '_' . basename($_FILES['image']['name']);
-        $filepath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $filepath)) {
-            $image_url = '../../uploads/' . $filename;
-        }
-    } elseif (!empty($_POST['existing_image'])) {
-        $image_url = $_POST['existing_image'];
-    }
-
-    if (!empty($_POST['mc_id'])) {
-        $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? WHERE mc_id=?");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url, (int)$_POST['mc_id']]);
-    } else {
-        $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$topic, $question, $answer1, $answer2, $answer3, $answer4, $correct, $image_url]);
-    }
-
-    header('Location: mc_form.php');
-    exit;
-}
-
-if (!empty($_GET['mc_id'])) {
-    $id = (int)$_GET['mc_id'];
-    $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ?");
-    $stmt->execute([$id]);
-    $mc = $stmt->fetch(PDO::FETCH_ASSOC);
-}
-?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
   <link rel="stylesheet" href="../../css/form_ui.css">
-  <link rel="stylesheet" href="../../css/form/mc_inline.css">
 
   <script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],
-      processEscapes: true
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      ignoreHtmlClass: 'tex2jax_ignore',
-    }
-  };
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        ignoreHtmlClass: 'tex2jax_ignore',
+      }
+    };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -80,44 +29,62 @@ if (!empty($_GET['mc_id'])) {
         Câu hỏi trắc nghiệm
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
       </h2>
+
       <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-      <div id="mcPreviewContent"></div>
+        <div id="mcPreviewContent"></div>
       </div>
 
       <div id="mcMainContent" class="mc-columns">
         <div class="mc-col mc-col-left">
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
-            <input type="text" id="mc_topic" name="topic" required value="<?= htmlspecialchars($mc['mc_topic'] ?? '', ENT_QUOTES) ?>">
+            <input type="text" id="mc_topic" name="topic" required value="">
           </div>
 
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
               <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
             </label>
-            <textarea id="mc_question" name="question" required><?= htmlspecialchars($mc['mc_question'] ?? '', ENT_QUOTES) ?></textarea>
+            <textarea id="mc_question" name="question" required></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
-          <?php
-          $labels = ['A', 'B', 'C', 'D'];
-          for ($i = 1; $i <= 4; $i++):
-            $label = $labels[$i - 1];
-          ?>
-            <div class="mc-field mc-inline-field">
-              <label for="mc_answer<?= $i ?>"><?= $label ?>.</label>
-              <button type="button" class="toggle-preview" data-target="mc_answer<?= $i ?>"><i class="fa fa-eye"></i></button>
-              <input type="text" id="mc_answer<?= $i ?>" name="answer<?= $i ?>" required value="<?= htmlspecialchars($mc["mc_answer$i"] ?? '', ENT_QUOTES) ?>">
-              <div class="preview-box" id="preview-mc_answer<?= $i ?>" style="display:none;"></div>
-            </div>
-          <?php endfor; ?>
+          <!-- Câu trả lời A - D -->
+          <div class="mc-field mc-inline-field">
+            <label for="mc_answer1">A.</label>
+            <button type="button" class="toggle-preview" data-target="mc_answer1"><i class="fa fa-eye"></i></button>
+            <input type="text" id="mc_answer1" name="answer1" required>
+            <div class="preview-box" id="preview-mc_answer1" style="display:none;"></div>
+          </div>
+
+          <div class="mc-field mc-inline-field">
+            <label for="mc_answer2">B.</label>
+            <button type="button" class="toggle-preview" data-target="mc_answer2"><i class="fa fa-eye"></i></button>
+            <input type="text" id="mc_answer2" name="answer2" required>
+            <div class="preview-box" id="preview-mc_answer2" style="display:none;"></div>
+          </div>
+
+          <div class="mc-field mc-inline-field">
+            <label for="mc_answer3">C.</label>
+            <button type="button" class="toggle-preview" data-target="mc_answer3"><i class="fa fa-eye"></i></button>
+            <input type="text" id="mc_answer3" name="answer3" required>
+            <div class="preview-box" id="preview-mc_answer3" style="display:none;"></div>
+          </div>
+
+          <div class="mc-field mc-inline-field">
+            <label for="mc_answer4">D.</label>
+            <button type="button" class="toggle-preview" data-target="mc_answer4"><i class="fa fa-eye"></i></button>
+            <input type="text" id="mc_answer4" name="answer4" required>
+            <div class="preview-box" id="preview-mc_answer4" style="display:none;"></div>
+          </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_correct_answer">Đáp án đúng:</label>
             <select id="mc_correct_answer" name="answer" required>
-              <?php foreach ($labels as $label): ?>
-                <option value="<?= $label ?>" <?= (($mc['mc_correct_answer'] ?? '') === $label) ? 'selected' : '' ?>><?= $label ?></option>
-              <?php endforeach; ?>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
             </select>
           </div>
         </div>
@@ -126,10 +93,7 @@ if (!empty($_GET['mc_id'])) {
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
-              <img id="mc_preview_image"
-              src="<?= !empty($mc['mc_image_url']) ? htmlspecialchars($mc['mc_image_url']) : '' ?>"
-              alt="Hình minh hoạ"
-              style="<?= !empty($mc['mc_image_url']) ? '' : 'display:none;' ?>">
+              <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none;">
             </div>
             <div class="mc-image-buttons">
               <label class="btn-upload">
@@ -138,9 +102,6 @@ if (!empty($_GET['mc_id'])) {
               </label>
               <button type="button" id="mc_remove_image">Xóa ảnh</button>
             </div>
-            <?php if (!empty($mc['mc_image_url'])): ?>
-              <input type="hidden" name="existing_image" value="<?= htmlspecialchars($mc['mc_image_url']) ?>">
-            <?php endif; ?>
           </div>
 
           <div class="mc-buttons">
@@ -154,21 +115,18 @@ if (!empty($_GET['mc_id'])) {
         </div>
       </div>
 
-      <?php if (!empty($mc['mc_id'])): ?>
-        <input type="hidden" id="mc_id" name="mc_id" value="<?= (int)$mc['mc_id'] ?>">
-      <?php endif; ?>
+      <input type="hidden" id="mc_id" name="mc_id" value="">
     </form>
 
     <div id="mcTableWrapper" style="display:none;">
       <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
-</div>
-  
+  </div>
+
   <script src="../../js/form/mc_listener.js"></script>
   <script src="../../js/form/mc_preview.js"></script>
   <script src="../../js/form/mc_image.js"></script>
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_button_action.js"></script>
-
 </body>
 </html>
