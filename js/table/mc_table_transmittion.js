@@ -1,6 +1,8 @@
 $(document).ready(function () {
-  $('#mcTable').on('click', '.btn-edit', function () {
-    const mc_id = $(this).data('id');
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const mc_id = $(this).find('td:first').data('raw'); // Cột đầu tiên chứa mc_id
+
+    if (!mc_id) return;
 
     $.ajax({
       url: '../../includes/mc_fetch.php',
