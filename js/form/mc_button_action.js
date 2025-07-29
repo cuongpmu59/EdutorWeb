@@ -70,44 +70,59 @@
   
 //   Xử lý lưu
 
-    document.getElementById('mc_save').addEventListener('click', async function () {
-    const form = document.getElementById('mcForm');
-    const formData = new FormData(form);
-  
-    const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
+document.getElementById('mc_save').addEventListener('click', async function () {
+  const form = document.getElementById('mcForm');
+  const formData = new FormData(form);
+
+  const mc_id = form.querySelector('#mc_id')?.value ?? '';
+
+  const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
+
+  // Nếu là thêm mới, bắt buộc điền đủ
+  if (!mc_id) {
     for (const field of requiredFields) {
       if (!form[field].value.trim()) {
         alert('❌ Vui lòng nhập đầy đủ thông tin cho các trường bắt buộc!');
         return;
       }
     }
-  
-    const imageFile = form.mc_image.files[0];
-    if (imageFile) {
-      // Upload tạm trước, chưa có mc_id
-      const cloudData = new FormData();
-      cloudData.append('file', imageFile);
-      cloudData.append('upload_preset', 'YOUR_PRESET');  // Thay bằng preset của bạn
-  
+  }
+
+  // Xử lý ảnh nếu có ảnh mới
+  const imageFile = form.mc_image.files[0];
+  if (imageFile) {
+    const cloudData = new FormData();
+    cloudData.append('file', imageFile);
+    cloudData.append('upload_preset', 'YOUR_PRESET');  // Thay bằng preset của bạn
+
+    try {
       const cloudRes = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
         method: 'POST',
         body: cloudData
       });
+
       const cloudResult = await cloudRes.json();
-      if (cloudResult.secure_url) {
-        formData.append('mc_image_url', cloudResult.secure_url);
-        formData.append('public_id', cloudResult.public_id); // dùng sau nếu cần xóa
-      } else {
-        alert('❌ Không thể tải ảnh lên Cloudinary.');
+
+      if (cloudResult.error) {
+        alert('❌ Lỗi Cloudinary: ' + cloudResult.error.message);
         return;
       }
+
+      formData.append('mc_image_url', cloudResult.secure_url);
+      formData.append('public_id', cloudResult.public_id);
+    } catch (err) {
+      alert('❌ Không thể tải ảnh lên Cloudinary.');
+      return;
     }
-  
+  }
+
+  // Gửi dữ liệu đến máy chủ
+  try {
     const response = await fetch('../../includes/mc_save.php', {
       method: 'POST',
       body: formData
     });
-  
+
     const result = await response.json();
     if (result.success) {
       alert('✅ Dữ liệu đã được lưu.');
@@ -115,5 +130,7 @@
     } else {
       alert('❌ Lỗi khi lưu: ' + result.message);
     }
-  });
-  
+  } catch (err) {
+    alert('❌ Có lỗi trong quá trình gửi dữ liệu: ' + err.message);
+  }
+});
