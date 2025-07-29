@@ -24,6 +24,7 @@ try {
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/yadcf@0.9.4/jquery.dataTables.yadcf.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../../css/table/mc_table.css">
   <!-- <link rel="stylesheet" href="../../css/table/mc_filter.css"> -->
 
@@ -37,7 +38,7 @@ try {
 
 <div id="mcTable_wrapper">
   <div class="mc-toolbar">
-    <div class="mc-export-container"></div> <!-- ✅ Gắn vào đây -->
+    <div class="mc-export-container"></div> 
   </div>
   <table id="mcTable" class="display nowrap" style="width:100%">
     <thead>
