@@ -1,20 +1,24 @@
-$('#mcTable tbody').on('click', 'tr', function () {
-  const $tds = $(this).find('td');
+$(document).ready(function () {
+  $('#mcTable').on('click', '.btn-edit', function () {
+    const mc_id = $(this).data('id');
 
-  const message = {
-    type: 'mc_select_row',
-    mc_id: $tds.eq(0).data('raw'),
-    mc_topic: $tds.eq(1).data('raw'),
-    mc_question: $tds.eq(2).data('raw'),
-    mc_answer1: $tds.eq(3).data('raw'),
-    mc_answer2: $tds.eq(4).data('raw'),
-    mc_answer3: $tds.eq(5).data('raw'),
-    mc_answer4: $tds.eq(6).data('raw'),
-    mc_correct_answer: $tds.eq(7).data('raw'),
-    mc_image_url: $tds.eq(8).find('img').attr('src') || ''
-  };
-  console.log("📤 Gửi message lên form cha:", message);
+    $.ajax({
+      url: '../../includes/mc_fetch.php',
+      method: 'GET',
+      data: { mc_id },
+      dataType: 'json',
+      success: function (data) {
+        if (data.error) {
+          alert('❌ ' + data.error);
+          return;
+        }
 
-  window.parent.postMessage(message, window.location.origin);
+        // ✅ Gửi dữ liệu lên form bằng postMessage
+        window.parent.postMessage({ type: 'fill-form', data }, '*');
+      },
+      error: function () {
+        alert('❌ Lỗi khi lấy dữ liệu câu hỏi.');
+      }
+    });
+  });
 });
-
