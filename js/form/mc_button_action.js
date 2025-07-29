@@ -68,9 +68,9 @@
     });
   });
   
-//   Xử lý lưu
+  //   Xử lý lưu
 
-document.getElementById('mc_save').addEventListener('click', async function () {
+  document.getElementById('mc_save').addEventListener('click', async function () {
   const form = document.getElementById('mcForm');
   const formData = new FormData(form);
 
