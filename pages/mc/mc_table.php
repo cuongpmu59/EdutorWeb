@@ -21,12 +21,12 @@
         <th>ID</th>
         <th>Chủ đề</th>
         <th>Câu hỏi</th>
-        <th>Đáp án 1</th>
-        <th>Đáp án 2</th>
-        <th>Đáp án 3</th>
-        <th>Đáp án 4</th>
-        <th>Đúng</th>
-        <th>Ảnh</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+        <th>D</th>
+        <th>Đáp án</th>
+        <th>Hình</th>
       </tr>
     </thead>
   </table>
@@ -66,6 +66,7 @@
       });
     });
   </script>
+  <script src="../../js/table/mc_get_table.js"></script>
 
 </body>
 </html>
