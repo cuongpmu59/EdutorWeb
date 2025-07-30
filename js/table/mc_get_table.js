@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('#mcTable').DataTable({
-      ajax: '../../pages/mc/mc_table.php',
+      ajax: '../../includes/mc_get_data.php',
       columns: [
         { data: 'mc_id' },
         { data: 'mc_topic' },
