@@ -1,9 +1,5 @@
-// Khởi động bảng dataTable
+// js/table/mc_get_table.js
 $(document).ready(function () {
-  initMcQuestionTable();
-});
-
-function initMcQuestionTable() {
   const table = $('#mcTable').DataTable({
     ajax: '../../includes/mc_get_data.php',
     columns: [
@@ -34,6 +30,7 @@ function initMcQuestionTable() {
     },
     responsive: true,
     pageLength: 10,
+
     drawCallback: function () {
       if (window.MathJax) {
         MathJax.typesetPromise();
@@ -41,10 +38,24 @@ function initMcQuestionTable() {
     }
   });
 
-  // ⬇️ Gửi dữ liệu khi click dòng
+  // ⬇️ Sự kiện click dòng
   $('#mcTable tbody').on('click', 'tr', function () {
-    const data = table.row(this).data();
-    if (!data) return;
-    window.parent.postMessage({ type: 'fill-form', data }, '*');
+    const row = table.row(this).data();
+    if (!row || !row.mc_id) return;
+
+    $.ajax({
+      url: '../../includes/mc_get_data.php',
+      method: 'POST',
+      data: { mc_id: row.mc_id },
+      dataType: 'json',
+      success: function (response) {
+        if (window.parent) {
+          window.parent.postMessage({ type: 'fill-form', data: response }, '*');
+        }
+      },
+      error: function (xhr, status, error) {
+        alert('❌ Lỗi khi tải dữ liệu: ' + error);
+      }
+    });
   });
-}
+});
