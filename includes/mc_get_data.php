@@ -2,7 +2,7 @@
 // includes/mc_get_data.php
 
 require_once __DIR__ . '/../includes/db_connection.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 try {
   $stmt = $conn->query("
@@ -15,10 +15,10 @@ try {
   ");
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  echo json_encode(['data' => $rows]);
+  echo json_encode(['data' => $rows], JSON_UNESCAPED_UNICODE);
 } catch (PDOException $e) {
   echo json_encode([
     'data' => [],
     'error' => $e->getMessage()
-  ]);
+  ], JSON_UNESCAPED_UNICODE);
 }
