@@ -1,42 +1,29 @@
 $(document).ready(function () {
-  // Khi bấm nút tải ảnh
-  $('#mc_upload_btn').on('click', function () {
-    const fileInput = $('#mc_image_input')[0];
-    const previewDiv = $('#mc_preview_image');
+  const fileInput = $('#mc_image');
+  const previewImage = $('#mc_preview_image');
 
-    if (fileInput.files && fileInput.files[0]) {
+  // Khi chọn ảnh từ ổ đĩa
+  fileInput.on('change', function () {
+    const file = this.files[0];
+
+    if (file) {
       const reader = new FileReader();
 
-      // Xoá ảnh cũ nếu có
-      previewDiv.empty();
-
-      // Tải ảnh mới lên
       reader.onload = function (e) {
-        const img = $('<img>', {
-          src: e.target.result,
-          alt: 'Ảnh đã chọn',
-          class: 'img-fluid',
-          style: 'max-height: 200px;' // tuỳ chỉnh nếu cần
-        });
-        previewDiv.append(img);
+        previewImage.attr('src', e.target.result).show(); // Gán ảnh và hiển thị
       };
 
-      reader.readAsDataURL(fileInput.files[0]);
-    } else {
-      alert('📌 Vui lòng chọn một ảnh trước khi tải lên.');
+      reader.readAsDataURL(file);
     }
   });
 
   // Khi bấm nút xoá ảnh
-  $('#mc_clear_btn').on('click', function () {
-    const previewDiv = $('#mc_preview_image');
-
-    if (previewDiv.children('img').length > 0) {
-      previewDiv.empty(); // Xoá ảnh đang hiển thị
+  $('#mc_clear_image').on('click', function () {
+    if (previewImage.attr('src')) {
+      previewImage.attr('src', '').hide(); // Ẩn ảnh và xoá link
+      fileInput.val(''); // Reset input file
     } else {
       console.log('❌ Không có ảnh để xoá.');
-      // Nếu muốn trả về null (ví dụ cập nhật 1 biến), bạn có thể gán:
-      // imageData = null;
     }
   });
 });
