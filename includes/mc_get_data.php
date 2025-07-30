@@ -9,7 +9,7 @@ try {
     SELECT 
       mc_id, mc_topic, mc_question, 
       mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-      mc_correct_anwer, mc_image_url
+      mc_correct_answer, mc_image_url
     FROM mc_questions
     ORDER BY mc_id DESC
   ");
