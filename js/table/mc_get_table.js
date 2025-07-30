@@ -17,7 +17,7 @@ function initMcQuestionTable() {
       { data: 'mc_correct_answer', title: 'Đáp án' },
       {
         data: 'mc_image_url',
-        title: 'Ảnh',
+        title: 'Hình minh họa',
         render: function (data) {
           if (!data) return '';
           const thumbUrl = data.includes('/upload/')
@@ -35,9 +35,9 @@ function initMcQuestionTable() {
     responsive: true,
     pageLength: 10,
 
-    // ⬇️ MathJax render lại mỗi lần bảng vẽ lại
+    // 🔄 Gọi lại MathJax sau mỗi lần bảng được vẽ lại (gồm tìm kiếm, phân trang...)
     drawCallback: function () {
-      if (window.MathJax) {
+      if (window.MathJax && MathJax.typesetPromise) {
         MathJax.typesetPromise();
       }
     }
