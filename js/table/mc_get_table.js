@@ -1,4 +1,3 @@
-// js/table/mc_get_table.js
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
     ajax: '../../includes/mc_get_data.php',
@@ -38,15 +37,20 @@ $(document).ready(function () {
     }
   });
 
-  // ⬇️ Sự kiện click dòng
+  // ⬇️ Sự kiện click dòng để highlight + gửi dữ liệu lên form cha
   $('#mcTable tbody').on('click', 'tr', function () {
-    const row = table.row(this).data();
-    if (!row || !row.mc_id) return;
+    const rowData = table.row(this).data();
+    if (!rowData || !rowData.mc_id) return;
 
+    // Highlight dòng được chọn
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+
+    // Lấy lại thông tin đầy đủ từ server (đảm bảo có ảnh hoặc chi tiết cập nhật nhất)
     $.ajax({
       url: '../../includes/mc_get_data.php',
       method: 'POST',
-      data: { mc_id: row.mc_id },
+      data: { mc_id: rowData.mc_id },
       dataType: 'json',
       success: function (response) {
         if (window.parent) {
