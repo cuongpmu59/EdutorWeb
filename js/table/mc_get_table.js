@@ -14,7 +14,7 @@ $(document).ready(function () {
         { data: 'mc_answer2', title: 'Đáp án 2' },
         { data: 'mc_answer3', title: 'Đáp án 3' },
         { data: 'mc_answer4', title: 'Đáp án 4' },
-        { data: 'mc_correct_anwer', title: 'Đúng' },
+        { data: 'mc_correct_answer', title: 'Đúng' },
         {
           data: 'mc_image_url',
           title: 'Ảnh',
