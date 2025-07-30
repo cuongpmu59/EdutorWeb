@@ -129,28 +129,36 @@
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_button_action.js"></script>
 
-  <iframe id="mcTableFrame" src="mc_table.html" style="width:100%; height:400px;"></iframe>
-
 <script>
   window.addEventListener('message', function (e) {
-    if (e.data?.type === 'fill-form') {
-      const data = e.data.data;
+    window.addEventListener('message', function (e) {
+  if (e.data?.type === 'fill-form') {
+    const data = e.data.data;
 
-      // 🔧 Ví dụ đổ dữ liệu lên form
-      document.querySelector('#mc_id').value = data.mc_id;
-      document.querySelector('#mc_question').value = data.mc_question;
-      document.querySelector('#mc_answer1').value = data.mc_answer1;
-      document.querySelector('#mc_answer2').value = data.mc_answer2;
-      document.querySelector('#mc_answer3').value = data.mc_answer3;
-      document.querySelector('#mc_answer4').value = data.mc_answer4;
-      document.querySelector('#mc_correct_answer').value = data.mc_correct_answer;
-      document.querySelector('#mc_topic').value = data.mc_topic;
-      // Xử lý hình ảnh nếu có
-      if (data.mc_image_url) {
-        document.querySelector('#preview-image').src = data.mc_image_url;
-      }
+    document.querySelector('#mc_id').value = data.mc_id || '';
+    document.querySelector('#mc_topic').value = data.mc_topic || '';
+    document.querySelector('#mc_question').value = data.mc_question || '';
+    document.querySelector('#mc_answer1').value = data.mc_answer1 || '';
+    document.querySelector('#mc_answer2').value = data.mc_answer2 || '';
+    document.querySelector('#mc_answer3').value = data.mc_answer3 || '';
+    document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
+    document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || '';
+
+    // Hiển thị ảnh nếu có
+    const imgEl = document.querySelector('#mc_preview_image');
+    if (data.mc_image_url) {
+      imgEl.src = data.mc_image_url;
+      imgEl.style.display = 'block';
+    } else {
+      imgEl.src = '';
+      imgEl.style.display = 'none';
     }
-  });
+
+    // Nếu có tính năng preview LaTeX, bạn có thể gọi lại MathJax:
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+});
+
 </script>
 
 
