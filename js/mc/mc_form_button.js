@@ -145,11 +145,9 @@
   });
   
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
-  document.getElementById('mc_view_list').addEventListener('click', function () {
-  const tableWrapper = document.getElementById('mcTableWrapper');
-  if (tableWrapper.style.display === 'none' || tableWrapper.style.display === '') {
-    tableWrapper.style.display = 'block';
-  } else {
-    tableWrapper.style.display = 'none';
-  }
-});
+  document.getElementById('mc_view_list').addEventListener('click', () => {
+    const wrapper = document.getElementById('mcTableWrapper');
+    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+      ? 'block'
+      : 'none';
+  });
