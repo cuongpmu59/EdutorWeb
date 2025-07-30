@@ -123,11 +123,11 @@
     </div>
   </div>
 
-  <script src="../../js/form/mc_listener.js"></script>
-  <script src="../../js/form/mc_preview.js"></script>
-  <script src="../../js/form/mc_image.js"></script>
-  <script src="../../js/form/mc_layout.js"></script>
-  <script src="../../js/form/mc_button_action.js"></script>
+  <script src="../../js/mc/mc_listener.js"></script>
+  <script src="../../js/mc/mc_preview.js"></script>
+  <script src="../../js/mc/mc_image.js"></script>
+  <script src="../../js/mc/mc_layout.js"></script>
+  <script src="../../js/mc/mc_button_action.js"></script>
 
   <script>
   window.addEventListener('message', function (e) {
