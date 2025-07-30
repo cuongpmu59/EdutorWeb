@@ -43,7 +43,7 @@
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
   <!-- File JS khởi tạo bảng -->
-  <script src="../../js/table/mc_get_table.js"></script>
+  <script src="../../js/mc/mc_get_table.js"></script>
 
 </body>
 </html>
