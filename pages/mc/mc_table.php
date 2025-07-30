@@ -66,7 +66,6 @@
       });
     });
   </script>
-  <script src="../../js/table/mc_get_table.js"></script>
-
+  
 </body>
 </html>
