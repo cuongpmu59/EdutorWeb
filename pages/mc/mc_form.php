@@ -129,39 +129,31 @@
   <script src="../../js/form/mc_layout.js"></script>
   <script src="../../js/form/mc_button_action.js"></script>
 
-<script>
+  <script>
   window.addEventListener('message', function (e) {
-    window.addEventListener('message', function (e) {
-  if (e.data?.type === 'fill-form') {
-    const data = e.data.data;
+    if (e.data?.type === 'fill-form') {
+      const data = e.data.data;
 
-    document.querySelector('#mc_id').value = data.mc_id || '';
-    document.querySelector('#mc_topic').value = data.mc_topic || '';
-    document.querySelector('#mc_question').value = data.mc_question || '';
-    document.querySelector('#mc_answer1').value = data.mc_answer1 || '';
-    document.querySelector('#mc_answer2').value = data.mc_answer2 || '';
-    document.querySelector('#mc_answer3').value = data.mc_answer3 || '';
-    document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
-    document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || '';
+      document.querySelector('#mc_id').value = data.mc_id || '';
+      document.querySelector('#mc_topic').value = data.mc_topic || '';
+      document.querySelector('#mc_question').value = data.mc_question || '';
+      document.querySelector('#mc_answer1').value = data.mc_answer1 || '';
+      document.querySelector('#mc_answer2').value = data.mc_answer2 || '';
+      document.querySelector('#mc_answer3').value = data.mc_answer3 || '';
+      document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
+      document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || '';
 
-    // Hiển thị ảnh nếu có
-    const imgEl = document.querySelector('#mc_preview_image');
-    if (data.mc_image_url) {
-      imgEl.src = data.mc_image_url;
-      imgEl.style.display = 'block';
-    } else {
-      imgEl.src = '';
-      imgEl.style.display = 'none';
+      const img = document.querySelector('#mc_preview_image');
+      if (data.mc_image_url) {
+        img.src = data.mc_image_url;
+        img.style.display = 'block';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+      }
     }
-
-    // Nếu có tính năng preview LaTeX, bạn có thể gọi lại MathJax:
-    if (window.MathJax) MathJax.typesetPromise();
-  }
-});
-
+  });
 </script>
-
-
 
 </body>
 </html>
