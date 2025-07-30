@@ -1,5 +1,5 @@
 <?php
-// includes/mc_get_data.php
+// includes/mc/mc_get_data.php
 
 require_once __DIR__ . '/../includes/db_connection.php';
 header('Content-Type: application/json');
