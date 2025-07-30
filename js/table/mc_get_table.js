@@ -1,10 +1,10 @@
-// js/table/mc_get_table.js
+// Khởi động bảng dataTable
 $(document).ready(function () {
   initMcQuestionTable();
 });
 
 function initMcQuestionTable() {
-  $('#mcTable').DataTable({
+  const table = $('#mcTable').DataTable({
     ajax: '../../includes/mc_get_data.php',
     columns: [
       { data: 'mc_id', title: 'ID' },
@@ -14,10 +14,10 @@ function initMcQuestionTable() {
       { data: 'mc_answer2', title: 'B' },
       { data: 'mc_answer3', title: 'C' },
       { data: 'mc_answer4', title: 'D' },
-      { data: 'mc_correct_answer', title: 'Đáp án' },
+      { data: 'mc_correct_answer', title: 'Đáp án' },
       {
         data: 'mc_image_url',
-        title: 'Hình minh họa',
+        title: 'Ảnh',
         render: function (data) {
           if (!data) return '';
           const thumbUrl = data.includes('/upload/')
@@ -34,12 +34,17 @@ function initMcQuestionTable() {
     },
     responsive: true,
     pageLength: 10,
-
-    // 🔄 Gọi lại MathJax sau mỗi lần bảng được vẽ lại (gồm tìm kiếm, phân trang...)
     drawCallback: function () {
-      if (window.MathJax && MathJax.typesetPromise) {
+      if (window.MathJax) {
         MathJax.typesetPromise();
       }
     }
+  });
+
+  // ⬇️ Gửi dữ liệu khi click dòng
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const data = table.row(this).data();
+    if (!data) return;
+    window.parent.postMessage({ type: 'fill-form', data }, '*');
   });
 }
