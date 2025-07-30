@@ -1,6 +1,6 @@
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
-    ajax: '../../includes/mc_get_data.php',
+    ajax: '../../includes/mc/mc_get_data.php',
     columns: [
       { data: 'mc_id', title: 'ID' },
       { data: 'mc_topic', title: 'Chủ đề' },
