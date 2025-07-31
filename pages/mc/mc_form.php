@@ -125,7 +125,6 @@
 
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js"></script>
-  <!-- <script src="../../js/mc/mc_layout.js"></script> -->
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
