@@ -2,11 +2,11 @@
 window.addEventListener('message', function (event) {
   const message = event.data;
 
-  // Kiểm tra kiểu thông điệp
-  if (message.type === 'fill-form' && message.data) {
+  // Đảm bảo đúng định dạng message
+  if (message?.type === 'fill-form' && message.data) {
     const data = message.data;
 
-    // Gán dữ liệu vào các input/textarea
+    // Gán dữ liệu vào form
     document.querySelector('#mc_id').value = data.mc_id || '';
     document.querySelector('#mc_topic').value = data.mc_topic || '';
     document.querySelector('#mc_question').value = data.mc_question || '';
@@ -16,17 +16,21 @@ window.addEventListener('message', function (event) {
     document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
     document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || 'A';
 
-    // Hiển thị ảnh nếu có URL
-    const img = document.querySelector('#mc_preview_image');
+    // Hiển thị ảnh nếu có
+    const preview = document.querySelector('#mc_preview_image');
     if (data.mc_image_url) {
+      preview.innerHTML = ''; // Xoá ảnh cũ nếu có
+      const img = document.createElement('img');
       img.src = data.mc_image_url;
-      img.style.display = 'block';
+      img.alt = 'Ảnh câu hỏi';
+      img.style.maxWidth = '120px';
+      img.style.marginTop = '8px';
+      preview.appendChild(img);
     } else {
-      img.src = '';
-      img.style.display = 'none';
+      preview.innerHTML = '';
     }
 
-    // Cuộn form lên trên cùng (tùy chọn)
+    // Cuộn lên đầu form nếu cần
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
