@@ -126,31 +126,7 @@
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
-  <script src="../../js/mc/mc_form_listener.js"></script>
-  <script>
-window.addEventListener('message', function (e) {
-  if (e.data?.type === 'fill-form') {
-    const data = e.data.data;
+  <script src="../../js/form/mc_fetch_data.js"></script>
 
-    document.querySelector('#mc_id').value = data.mc_id || '';
-    document.querySelector('#mc_topic').value = data.mc_topic || '';
-    document.querySelector('#mc_question').value = data.mc_question || '';
-    document.querySelector('#mc_answer1').value = data.mc_answer1 || '';
-    document.querySelector('#mc_answer2').value = data.mc_answer2 || '';
-    document.querySelector('#mc_answer3').value = data.mc_answer3 || '';
-    document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
-    document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || '';
-
-    const img = document.querySelector('#mc_preview_image');
-    if (data.mc_image_url) {
-      img.src = data.mc_image_url;
-      img.style.display = 'block';
-    } else {
-      img.src = '';
-      img.style.display = 'none';
-    }
-  }
-});
-  </script>
 </body>
 </html>
