@@ -1,46 +1,22 @@
 <?php
-session_start();
-require_once __DIR__ . '/db_connection.php';
+require_once __DIR__ . '/../includes/db_connection.php';
+header('Content-Type: application/json');
 
-// ✅ Kiểm tra phương thức gọi
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    exit('❌ Phương thức không hợp lệ.');
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
+  $mc_id = intval($_POST['mc_id']);
 
-// ✅ Lấy và kiểm tra mc_id
-$mc_id = (int)($_POST['mc_id'] ?? 0);
-if (!$mc_id) {
-    http_response_code(400);
-    exit('❌ Thiếu hoặc không hợp lệ mc_id.');
-}
-
-try {
-    // ✅ Lấy đường dẫn ảnh nếu có
-    $stmt = $conn->prepare("SELECT mc_image_url FROM mc_questions WHERE mc_id = ?");
-    $stmt->execute([$mc_id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$row) {
-        http_response_code(404);
-        exit('❌ Không tìm thấy câu hỏi.');
-    }
-
-    // ✅ Xoá file ảnh trên ổ đĩa (nếu có)
-    if (!empty($row['mc_image_url'])) {
-        $imagePath = realpath(__DIR__ . '/../' . $row['mc_image_url']);
-        if ($imagePath && file_exists($imagePath)) {
-            unlink($imagePath);
-        }
-    }
-
-    // ✅ Xoá bản ghi khỏi CSDL
+  try {
     $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = ?");
     $stmt->execute([$mc_id]);
 
-    echo '✅ Đã xoá thành công';
-} catch (Exception $e) {
-    error_log("❌ Lỗi xoá câu hỏi: " . $e->getMessage());
-    http_response_code(500);
-    echo '❌ Đã xảy ra lỗi khi xoá.';
+    if ($stmt->rowCount() > 0) {
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Không tìm thấy câu hỏi để xoá.']);
+    }
+  } catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+  }
+} else {
+  echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ.']);
 }
