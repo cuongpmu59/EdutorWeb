@@ -37,7 +37,7 @@ $(document).ready(function () {
     }
   });
 
-  // ⬇️ Sự kiện click dòng để highlight + gửi dữ liệu lên form cha
+  // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
   $('#mcTable tbody').on('click', 'tr', function () {
     const rowData = table.row(this).data();
     if (!rowData || !rowData.mc_id) return;
@@ -46,19 +46,21 @@ $(document).ready(function () {
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
 
-    // Lấy lại thông tin đầy đủ từ server (đảm bảo có ảnh hoặc chi tiết cập nhật nhất)
+    // Lấy dữ liệu chi tiết từ server để đảm bảo đồng bộ ảnh/mc_image_url mới nhất
     $.ajax({
       url: '../../includes/mc/mc_get_data.php',
       method: 'POST',
       data: { mc_id: rowData.mc_id },
       dataType: 'json',
       success: function (response) {
-        if (window.parent) {
+        if (response && !response.error && window.parent) {
           window.parent.postMessage({ type: 'fill-form', data: response }, '*');
+        } else {
+          alert(response.error || '❌ Không thể tải dữ liệu chi tiết.');
         }
       },
       error: function (xhr, status, error) {
-        alert('❌ Lỗi khi tải dữ liệu: ' + error);
+        alert('❌ Lỗi AJAX: ' + error);
       }
     });
   });
