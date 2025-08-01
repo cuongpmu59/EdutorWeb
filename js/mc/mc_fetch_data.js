@@ -42,11 +42,9 @@ $(document).ready(function () {
     const rowData = table.row(this).data();
     if (!rowData || !rowData.mc_id) return;
 
-    // Highlight dòng được chọn
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
 
-    // Lấy dữ liệu chi tiết từ server để đảm bảo đồng bộ ảnh/mc_image_url mới nhất
     $.ajax({
       url: '../../includes/mc/mc_fetch_data.php',
       method: 'POST',
