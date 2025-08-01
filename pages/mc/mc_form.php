@@ -127,6 +127,32 @@
   <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
   <script src="../../js/form/mc_get_table.js"></script>
+  <script>
+  // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
+  window.addEventListener('message', function (event) {
+    const { type, data } = event.data || {};
+    if (type !== 'fill-form' || !data) return;
+
+    $('#mc_id').val(data.mc_id || '');
+    $('#mc_topic').val(data.mc_topic || '');
+    $('#mc_question').val(data.mc_question || '');
+    $('#mc_answer1').val(data.mc_answer1 || '');
+    $('#mc_answer2').val(data.mc_answer2 || '');
+    $('#mc_answer3').val(data.mc_answer3 || '');
+    $('#mc_answer4').val(data.mc_answer4 || '');
+    $('#mc_correct_answer').val(data.mc_correct_answer || '');
+
+    // Nếu có ảnh → hiển thị, ngược lại ẩn ảnh
+    if (data.mc_image_url) {
+      $('#mc_preview_image').attr('src', data.mc_image_url).show();
+    } else {
+      $('#mc_preview_image').hide().attr('src', '');
+    }
+
+    // Cuộn lên đầu trang
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
 
 </body>
 </html>
