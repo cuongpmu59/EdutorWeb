@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/form_ui.css">
+  <link rel="stylesheet" href="../../css/mc/mc_form_ui.css">
 
   <script>
     window.MathJax = {
