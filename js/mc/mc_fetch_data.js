@@ -1,36 +1,67 @@
-// Lắng nghe thông điệp từ iframe (mc_table.php)
-window.addEventListener('message', function (event) {
-  const message = event.data;
+$(document).ready(function () {
+  const table = $('#mcTable').DataTable({
+    ajax: '../../includes/mc/mc_fetch_data.php',
+    columns: [
+      { data: 'mc_id', title: 'ID' },
+      { data: 'mc_topic', title: 'Chủ đề' },
+      { data: 'mc_question', title: 'Câu hỏi' },
+      { data: 'mc_answer1', title: 'A' },
+      { data: 'mc_answer2', title: 'B' },
+      { data: 'mc_answer3', title: 'C' },
+      { data: 'mc_answer4', title: 'D' },
+      { data: 'mc_correct_answer', title: 'Đáp án' },
+      {
+        data: 'mc_image_url',
+        title: 'Ảnh',
+        render: function (data) {
+          if (!data) return '';
+          const thumbUrl = data.includes('/upload/')
+            ? data.replace('/upload/', '/upload/w_50,h_50,c_fill/')
+            : data;
+          return `<img src="${thumbUrl}" alt="Ảnh" width="50" height="50">`;
+        },
+        orderable: false,
+        searchable: false
+      }
+    ],
+    language: {
+      url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/vi.json'
+    },
+    responsive: true,
+    pageLength: 10,
 
-  // Đảm bảo đúng định dạng message
-  if (message?.type === 'fill-form' && message.data) {
-    const data = message.data;
-
-    // Gán dữ liệu vào form
-    document.querySelector('#mc_id').value = data.mc_id || '';
-    document.querySelector('#mc_topic').value = data.mc_topic || '';
-    document.querySelector('#mc_question').value = data.mc_question || '';
-    document.querySelector('#mc_answer1').value = data.mc_answer1 || '';
-    document.querySelector('#mc_answer2').value = data.mc_answer2 || '';
-    document.querySelector('#mc_answer3').value = data.mc_answer3 || '';
-    document.querySelector('#mc_answer4').value = data.mc_answer4 || '';
-    document.querySelector('#mc_correct_answer').value = data.mc_correct_answer || 'A';
-
-    // Hiển thị ảnh nếu có
-    const preview = document.querySelector('#mc_preview_image');
-    if (data.mc_image_url) {
-      preview.innerHTML = ''; // Xoá ảnh cũ nếu có
-      const img = document.createElement('img');
-      img.src = data.mc_image_url;
-      img.alt = 'Ảnh câu hỏi';
-      img.style.maxWidth = '120px';
-      img.style.marginTop = '8px';
-      preview.appendChild(img);
-    } else {
-      preview.innerHTML = '';
+    drawCallback: function () {
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
     }
+  });
 
-    // Cuộn lên đầu form nếu cần
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const rowData = table.row(this).data();
+    if (!rowData || !rowData.mc_id) return;
+
+    // Highlight dòng được chọn
+    $('#mcTable tbody tr').removeClass('selected');
+    $(this).addClass('selected');
+
+    // Lấy dữ liệu chi tiết từ server để đảm bảo đồng bộ ảnh/mc_image_url mới nhất
+    $.ajax({
+      url: '../../includes/mc/mc_get_data.php',
+      method: 'POST',
+      data: { mc_id: rowData.mc_id },
+      dataType: 'json',
+      success: function (response) {
+        if (response && !response.error && window.parent) {
+          window.parent.postMessage({ type: 'fill-form', data: response }, '*');
+        } else {
+          alert(response.error || '❌ Không thể tải dữ liệu chi tiết.');
+        }
+      },
+      error: function (xhr, status, error) {
+        alert('❌ Lỗi AJAX: ' + error);
+      }
+    });
+  });
 });
