@@ -48,7 +48,7 @@ $(document).ready(function () {
 
     // Lấy dữ liệu chi tiết từ server để đảm bảo đồng bộ ảnh/mc_image_url mới nhất
     $.ajax({
-      url: '../../includes/mc/mc_get_data.php',
+      url: '../../includes/mc/mc_fetch_data.php',
       method: 'POST',
       data: { mc_id: rowData.mc_id },
       dataType: 'json',
