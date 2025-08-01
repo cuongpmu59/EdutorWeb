@@ -1,6 +1,4 @@
 <?php
-// includes/mc/mc_fetch_data.php
-
 require_once __DIR__ . '/../../includes/db_connection.php';
 header('Content-Type: application/json');
 
