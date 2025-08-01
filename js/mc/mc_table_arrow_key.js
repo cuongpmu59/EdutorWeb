@@ -1,55 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
+// js/mc/mc_table_arrow_key.js
+
+let selectedRowIndex = null;
+
+$(document).ready(function () {
   const table = $('#mcTable').DataTable();
-  let currentRowIndex = 0;
 
-  const highlightRow = (index) => {
-    $('#mcTable tbody tr').removeClass('row-selected');
-    const $rows = $('#mcTable tbody tr');
-    if (index >= 0 && index < $rows.length) {
-      const $row = $rows.eq(index);
-      $row.addClass('row-selected');
-      sendRowDataToParent($row);
-      $row[0].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-  };
-
-  const sendRowDataToParent = ($row) => {
-    const $cells = $row.find('td');
-    if ($cells.length < 9) return;
-
-    const data = {
-      type: 'mc_select_row',  // tên sự kiện
-      mc_id: $cells.eq(0).data('raw'),
-      mc_topic: $cells.eq(1).data('raw'),
-      mc_question: $cells.eq(2).data('raw'),
-      mc_answer1: $cells.eq(3).data('raw'),
-      mc_answer2: $cells.eq(4).data('raw'),
-      mc_answer3: $cells.eq(5).data('raw'),
-      mc_answer4: $cells.eq(6).data('raw'),
-      mc_correct_answer: $cells.eq(7).data('raw'),
-      mc_image_url: $cells.eq(8).data('raw')
-    };
-
-    window.parent.postMessage(data, '*'); // gửi dữ liệu cho form cha
-  };
-
+  // Khi nhấn phím lên hoặc xuống
   $(document).on('keydown', function (e) {
-    const rowCount = $('#mcTable tbody tr').length;
+    const rows = table.rows({ search: 'applied' }).nodes();
+    if (!rows.length) return;
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (currentRowIndex < rowCount - 1) {
-        currentRowIndex++;
-        highlightRow(currentRowIndex);
+      if (selectedRowIndex === null || selectedRowIndex >= rows.length - 1) {
+        selectedRowIndex = 0;
+      } else {
+        selectedRowIndex++;
       }
-    } else if (e.key === 'ArrowUp') {
+      moveAndSendData(rows, selectedRowIndex, table);
+    }
+
+    if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (currentRowIndex > 0) {
-        currentRowIndex--;
-        highlightRow(currentRowIndex);
+      if (selectedRowIndex === null || selectedRowIndex <= 0) {
+        selectedRowIndex = rows.length - 1;
+      } else {
+        selectedRowIndex--;
       }
+      moveAndSendData(rows, selectedRowIndex, table);
     }
   });
 
-  // Tự động chọn dòng đầu tiên khi load
-  highlightRow(currentRowIndex);
+  // Bấm chuột chọn dòng cũng đánh dấu selectedRowIndex
+  $('#mcTable tbody').on('click', 'tr', function () {
+    selectedRowIndex = table.row(this).index();
+  });
 });
+
+// Hàm xử lý tô sáng và gửi dữ liệu
+function moveAndSendData(rows, index, table) {
+  $(rows).removeClass('selected');
+  const selectedRow = $(rows).eq(index);
+  selectedRow.addClass('selected');
+
+  const rowData = table.row(index).data();
+  if (rowData) {
+    const message = {
+      type: 'fill-form',
+      data: {
+        mc_id: rowData.mc_id,
+        mc_topic: rowData.mc_topic,
+        mc_question: rowData.mc_question,
+        mc_answer1: rowData.mc_answer1,
+        mc_answer2: rowData.mc_answer2,
+        mc_answer3: rowData.mc_answer3,
+        mc_answer4: rowData.mc_answer4,
+        mc_correct_answer: rowData.mc_correct_answer,
+        mc_image_url: rowData.mc_image_url
+      }
+    };
+    // Gửi sang parent (form cha)
+    window.parent.postMessage(message, '*');
+  }
+}
