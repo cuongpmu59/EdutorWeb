@@ -1,4 +1,3 @@
-<!-- pages/mc/mc_table.php -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
