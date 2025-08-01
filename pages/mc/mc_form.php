@@ -157,6 +157,24 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
+<script>
+  document.getElementById('mc_delete_btn').addEventListener('click', function () {
+    const mc_id = document.getElementById('mc_id')?.value;
+
+    if (!mc_id) {
+      alert('⚠️ Bạn chưa chọn dòng nào để xoá.');
+      return;
+    }
+
+    const iframe = document.getElementById('mc_table_iframe'); // ID iframe chứa bảng
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({
+        type: 'delete-row',
+        data: { mc_id: mc_id }
+      }, '*');
+    }
+  });
+</script>
 
 </body>
 </html>
