@@ -126,7 +126,8 @@
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
-  <script src="../../js/form/mc_get_table.js"></script>
+  <!-- <script src="../../js/form/mc_fetch_data.js"></script> -->
+ 
   <script>
   // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
   window.addEventListener('message', function (event) {
