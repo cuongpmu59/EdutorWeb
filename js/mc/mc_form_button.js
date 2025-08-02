@@ -43,41 +43,64 @@
 
   //Nút "Xoá" (#mc_delete)
 
-  document.getElementById('mc_delete_btn').addEventListener('click', function () {
-    const mc_id = document.getElementById('mc_id')?.value?.trim();
-
-    if (!mc_id) {
-      alert('⚠️ Bạn chưa chọn dòng nào để xoá.');
-      return;
+  document.addEventListener("DOMContentLoaded", function () {
+    const deleteBtn = document.getElementById("mc_delete_btn");
+  
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", function () {
+        const mcIdInput = document.getElementById("mc_id");
+        const mc_id = mcIdInput ? mcIdInput.value.trim() : "";
+  
+        if (!mc_id) {
+          alert("Vui lòng chọn dòng cần xoá.");
+          return;
+        }
+  
+        if (!confirm("Bạn có chắc chắn muốn xoá dòng này?")) {
+          return;
+        }
+  
+        fetch("../../includes/mc/mc_fetch_data.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            action: "delete",
+            mc_id: mc_id
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert("Đã xoá thành công!");
+  
+              // Xoá dữ liệu form
+              clearFormFields();
+  
+              // Gửi postMessage để reload bảng trong iframe
+              const iframe = document.getElementById("mcTableFrame");
+              if (iframe) {
+                iframe.contentWindow.postMessage({ action: "reload_table" }, "*");
+              }
+            } else {
+              alert("Xoá thất bại: " + (data.message || "Không rõ lỗi."));
+            }
+          })
+          .catch(error => {
+            console.error("Lỗi xoá dòng:", error);
+            alert("Đã xảy ra lỗi khi xoá dòng.");
+          });
+      });
     }
-
-    if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này?')) return;
-
-    fetch('../../includes/mc/mc_fetch_data.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        action: 'delete',
-        mc_id: mc_id
-      })
-    })
-    .then(res => res.text())
-    .then(msg => {
-      alert(msg);
-
-      // Làm lại form
-      document.getElementById('mc_reset')?.click();
-
-      // Tải lại iframe
-      const frame = document.getElementById('mcTableFrame');
-      if (frame && frame.contentWindow) {
-        frame.contentWindow.location.reload();
-      }
-    })
-    .catch(err => {
-      alert('❌ Lỗi khi xoá: ' + err);
-    });
+  
+    function clearFormFields() {
+      const form = document.querySelector("form");
+      if (form) form.reset();
+  
+      const preview = document.getElementById("mc_preview_image");
+      if (preview) preview.innerHTML = "";
+    }
   });
+  
   
   //   Xử lý lưu
 
