@@ -1,5 +1,3 @@
-// js/form/mc_fetch_data.js
-
 $(document).ready(function () {
   // Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
@@ -70,38 +68,38 @@ $(document).ready(function () {
     });
   });
 
-//   // Nghe các sự kiện gửi từ form cha
-//   window.addEventListener('message', function (event) {
-//     const { type, data } = event.data || {};
+  // Nghe các sự kiện gửi từ form cha
+  window.addEventListener('message', function (event) {
+    const { type, data } = event.data || {};
 
-//     // Xử lý yêu cầu xoá một dòng
-//     if (type === 'delete-row' && data && data.mc_id) {
-//       const mc_id = data.mc_id;
+    // Xử lý yêu cầu xoá một dòng
+    if (type === 'delete-row' && data && data.mc_id) {
+      const mc_id = data.mc_id;
 
-//       if (!confirm('❓ Bạn có chắc muốn xoá dòng này?')) return;
+      if (!confirm('❓ Bạn có chắc muốn xoá dòng này?')) return;
 
-//       $.ajax({
-//         url: '../../includes/mc/mc_fetch_data.php',
-//         method: 'POST',
-//         dataType: 'json',
-//         data: { delete_mc_id: mc_id },
-//         success: function (response) {
-//           if (response.success) {
-//             alert('✅ Đã xoá thành công');
-//             table.ajax.reload(null, false); // Reload giữ nguyên trang hiện tại
-//           } else {
-//             alert(response.error || '❌ Xoá thất bại');
-//           }
-//         },
-//         error: function () {
-//           alert('❌ Lỗi khi gửi yêu cầu xoá');
-//         }
-//       });
-//     }
+      $.ajax({
+        url: '../../includes/mc/mc_fetch_data.php',
+        method: 'POST',
+        dataType: 'json',
+        data: { delete_mc_id: mc_id },
+        success: function (response) {
+          if (response.success) {
+            alert('✅ Đã xoá thành công');
+            table.ajax.reload(null, false); // Reload giữ nguyên trang hiện tại
+          } else {
+            alert(response.error || '❌ Xoá thất bại');
+          }
+        },
+        error: function () {
+          alert('❌ Lỗi khi gửi yêu cầu xoá');
+        }
+      });
+    }
 
-//     // Reload bảng nếu có yêu cầu
-//     if (event.data?.action === 'reload_table') {
-//       table.ajax.reload(null, false);
-//     }
-//   });
-// });
+    // Reload bảng nếu có yêu cầu
+    if (event.data?.action === 'reload_table') {
+      table.ajax.reload(null, false);
+    }
+  });
+});
