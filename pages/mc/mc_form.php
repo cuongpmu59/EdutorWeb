@@ -110,8 +110,8 @@
 
           <div class="mc-buttons">
             <h4>Thao tác</h4>
-            <button type="submit" id="mc_save">Lưu</button>
-            <button type="button" id="mc_delete">Xóa</button>
+            <button type="submit" id="mc_save_btn">Lưu</button>
+            <button type="button" id="mc_delete_btn">Xóa</button>
             <button type="button" id="mc_reset">Làm lại</button>
             <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
             <button type="button" id="mc_preview_exam">Làm đề</button>
@@ -155,24 +155,6 @@
 
     // Cuộn lên đầu trang
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-</script>
-<script>
-  document.getElementById('mc_delete_btn').addEventListener('click', function () {
-    const mc_id = document.getElementById('mc_id')?.value;
-
-    if (!mc_id) {
-      alert('⚠️ Bạn chưa chọn dòng nào để xoá.');
-      return;
-    }
-
-    const iframe = document.getElementById('mc_table_iframe'); // ID iframe chứa bảng
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({
-        type: 'delete-row',
-        data: { mc_id: mc_id }
-      }, '*');
-    }
   });
 </script>
 
