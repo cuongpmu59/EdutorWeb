@@ -169,7 +169,7 @@ header("X-Content-Type-Options: nosniff");
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = document.getElementById('mc_view_list');
     const wrapper = document.getElementById('mcTableWrapper');
@@ -180,7 +180,7 @@ header("X-Content-Type-Options: nosniff");
       wrapper.style.display = isHidden ? 'block' : 'none';
     });
   });
-</script>
+</script> -->
 
 </body>
 </html>
