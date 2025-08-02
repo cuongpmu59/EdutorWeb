@@ -31,7 +31,7 @@ try {
     $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
 
     if (!$mc_id) {
-      echo json_encode(['error' => '❌ mc_id không hợp lệ']);
+      echo json_encode(['success' => false, 'message' => '❌ delete_mc_id không hợp lệ']);
       http_response_code(400);
       exit;
     }
