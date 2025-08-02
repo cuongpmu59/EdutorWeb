@@ -165,6 +165,7 @@
 
     toggleBtn.addEventListener('click', function () {
       const isHidden = wrapper.style.display === 'none' || !wrapper.style.display;
+      console.log('Click toggle, đang ẩn?', isHidden); // <== thêm dòng này
       wrapper.style.display = isHidden ? 'block' : 'none';
     });
   });
