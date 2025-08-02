@@ -158,6 +158,17 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('mc_view_list');
+    const wrapper = document.getElementById('mcTableWrapper');
+
+    toggleBtn.addEventListener('click', function () {
+      const isHidden = wrapper.style.display === 'none' || !wrapper.style.display;
+      wrapper.style.display = isHidden ? 'block' : 'none';
+    });
+  });
+</script>
 
 </body>
 </html>
