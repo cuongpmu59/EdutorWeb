@@ -1,6 +1,8 @@
 /* Layout chính của form chia 2 cột */
 .mc-columns {
+  display: -ms-flexbox;        /* Cho IE10 */
   display: flex;
+  -ms-flex-direction: row;     /* Cho IE10 */
   flex-direction: row;
   gap: 30px;
   margin-top: 20px;
@@ -8,15 +10,18 @@
 
 /* Cột trái chứa nội dung chính */
 .mc-col-left {
+  -ms-flex: 2;                 /* Cho IE10 */
   flex: 2;
 }
 
 /* Cột phải chứa ảnh và các nút thao tác */
 .mc-col-right {
-  flex: 1;
+  display: -ms-flexbox;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
-  gap: 10px; /* Giảm khoảng cách giữa ảnh và nút */
+  flex: 1;
+  gap: 10px;
 }
 
 /* Ô nhập liệu và textarea */
@@ -118,9 +123,10 @@
 
 /* Khu vực nút thao tác */
 .mc-buttons {
-  padding: 10px;
-  border: 1px solid #ccc;
-  background: #f1f1f1;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;             /* IE10 */
+  justify-content: space-between;
 }
 
 .mc-buttons h4 {
