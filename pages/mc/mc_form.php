@@ -47,7 +47,7 @@
 
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
-              <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
+              <button type="button" class="toggle-preview" data-target="mc_question" title="Xem trước câu hỏi"><i class="fa fa-eye"></i></button>
             </label>
             <textarea id="mc_question" name="question" required></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
@@ -56,28 +56,28 @@
           <!-- Câu trả lời A - D -->
           <div class="mc-field mc-inline-field">
             <label for="mc_answer1">A.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer1"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer1" title="Xem trước đáp án A"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer1" name="answer1" required>
             <div class="preview-box" id="preview-mc_answer1" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer2">B.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer2"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer2" title="Xem trước đáp án B"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer2" name="answer2" required>
             <div class="preview-box" id="preview-mc_answer2" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer3">C.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer3"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer3" title="Xem trước đáp án C"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer3" name="answer3" required>
             <div class="preview-box" id="preview-mc_answer3" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer4">D.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer4"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer4" title="Xem trước đáp án D"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer4" name="answer4" required>
             <div class="preview-box" id="preview-mc_answer4" style="display:none;"></div>
           </div>
