@@ -65,7 +65,7 @@
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
             action: "delete",
-            mc_id: mc_id
+            delete_mc_id: mc_id
           })
         })
           .then(response => response.json())
