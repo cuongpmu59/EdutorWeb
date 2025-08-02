@@ -130,7 +130,7 @@
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
-  <script src="../../js/mc/mc_fetch_data.js"></script>
+  <!-- <script src="../../js/mc/mc_fetch_data.js"></script> -->
 
   <script>
   // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
@@ -156,13 +156,6 @@
 
     // Cuộn lên đầu trang
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-</script>
-
-<script>
-  document.getElementById('mc_view_list').addEventListener('click', function () {
-    const wrapper = document.getElementById('mcTableWrapper');
-    wrapper.style.display = (wrapper.style.display === 'none' || wrapper.style.display === '') ? 'block' : 'none';
   });
 </script>
 
