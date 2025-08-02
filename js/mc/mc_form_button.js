@@ -35,29 +35,32 @@
 
   //Nút "Xoá" (#mc_delete)
 
-  document.getElementById('mc_delete').addEventListener('click', function () {
-    const idInput = document.getElementById('mc_id');
-    if (!idInput) {
-      alert('⚠️ Không có câu hỏi nào để xoá.');
+  document.getElementById('mc_delete_btn').addEventListener('click', function () {
+    const mc_id = document.getElementById('mc_id')?.value?.trim();
+
+    if (!mc_id) {
+      alert('⚠️ Bạn chưa chọn dòng nào để xoá.');
       return;
     }
-  
-    const mc_id = idInput.value;
-  
+
     if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này? Hành động này không thể hoàn tác.')) return;
-  
-    fetch('../../includes/mc_delete.php', {
+
+    fetch('../../includes/mc/mc_fetch_data.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ mc_id })
+      body: new URLSearchParams({
+        action: 'delete',
+        mc_id: mc_id
+      })
     })
     .then(res => res.text())
     .then(msg => {
       alert(msg);
-  
-      const resetBtn = document.getElementById('mc_reset');
-      if (resetBtn) resetBtn.click();
-  
+
+      // Làm lại form
+      document.getElementById('mc_reset')?.click();
+
+      // Tải lại iframe
       const frame = document.getElementById('mcTableFrame');
       if (frame && frame.contentWindow) {
         frame.contentWindow.location.reload();
