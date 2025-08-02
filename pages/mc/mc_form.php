@@ -1,3 +1,6 @@
+<?php
+header("X-Content-Type-Options: nosniff");
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -112,11 +115,12 @@
 
           <div class="mc-buttons">
             <h4>Thao tác</h4>
-            <button type="submit" id="mc_save_btn">Lưu</button>
-            <button type="button" id="mc_delete_btn">Xóa</button>
-            <button type="button" id="mc_reset">Làm lại</button>
-            <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
-            <button type="button" id="mc_preview_exam">Làm đề</button>
+            <button type="submit" id="mc_save_btn" title="Lưu câu hỏi">Lưu</button>
+            <button type="button" id="mc_delete_btn" title="Xóa câu hỏi">Xóa</button>
+            <button type="button" id="mc_reset" title="Làm lại form">Làm lại</button>
+            <button type="button" id="mc_view_list" title="Ẩn hoặc hiện bảng danh sách">Ẩn/hiện danh sách</button>
+            <button type="button" id="mc_preview_exam" title="Xem trước đề thi">Làm đề</button>
+
           </div>
         </div>
       </div>
@@ -124,9 +128,14 @@
       <input type="hidden" id="mc_id" name="mc_id" value="">
     </form>
 
-    <div id="mcTableWrapper" style="display:none;">
-      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
-    </div>
+    <<div id="mcTableWrapper" style="display:none;">
+    <iframe
+      id="mcTableFrame"
+      src="mc_table.php"
+      title="Danh sách câu hỏi trắc nghiệm"
+      style="width:100%; height:600px; border:none;">
+    </iframe>
+</div>
   </div>
 
   <script src="../../js/mc/mc_form_preview.js"></script>
