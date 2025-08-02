@@ -141,7 +141,6 @@ header("X-Content-Type-Options: nosniff");
   <!-- <script src="../../js/mc/mc_form_preview.js"></script> -->
   <!-- <script src="../../js/mc/mc_form_image.js"></script> -->
   <script src="../../js/mc/mc_form_button.js"></script>
-  <!-- <script src="../../js/mc/mc_fetch_data.js"></script> -->
 
   <script>
   // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
@@ -169,18 +168,6 @@ header("X-Content-Type-Options: nosniff");
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const toggleBtn = document.getElementById('mc_view_list');
-    const wrapper = document.getElementById('mcTableWrapper');
-
-    toggleBtn.addEventListener('click', function () {
-      const isHidden = wrapper.style.display === 'none' || !wrapper.style.display;
-      console.log('Click toggle, đang ẩn?', isHidden); // <== thêm dòng này
-      wrapper.style.display = isHidden ? 'block' : 'none';
-    });
-  });
-</script> -->
 
 </body>
 </html>
