@@ -147,10 +147,34 @@
   //   }
   // });
   
-  // Nút "Ẩn/hiện danh sách" (#mc_view_list)
-  document.getElementById('mc_view_list').addEventListener('click', () => {
-    const wrapper = document.getElementById('mcTableWrapper');
-    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-      ? 'block'
-      : 'none';
+  // // Nút "Ẩn/hiện danh sách" (#mc_view_list)
+  // document.getElementById('mc_view_list').addEventListener('click', () => {
+  //   const wrapper = document.getElementById('mcTableWrapper');
+  //   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+  //     ? 'block'
+  //     : 'none';
+  // });
+
+  
+document.addEventListener("DOMContentLoaded", function () {
+  const viewListBtn = document.getElementById("mc_view_list");
+  const tableFrame = document.getElementById("mcTableFrame");
+
+  // Mặc định trạng thái nút
+  let isFrameVisible = true;
+
+  viewListBtn.addEventListener("click", function () {
+    if (isFrameVisible) {
+      tableFrame.style.display = "none";
+      viewListBtn.textContent = "Hiện danh sách";
+    } else {
+      tableFrame.style.display = "block";
+      viewListBtn.textContent = "Ẩn danh sách";
+    }
+
+    isFrameVisible = !isFrameVisible;
   });
+});
+
+
+  
