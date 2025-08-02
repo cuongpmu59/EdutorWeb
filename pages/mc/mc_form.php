@@ -128,7 +128,7 @@ header("X-Content-Type-Options: nosniff");
       <input type="hidden" id="mc_id" name="mc_id" value="">
     </form>
 
-    <<div id="mcTableWrapper" style="display:none;">
+    <div id="mcTableWrapper" style="display:none;">
     <iframe
       id="mcTableFrame"
       src="mc_table.php"
