@@ -71,23 +71,23 @@
           .then(response => response.json())
           .then(data => {
             if (data.success) {
-              alert("Đã xoá thành công!");
+              alert("✅ Đã xoá thành công!");
   
-              // Xoá dữ liệu form
+              // Xoá dữ liệu trên form
               clearFormFields();
   
-              // Gửi postMessage để reload bảng trong iframe
+              // Gửi yêu cầu reload bảng qua postMessage
               const iframe = document.getElementById("mcTableFrame");
-              if (iframe) {
+              if (iframe && iframe.contentWindow) {
                 iframe.contentWindow.postMessage({ action: "reload_table" }, "*");
               }
             } else {
-              alert("Xoá thất bại: " + (data.message || "Không rõ lỗi."));
+              alert("❌ Xoá thất bại: " + (data.message || "Không rõ lỗi."));
             }
           })
           .catch(error => {
             console.error("Lỗi xoá dòng:", error);
-            alert("Đã xảy ra lỗi khi xoá dòng.");
+            alert("❌ Đã xảy ra lỗi khi xoá dòng.");
           });
       });
     }
@@ -97,10 +97,25 @@
       if (form) form.reset();
   
       const preview = document.getElementById("mc_preview_image");
-      if (preview) preview.innerHTML = "";
+      if (preview) {
+        preview.innerHTML = '';
+        preview.style.display = 'none';
+      }
+  
+      const idInput = document.getElementById('mc_id');
+      if (idInput) idInput.remove();
+  
+      document.querySelectorAll('.preview-box').forEach(div => {
+        div.innerHTML = '';
+        div.style.display = 'none';
+      });
+      const mcPreview = document.getElementById('mcPreview');
+      if (mcPreview) mcPreview.style.display = 'none';
+  
+      const previewContent = document.getElementById('mcPreviewContent');
+      if (previewContent) previewContent.innerHTML = '';
     }
   });
-  
   
   //   Xử lý lưu
 
