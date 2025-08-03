@@ -44,6 +44,15 @@
   <!-- File JS khởi tạo bảng -->
   <script src="../../js/mc/mc_fetch_data.js"></script>
   <script src="../../js/mc/mc_table_arrow_key.js"></script>
+  
+  <script>
+  window.addEventListener("message", function (event) {
+  if (event.data && event.data.action === "reload_table") {
+    const table = $('#mcTable').DataTable();
+    table.ajax.reload(null, false); // không reset trang hiện tại
+  }
+});
+</script>
 
 </body>
 </html>
