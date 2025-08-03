@@ -8,6 +8,62 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 try {
+
+// ✅ INSERT hoặc UPDATE
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_once __DIR__ . '/../includes/db_connection.php';
+
+  $action = $_POST['action'] ?? '';
+
+  if ($action === 'insert') {
+    // Lấy dữ liệu từ POST
+    $topic = $_POST['mc_topic'] ?? '';
+    $question = $_POST['mc_question'] ?? '';
+    // ... các trường khác
+    $image_url = $_POST['image_url'] ?? '';
+
+    $stmt = $conn->prepare("INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) VALUES (:topic, :question, :a1, :a2, :a3, :a4, :correct, :image_url)");
+    $stmt->execute([
+      ':topic' => $topic,
+      ':question' => $question,
+      ':a1' => $_POST['mc_answer1'] ?? '',
+      ':a2' => $_POST['mc_answer2'] ?? '',
+      ':a3' => $_POST['mc_answer3'] ?? '',
+      ':a4' => $_POST['mc_answer4'] ?? '',
+      ':correct' => $_POST['mc_correct_answer'] ?? '',
+      ':image_url' => $image_url,
+    ]);
+
+    echo json_encode(['success' => true]);
+    exit;
+  }
+
+  if ($action === 'update') {
+    $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
+    if (!$mc_id) {
+      echo json_encode(['error' => 'ID không hợp lệ']);
+      exit;
+    }
+
+    $stmt = $conn->prepare("UPDATE mc_questions SET mc_topic = :topic, mc_question = :question, mc_answer1 = :a1, mc_answer2 = :a2, mc_answer3 = :a3, mc_answer4 = :a4, mc_correct_answer = :correct, mc_image_url = :image_url WHERE mc_id = :id");
+    $stmt->execute([
+      ':id' => $mc_id,
+      ':topic' => $_POST['mc_topic'] ?? '',
+      ':question' => $_POST['mc_question'] ?? '',
+      ':a1' => $_POST['mc_answer1'] ?? '',
+      ':a2' => $_POST['mc_answer2'] ?? '',
+      ':a3' => $_POST['mc_answer3'] ?? '',
+      ':a4' => $_POST['mc_answer4'] ?? '',
+      ':correct' => $_POST['mc_correct_answer'] ?? '',
+      ':image_url' => $_POST['image_url'] ?? '',
+    ]);
+
+    echo json_encode(['success' => true]);
+    exit;
+  }
+}
+
   // ✅ DELETE - Nếu có POST delete_mc_id
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
@@ -104,38 +160,3 @@ try {
   http_response_code(500);
 }
 
-// ✅ Lưu vào csdl
-
-
-document.getElementById('mc_save_btn').addEventListener('click', async () => {
-  const form = document.getElementById('mc_form');
-  const formData = new FormData(form);
-
-  const mc_id = document.getElementById('mc_id').value;
-  formData.append('action', mc_id ? 'update' : 'insert');
-
-  try {
-    const response = await fetch('../../includes/mc/mc_fetch_data.php', {
-      method: 'POST',
-      body: formData
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      alert('✅ Đã lưu thành công');
-
-      // Gửi thông báo cho iframe reload bảng
-      const tableFrame = document.getElementById('mcTableFrame');
-      tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
-
-      form.reset();
-      document.getElementById('mc_id').value = '';
-    } else {
-      alert(result.error || '❌ Lỗi khi lưu');
-    }
-  } catch (err) {
-    alert('❌ Kết nối thất bại');
-    console.error(err);
-  }
-});
