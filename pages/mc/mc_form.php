@@ -101,17 +101,22 @@ header("X-Content-Type-Options: nosniff");
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
-            <div class="mc-image-preview">
-              <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none;">
-            </div>
-            <div class="mc-image-buttons">
-              <label class="btn-upload">
-                Tải ảnh
-                <input type="file" id="mc_image" name="image" accept="image/*" hidden>
-              </label>
-              <button type="button" id="mc_clear_image">Xóa ảnh</button>
-            </div>
+          <div class="mc-image-preview">
+            <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display: none; max-width: 100%;">
           </div>
+
+          <div class="mc-image-buttons">
+            <label class="btn-upload">
+              Tải ảnh
+              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+            </label>
+            <button type="button" id="mc_delete_image_btn">Xoá ảnh</button>
+          </div>
+
+          <!-- Ẩn: đánh dấu xoá ảnh -->
+          <input type="hidden" id="delete_image_flag" name="delete_image" value="false">
+        </div>
+      </div>
 
           <div class="mc-buttons">
             <h4>Thao tác</h4>
