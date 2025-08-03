@@ -1,4 +1,4 @@
-// Nút "Ẩn/hiện danh sách" (#mc_view_list)
+// Nút "Ẩn/hiện danh sách"
 document.getElementById('mc_view_list').addEventListener('click', () => {
   const wrapper = document.getElementById('mcTableWrapper');
   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
@@ -6,10 +6,9 @@ document.getElementById('mc_view_list').addEventListener('click', () => {
     : 'none';
 });
 
-// Nút "Làm lại" (#mc_reset)
+// Nút "Làm lại"
 document.getElementById('mc_reset').addEventListener('click', function () {
   const form = document.getElementById('mcForm');
-
   form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
   form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
 
@@ -43,7 +42,7 @@ document.getElementById('mc_reset').addEventListener('click', function () {
   if (idInput) idInput.remove();
 });
 
-// Nút "Xoá" (#mc_delete_btn)
+// Nút "Xoá"
 document.getElementById('mc_delete_btn').addEventListener('click', async () => {
   const deleteBtn = document.getElementById('mc_delete_btn');
   deleteBtn.disabled = true;
@@ -74,24 +73,11 @@ document.getElementById('mc_delete_btn').addEventListener('click', async () => {
 
     if (data.success) {
       alert('✅ Đã xoá thành công');
-
-      // Reset form
-      document.getElementById('mcForm').reset();
-      const idInput = document.getElementById('mc_id');
-      if (idInput) idInput.value = '';
-
-      const img = document.getElementById('mc_preview_image');
-      if (img) {
-        img.src = '';
-        img.style.display = 'none';
-      }
-
-      const publicIdInput = document.querySelector('input[name="existing_public_id"]');
-      if (publicIdInput) publicIdInput.remove();
+      clearFormFields();
 
       // Gửi tín hiệu reload bảng
       const iframe = document.getElementById('mcTableFrame');
-      if (iframe && iframe.contentWindow) {
+      if (iframe?.contentWindow) {
         iframe.contentWindow.postMessage({ action: 'reload_table' }, '*');
       }
 
@@ -108,35 +94,7 @@ document.getElementById('mc_delete_btn').addEventListener('click', async () => {
   }
 });
 
-  function clearFormFields() {
-    const form = document.getElementById("mcForm");
-    if (form) form.reset();
-
-    const preview = document.getElementById("mc_preview_image");
-    if (preview) {
-      preview.src = '';
-      preview.style.display = 'none';
-    }
-
-    const idInput = document.getElementById('mc_id');
-    if (idInput) idInput.remove();
-
-    const publicIdInput = document.querySelector('input[name="existing_public_id"]');
-    if (publicIdInput) publicIdInput.remove();
-
-    document.querySelectorAll('.preview-box').forEach(div => {
-      div.innerHTML = '';
-      div.style.display = 'none';
-    });
-    const mcPreview = document.getElementById('mcPreview');
-    if (mcPreview) mcPreview.style.display = 'none';
-
-    const previewContent = document.getElementById('mcPreviewContent');
-    if (previewContent) previewContent.innerHTML = '';
-  }
-});
-
-// Nút "Lưu" (#mc_save_btn)
+// Nút "Lưu"
 document.getElementById('mc_save_btn').addEventListener('click', async () => {
   const saveBtn = document.getElementById('mc_save_btn');
   saveBtn.disabled = true;
@@ -153,6 +111,12 @@ document.getElementById('mc_save_btn').addEventListener('click', async () => {
   formData.append('action', action);
   if (mc_id) formData.append('mc_id', mc_id);
 
+  // Kiểm tra nếu ảnh đã xoá khỏi khung preview thì gửi thêm delete_image = true
+  const img = document.getElementById('mc_preview_image');
+  if (img && !img.src) {
+    formData.append('delete_image', 'true');
+  }
+
   try {
     const res = await fetch('../../includes/mc/mc_fetch_data.php', {
       method: 'POST',
@@ -165,23 +129,12 @@ document.getElementById('mc_save_btn').addEventListener('click', async () => {
       alert('✅ Lưu thành công');
 
       if (action === 'insert') {
-        formEl.reset();
-
-        const idInput = document.getElementById('mc_id');
-        if (idInput) idInput.value = '';
-
-        const img = document.getElementById('mc_preview_image');
-        if (img) {
-          img.src = '';
-          img.style.display = 'none';
-        }
-
-        const publicIdInput = document.querySelector('input[name="existing_public_id"]');
-        if (publicIdInput) publicIdInput.remove();
+        clearFormFields();
       }
 
+      // Gửi tín hiệu reload bảng
       const iframe = document.getElementById('mcTableFrame');
-      if (iframe && iframe.contentWindow) {
+      if (iframe?.contentWindow) {
         iframe.contentWindow.postMessage({ action: 'reload_table' }, '*');
       }
 
@@ -194,5 +147,57 @@ document.getElementById('mc_save_btn').addEventListener('click', async () => {
   } finally {
     saveBtn.disabled = false;
     saveBtn.textContent = 'Lưu';
+  }
+});
+
+// Hàm xoá toàn bộ các trường trong form
+function clearFormFields() {
+  const form = document.getElementById("mcForm");
+  if (form) form.reset();
+
+  const preview = document.getElementById("mc_preview_image");
+  if (preview) {
+    preview.src = '';
+    preview.style.display = 'none';
+  }
+
+  const idInput = document.getElementById('mc_id');
+  if (idInput) idInput.remove();
+
+  const publicIdInput = document.querySelector('input[name="existing_public_id"]');
+  if (publicIdInput) publicIdInput.remove();
+
+  document.querySelectorAll('.preview-box').forEach(div => {
+    div.innerHTML = '';
+    div.style.display = 'none';
+  });
+
+  const mcPreview = document.getElementById('mcPreview');
+  if (mcPreview) mcPreview.style.display = 'none';
+
+  const previewContent = document.getElementById('mcPreviewContent');
+  if (previewContent) previewContent.innerHTML = '';
+}
+
+// Xử lý nút xoá ảnh
+document.getElementById('mc_delete_image_btn').addEventListener('click', () => {
+  const previewImg = document.getElementById('mc_preview_image');
+  const fileInput = document.getElementById('mc_image');
+  const deleteFlag = document.getElementById('delete_image_flag');
+
+  // Ẩn ảnh nếu đang có
+  if (previewImg) {
+    previewImg.src = '';
+    previewImg.style.display = 'none';
+  }
+
+  // Reset input file
+  if (fileInput) {
+    fileInput.value = '';
+  }
+
+  // Gắn cờ xóa ảnh
+  if (deleteFlag) {
+    deleteFlag.value = 'true';
   }
 });
