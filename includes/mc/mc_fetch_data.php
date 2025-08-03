@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../includes/db_connection.php';
 require_once __DIR__ . '/../env/config.php'; // Kết nối Cloudinary
 require_once __DIR__ . '/../vendor/autoload.php';
+
 use Cloudinary\Uploader;
 
 header('Content-Type: application/json');
@@ -9,7 +10,7 @@ header('X-Content-Type-Options: nosniff');
 
 try {
   // ✅ DELETE - Nếu có POST delete_mc_id
-  
+
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
     $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
   
@@ -102,4 +103,56 @@ try {
 } catch (PDOException $e) {
   echo json_encode(['data' => [], 'error' => '❌ Lỗi truy vấn: ' . $e->getMessage()]);
   http_response_code(500);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $action = $_POST['action'] ?? '';
+  
+  // Lấy các giá trị từ form
+  $data = [
+    'mc_topic' => $_POST['mc_topic'] ?? '',
+    'mc_question' => $_POST['mc_question'] ?? '',
+    'mc_answer1' => $_POST['mc_answer1'] ?? '',
+    'mc_answer2' => $_POST['mc_answer2'] ?? '',
+    'mc_answer3' => $_POST['mc_answer3'] ?? '',
+    'mc_answer4' => $_POST['mc_answer4'] ?? '',
+    'mc_correct_answer' => $_POST['mc_correct_answer'] ?? '',
+    'mc_image_url' => $_POST['mc_image_url'] ?? ''
+  ];
+
+  if ($action === 'insert') {
+    $stmt = $conn->prepare("
+      INSERT INTO mc_questions 
+      (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url)
+      VALUES
+      (:mc_topic, :mc_question, :mc_answer1, :mc_answer2, :mc_answer3, :mc_answer4, :mc_correct_answer, :mc_image_url)
+    ");
+    $stmt->execute($data);
+    echo json_encode(['success' => true]);
+    exit;
+
+  } elseif ($action === 'update') {
+    $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
+    if (!$mc_id) {
+      echo json_encode(['error' => '❌ ID không hợp lệ']);
+      exit;
+    }
+
+    $data['mc_id'] = $mc_id;
+    $stmt = $conn->prepare("
+      UPDATE mc_questions SET
+        mc_topic = :mc_topic,
+        mc_question = :mc_question,
+        mc_answer1 = :mc_answer1,
+        mc_answer2 = :mc_answer2,
+        mc_answer3 = :mc_answer3,
+        mc_answer4 = :mc_answer4,
+        mc_correct_answer = :mc_correct_answer,
+        mc_image_url = :mc_image_url
+      WHERE mc_id = :mc_id
+    ");
+    $stmt->execute($data);
+    echo json_encode(['success' => true]);
+    exit;
+  }
 }
