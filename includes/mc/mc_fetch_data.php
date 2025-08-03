@@ -104,3 +104,38 @@ try {
   http_response_code(500);
 }
 
+// ✅ Lưu vào csdl
+
+
+document.getElementById('mc_save_btn').addEventListener('click', async () => {
+  const form = document.getElementById('mc_form');
+  const formData = new FormData(form);
+
+  const mc_id = document.getElementById('mc_id').value;
+  formData.append('action', mc_id ? 'update' : 'insert');
+
+  try {
+    const response = await fetch('../../includes/mc/mc_fetch_data.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert('✅ Đã lưu thành công');
+
+      // Gửi thông báo cho iframe reload bảng
+      const tableFrame = document.getElementById('mcTableFrame');
+      tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
+
+      form.reset();
+      document.getElementById('mc_id').value = '';
+    } else {
+      alert(result.error || '❌ Lỗi khi lưu');
+    }
+  } catch (err) {
+    alert('❌ Kết nối thất bại');
+    console.error(err);
+  }
+});
