@@ -1,13 +1,7 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
-require_once __DIR__ . '/../../env/config.php';
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
-
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
 
 try {
   // ✅ DELETE - Nếu có POST delete_mc_id
@@ -20,28 +14,6 @@ try {
       exit;
     }
 
-    // Nếu có public_id → Xoá ảnh Cloudinary
-    if (!empty($_POST['public_id'])) {
-      // Cấu hình Cloudinary từ biến môi trường
-      Configuration::instance([
-        'cloud' => [
-          'cloud_name' => $cloudinary_cloud_name,
-          'api_key'    => $cloudinary_api_key,
-          'api_secret' => $cloudinary_api_secret,
-        ],
-        'url' => ['secure' => true]
-      ]);
-
-      try {
-        $result = (new UploadApi())->destroy($_POST['public_id']);
-        // Optional: Ghi log hoặc xử lý kết quả nếu cần
-      } catch (Exception $e) {
-        // Không chặn xoá DB nếu lỗi Cloudinary
-        error_log("❌ Cloudinary delete error: " . $e->getMessage());
-      }
-    }
-
-    // Xoá trong database
     $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = :mc_id");
     $stmt->execute(['mc_id' => $mc_id]);
 
@@ -59,7 +31,7 @@ try {
     $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
 
     if (!$mc_id) {
-      echo json_encode(['success' => false, 'message' => '❌ mc_id không hợp lệ']);
+      echo json_encode(['success' => false, 'message' => '❌ delete_mc_id không hợp lệ']);
       http_response_code(400);
       exit;
     }
@@ -67,7 +39,7 @@ try {
     $stmt = $conn->prepare("
       SELECT mc_id, mc_topic, mc_question, 
              mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-             mc_correct_answer, mc_image_url, mc_image_public_id
+             mc_correct_answer, mc_image_url
       FROM mc_questions
       WHERE mc_id = :mc_id
       LIMIT 1
