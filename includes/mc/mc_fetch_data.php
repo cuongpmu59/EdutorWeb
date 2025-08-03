@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../../includes/db_connection.php';
+//require_once __DIR__ . '/../../includes/db_connection.php';
 require_once __DIR__ . '/../env/config.php'; // Kết nối Cloudinary
 require_once __DIR__ . '/../vendor/autoload.php';
 use Cloudinary\Uploader;
 
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 try {
@@ -146,17 +146,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // ✅ GET toàn bộ danh sách (nếu không có POST mc_id hoặc delete_mc_id)
   $stmt = $conn->query("
-    SELECT mc_id, mc_topic, mc_question, 
-           mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-           mc_correct_answer, mc_image_url
-    FROM mc_questions
-    ORDER BY mc_id DESC
+  SELECT mc_id, mc_topic, mc_question, 
+         mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
+         mc_correct_answer, mc_image_url
+  FROM mc_questions
+  ORDER BY mc_id DESC
   ");
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  echo json_encode(['data' => $rows]);
+  // ✅ Đảm bảo trả về JSON đúng định dạng cho DataTables
+echo json_encode([
+  'data' => $rows
+]);
+exit;
 
 } catch (PDOException $e) {
-  echo json_encode(['data' => [], 'error' => '❌ Lỗi truy vấn: ' . $e->getMessage()]);
+  // Trả về đúng format DataTables kể cả khi lỗi
+  echo json_encode([
+    'data' => [],
+    'error' => '❌ Lỗi truy vấn CSDL: ' . $e->getMessage()
+  ]);
   http_response_code(500);
+  exit;
 }
-
