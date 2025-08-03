@@ -91,7 +91,8 @@
           alert("❌ Đã xảy ra lỗi khi xoá dòng.");
         });
       });
-}
+
+    }
   
     function clearFormFields() {
       const form = document.querySelector("form");
