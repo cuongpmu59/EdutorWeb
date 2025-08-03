@@ -121,41 +121,41 @@
   
   //   Xử lý lưu
 
-  document.getElementById('mc_save_btn').addEventListener('click', async () => {
-    const formData = new FormData(document.getElementById('mc_form'));
-  
-    const mc_id = document.getElementById('mc_id').value;
-    if (mc_id) {
-      formData.append('action', 'update');
-      formData.append('mc_id', mc_id);
-    } else {
-      formData.append('action', 'insert');
-    }
-  
-    try {
-      const response = await fetch('../../includes/mc/mc_fetch_data.php', {
-        method: 'POST',
-        body: formData
-      });
-      const result = await response.json();
-  
-      if (result.success) {
-        alert('✅ Đã lưu thành công');
-  
-        // ⚡ Gửi message cho iframe để reload bảng
-        const tableFrame = document.getElementById('mcTableFrame');
-        tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
-  
-        // ❌ Reset form
-        document.getElementById('mc_form').reset();
-        document.getElementById('mc_id').value = ''; // Xoá id
-      } else {
-        alert(result.error || '❌ Lỗi khi lưu');
-      }
-    } catch (error) {
-      console.error('Lỗi:', error);
-      alert('❌ Lỗi kết nối server');
-    }
-  });
-  
+//   document.getElementById('mc_save_btn').addEventListener('click', async () => {
+//   const formData = new FormData(document.getElementById('mc_form'));
+
+//   const mc_id = document.getElementById('mc_id').value;
+//   if (mc_id) {
+//     formData.append('action', 'update');
+//     formData.append('mc_id', mc_id);
+//   } else {
+//     formData.append('action', 'insert');
+//   }
+
+//   try {
+//     const response = await fetch('../../includes/mc/mc_fetch_data.php', {
+//       method: 'POST',
+//       body: formData
+//     });
+//     const result = await response.json();
+
+//     if (result.success) {
+//       alert('✅ Đã lưu thành công');
+
+//       // ⚡ Gửi message cho iframe để reload bảng
+//       const tableFrame = document.getElementById('mcTableFrame');
+//       tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
+
+//       // ❌ Reset form
+//       document.getElementById('mc_form').reset();
+//       document.getElementById('mc_id').value = ''; // Xoá id
+//     } else {
+//       alert(result.error || '❌ Lỗi khi lưu');
+//     }
+//   } catch (error) {
+//     console.error('Lỗi:', error);
+//     alert('❌ Lỗi kết nối server');
+//   }
+// });
+
  
