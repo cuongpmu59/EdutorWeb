@@ -125,7 +125,8 @@
     const formData = new FormData(document.getElementById('mc_form'));
   
     // Lấy ID từ input ẩn (nếu có)
-    const mc_id = document.getElementById('mc_id').value.trim();
+    const mcIdInput = document.getElementById('mc_id');
+    const mc_id = mcIdInput ? mcIdInput.value.trim() : '';
     const action = mc_id ? 'update' : 'insert';
     formData.append('action', action);
   
