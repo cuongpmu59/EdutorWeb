@@ -121,41 +121,48 @@
   
   //  Xử lý lưu
 
-  document.getElementById('mc_save_btn').addEventListener('click', async () => {
-  const formData = new FormData(document.getElementById('mc_form'));
-
-  const mc_id = document.getElementById('mc_id').value;
-  if (mc_id) {
-    formData.append('action', 'update');
-    formData.append('mc_id', mc_id);
-  } else {
-    formData.append('action', 'insert');
-  }
-
-  try {
-    const response = await fetch('../../includes/mc/mc_fetch_data.php', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-
-    if (result.success) {
-      alert('✅ Đã lưu thành công');
-
-      // ⚡ Gửi message cho iframe để reload bảng
-      const tableFrame = document.getElementById('mcTableFrame');
-      tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
-
-      // ❌ Reset form
-      document.getElementById('mc_form').reset();
-      document.getElementById('mc_id').value = ''; // Xoá id
-    } else {
-      alert(result.error || '❌ Lỗi khi lưu');
+    document.getElementById('mc_save_btn').addEventListener('click', async () => {
+    const formData = new FormData(document.getElementById('mc_form'));
+  
+    // Lấy ID từ input ẩn (nếu có)
+    const mc_id = document.getElementById('mc_id').value.trim();
+    const action = mc_id ? 'update' : 'insert';
+    formData.append('action', action);
+  
+    if (mc_id) {
+      formData.append('mc_id', mc_id); // gửi ID nếu cập nhật
     }
-  } catch (error) {
-    console.error('Lỗi:', error);
-    alert('❌ Lỗi kết nối server');
-  }
-});
-
- 
+  
+    try {
+      const res = await fetch('../../includes/mc/mc_fetch_data.php', {
+        method: 'POST',
+        body: formData
+      });
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        alert('✅ Lưu thành công');
+  
+        // Reset form nếu thêm mới
+        if (action === 'insert') {
+          document.getElementById('mc_form').reset();
+          document.getElementById('mc_id').value = '';
+          document.getElementById('mc_preview_image').innerHTML = '';
+        }
+  
+        // Gửi message cho iframe để reload bảng
+        const iframe = document.getElementById('mcTableFrame');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ type: 'reload_table' }, '*');
+        }
+  
+      } else {
+        alert(data.error || '❌ Lỗi khi lưu');
+      }
+    } catch (err) {
+      console.error('❌ Fetch error:', err);
+      alert('❌ Không thể kết nối máy chủ');
+    }
+  });
+  
