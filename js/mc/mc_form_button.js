@@ -121,78 +121,41 @@
   
   //   Xử lý lưu
 
-  //   document.getElementById('mc_save').addEventListener('click', async function () {
-  //   const form = document.getElementById('mcForm');
-  //   const formData = new FormData(form);
-  //   const mc_id = form.querySelector('#mc_id')?.value ?? '';
+  document.getElementById('mc_save_btn').addEventListener('click', async () => {
+    const formData = new FormData(document.getElementById('mc_form'));
   
-  //   const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
+    const mc_id = document.getElementById('mc_id').value;
+    if (mc_id) {
+      formData.append('action', 'update');
+      formData.append('mc_id', mc_id);
+    } else {
+      formData.append('action', 'insert');
+    }
   
-  //   // Nếu là thêm mới thì yêu cầu nhập đầy đủ
-  //   if (!mc_id) {
-  //     for (const field of requiredFields) {
-  //       if (!form[field].value.trim()) {
-  //         alert('❌ Vui lòng nhập đầy đủ thông tin cho các trường bắt buộc!');
-  //         return;
-  //       }
-  //     }
-  //   }
+    try {
+      const response = await fetch('../../includes/mc/mc_fetch_data.php', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
   
-  //   const imageFile = form.mc_image.files[0];
-  //   const existingImage = form.querySelector('input[name="existing_image"]')?.value;
+      if (result.success) {
+        alert('✅ Đã lưu thành công');
   
-  //   if (imageFile) {
-  //     // Nếu có ảnh mới, upload lên Cloudinary
-  //     const cloudData = new FormData();
-  //     cloudData.append('file', imageFile);
-  //     cloudData.append('upload_preset', 'YOUR_PRESET'); // Thay bằng preset thật
+        // ⚡ Gửi message cho iframe để reload bảng
+        const tableFrame = document.getElementById('mcTableFrame');
+        tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
   
-  //     try {
-  //       const cloudRes = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
-  //         method: 'POST',
-  //         body: cloudData
-  //       });
-  
-  //       const cloudResult = await cloudRes.json();
-  
-  //       if (cloudResult.error) {
-  //         alert('❌ Lỗi Cloudinary: ' + cloudResult.error.message);
-  //         return;
-  //       }
-  
-  //       formData.append('mc_image_url', cloudResult.secure_url);
-  //       formData.append('public_id', cloudResult.public_id); // Nếu bạn muốn lưu thêm ID
-  //     } catch (err) {
-  //       alert('❌ Không thể tải ảnh lên Cloudinary.');
-  //       return;
-  //     }
-  //   } else if (existingImage) {
-  //     // Nếu không có ảnh mới, nhưng có ảnh cũ → giữ lại ảnh cũ
-  //     formData.append('mc_image_url', existingImage);
-  //   } else if (!mc_id) {
-  //     // Nếu là thêm mới và không có ảnh nào → có thể cảnh báo hoặc cho phép tiếp tục tuỳ bạn
-  //     alert('❌ Vui lòng chọn ảnh minh hoạ.');
-  //     return;
-  //   }
-  
-  //   // Gửi dữ liệu về server
-  //   try {
-  //     const response = await fetch('../../includes/mc_save.php', {
-  //       method: 'POST',
-  //       body: formData
-  //     });
-  
-  //     const result = await response.json();
-  
-  //     if (result.success) {
-  //       alert('✅ Dữ liệu đã được lưu.');
-  //       window.location.reload(); // hoặc cập nhật bảng
-  //     } else {
-  //       alert('❌ Lỗi khi lưu: ' + result.message);
-  //     }
-  //   } catch (err) {
-  //     alert('❌ Lỗi gửi dữ liệu: ' + err.message);
-  //   }
-  // });
+        // ❌ Reset form
+        document.getElementById('mc_form').reset();
+        document.getElementById('mc_id').value = ''; // Xoá id
+      } else {
+        alert(result.error || '❌ Lỗi khi lưu');
+      }
+    } catch (error) {
+      console.error('Lỗi:', error);
+      alert('❌ Lỗi kết nối server');
+    }
+  });
   
  
