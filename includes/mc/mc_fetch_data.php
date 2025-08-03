@@ -8,29 +8,8 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 try {
-  // // ✅ DELETE - Nếu có POST delete_mc_id
-  // if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
-  //   $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
-
-  //   if (!$mc_id) {
-  //     echo json_encode(['error' => '❌ delete_mc_id không hợp lệ']);
-  //     http_response_code(400);
-  //     exit;
-  //   }
-
-  //   $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = :mc_id");
-  //   $stmt->execute(['mc_id' => $mc_id]);
-
-  //   if ($stmt->rowCount() > 0) {
-  //     echo json_encode(['success' => true]);
-  //   } else {
-  //     echo json_encode(['error' => '❌ Không tìm thấy câu hỏi để xoá']);
-  //     http_response_code(404);
-  //   }
-  //   exit;
-  // }
-
   // ✅ DELETE - Nếu có POST delete_mc_id
+  
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
     $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
   
