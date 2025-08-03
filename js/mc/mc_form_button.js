@@ -50,47 +50,48 @@
       deleteBtn.addEventListener("click", function () {
         const mcIdInput = document.getElementById("mc_id");
         const mc_id = mcIdInput ? mcIdInput.value.trim() : "";
-  
+      
+        const publicIdInput = document.querySelector('input[name="existing_public_id"]');
+        const public_id = publicIdInput ? publicIdInput.value.trim() : "";
+      
         if (!mc_id) {
           alert("Vui lòng chọn dòng cần xoá.");
           return;
         }
-  
+      
         if (!confirm("Bạn có chắc chắn muốn xoá dòng này?")) {
           return;
         }
-  
+      
         fetch("../../includes/mc/mc_fetch_data.php", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
             action: "delete",
-            delete_mc_id: mc_id
+            delete_mc_id: mc_id,
+            public_id: public_id
           })
         })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              alert("✅ Đã xoá thành công!");
-  
-              // Xoá dữ liệu trên form
-              clearFormFields();
-  
-              // Gửi yêu cầu reload bảng qua postMessage
-              const iframe = document.getElementById("mcTableFrame");
-              if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ action: "reload_table" }, "*");
-              }
-            } else {
-              alert("❌ Xoá thất bại: " + (data.message || "Không rõ lỗi."));
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ Đã xoá thành công!");
+            clearFormFields();
+      
+            const iframe = document.getElementById("mcTableFrame");
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({ action: "reload_table" }, "*");
             }
-          })
-          .catch(error => {
-            console.error("Lỗi xoá dòng:", error);
-            alert("❌ Đã xảy ra lỗi khi xoá dòng.");
-          });
+          } else {
+            alert("❌ Xoá thất bại: " + (data.message || "Không rõ lỗi."));
+          }
+        })
+        .catch(error => {
+          console.error("Lỗi xoá dòng:", error);
+          alert("❌ Đã xảy ra lỗi khi xoá dòng.");
+        });
       });
-    }
+}
   
     function clearFormFields() {
       const form = document.querySelector("form");
