@@ -9,10 +9,10 @@ header("X-Content-Type-Options: nosniff");
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="../../css/mc/mc_form_layout.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
+  <!-- <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
-  <link rel="stylesheet" href="../../css/mc/mc_formtype.css">
+  <link rel="stylesheet" href="../../css/mc/mc_formtype.css"> -->
 
   <script>
     window.MathJax = {
