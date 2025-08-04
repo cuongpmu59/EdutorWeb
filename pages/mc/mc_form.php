@@ -1,9 +1,18 @@
+<?php
+header("X-Content-Type-Options: nosniff");
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/form_ui.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../../css/mc/mc_form_layout.css">
+  <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
+  <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
+  <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
+  <link rel="stylesheet" href="../../css/mc/mc_formtype.css">
 
   <script>
     window.MathJax = {
@@ -43,7 +52,7 @@
 
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
-              <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
+              <button type="button" class="toggle-preview" data-target="mc_question" title="Xem trước câu hỏi"><i class="fa fa-eye"></i></button>
             </label>
             <textarea id="mc_question" name="question" required></textarea>
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
@@ -52,28 +61,28 @@
           <!-- Câu trả lời A - D -->
           <div class="mc-field mc-inline-field">
             <label for="mc_answer1">A.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer1"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer1" title="Xem trước đáp án A"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer1" name="answer1" required>
             <div class="preview-box" id="preview-mc_answer1" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer2">B.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer2"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer2" title="Xem trước đáp án B"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer2" name="answer2" required>
             <div class="preview-box" id="preview-mc_answer2" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer3">C.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer3"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer3" title="Xem trước đáp án C"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer3" name="answer3" required>
             <div class="preview-box" id="preview-mc_answer3" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
             <label for="mc_answer4">D.</label>
-            <button type="button" class="toggle-preview" data-target="mc_answer4"><i class="fa fa-eye"></i></button>
+            <button type="button" class="toggle-preview" data-target="mc_answer4" title="Xem trước đáp án D"><i class="fa fa-eye"></i></button>
             <input type="text" id="mc_answer4" name="answer4" required>
             <div class="preview-box" id="preview-mc_answer4" style="display:none;"></div>
           </div>
@@ -92,25 +101,31 @@
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
-            <div class="mc-image-preview">
-              <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none;">
-            </div>
-            <div class="mc-image-buttons">
-              <label class="btn-upload">
-                Tải ảnh
-                <input type="file" id="mc_image" name="image" accept="image/*" hidden>
-              </label>
-              <button type="button" id="mc_clear_image">Xóa ảnh</button>
-            </div>
+          <div class="mc-image-preview">
+            <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display: none; max-width: 100%;">
           </div>
+
+          <div class="mc-image-buttons">
+            <label class="btn-upload">
+              Tải ảnh
+              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+            </label>
+            <button type="button" id="mc_delete_image_btn">Xoá ảnh</button>
+          </div>
+
+          <!-- Ẩn: đánh dấu xoá ảnh -->
+          <input type="hidden" id="delete_image_flag" name="delete_image" value="false">
+        </div>
+      </div>
 
           <div class="mc-buttons">
             <h4>Thao tác</h4>
-            <button type="submit" id="mc_save_btn">Lưu</button>
-            <button type="button" id="mc_delete_btn">Xóa</button>
-            <button type="button" id="mc_reset">Làm lại</button>
-            <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
-            <button type="button" id="mc_preview_exam">Làm đề</button>
+            <button type="submit" id="mc_save_btn" title="Lưu câu hỏi">Lưu</button>
+            <button type="button" id="mc_delete_btn" title="Xóa câu hỏi">Xóa</button>
+            <button type="button" id="mc_reset" title="Làm lại form">Làm lại</button>
+            <button type="button" id="mc_view_list" title="Ẩn hoặc hiện bảng danh sách">Ẩn/hiện danh sách</button>
+            <button type="button" id="mc_preview_exam" title="Xem trước đề thi">Làm đề</button>
+
           </div>
         </div>
       </div>
@@ -119,14 +134,19 @@
     </form>
 
     <div id="mcTableWrapper" style="display:none;">
-      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
-    </div>
+    <iframe
+      id="mcTableFrame"
+      src="mc_table.php"
+      title="Danh sách câu hỏi trắc nghiệm"
+      style="width:100%; height:600px; border:none;">
+    </iframe>
+</div>
   </div>
 
-  <script src="../../js/mc/mc_form_preview.js"></script>
-  <script src="../../js/mc/mc_form_image.js"></script>
+  <script src="../../js/mc/mc_form_preview.js"></script> -->
+  script src="../../js/mc/mc_form_image.js"></script> -->
   <script src="../../js/mc/mc_form_button.js"></script>
- 
+
   <script>
   // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
   window.addEventListener('message', function (event) {
