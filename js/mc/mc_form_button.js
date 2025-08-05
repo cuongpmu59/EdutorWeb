@@ -43,7 +43,7 @@ document.getElementById('mc_reset').addEventListener('click', function () {
 });
 
 // Nút "Xoá"
-document.getElementById('mc_delete_btn').addEventListener('click', async () => {
+  document.getElementById('mc_delete_btn').addEventListener('click', async () => {
   const deleteBtn = document.getElementById('mc_delete_btn');
   deleteBtn.disabled = true;
   deleteBtn.textContent = 'Đang xoá...';
