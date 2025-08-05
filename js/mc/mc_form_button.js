@@ -46,7 +46,7 @@
     
       if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này? Hành động này không thể hoàn tác.')) return;
     
-      fetch('../../includes/mc_delete.php', {
+      fetch('../../includes/mc/mc_fetch_data.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ mc_id })
@@ -70,7 +70,7 @@
     
     //   Xử lý lưu
   
-      document.getElementById('mc_save').addEventListener('click', async function () {
+      document.getElementById('mc_save_btn').addEventListener('click', async function () {
       const form = document.getElementById('mcForm');
       const formData = new FormData(form);
       const mc_id = form.querySelector('#mc_id')?.value ?? '';
@@ -126,7 +126,7 @@
     
       // Gửi dữ liệu về server
       try {
-        const response = await fetch('../../includes/mc_save.php', {
+        const response = await fetch('../../includes/mc/mc_fetch_data.php', {
           method: 'POST',
           body: formData
         });
