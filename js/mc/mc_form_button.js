@@ -95,109 +95,40 @@ document.getElementById('mc_reset').addEventListener('click', function () {
 });
 
 // Nút "Lưu"
-document.getElementById('mc_save_btn').addEventListener('click', async () => {
-  const saveBtn = document.getElementById('mc_save_btn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = 'Đang lưu...';
+  document.getElementById('mc_save_btn').addEventListener('click', async () => {
+  const form = document.getElementById('mc_form');
+  const formData = new FormData(form);
 
-  const formEl = document.getElementById('mcForm');
-  if (!formEl) return;
-
-  const formData = new FormData(formEl);
-
-  const mcIdInput = document.getElementById('mc_id');
-  const mc_id = mcIdInput ? mcIdInput.value.trim() : '';
-  const action = mc_id ? 'update' : 'insert';
-  formData.append('action', action);
-  if (mc_id) formData.append('mc_id', mc_id);
-
-  // Kiểm tra nếu ảnh đã xoá khỏi khung preview thì gửi thêm delete_image = true
-  const img = document.getElementById('mc_preview_image');
-  if (img && !img.src) {
-    formData.append('delete_image', 'true');
+  // Thêm ảnh nếu có
+  const fileInput = document.getElementById('mc_image');
+  if (fileInput.files.length > 0) {
+    formData.append('image', fileInput.files[0]);
   }
+
+  // Nếu có mc_id thì cập nhật, không thì thêm mới
+  const isUpdate = formData.get('mc_id') !== '';
+
+  formData.append('action', isUpdate ? 'update' : 'create');
 
   try {
-    const res = await fetch('../../includes/mc/mc_fetch_data.php', {
+    const response = await fetch('../../includes/mc/mc_fetch_data.php', {
       method: 'POST',
-      body: formData
+      body: formData,
     });
 
-    const data = await res.json();
+    const result = await response.json();
 
-    if (data.success) {
-      alert('✅ Lưu thành công');
-
-      if (action === 'insert') {
-        clearFormFields();
-      }
-
-      // Gửi tín hiệu reload bảng
-      const iframe = document.getElementById('mcTableFrame');
-      if (iframe?.contentWindow) {
-        iframe.contentWindow.postMessage({ action: 'reload_table' }, '*');
-      }
-
+    if (result.success) {
+      alert(result.success);
+      // Reset hoặc cập nhật lại bảng
+      const frame = document.getElementById('mcTableFrame');
+      frame.contentWindow.location.reload(); // Cập nhật lại iframe
+      if (!isUpdate) form.reset();
     } else {
-      alert(data.error || '❌ Lỗi khi lưu');
+      alert(result.error || '❌ Có lỗi xảy ra!');
     }
   } catch (err) {
-    console.error('❌ Fetch error:', err);
-    alert('❌ Không thể kết nối máy chủ');
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'Lưu';
-  }
-});
-
-// Hàm xoá toàn bộ các trường trong form
-function clearFormFields() {
-  const form = document.getElementById("mcForm");
-  if (form) form.reset();
-
-  const preview = document.getElementById("mc_preview_image");
-  if (preview) {
-    preview.src = '';
-    preview.style.display = 'none';
-  }
-
-  const idInput = document.getElementById('mc_id');
-  if (idInput) idInput.remove();
-
-  const publicIdInput = document.querySelector('input[name="existing_public_id"]');
-  if (publicIdInput) publicIdInput.remove();
-
-  document.querySelectorAll('.preview-box').forEach(div => {
-    div.innerHTML = '';
-    div.style.display = 'none';
-  });
-
-  const mcPreview = document.getElementById('mcPreview');
-  if (mcPreview) mcPreview.style.display = 'none';
-
-  const previewContent = document.getElementById('mcPreviewContent');
-  if (previewContent) previewContent.innerHTML = '';
-}
-
-// Xử lý nút xoá ảnh
-document.getElementById('mc_delete_image_btn').addEventListener('click', () => {
-  const previewImg = document.getElementById('mc_preview_image');
-  const fileInput = document.getElementById('mc_image');
-  const deleteFlag = document.getElementById('delete_image_flag');
-
-  // Ẩn ảnh nếu đang có
-  if (previewImg) {
-    previewImg.src = '';
-    previewImg.style.display = 'none';
-  }
-
-  // Reset input file
-  if (fileInput) {
-    fileInput.value = '';
-  }
-
-  // Gắn cờ xóa ảnh
-  if (deleteFlag) {
-    deleteFlag.value = 'true';
+    console.error('Lỗi lưu:', err);
+    alert('❌ Không thể lưu dữ liệu');
   }
 });
