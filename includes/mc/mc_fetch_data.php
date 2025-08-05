@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../env/config.php';
 header('Content-Type: application/json');
 // require_once __DIR__ . '/../../includes/db_connection.php';
 // require_once __DIR__ . '/../../env/config.php';
