@@ -1,134 +1,131 @@
-// Nút "Ẩn/hiện danh sách"
-document.getElementById('mc_view_list').addEventListener('click', () => {
-  const wrapper = document.getElementById('mcTableWrapper');
-  wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-    ? 'block'
-    : 'none';
-});
-
-// Nút "Làm lại"
-document.getElementById('mc_reset').addEventListener('click', function () {
+document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('mcForm');
-  form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
-  form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
+  const formElement = document.getElementById('mc_form'); // dùng cho FormData
+  const previewImg = document.getElementById('mc_preview_image');
+  const tableFrame = document.getElementById('mcTableFrame');
+  const previewBox = document.querySelectorAll('.preview-box');
 
-  const img = document.getElementById('mc_preview_image');
-  if (img) {
-    img.src = '';
-    img.style.display = 'none';
-  }
+  // 🔁 Hàm reset form
+  function clearFormFields() {
+    form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+    form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
 
-  const imageInput = form.querySelector('#mc_image');
-  if (imageInput) imageInput.value = '';
+    if (previewImg) {
+      previewImg.src = '';
+      previewImg.style.display = 'none';
+    }
 
-  const hiddenImage = form.querySelector('input[name="existing_image"]');
-  if (hiddenImage) hiddenImage.remove();
+    const imageInput = form.querySelector('#mc_image');
+    if (imageInput) imageInput.value = '';
 
-  const publicIdInput = document.querySelector('input[name="existing_public_id"]');
-  if (publicIdInput) publicIdInput.remove();
-
-  document.querySelectorAll('.preview-box').forEach(div => {
-    div.innerHTML = '';
-    div.style.display = 'none';
-  });
-  document.getElementById('mcPreview').style.display = 'none';
-  document.getElementById('mcPreviewContent').innerHTML = '';
-
-  if (window.MathJax && window.MathJax.typeset) {
-    MathJax.typeset();
-  }
-
-  const idInput = document.getElementById('mc_id');
-  if (idInput) idInput.remove();
-});
-
-// Nút "Xoá"
-  document.getElementById('mc_delete_btn').addEventListener('click', async () => {
-  const deleteBtn = document.getElementById('mc_delete_btn');
-  deleteBtn.disabled = true;
-  deleteBtn.textContent = 'Đang xoá...';
-
-  const mc_id = document.getElementById('mc_id')?.value;
-  if (!mc_id) {
-    alert('⚠️ Vui lòng chọn một dòng để xoá');
-    deleteBtn.disabled = false;
-    deleteBtn.textContent = 'Xoá';
-    return;
-  }
-
-  if (!confirm('Bạn có chắc chắn muốn xoá không?')) {
-    deleteBtn.disabled = false;
-    deleteBtn.textContent = 'Xoá';
-    return;
-  }
-
-  try {
-    const res = await fetch('../../includes/mc/mc_fetch_data.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `delete_mc_id=${encodeURIComponent(mc_id)}`
+    ['existing_image', 'existing_public_id', 'mc_id'].forEach(name => {
+      const input = form.querySelector(`input[name="${name}"]`);
+      if (input) input.remove();
     });
 
-    const data = await res.json();
+    previewBox.forEach(div => {
+      div.innerHTML = '';
+      div.style.display = 'none';
+    });
 
-    if (data.success) {
-      alert('✅ Đã xoá thành công');
-      clearFormFields();
+    const previewContainer = document.getElementById('mcPreview');
+    if (previewContainer) previewContainer.style.display = 'none';
 
-      // Gửi tín hiệu reload bảng
-      const iframe = document.getElementById('mcTableFrame');
-      if (iframe?.contentWindow) {
-        iframe.contentWindow.postMessage({ action: 'reload_table' }, '*');
+    const previewContent = document.getElementById('mcPreviewContent');
+    if (previewContent) previewContent.innerHTML = '';
+
+    if (window.MathJax && window.MathJax.typeset) {
+      MathJax.typeset(); // render lại công thức toán
+    }
+  }
+
+  // 🔁 Gửi tín hiệu reload iframe bảng
+  function reloadTableFrame() {
+    if (tableFrame?.contentWindow) {
+      tableFrame.contentWindow.postMessage({ action: 'reload_table' }, '*');
+    }
+  }
+
+  // ✅ Nút Ẩn/Hiện danh sách
+  document.getElementById('mc_view_list')?.addEventListener('click', () => {
+    const wrapper = document.getElementById('mcTableWrapper');
+    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+      ? 'block'
+      : 'none';
+  });
+
+  // ✅ Nút Làm lại
+  document.getElementById('mc_reset')?.addEventListener('click', clearFormFields);
+
+  // ✅ Nút Xoá
+  document.getElementById('mc_delete_btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('mc_delete_btn');
+    const mc_id = document.getElementById('mc_id')?.value;
+
+    if (!mc_id) return alert('⚠️ Vui lòng chọn một dòng để xoá');
+
+    if (!confirm('Bạn có chắc chắn muốn xoá không?')) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Đang xoá...';
+
+    try {
+      const res = await fetch('../../includes/mc/mc_fetch_data.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `delete_mc_id=${encodeURIComponent(mc_id)}`
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert('✅ Đã xoá thành công');
+        clearFormFields();
+        reloadTableFrame();
+      } else {
+        alert(data.error || '❌ Lỗi khi xoá');
       }
 
-    } else {
-      alert(data.error || '❌ Lỗi khi xoá');
+    } catch (err) {
+      console.error('❌ Fetch error:', err);
+      alert('❌ Không thể kết nối máy chủ');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Xoá';
+    }
+  });
+
+  // ✅ Nút Lưu
+  document.getElementById('mc_save_btn')?.addEventListener('click', async () => {
+    const formData = new FormData(formElement);
+    const fileInput = document.getElementById('mc_image');
+
+    if (fileInput?.files.length > 0) {
+      formData.append('image', fileInput.files[0]);
     }
 
-  } catch (err) {
-    console.error('❌ Fetch error:', err);
-    alert('❌ Không thể kết nối máy chủ');
-  } finally {
-    deleteBtn.disabled = false;
-    deleteBtn.textContent = 'Xoá';
-  }
-});
+    const isUpdate = formData.get('mc_id') !== '';
+    formData.append('action', isUpdate ? 'update' : 'create');
 
-// Nút "Lưu"
-  document.getElementById('mc_save_btn').addEventListener('click', async () => {
-  const form = document.getElementById('mc_form');
-  const formData = new FormData(form);
+    try {
+      const res = await fetch('../../includes/mc/mc_fetch_data.php', {
+        method: 'POST',
+        body: formData
+      });
 
-  // Thêm ảnh nếu có
-  const fileInput = document.getElementById('mc_image');
-  if (fileInput.files.length > 0) {
-    formData.append('image', fileInput.files[0]);
-  }
+      const result = await res.json();
 
-  // Nếu có mc_id thì cập nhật, không thì thêm mới
-  const isUpdate = formData.get('mc_id') !== '';
+      if (result.success) {
+        alert(result.success);
+        reloadTableFrame();
+        if (!isUpdate) clearFormFields();
+      } else {
+        alert(result.error || '❌ Có lỗi xảy ra!');
+      }
 
-  formData.append('action', isUpdate ? 'update' : 'create');
-
-  try {
-    const response = await fetch('../../includes/mc/mc_fetch_data.php', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      alert(result.success);
-      // Reset hoặc cập nhật lại bảng
-      const frame = document.getElementById('mcTableFrame');
-      frame.contentWindow.location.reload(); // Cập nhật lại iframe
-      if (!isUpdate) form.reset();
-    } else {
-      alert(result.error || '❌ Có lỗi xảy ra!');
+    } catch (err) {
+      console.error('❌ Lỗi lưu:', err);
+      alert('❌ Không thể lưu dữ liệu');
     }
-  } catch (err) {
-    console.error('Lỗi lưu:', err);
-    alert('❌ Không thể lưu dữ liệu');
-  }
+  });
 });
