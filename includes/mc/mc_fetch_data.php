@@ -74,7 +74,6 @@ try {
 }
 
 // ✅ Xử lý Lưu
-
 function uploadImage($imageFile) {
   $cloudName = CLOUDINARY_CLOUD_NAME;
   $apiKey    = CLOUDINARY_API_KEY;
