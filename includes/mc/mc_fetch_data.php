@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = $conn->query("
       SELECT mc_id, mc_topic, mc_question, 
              mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-             mc_correct AS mc_correct_answer, 
-             mc_image AS mc_image_url
+             mc_correct_answer, 
+             mc_image_url
       FROM mc_questions
       ORDER BY mc_id DESC
     ");
@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
   $stmt = $conn->prepare("
     SELECT mc_id, mc_topic, mc_question, 
            mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-           mc_correct AS mc_correct_answer,
-           mc_image AS mc_image_url,
+           mc_correct_answer,
+           mc_image_url,
            mc_public_id
     FROM mc_questions
     WHERE mc_id = :mc_id
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   $b = $_POST['mc_answer2'] ?? '';
   $c = $_POST['mc_answer3'] ?? '';
   $d = $_POST['mc_answer4'] ?? '';
-  $correct = $_POST['mc_correct'] ?? '';
+  $correct = $_POST['mc_correct_answer'] ?? '';
   $image_url = null;
   $public_id = null;
 
@@ -134,8 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
           mc_topic = ?, mc_question = ?, 
           mc_answer1 = ?, mc_answer2 = ?, 
           mc_answer3 = ?, mc_answer4 = ?, 
-          mc_correct = ?,
-          mc_image = COALESCE(?, mc_image),
+          mc_correct_answer = ?,
+          mc_image_url = COALESCE(?, mc_image_url),
           mc_public_id = COALESCE(?, mc_public_id)
         WHERE mc_id = ?
       ");
@@ -149,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $stmt = $conn->prepare("
       INSERT INTO mc_questions (
         mc_topic, mc_question, mc_answer1, mc_answer2, 
-        mc_answer3, mc_answer4, mc_correct, 
-        mc_image, mc_public_id
+        mc_answer3, mc_answer4, mc_correct_answer, 
+        mc_image_url, mc_public_id
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([$topic, $question, $a, $b, $c, $d, $correct, $image_url, $public_id]);
