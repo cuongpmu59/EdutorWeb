@@ -1,6 +1,11 @@
 <?php
+// require_once __DIR__ . '/../../includes/db_connection.php';
+// header('Content-Type: application/json');
 require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../env/config.php';
+
 header('Content-Type: application/json');
+header('X-Content-Type-Options: nosniff');
 
 try {
   // ✅ DELETE - Nếu có POST delete_mc_id
