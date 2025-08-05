@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../vendor/autoload.php'; // SDK Cloudinary
+
 header('Content-Type: application/json');
 // require_once __DIR__ . '/../../includes/db_connection.php';
 // require_once __DIR__ . '/../../env/config.php';
 
 // header('Content-Type: application/json');
 // header('X-Content-Type-Options: nosniff');
+use Cloudinary\Api\Upload\UploadApi;
 
 try {
   // ✅ DELETE - Nếu có POST delete_mc_id
@@ -40,8 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
     // Nếu có public_id thì xoá ảnh trên Cloudinary
     if ($public_id) {
       try {
-        require_once __DIR__ . '/../../vendor/autoload.php'; // SDK Cloudinary
-        // use Cloudinary\Api\Upload\UploadApi;
+ 
 
         (new UploadApi())->destroy($public_id);
       } catch (Exception $e) {
