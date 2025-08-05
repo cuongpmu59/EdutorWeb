@@ -10,37 +10,46 @@ require_once __DIR__ . '/../../env/config.php';
 header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
-// ✅ LẤY TOÀN BỘ
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  try {
-    $stmt = $conn->query("SELECT * FROM mc_questions ORDER BY mc_id DESC");
-    echo json_encode(['data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
-  } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['data' => [], 'error' => '❌ DB error: ' . $e->getMessage()]);
-  }
-  exit;
-}
+try {
+  // Nếu có POST mc_id → trả về 1 bản ghi cụ thể
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
+    $mc_id = intval($_POST['mc_id']);
 
-// ✅ LẤY 1 DÒNG
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
-  $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
-  if (!$mc_id) {
-    http_response_code(400);
-    echo json_encode(['error' => '❌ mc_id không hợp lệ']);
+    $stmt = $conn->prepare("
+      SELECT mc_id, mc_topic, mc_question, 
+             mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
+             mc_correct_answer, mc_image_url
+      FROM mc_questions
+      WHERE mc_id = :mc_id
+      LIMIT 1
+    ");
+    $stmt->execute(['mc_id' => $mc_id]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($data) {
+      echo json_encode($data);
+    } else {
+      echo json_encode(['error' => '❌ Không tìm thấy dữ liệu']);
+    }
     exit;
   }
 
-  $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_id = ? LIMIT 1");
-  $stmt->execute([$mc_id]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-  if ($row) {
-    echo json_encode($row);
-  } else {
-    http_response_code(404);
-    echo json_encode(['error' => '❌ Không tìm thấy dòng']);
-  }
-  exit;
+  // Nếu không có POST mc_id → trả về danh sách toàn bộ
+  $stmt = $conn->query("
+    SELECT 
+      mc_id, mc_topic, mc_question, 
+      mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
+      mc_correct_answer, mc_image_url
+    FROM mc_questions
+    ORDER BY mc_id DESC
+  ");
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo json_encode(['data' => $rows]);
+} catch (PDOException $e) {
+  echo json_encode([
+    'data' => [],
+    'error' => $e->getMessage()
+  ]);
 }
 
 // ✅ XOÁ
