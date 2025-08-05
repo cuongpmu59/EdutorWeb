@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const id = document.getElementById('mc_id')?.value;
       if (!id || !confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
 
-      fetch('../../includes/mc/mc_fetch_data.php', {
+      fetch('../../includes/mc/mc_delete.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mc_id: id })
