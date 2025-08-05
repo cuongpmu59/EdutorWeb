@@ -9,26 +9,55 @@ header('Content-Type: application/json');
 
 try {
   // ✅ DELETE - Nếu có POST delete_mc_id
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
-    $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
+  $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
 
-    if (!$mc_id) {
-      echo json_encode(['error' => '❌ delete_mc_id không hợp lệ']);
-      http_response_code(400);
-      exit;
-    }
-
-    $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = :mc_id");
-    $stmt->execute(['mc_id' => $mc_id]);
-
-    if ($stmt->rowCount() > 0) {
-      echo json_encode(['success' => true]);
-    } else {
-      echo json_encode(['error' => '❌ Không tìm thấy câu hỏi để xoá']);
-      http_response_code(404);
-    }
+  if (!$mc_id) {
+    echo json_encode(['error' => '❌ delete_mc_id không hợp lệ']);
+    http_response_code(400);
     exit;
   }
+
+  // Lấy thông tin ảnh từ DB (để xoá trên Cloudinary)
+  $stmt = $conn->prepare("SELECT mc_image_url FROM mc_questions WHERE mc_id = :mc_id");
+  $stmt->execute(['mc_id' => $mc_id]);
+  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  $public_id = null;
+  if ($row && !empty($row['mc_image_url'])) {
+    $image_url = $row['mc_image_url'];
+    // Extract public_id từ URL
+    if (preg_match('~upload/(?:v\d+/)?([^\.]+)~', $image_url, $matches)) {
+      $public_id = $matches[1];
+    }
+  }
+
+  // Xoá bản ghi trong DB
+  $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = :mc_id");
+  $stmt->execute(['mc_id' => $mc_id]);
+
+  if ($stmt->rowCount() > 0) {
+    // Nếu có public_id thì xoá ảnh trên Cloudinary
+    if ($public_id) {
+      try {
+        require_once __DIR__ . '/../../vendor/autoload.php'; // SDK Cloudinary
+        // use Cloudinary\Api\Upload\UploadApi;
+
+        (new UploadApi())->destroy($public_id);
+      } catch (Exception $e) {
+        error_log("❌ Lỗi khi xoá ảnh Cloudinary: " . $e->getMessage());
+        // Không dừng xử lý dù lỗi xoá ảnh
+      }
+    }
+
+    echo json_encode(['success' => true]);
+  } else {
+    echo json_encode(['error' => '❌ Không tìm thấy câu hỏi để xoá']);
+    http_response_code(404);
+  }
+  exit;
+}
+
 
   // ✅ GET một bản ghi nếu có POST mc_id
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
