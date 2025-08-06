@@ -299,7 +299,8 @@ function getPublicIdFromUrl(url) {
 }
 
 // Xử lý khi bấm nút "Xoá ảnh"
-document.getElementById('btnDeleteImage').addEventListener('click', function () {
+
+document.getElementById('btn-clear-image').addEventListener('click', function () {
   const img = document.getElementById('previewImage');
   const imageUrl = img?.src;
 
