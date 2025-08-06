@@ -195,7 +195,7 @@
   
   /* Lưu ảnh */
   .btn-save-image {
-    background-color: var(--btn-save-bg);
+    background-color: var(--btn-save-bg) !important;
     border-color: var(--btn-save-bg);
     color: #fff;
   }
