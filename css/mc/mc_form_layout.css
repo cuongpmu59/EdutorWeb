@@ -1,191 +1,233 @@
-/* Layout chính của form chia 2 cột */
-.mc-columns {
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
-  margin-top: 20px;
-}
-
-/* Cột trái chứa nội dung chính */
-.mc-col-left {
-  flex: 2;
-}
-
-/* Cột phải chứa ảnh và các nút thao tác */
-.mc-col-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Giảm khoảng cách giữa ảnh và nút */
-}
-
-/* Ô nhập liệu và textarea */
-.mc-field {
-  margin-bottom: 15px;
-}
-
-.mc-field label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.mc-field textarea {
-  width: 100%;
-  height: 80px;
-  padding: 8px;
-  font-size: 14px;
-  resize: vertical;
-}
-
-.mc-field input[type="text"],
-.mc-field select {
-  width: 100%;
-  padding: 6px;
-  font-size: 14px;
-}
-
-/* Preview từng dòng */
-.preview-box {
-  display: block;
-  margin-top: 5px;
-  padding: 8px;
-  background-color: #f9f9f9;
-  border: 1px dashed #ccc;
-  border-radius: 4px;
-  font-style: italic;
-  font-size: 14px;
-}
-
-/* Bố trí các input đáp án A–D + nút preview cùng hàng */
-.mc-inline-field {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.mc-inline-field label {
-  min-width: 110px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.mc-inline-field input[type="text"],
-.mc-inline-field select {
-  flex: 1;
-  padding: 6px;
-  font-size: 14px;
-}
-
-.mc-inline-field .toggle-preview {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #007bff;
-  font-size: 16px;
-}
-
-/* Khu vực ảnh */
-.mc-image-zone {
-  padding: 10px;
-  border: 1px solid #ccc;
-  background: #fafafa;
-}
-
-.mc-image-zone h4 {
-  margin-top: 0;
-}
-
-.mc-image-preview img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.mc-image-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.mc-image-buttons button,
-.mc-image-buttons .btn-upload {
-  padding: 6px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Khu vực nút thao tác */
-.mc-buttons {
-  padding: 10px;
-  border: 1px solid #ccc;
-  background: #f1f1f1;
-}
-
-.mc-buttons h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.mc-buttons button {
-  display: block;
-  width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Xem trước toàn bộ */
-.mc-preview-zone {
-  margin-top: 30px;
-  border-top: 2px dashed #ccc;
-  padding-top: 20px;
-}
-
-/* Dùng cho các trường nằm cùng hàng: label, input, icon */
-.mc-inline-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-/* Label chiếm độ rộng tối thiểu, không bị đè */
-.mc-inline-field label {
-  min-width: 80px;
-  font-weight: bold;
-}
-
-/* Nút con mắt */
-.mc-inline-field .toggle-preview {
-  background: none;
-  border: none;
-  color: #007bff;
-  font-size: 14px;
-  padding: 0;
-}
-
-.mc-inline-field .toggle-preview:hover {
-  color: #000;
-}
-
-/* Input đáp án */
-.mc-inline-field input[type="text"] {
-  flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#mcTableWrapper.hidden {
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
-}
-
-#mcTableWrapper.visible {
-  visibility: visible;
-  height: auto;
-}
+/* ==========================
+   BIẾN CHUNG (nếu sau này mở rộng)
+   ========================== */
+   :root {
+    --border-radius: 6px;
+    --input-padding: 8px;
+    --font-stack: Arial, sans-serif;
+    --transition: 0.2s ease;
+    --primary-color: #007bff;
+    --bg-light: #fafafa;
+    --border-color: #ccc;
+  }
+  
+  /* ==========================
+     FORM CHUNG
+     ========================== */
+  #mcForm {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 16px;
+    font-family: var(--font-stack);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* ==========================
+     BỐ CỤC 2 CỘT
+     ========================== */
+  .mc-columns {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  
+  .mc-col-left {
+    flex: 2;
+    max-width: 60%;
+  }
+  
+  .mc-col-right {
+    flex: 1;
+    max-width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* ==========================
+     TRƯỜNG NHẬP (input / textarea / select)
+     ========================== */
+  .mc-field {
+    margin-bottom: 18px;
+  }
+  
+  .mc-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .mc-field input,
+  .mc-field textarea,
+  .mc-field select {
+    width: 100%;
+    padding: var(--input-padding);
+    font-size: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  
+  .mc-field textarea {
+    min-height: 100px;
+  }
+  
+  /* ==========================
+     INLINE FIELD (label + input + toggle)
+     ========================== */
+  .mc-inline-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .mc-inline-field label {
+    min-width: 80px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  
+  .mc-inline-field input[type="text"],
+  .mc-inline-field select {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .toggle-preview,
+  .mc-inline-field .toggle-preview {
+    margin-left: 8px;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    transition: color var(--transition);
+  }
+  
+  .toggle-preview:hover,
+  .mc-inline-field .toggle-preview:hover {
+    color: #000;
+  }
+  
+  /* ==========================
+     PREVIEW BOXES
+     ========================== */
+  .preview-box {
+    margin-top: 6px;
+    padding: 10px;
+    border: 1px dashed var(--border-color);
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    font-style: italic;
+    font-size: 14px;
+  }
+  
+  /* Toàn bộ xem trước */
+  .mc-preview-zone {
+    margin-top: 36px;
+    border: 1px dashed #aaa;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: var(--bg-light);
+  }
+  
+  /* ==========================
+     ẢNH
+     ========================== */
+  .mc-image-zone {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-light);
+    border-radius: 4px;
+  }
+  
+  .mc-image-zone h4 {
+    margin-top: 0;
+  }
+  
+  .mc-image-preview img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .mc-image-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .mc-image-buttons button,
+  .mc-image-buttons .btn-upload {
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: #fff;
+    transition: background var(--transition), box-shadow var(--transition);
+  }
+  
+  .mc-image-buttons button:hover,
+  .mc-image-buttons .btn-upload:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ==========================
+     NÚT THAO TÁC CHUNG
+     ========================== */
+  .mc-buttons {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .mc-buttons h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .mc-buttons button {
+    display: block;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: #fff;
+    transition: background var(--transition), box-shadow var(--transition);
+  }
+  
+  .mc-buttons button:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ==========================
+     HIỂN THỊ / ẨN BẢNG (WRAPPER)
+     ========================== */
+  #mcTableWrapper.hidden {
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+  }
+  
+  #mcTableWrapper.visible {
+    visibility: visible;
+    height: auto;
+  }
+  
