@@ -1,5 +1,5 @@
 /* ==========================
-   BIẾN CHUNG (nếu sau này mở rộng)
+   BIẾN CHUNG
    ========================== */
    :root {
     --border-radius: 6px;
@@ -7,8 +7,18 @@
     --font-stack: Arial, sans-serif;
     --transition: 0.2s ease;
     --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
     --bg-light: #fafafa;
     --border-color: #ccc;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* ==========================
+     UTILITY
+     ========================== */
+  .hidden {
+    display: none !important;
   }
   
   /* ==========================
@@ -23,7 +33,8 @@
     margin: 0 auto;
     font-size: 16px;
     font-family: var(--font-stack);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow);
+    color: #1f1f3a;
   }
   
   /* ==========================
@@ -46,6 +57,34 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+  
+  /* responsive: chuyển cột dọc trên màn nhỏ */
+  @media (max-width: 900px) {
+    .mc-columns {
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    .mc-col-left,
+    .mc-col-right {
+      max-width: 100%;
+      flex: none;
+    }
+  
+    .mc-image-buttons {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  
+    .mc-image-buttons button,
+    .mc-image-buttons .btn-upload {
+      flex: 1 1 100%;
+    }
+  
+    .mc-buttons button {
+      width: 100%;
+    }
   }
   
   /* ==========================
@@ -71,10 +110,21 @@
     border-radius: var(--border-radius);
     resize: vertical;
     box-sizing: border-box;
+    background: #fff;
+    transition: border-color var(--transition), box-shadow var(--transition);
   }
   
   .mc-field textarea {
     min-height: 100px;
+  }
+  
+  /* focus rõ ràng để accessibility */
+  input:focus,
+  textarea:focus,
+  select:focus,
+  button:focus {
+    outline: 2px solid rgba(0, 123, 255, 0.6);
+    outline-offset: 2px;
   }
   
   /* ==========================
@@ -103,6 +153,7 @@
     box-sizing: border-box;
   }
   
+  /* nút xem trước nhỏ cạnh label/input */
   .toggle-preview,
   .mc-inline-field .toggle-preview {
     margin-left: 8px;
@@ -133,7 +184,7 @@
     font-size: 14px;
   }
   
-  /* Toàn bộ xem trước */
+  /* toàn bộ vùng xem trước */
   .mc-preview-zone {
     margin-top: 36px;
     border: 1px dashed #aaa;
@@ -164,25 +215,82 @@
     border-radius: 4px;
   }
   
+  /* chung cho các nút trong vùng ảnh */
   .mc-image-buttons {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
   }
   
+  /* phần chung của các nút upload / save / clear */
   .mc-image-buttons button,
   .mc-image-buttons .btn-upload {
-    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
     font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--border-radius);
     cursor: pointer;
+    transition: background-color var(--transition), box-shadow var(--transition);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
     background: #fff;
-    transition: background var(--transition), box-shadow var(--transition);
+    color: #1f1f3a;
   }
   
-  .mc-image-buttons button:hover,
-  .mc-image-buttons .btn-upload:hover {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* icon căn trái */
+  .mc-image-buttons i {
+    margin-right: 6px;
+    font-size: 15px;
+  }
+  
+  /* nút Tải ảnh */
+  .btn-upload {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-upload:hover {
+    background-color: #0056b3;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* bắt buộc input file vẫn nằm trong label để click được */
+  .btn-upload input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* nút Lưu ảnh */
+  .btn-save-image {
+    background-color: var(--success-color);
+    border: 1px solid var(--success-color);
+    color: #fff;
+  }
+  
+  .btn-save-image:hover {
+    background-color: #218838;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* nút Xóa ảnh */
+  .btn-clear-image {
+    background-color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    color: #fff;
+  }
+  
+  .btn-clear-image:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
   
   /* ==========================
@@ -221,55 +329,64 @@
      HIỂN THỊ / ẨN BẢNG (WRAPPER)
      ========================== */
   #mcTableWrapper.hidden {
-    visibility: hidden;
-    height: 0;
-    overflow: hidden;
+    display: none !important;
   }
   
-  #mcTableWrapper.visible {
-    visibility: visible;
-    height: auto;
+  /* ==========================
+     DARK MODE (tuỳ chọn)
+     ========================== */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-light: #1f1f25;
+      --border-color: #444;
+      --primary-color: #5aa9ff;
+    }
+  
+    #mcForm {
+      background: #1e1e28;
+      color: #e8e8ee;
+      border-color: var(--border-color);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    }
+  
+    .mc-field input,
+    .mc-field textarea,
+    .mc-field select {
+      background: #2a2a38;
+      border: 1px solid var(--border-color);
+      color: #e8e8ee;
+    }
+  
+    .preview-box {
+      background: #2a2a38;
+      border-color: #555;
+    }
+  
+    .mc-buttons {
+      background: #252535;
+    }
+  
+    .mc-buttons button {
+      background: #2a2a38;
+      border-color: var(--border-color);
+      color: #e8e8ee;
+    }
+  
+    .mc-image-zone {
+      background: #1f1f25;
+      border-color: var(--border-color);
+    }
+  
+    .mc-image-buttons button,
+    .mc-image-buttons .btn-upload {
+      background: #2a2a38;
+      border-color: var(--border-color);
+      color: #e8e8ee;
+    }
+  
+    .btn-upload {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
   }
   
-  /* Nút lưu ảnh */
-.btn-save-image {
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid #28a745;
-  background-color: #28a745;
-  color: #fff;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color var(--transition), box-shadow var(--transition);
-}
-
-.btn-save-image:hover {
-  background-color: #218838;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* Nút xóa ảnh */
-.btn-clear-image {
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid #dc3545;
-  background-color: #dc3545;
-  color: #fff;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color var(--transition), box-shadow var(--transition);
-}
-
-.btn-clear-image:hover {
-  background-color: #c82333;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* Icon trong nút */
-.btn-save-image i,
-.btn-clear-image i,
-.btn-upload i {
-  margin-right: 6px;
-}
