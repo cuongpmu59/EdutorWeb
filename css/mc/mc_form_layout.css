@@ -171,50 +171,68 @@
   
   /* Nút ảnh */
 
-.btn-save-image,
-.btn-clear-image {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-/* Icon trong nút */
-.btn-save-image i,
-.btn-clear-image i {
-  font-size: 15px;
-}
-
-/* ✅ Lưu ảnh - xanh lá cây */
-.btn-save-image {
-  background-color: #28a745;
-  border-color: #28a745;
-  color: #fff;
-}
-.btn-save-image:hover {
-  background-color: #218838;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-  transform: translateY(-1px);
-}
-
-/* ❌ Xóa ảnh - đỏ */
-.btn-clear-image {
-  background-color: #dc3545;
-  border-color: #dc3545;
-  color: #fff;
-}
-.btn-clear-image:hover {
-  background-color: #c82333;
-  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-  transform: translateY(-1px);
-}
-
+  .btn-save-image,
+  .btn-clear-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: var(--btn-padding);
+    border-radius: var(--btn-radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    text-decoration: none;
+    line-height: 1;
+  }
+  
+  .btn-save-image i,
+  .btn-clear-image i {
+    font-size: 15px;
+  }
+  
+  /* Lưu ảnh */
+  .btn-save-image {
+    background-color: var(--btn-save-bg);
+    border-color: var(--btn-save-bg);
+    color: #fff;
+  }
+  .btn-save-image:hover:not([disabled]) {
+    background-color: var(--btn-save-bg-hover);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  /* Xóa ảnh */
+  .btn-clear-image {
+    background-color: var(--btn-clear-bg);
+    border-color: var(--btn-clear-bg);
+    color: #fff;
+  }
+  .btn-clear-image:hover:not([disabled]) {
+    background-color: var(--btn-clear-bg-hover);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  /* Focus rõ ràng để accessibility */
+  .btn-save-image:focus-visible,
+  .btn-clear-image:focus-visible {
+    outline: 3px solid rgba(0, 123, 255, 0.6);
+    outline-offset: 2px;
+  }
+  
+  /* Disabled state */
+  .btn-save-image[disabled],
+  .btn-clear-image[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  
   /* ==========================
      NÚT CHỨC NĂNG
      ========================== */
