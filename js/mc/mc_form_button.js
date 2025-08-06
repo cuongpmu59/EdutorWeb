@@ -282,3 +282,58 @@
   });
 });
 
+// Xoá ảnh lưu trên Cloudinary
+// Hàm lấy public_id từ URL ảnh Cloudinary
+function getPublicIdFromUrl(url) {
+  try {
+    const path = new URL(url).pathname;
+    const parts = path.split('/');
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex === -1) return null;
+    const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
+    return publicIdWithExt.replace(/\.[^/.]+$/, '');
+  } catch (e) {
+    console.error('❌ Không phân tích được URL:', e);
+    return null;
+  }
+}
+
+// Xử lý khi bấm nút "Xoá ảnh"
+document.getElementById('btnDeleteImage').addEventListener('click', function () {
+  const img = document.getElementById('previewImage');
+  const imageUrl = img?.src;
+
+  if (!imageUrl || imageUrl.trim() === '') {
+    alert('⚠️ Không có ảnh để xoá');
+    return;
+  }
+
+  const publicId = getPublicIdFromUrl(imageUrl);
+  if (!publicId) {
+    alert('❌ Không thể lấy public_id từ URL ảnh');
+    return;
+  }
+
+  if (!confirm('Bạn có chắc chắn muốn xoá ảnh này không?')) return;
+
+  // Gửi yêu cầu xoá ảnh về server
+  fetch('../../includes/delete_cloudinary_image.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `public_id=${encodeURIComponent(publicId)}`
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        img.src = ''; // Ẩn ảnh khỏi giao diện
+        alert('✅ Ảnh đã được xoá khỏi Cloudinary');
+      } else {
+        alert('❌ Xoá thất bại: ' + (data.message || 'Lỗi không rõ'));
+      }
+    })
+    .catch(err => {
+      console.error('❌ Lỗi khi gọi API xoá:', err);
+      alert('❌ Lỗi kết nối server khi xoá ảnh');
+    });
+});
+
