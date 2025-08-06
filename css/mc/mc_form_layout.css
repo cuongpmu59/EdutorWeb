@@ -170,15 +170,25 @@
   }
   
   /* Nút ảnh */
+/* Nút ảnh chung */
 .btn-save-image,
 .btn-clear-image {
-  font-size: 14px;             /* Thống nhất kích thước chữ */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;                   /* Khoảng cách giữa icon và chữ */
+  font-size: 14px;
   font-weight: 500;
-  padding: 6px 14px;           /* Kích thước nút */
+  padding: 6px 14px;
   border-radius: 6px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+/* Icon Font Awesome trong nút */
+.btn-save-image i,
+.btn-clear-image i {
+  font-size: 15px;
 }
 
 /* Lưu ảnh */
@@ -193,7 +203,7 @@
   transform: translateY(-1px);
 }
 
-/* Xoá ảnh */
+/* Xóa ảnh */
 .btn-clear-image {
   background-color: #f66b6b;
   border-color: #f66b6b;
@@ -205,7 +215,6 @@
   transform: translateY(-1px);
 }
 
-  
   /* ==========================
      NÚT CHỨC NĂNG
      ========================== */
