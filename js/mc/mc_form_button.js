@@ -252,14 +252,20 @@
   document.getElementById('mc_save_image').addEventListener('click', async function () {
   const fileInput = document.getElementById('mc_image');
   const file = fileInput.files[0];
+  const mc_id = document.getElementById('mc_id').value;
 
   if (!file) {
     alert('❌ Vui lòng chọn ảnh');
     return;
   }
 
-  // Lấy thông tin Cloudinary từ server
-  const configRes = await fetch('includes/mc/cloudinary_env.php');
+  if (!mc_id) {
+    alert('❌ Thiếu ID câu hỏi');
+    return;
+  }
+
+  // Lấy cấu hình Cloudinary từ server
+  const configRes = await fetch('../../env/config.php');
   const config = await configRes.json();
 
   if (!config.cloud_name || !config.upload_preset) {
@@ -267,7 +273,7 @@
     return;
   }
 
-  // Upload ảnh trực tiếp lên Cloudinary
+  // Upload ảnh lên Cloudinary
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', config.upload_preset);
@@ -279,25 +285,38 @@
   .then(res => res.json())
   .then(data => {
     if (data.secure_url) {
-      alert('✅ Ảnh đã được tải lên Cloudinary');
-
+      // Gán ảnh preview
       const img = document.getElementById('mc_preview_image');
       img.src = data.secure_url;
       img.style.display = 'block';
-      img.setAttribute('data-public-id', data.public_id);
 
-      // Reload bảng
-      const tableFrame = document.getElementById('mcTableFrame');
-      if (tableFrame) {
-        tableFrame.contentWindow.location.reload();
-      }
+      // Gửi URL về server để lưu vào CSDL
+      return fetch('../../includes/mc/mc_fetch_data.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          mc_id: mc_id,
+          image_url: data.secure_url
+        })
+      });
     } else {
-      alert('❌ Upload thất bại');
+      throw new Error('❌ Upload thất bại');
+    }
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.success) {
+      alert('✅ Ảnh đã được lưu vào CSDL');
+      document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
+    } else {
+      alert(result.error || '❌ Lỗi khi lưu ảnh vào DB');
     }
   })
   .catch(err => {
     console.error(err);
-    alert('❌ Lỗi khi upload ảnh');
+    alert('❌ Có lỗi xảy ra');
   });
 });
 
