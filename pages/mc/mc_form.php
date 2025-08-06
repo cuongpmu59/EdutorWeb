@@ -104,6 +104,7 @@
                 Tải ảnh
                 <input type="file" id="mc_image" name="image" accept="image/*" hidden>
               </label>
+              <button type="button" id="mc_save_image">Lưu ảnh</button>
               <button type="button" id="mc_clear_image">Xóa ảnh</button>
             </div>
           </div>
