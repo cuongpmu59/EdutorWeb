@@ -248,55 +248,103 @@
   });
 
   // ✅ Nút Lưu
-  document.getElementById('mc_save_btn')?.addEventListener('click', async () => {
-    const formData = new FormData(formElement);
-    const fileInput = document.getElementById('mc_image');
 
-    if (fileInput?.files.length > 0) {
-      formData.append('image', fileInput.files[0]);
-    }
+  document.getElementById('mc_save_image').addEventListener('click', async function () {
+  const fileInput = document.getElementById('mc_image');
+  const file = fileInput.files[0];
 
-    const isUpdate = formData.get('mc_id') !== '';
-    formData.append('action', isUpdate ? 'update' : 'create');
+  if (!file) {
+    alert('❌ Vui lòng chọn ảnh');
+    return;
+  }
 
-    try {
-      const res = await fetch('../../includes/mc/mc_fetch_data.php', {
-        method: 'POST',
-        body: formData
-      });
+  // Lấy thông tin Cloudinary từ server
+  const configRes = await fetch('includes/mc/cloudinary_env.php');
+  const config = await configRes.json();
 
-      const result = await res.json();
+  if (!config.cloud_name || !config.upload_preset) {
+    alert('❌ Thiếu thông tin Cloudinary');
+    return;
+  }
 
-      if (result.success) {
-        alert(result.success);
-        reloadTableFrame();
-        if (!isUpdate) clearFormFields();
-      } else {
-        alert(result.error || '❌ Có lỗi xảy ra!');
+  // Upload ảnh trực tiếp lên Cloudinary
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', config.upload_preset);
+
+  fetch(`https://api.cloudinary.com/v1_1/${config.cloud_name}/image/upload`, {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.secure_url) {
+      alert('✅ Ảnh đã được tải lên Cloudinary');
+
+      const img = document.getElementById('mc_preview_image');
+      img.src = data.secure_url;
+      img.style.display = 'block';
+      img.setAttribute('data-public-id', data.public_id);
+
+      // Reload bảng
+      const tableFrame = document.getElementById('mcTableFrame');
+      if (tableFrame) {
+        tableFrame.contentWindow.location.reload();
       }
-
-    } catch (err) {
-      console.error('❌ Lỗi lưu:', err);
-      alert('❌ Không thể lưu dữ liệu');
+    } else {
+      alert('❌ Upload thất bại');
     }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('❌ Lỗi khi upload ảnh');
   });
 });
 
 // Xoá ảnh lưu trên Cloudinary
-// Hàm lấy public_id từ URL ảnh Cloudinary
-function getPublicIdFromUrl(url) {
-  try {
-    const path = new URL(url).pathname;
-    const parts = path.split('/');
-    const uploadIndex = parts.indexOf('upload');
-    if (uploadIndex === -1) return null;
-    const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
-    return publicIdWithExt.replace(/\.[^/.]+$/, '');
-  } catch (e) {
-    console.error('❌ Không phân tích được URL:', e);
-    return null;
+
+  document.getElementById('mc_save_image').addEventListener('click', function () {
+  const fileInput = document.getElementById('mc_image');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert('❌ Vui lòng chọn một ảnh');
+    return;
   }
-}
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'unsigned_preset'); // Thay bằng preset bạn đã tạo
+
+  fetch('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.secure_url) {
+      alert('✅ Ảnh đã được tải lên Cloudinary');
+
+      const img = document.getElementById('mc_preview_image');
+      img.src = data.secure_url;
+      img.style.display = 'block';
+      img.setAttribute('data-public-id', data.public_id);
+
+      // Reload bảng nếu cần
+      const tableFrame = document.getElementById('mcTableFrame');
+      if (tableFrame) {
+        tableFrame.contentWindow.location.reload();
+      }
+    } else {
+      alert('❌ Upload thất bại');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('❌ Lỗi khi upload ảnh');
+  });
+});
+
 
 // Xử lý khi bấm nút "Xoá ảnh"
 
