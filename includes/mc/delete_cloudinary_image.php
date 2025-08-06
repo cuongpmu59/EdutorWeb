@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../env/config.php';
+require_once __DIR__ . '/../../env/config.php';
 
 header('Content-Type: application/json');
 
