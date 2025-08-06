@@ -206,7 +206,7 @@
   .btn-save-image {
     background-color: #20c997;
     border-color: #20c997;
-    color: #fff;
+    color: #0fdebb;
   }
   .btn-save-image:hover {
     background-color: #17a589;
@@ -218,7 +218,7 @@
   .btn-clear-image {
     background-color: #f66b6b;
     border-color: #f66b6b;
-    color: #fff;
+    color: #e73a3a;
   }
   .btn-clear-image:hover {
     background-color: #e04f4f;
