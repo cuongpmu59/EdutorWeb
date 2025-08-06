@@ -300,41 +300,46 @@ function getPublicIdFromUrl(url) {
 
 // Xử lý khi bấm nút "Xoá ảnh"
 
-document.getElementById('mc-clear-image').addEventListener('click', function () {
-  const img = document.getElementById('previewImage');
-  const imageUrl = img?.src;
+  document.getElementById('mc_clear_image').addEventListener('click', function () {
+  const img = document.getElementById('mcImagePreview');
+  const publicId = img.getAttribute('data-public-id');
 
-  if (!imageUrl || imageUrl.trim() === '') {
-    alert('⚠️ Không có ảnh để xoá');
-    return;
-  }
-
-  const publicId = getPublicIdFromUrl(imageUrl);
   if (!publicId) {
-    alert('❌ Không thể lấy public_id từ URL ảnh');
+    alert('❌ Không có ảnh nào để xoá');
     return;
   }
 
-  if (!confirm('Bạn có chắc chắn muốn xoá ảnh này không?')) return;
+  if (!confirm('Bạn có chắc muốn xoá ảnh này không?')) return;
 
-  // Gửi yêu cầu xoá ảnh về server
-  fetch('../../includes/delete_cloudinary_image.php', {
+  const formData = new FormData();
+  formData.append('public_id', publicId);
+
+  fetch('../../includes/mc/delete_cloudinary_image.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `public_id=${encodeURIComponent(publicId)}`
+    body: formData
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        img.src = ''; // Ẩn ảnh khỏi giao diện
-        alert('✅ Ảnh đã được xoá khỏi Cloudinary');
-      } else {
-        alert('❌ Xoá thất bại: ' + (data.message || 'Lỗi không rõ'));
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('✅ Ảnh đã được xoá khỏi Cloudinary');
+
+      // Ẩn ảnh khỏi form
+      img.src = '';
+      img.removeAttribute('data-public-id');
+      img.style.display = 'none';
+
+      // Tải lại iframe chứa bảng
+      const tableFrame = document.getElementById('mcTableFrame');
+      if (tableFrame) {
+        tableFrame.contentWindow.location.reload();
       }
-    })
-    .catch(err => {
-      console.error('❌ Lỗi khi gọi API xoá:', err);
-      alert('❌ Lỗi kết nối server khi xoá ảnh');
-    });
+    } else {
+      alert(data.error || '❌ Xoá ảnh thất bại');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('❌ Lỗi khi xoá ảnh');
+  });
 });
 
