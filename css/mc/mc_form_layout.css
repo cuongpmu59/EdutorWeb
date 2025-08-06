@@ -170,12 +170,12 @@
   }
   
   /* Nút ảnh */
-/* Nút ảnh chung */
+
 .btn-save-image,
 .btn-clear-image {
   display: inline-flex;
   align-items: center;
-  gap: 6px;                   /* Khoảng cách giữa icon và chữ */
+  gap: 6px;
   font-size: 14px;
   font-weight: 500;
   padding: 6px 14px;
@@ -185,33 +185,33 @@
   transition: all 0.3s ease;
 }
 
-/* Icon Font Awesome trong nút */
+/* Icon trong nút */
 .btn-save-image i,
 .btn-clear-image i {
   font-size: 15px;
 }
 
-/* Lưu ảnh */
+/* ✅ Lưu ảnh - xanh lá cây */
 .btn-save-image {
-  background-color: #20c997;
-  border-color: #20c997;
+  background-color: #28a745;
+  border-color: #28a745;
   color: #fff;
 }
 .btn-save-image:hover {
-  background-color: #17a589;
-  box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3);
+  background-color: #218838;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
   transform: translateY(-1px);
 }
 
-/* Xóa ảnh */
+/* ❌ Xóa ảnh - đỏ */
 .btn-clear-image {
-  background-color: #f66b6b;
-  border-color: #f66b6b;
+  background-color: #dc3545;
+  border-color: #dc3545;
   color: #fff;
 }
 .btn-clear-image:hover {
-  background-color: #e04f4f;
-  box-shadow: 0 4px 12px rgba(246, 107, 107, 0.3);
+  background-color: #c82333;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
   transform: translateY(-1px);
 }
 
