@@ -300,7 +300,7 @@ function getPublicIdFromUrl(url) {
 
 // Xử lý khi bấm nút "Xoá ảnh"
 
-document.getElementById('btn-clear-image').addEventListener('click', function () {
+document.getElementById('mc-clear-image').addEventListener('click', function () {
   const img = document.getElementById('previewImage');
   const imageUrl = img?.src;
 
