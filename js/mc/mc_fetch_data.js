@@ -1,6 +1,13 @@
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
-    ajax: '../../includes/mc/mc_fetch_data.php',
+    ajax: {
+      url: '../../includes/mc/mc_fetch_data.php',
+      type: 'POST',
+      data: function (d) {
+        // Gửi thêm timestamp để tránh cache
+        d._ts = Date.now();
+      }
+    },
     columns: [
       { data: 'mc_id', title: 'ID' },
       { data: 'mc_topic', title: 'Chủ đề' },
@@ -37,7 +44,7 @@ $(document).ready(function () {
     }
   });
 
-  // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
+  // Khi click vào 1 dòng → gửi dữ liệu chi tiết lên form cha
   $('#mcTable tbody').on('click', 'tr', function () {
     const rowData = table.row(this).data();
     if (!rowData || !rowData.mc_id) return;
