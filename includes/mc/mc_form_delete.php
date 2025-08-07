@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
     $stmt->execute([$mc_id]);
 
     if ($stmt->rowCount() > 0) {
-      echo json_encode(['success' => true]);
+      echo json_encode(['success' => true, 'message' => 'Xoá thành công']);
     } else {
       echo json_encode(['success' => false, 'message' => 'Không tìm thấy câu hỏi để xoá.']);
     }
