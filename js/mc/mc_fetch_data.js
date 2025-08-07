@@ -18,7 +18,7 @@ $(document).ready(function () {
           const thumbUrl = data.includes('/upload/')
             ? data.replace('/upload/', '/upload/w_50,h_50,c_fill/')
             : data;
-          return `<img src="${thumbUrl}" alt="Ảnh" width="50" height="50">`;
+          return `<img src="${thumbUrl}" alt="Ảnh" style="border-radius:4px;object-fit:cover;" width="50" height="50" loading="lazy">`;
         },
         orderable: false,
         searchable: false
@@ -29,10 +29,9 @@ $(document).ready(function () {
     },
     responsive: true,
     pageLength: 10,
-
     drawCallback: function () {
-      if (window.MathJax) {
-        MathJax.typesetPromise();
+      if (window.MathJax?.typesetPromise) {
+        MathJax.typesetPromise().catch((err) => console.error('MathJax error:', err));
       }
     }
   });
@@ -40,7 +39,7 @@ $(document).ready(function () {
   // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
   $('#mcTable tbody').on('click', 'tr', function () {
     const rowData = table.row(this).data();
-    if (!rowData || !rowData.mc_id) return;
+    if (!rowData || Object.keys(rowData).length === 0 || !rowData.mc_id) return;
 
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
@@ -54,7 +53,7 @@ $(document).ready(function () {
         if (response && !response.error && window.parent) {
           window.parent.postMessage({ type: 'fill-form', data: response }, '*');
         } else {
-          alert(response.error || '❌ Không thể tải dữ liệu chi tiết.');
+          alert(typeof response.error === 'string' ? response.error : '❌ Không thể tải dữ liệu chi tiết.');
         }
       },
       error: function (xhr, status, error) {
