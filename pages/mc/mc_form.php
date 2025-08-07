@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
-  <link rel="stylesheet" href="../../css/mc/mc_form_layout.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
+  <link rel="stylesheet" href="../../css/form_ui.css">
 
   <script>
     window.MathJax = {
@@ -98,24 +95,19 @@
             <div class="mc-image-preview">
               <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none;">
             </div>
-
             <div class="mc-image-buttons">
-            <label class="btn-upload">
-              <i class="fa fa-upload"></i> Tải ảnh
-              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
-            </label>
-            <button type="button" id="mc_save_image" class="btn-save-image">
-              <i class="fa fa-save"></i> Lưu ảnh
-            </button>
-            <button type="button" id="mc_clear_image" class="btn-clear-image">
-              <i class="fa fa-trash"></i> Xóa ảnh
-            </button>
+              <label class="btn-upload">
+                Tải ảnh
+                <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+              </label>
+              <button type="button" id="mc_clear_image">Xóa ảnh</button>
             </div>
-        </div>
+          </div>
+
           <div class="mc-buttons">
             <h4>Thao tác</h4>
-            <button type="submit" id="mc_save_btn">Lưu</button>
-            <button type="button" id="mc_delete_btn">Xóa</button>
+            <button type="submit" id="mc_save">Lưu</button>
+            <button type="button" id="mc_delete">Xóa</button>
             <button type="button" id="mc_reset">Làm lại</button>
             <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
             <button type="button" id="mc_preview_exam">Làm đề</button>
@@ -132,7 +124,7 @@
   </div>
 
   <script src="../../js/mc/mc_form_preview.js"></script>
-  <!-- <script src="../../js/mc/mc_form_image.js"></script> -->
+  <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
  
   <script>
