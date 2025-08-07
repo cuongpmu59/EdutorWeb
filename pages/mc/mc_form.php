@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
-  <!-- <link rel="stylesheet" href="../../css/mc/mc_form_layout.css"> --> -->
   <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
@@ -56,22 +55,25 @@
 
           <!-- Câu trả lời A - D -->
           <div class="mc-field mc-inline-field">
-            <label for="mc_answer1">A.</label>
+            <label for="mc_answer1">A.
             <button type="button" class="toggle-preview" data-target="mc_answer1"><i class="fa fa-eye"></i></button>
+            </label>
             <input type="text" id="mc_answer1" name="answer1" required>
             <div class="preview-box" id="preview-mc_answer1" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
-            <label for="mc_answer2">B.</label>
+            <label for="mc_answer2">B.
             <button type="button" class="toggle-preview" data-target="mc_answer2"><i class="fa fa-eye"></i></button>
+            </label>
             <input type="text" id="mc_answer2" name="answer2" required>
             <div class="preview-box" id="preview-mc_answer2" style="display:none;"></div>
           </div>
 
           <div class="mc-field mc-inline-field">
-            <label for="mc_answer3">C.</label>
+            <label for="mc_answer3">C.
             <button type="button" class="toggle-preview" data-target="mc_answer3"><i class="fa fa-eye"></i></button>
+            </label>
             <input type="text" id="mc_answer3" name="answer3" required>
             <div class="preview-box" id="preview-mc_answer3" style="display:none;"></div>
           </div>
@@ -79,6 +81,7 @@
           <div class="mc-field mc-inline-field">
             <label for="mc_answer4">D.</label>
             <button type="button" class="toggle-preview" data-target="mc_answer4"><i class="fa fa-eye"></i></button>
+            </label>
             <input type="text" id="mc_answer4" name="answer4" required>
             <div class="preview-box" id="preview-mc_answer4" style="display:none;"></div>
           </div>
