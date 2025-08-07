@@ -95,108 +95,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ Nút Lưu ảnh
-  document.getElementById('mc_save_image').addEventListener('click', async function () {
-    const file = document.getElementById('mc_image').files[0];
-    const mc_id = document.getElementById('mc_id').value;
-    const preview = document.getElementById('mc_preview_image');
+//   // ✅ Nút Lưu ảnh
+//   document.getElementById('mc_save_image').addEventListener('click', async function () {
+//     const file = document.getElementById('mc_image').files[0];
+//     const mc_id = document.getElementById('mc_id').value;
+//     const preview = document.getElementById('mc_preview_image');
   
-    if (!file || !mc_id) {
-      alert('❌ Vui lòng chọn ảnh và có ID.');
-      return;
-    }
+//     if (!file || !mc_id) {
+//       alert('❌ Vui lòng chọn ảnh và có ID.');
+//       return;
+//     }
   
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
+//     const formData = new FormData();
+//     formData.append('file', file);
+//     formData.append('upload_preset', 'YOUR_UPLOAD_PRESET');
   
-    try {
-      const res = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
+//     try {
+//       const res = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
+//         method: 'POST',
+//         body: formData
+//       });
+//       const data = await res.json();
   
-      if (data.secure_url) {
-        // Hiển thị ảnh xem trước
-        preview.src = data.secure_url;
-        preview.style.display = 'block';
+//       if (data.secure_url) {
+//         // Hiển thị ảnh xem trước
+//         preview.src = data.secure_url;
+//         preview.style.display = 'block';
   
-        // Gửi URL về server PHP để lưu vào CSDL
-        const saveRes = await fetch('../../includes/mc/save_uploaded_image.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams({
-            mc_id: mc_id,
-            image_url: data.secure_url
-          })
-        });
+//         // Gửi URL về server PHP để lưu vào CSDL
+//         const saveRes = await fetch('../../includes/mc/save_uploaded_image.php', {
+//           method: 'POST',
+//           headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded'
+//           },
+//           body: new URLSearchParams({
+//             mc_id: mc_id,
+//             image_url: data.secure_url
+//           })
+//         });
   
-        const saveResult = await saveRes.json();
-        if (saveResult.success) {
-          alert('✅ Đã lưu ảnh vào cơ sở dữ liệu.');
-          document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
-        } else {
-          alert('❌ ' + (saveResult.error || 'Lỗi khi lưu ảnh.'));
-        }
-      } else {
-        alert('❌ Tải ảnh lên thất bại.');
-      }
+//         const saveResult = await saveRes.json();
+//         if (saveResult.success) {
+//           alert('✅ Đã lưu ảnh vào cơ sở dữ liệu.');
+//           document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
+//         } else {
+//           alert('❌ ' + (saveResult.error || 'Lỗi khi lưu ảnh.'));
+//         }
+//       } else {
+//         alert('❌ Tải ảnh lên thất bại.');
+//       }
   
-    } catch (err) {
-      console.error(err);
-      alert('❌ Có lỗi xảy ra khi tải ảnh.');
-    }
-  });
+//     } catch (err) {
+//       console.error(err);
+//       alert('❌ Có lỗi xảy ra khi tải ảnh.');
+//     }
+//   });
 
-  // ✅ Nút Xoá ảnh
-  document.getElementById('mc_clear_image').addEventListener('click', async function () {
-    const previewImg = document.getElementById('mc_preview_image');
-    const imageUrl = previewImg.src;
+//   // ✅ Nút Xoá ảnh
+//   document.getElementById('mc_clear_image').addEventListener('click', async function () {
+//     const previewImg = document.getElementById('mc_preview_image');
+//     const imageUrl = previewImg.src;
 
-    if (!imageUrl || imageUrl.includes('default') || imageUrl === window.location.href) {
-      alert("❌ Không có ảnh nào để xoá.");
-      return;
-    }
+//     if (!imageUrl || imageUrl.includes('default') || imageUrl === window.location.href) {
+//       alert("❌ Không có ảnh nào để xoá.");
+//       return;
+//     }
 
-    try {
-      const response = await fetch('includes/mc/delete_cloudinary_image.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ image_url: imageUrl })
-      });
+//     try {
+//       const response = await fetch('includes/mc/delete_cloudinary_image.php', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//         body: new URLSearchParams({ image_url: imageUrl })
+//       });
 
-      const result = await response.json();
+//       const result = await response.json();
 
-      if (result.success) {
-        alert("✅ Ảnh đã được xoá khỏi Cloudinary.");
+//       if (result.success) {
+//         alert("✅ Ảnh đã được xoá khỏi Cloudinary.");
 
-        // 1. Xoá ảnh khỏi phần xem trước
-        previewImg.src = '';
+//         // 1. Xoá ảnh khỏi phần xem trước
+//         previewImg.src = '';
 
-        // 2. Reset input file
-        document.getElementById('mc_image').value = '';
+//         // 2. Reset input file
+//         document.getElementById('mc_image').value = '';
 
-        // 3. Ẩn các nút liên quan
-        document.getElementById('mc_clear_image').style.display = 'none';
-        document.getElementById('mc_save_image').style.display = 'none';
+//         // 3. Ẩn các nút liên quan
+//         document.getElementById('mc_clear_image').style.display = 'none';
+//         document.getElementById('mc_save_image').style.display = 'none';
 
-        // 4. Cập nhật lại iframe chứa bảng mc_table.php
-        const iframe = document.getElementById('mcTableFrame');
-        if (iframe) {
-          iframe.contentWindow.location.reload();
-        }
+//         // 4. Cập nhật lại iframe chứa bảng mc_table.php
+//         const iframe = document.getElementById('mcTableFrame');
+//         if (iframe) {
+//           iframe.contentWindow.location.reload();
+//         }
 
-      } else {
-        alert("❌ Lỗi khi xoá ảnh: " + (result.error || 'Không rõ nguyên nhân.'));
-      }
+//       } else {
+//         alert("❌ Lỗi khi xoá ảnh: " + (result.error || 'Không rõ nguyên nhân.'));
+//       }
 
-    } catch (error) {
-      console.error('Lỗi khi gọi API xoá ảnh:', error);
-      alert("❌ Không thể kết nối đến máy chủ.");
-    }
-  });
+//     } catch (error) {
+//       console.error('Lỗi khi gọi API xoá ảnh:', error);
+//       alert("❌ Không thể kết nối đến máy chủ.");
+//     }
+//   });
 
-});
+// });
