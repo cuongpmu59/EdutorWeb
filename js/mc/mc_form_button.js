@@ -77,24 +77,30 @@
   
     const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
   
-    // Nếu là thêm mới thì yêu cầu nhập đầy đủ các trường bắt buộc
+    // ✅ Nếu là thêm mới thì yêu cầu nhập đầy đủ
     if (!mc_id) {
       for (const field of requiredFields) {
-        if (!form[field].value.trim()) {
+        if (!form[field]?.value.trim()) {
           alert('❌ Vui lòng nhập đầy đủ thông tin cho các trường bắt buộc!');
           return;
         }
+      }
+  
+      const imageFileCheck = form.mc_image?.files[0];
+      if (!imageFileCheck) {
+        alert('❌ Vui lòng chọn ảnh minh hoạ!');
+        return;
       }
     }
   
     const imageFile = form.mc_image?.files[0];
     const existingImage = form.querySelector('input[name="existing_image"]')?.value;
   
-    // Nếu có ảnh mới → upload lên Cloudinary trước khi gửi
+    // ✅ Nếu có ảnh mới → upload lên Cloudinary
     if (imageFile) {
       const cloudData = new FormData();
       cloudData.append('file', imageFile);
-      cloudData.append('upload_preset', 'my_exam_preset'); // 🔁 Đặt đúng tên preset unsigned trên Cloudinary
+      cloudData.append('upload_preset', 'my_exam_preset'); // 👉 Thay bằng tên preset unsigned thực tế
   
       try {
         const cloudRes = await fetch('https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload', {
@@ -116,15 +122,11 @@
         return;
       }
     } else if (existingImage) {
-      // Nếu không có ảnh mới, nhưng có ảnh cũ → giữ lại ảnh cũ
+      // ✅ Có ảnh cũ thì giữ lại
       formData.append('mc_image_url', existingImage);
-    } else if (!mc_id) {
-      // Nếu là thêm mới và không có ảnh nào → yêu cầu chọn ảnh
-      alert('❌ Vui lòng chọn ảnh minh hoạ!');
-      return;
     }
   
-    // Gửi dữ liệu về PHP để lưu
+    // ✅ Gửi dữ liệu về PHP để lưu (cập nhật hoặc thêm mới)
     try {
       const response = await fetch('../../includes/mc_save.php', {
         method: 'POST',
@@ -135,7 +137,7 @@
   
       if (result.success) {
         alert('✅ Dữ liệu đã được lưu.');
-        window.location.reload(); // hoặc load lại bảng nếu có
+        window.location.reload(); // hoặc cập nhật bảng
       } else {
         alert('❌ Lỗi khi lưu: ' + (result.message || 'Không xác định'));
       }
@@ -143,7 +145,7 @@
       alert('❌ Lỗi kết nối server: ' + err.message);
     }
   });
-
+  
   
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
   document.getElementById('mc_view_list').addEventListener('click', () => {
