@@ -1,6 +1,6 @@
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
-    ajax: '/../../includes/mc/mc_fetch_data.php',
+    ajax: '../../includes/mc/mc_fetch_data.php',
     columns: [
       { data: 'mc_id', title: 'ID' },
       { data: 'mc_topic', title: 'Chủ đề' },
@@ -18,7 +18,7 @@ $(document).ready(function () {
           const thumbUrl = data.includes('/upload/')
             ? data.replace('/upload/', '/upload/w_50,h_50,c_fill/')
             : data;
-          return `<img src="${thumbUrl}" alt="Ảnh" style="border-radius:4px;object-fit:cover;" width="50" height="50" loading="lazy">`;
+          return `<img src="${thumbUrl}" alt="Ảnh" width="50" height="50">`;
         },
         orderable: false,
         searchable: false
@@ -29,9 +29,10 @@ $(document).ready(function () {
     },
     responsive: true,
     pageLength: 10,
+
     drawCallback: function () {
-      if (window.MathJax?.typesetPromise) {
-        MathJax.typesetPromise().catch((err) => console.error('MathJax error:', err));
+      if (window.MathJax) {
+        MathJax.typesetPromise();
       }
     }
   });
@@ -39,13 +40,13 @@ $(document).ready(function () {
   // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
   $('#mcTable tbody').on('click', 'tr', function () {
     const rowData = table.row(this).data();
-    if (!rowData || Object.keys(rowData).length === 0 || !rowData.mc_id) return;
+    if (!rowData || !rowData.mc_id) return;
 
     $('#mcTable tbody tr').removeClass('selected');
     $(this).addClass('selected');
 
     $.ajax({
-      url: '/../../includes/mc/mc_fetch_data.php',
+      url: '../../includes/mc/mc_fetch_data.php',
       method: 'POST',
       data: { mc_id: rowData.mc_id },
       dataType: 'json',
@@ -53,7 +54,7 @@ $(document).ready(function () {
         if (response && !response.error && window.parent) {
           window.parent.postMessage({ type: 'fill-form', data: response }, '*');
         } else {
-          alert(typeof response.error === 'string' ? response.error : '❌ Không thể tải dữ liệu chi tiết.');
+          alert(response.error || '❌ Không thể tải dữ liệu chi tiết.');
         }
       },
       error: function (xhr, status, error) {
