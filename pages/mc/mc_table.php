@@ -77,13 +77,14 @@
 
   <!-- Nhận tín hiệu reload từ iframe/parent -->
   <script>
-    window.addEventListener("message", function (event) {
-      if (event.data && event.data.action === "reload_table") {
-        const table = $('#mcTable').DataTable();
-        table.ajax.reload(null, false); // Giữ nguyên trang hiện tại
-      }
-    });
-  </script>
+  window.addEventListener("message", function (event) {
+  if (event.data && event.data.action === "reload_table") {
+    const table = $('#mcTable').DataTable();
+    table.ajax.reload(null, false); // Giữ nguyên trang hiện tại
+    console.log("🔁 Bảng đã được reload từ iframe");
+  }
+  });
+</script>
 
 </body>
 </html>
