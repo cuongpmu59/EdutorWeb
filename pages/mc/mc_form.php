@@ -79,7 +79,7 @@
           </div>
 
           <div class="mc-field mc-inline-field">
-            <label for="mc_answer4">D.</label>
+            <label for="mc_answer4">D.
             <button type="button" class="toggle-preview" data-target="mc_answer4"><i class="fa fa-eye"></i></button>
             </label>
             <input type="text" id="mc_answer4" name="answer4" required>
