@@ -3,37 +3,9 @@ require_once __DIR__ . '/../../includes/db_connection.php';
 header('Content-Type: application/json');
 
 try {
-  // ✅ DELETE - Nếu có POST delete_mc_id
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_mc_id'])) {
-    $mc_id = filter_input(INPUT_POST, 'delete_mc_id', FILTER_VALIDATE_INT);
-
-    if (!$mc_id) {
-      echo json_encode(['error' => '❌ delete_mc_id không hợp lệ']);
-      http_response_code(400);
-      exit;
-    }
-
-    $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = :mc_id");
-    $stmt->execute(['mc_id' => $mc_id]);
-
-    if ($stmt->rowCount() > 0) {
-      echo json_encode(['success' => true]);
-    } else {
-      echo json_encode(['error' => '❌ Không tìm thấy câu hỏi để xoá']);
-      http_response_code(404);
-    }
-    exit;
-  }
-
-  // ✅ GET một bản ghi nếu có POST mc_id
+  // Nếu có POST mc_id → trả về 1 bản ghi cụ thể
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
-    $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
-
-    if (!$mc_id) {
-      echo json_encode(['error' => '❌ mc_id không hợp lệ']);
-      http_response_code(400);
-      exit;
-    }
+    $mc_id = intval($_POST['mc_id']);
 
     $stmt = $conn->prepare("
       SELECT mc_id, mc_topic, mc_question, 
@@ -50,49 +22,24 @@ try {
       echo json_encode($data);
     } else {
       echo json_encode(['error' => '❌ Không tìm thấy dữ liệu']);
-      http_response_code(404);
     }
     exit;
   }
 
-  // ✅ GET toàn bộ danh sách (nếu không có POST mc_id hoặc delete_mc_id)
+  // Nếu không có POST mc_id → trả về danh sách toàn bộ
   $stmt = $conn->query("
-    SELECT mc_id, mc_topic, mc_question, 
-           mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
-           mc_correct_answer, mc_image_url
+    SELECT 
+      mc_id, mc_topic, mc_question, 
+      mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
+      mc_correct_answer, mc_image_url
     FROM mc_questions
     ORDER BY mc_id DESC
   ");
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   echo json_encode(['data' => $rows]);
-
 } catch (PDOException $e) {
-  echo json_encode(['data' => [], 'error' => '❌ Lỗi truy vấn: ' . $e->getMessage()]);
-  http_response_code(500);
-}
-
-try {
-  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    throw new Exception('❌ Yêu cầu không hợp lệ');
-  }
-
-  $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
-  $image_url = filter_input(INPUT_POST, 'image_url', FILTER_SANITIZE_URL);
-
-  if (!$mc_id || !$image_url) {
-    throw new Exception('❌ Thiếu dữ liệu đầu vào');
-  }
-
-  $stmt = $conn->prepare("UPDATE mc_questions SET mc_image_url = ? WHERE id = ?");
-  $stmt->bind_param("si", $image_url, $mc_id);
-  $stmt->execute();
-
-  if ($stmt->affected_rows > 0) {
-    echo json_encode(['success' => true]);
-  } else {
-    echo json_encode(['error' => '❌ Không có bản ghi nào được cập nhật']);
-  }
-
-} catch (Exception $e) {
-  echo json_encode(['error' => $e->getMessage()]);
+  echo json_encode([
+    'data' => [],
+    'error' => $e->getMessage()
+  ]);
 }
