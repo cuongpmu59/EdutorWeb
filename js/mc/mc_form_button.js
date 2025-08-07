@@ -94,10 +94,10 @@
       // Nếu có ảnh mới, upload lên Cloudinary
       const cloudData = new FormData();
       cloudData.append('file', imageFile);
-      cloudData.append('upload_preset', 'YOUR_PRESET'); // Thay bằng preset thật
+      cloudData.append('upload_preset', 'quiz_photo'); // Thay bằng preset thật
   
       try {
-        const cloudRes = await fetch('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload', {
+        const cloudRes = await fetch('https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload', {
           method: 'POST',
           body: cloudData
         });
