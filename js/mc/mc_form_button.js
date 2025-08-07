@@ -70,14 +70,14 @@
   
   //   Xử lý lưu
 
-    document.getElementById('mc_save').addEventListener('click', async function () {
+  document.getElementById('mc_save').addEventListener('click', async function () {
     const form = document.getElementById('mcForm');
     const formData = new FormData(form);
-    const mc_id = form.querySelector('#mc_id')?.value ?? '';
+    const mc_id = form.querySelector('#mc_id')?.value.trim() ?? '';
   
     const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
   
-    // Nếu là thêm mới thì yêu cầu nhập đầy đủ
+    // Nếu là thêm mới thì yêu cầu nhập đầy đủ các trường bắt buộc
     if (!mc_id) {
       for (const field of requiredFields) {
         if (!form[field].value.trim()) {
@@ -87,14 +87,14 @@
       }
     }
   
-    const imageFile = form.mc_image.files[0];
+    const imageFile = form.mc_image?.files[0];
     const existingImage = form.querySelector('input[name="existing_image"]')?.value;
   
+    // Nếu có ảnh mới → upload lên Cloudinary trước khi gửi
     if (imageFile) {
-      // Nếu có ảnh mới, upload lên Cloudinary
       const cloudData = new FormData();
       cloudData.append('file', imageFile);
-      cloudData.append('upload_preset', 'my_exam_preset'); // Thay bằng preset thật
+      cloudData.append('upload_preset', 'my_exam_preset'); // 🔁 Đặt đúng tên preset unsigned trên Cloudinary
   
       try {
         const cloudRes = await fetch('https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload', {
@@ -105,26 +105,26 @@
         const cloudResult = await cloudRes.json();
   
         if (cloudResult.error) {
-          alert('❌ Lỗi Cloudinary: ' + cloudResult.error.message);
+          alert('❌ Lỗi khi tải ảnh lên Cloudinary: ' + cloudResult.error.message);
           return;
         }
   
         formData.append('mc_image_url', cloudResult.secure_url);
-        formData.append('public_id', cloudResult.public_id); // Nếu bạn muốn lưu thêm ID
-      } catch (err) {
-        alert('❌ Không thể tải ảnh lên Cloudinary.');
+        formData.append('public_id', cloudResult.public_id);
+      } catch (error) {
+        alert('❌ Không thể kết nối đến Cloudinary: ' + error.message);
         return;
       }
     } else if (existingImage) {
       // Nếu không có ảnh mới, nhưng có ảnh cũ → giữ lại ảnh cũ
       formData.append('mc_image_url', existingImage);
     } else if (!mc_id) {
-      // Nếu là thêm mới và không có ảnh nào → có thể cảnh báo hoặc cho phép tiếp tục tuỳ bạn
-      alert('❌ Vui lòng chọn ảnh minh hoạ.');
+      // Nếu là thêm mới và không có ảnh nào → yêu cầu chọn ảnh
+      alert('❌ Vui lòng chọn ảnh minh hoạ!');
       return;
     }
   
-    // Gửi dữ liệu về server
+    // Gửi dữ liệu về PHP để lưu
     try {
       const response = await fetch('../../includes/mc_save.php', {
         method: 'POST',
@@ -135,14 +135,15 @@
   
       if (result.success) {
         alert('✅ Dữ liệu đã được lưu.');
-        window.location.reload(); // hoặc cập nhật bảng
+        window.location.reload(); // hoặc load lại bảng nếu có
       } else {
-        alert('❌ Lỗi khi lưu: ' + result.message);
+        alert('❌ Lỗi khi lưu: ' + (result.message || 'Không xác định'));
       }
     } catch (err) {
-      alert('❌ Lỗi gửi dữ liệu: ' + err.message);
+      alert('❌ Lỗi kết nối server: ' + err.message);
     }
   });
+
   
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
   document.getElementById('mc_view_list').addEventListener('click', () => {
