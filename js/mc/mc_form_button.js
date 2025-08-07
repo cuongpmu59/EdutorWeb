@@ -46,7 +46,7 @@
   
     if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này?')) return;
   
-    fetch('../../includes/mc/mc_delete.php', {
+    fetch('../../includes/mc/mc_form_delete.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ mc_id })
