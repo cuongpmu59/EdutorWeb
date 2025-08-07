@@ -127,7 +127,7 @@
     </form>
 
     <div id="mcTableWrapper" style="display:none;">
-      <iframe id="mcTableFrame" src="mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
+      <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
   </div>
 
