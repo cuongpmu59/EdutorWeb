@@ -31,15 +31,10 @@ $(document).ready(function () {
     pageLength: 10,
 
     drawCallback: function () {
-      if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
-        MathJax.typesetPromise().catch(function (err) {
-          console.error("MathJax rendering error:", err);
-        });
-      } else {
-        console.warn("MathJax not ready yet");
+      if (window.MathJax) {
+        MathJax.typesetPromise();
       }
     }
-    
   });
 
   // Khi click vào 1 dòng → gửi dữ liệu lên form cha qua postMessage
