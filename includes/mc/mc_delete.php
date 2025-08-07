@@ -1,0 +1,22 @@
+<?php
+require_once __DIR__ . '/../includes/db_connection.php';
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
+  $mc_id = intval($_POST['mc_id']);
+
+  try {
+    $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = ?");
+    $stmt->execute([$mc_id]);
+
+    if ($stmt->rowCount() > 0) {
+      echo json_encode(['Xoá thành công' => true]);
+    } else {
+      echo json_encode(['Xoá thất bại' => false, 'message' => 'Không tìm thấy câu hỏi để xoá.']);
+    }
+  } catch (Exception $e) {
+    echo json_encode(['Xoá thất bại' => false, 'message' => $e->getMessage()]);
+  }
+} else {
+  echo json_encode(['Xoá thất bại' => false, 'message' => 'Dữ liệu không hợp lệ.']);
+}
