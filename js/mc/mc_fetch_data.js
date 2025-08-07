@@ -1,6 +1,6 @@
 $(document).ready(function () {
   const table = $('#mcTable').DataTable({
-    ajax: '../../includes/mc/mc_fetch_data.php',
+    ajax: '/../../includes/mc/mc_fetch_data.php',
     columns: [
       { data: 'mc_id', title: 'ID' },
       { data: 'mc_topic', title: 'Chủ đề' },
@@ -45,7 +45,7 @@ $(document).ready(function () {
     $(this).addClass('selected');
 
     $.ajax({
-      url: '../../includes/mc/mc_fetch_data.php',
+      url: '/../../includes/mc/mc_fetch_data.php',
       method: 'POST',
       data: { mc_id: rowData.mc_id },
       dataType: 'json',
