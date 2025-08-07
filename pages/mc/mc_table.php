@@ -1,10 +1,3 @@
-<?php
-require_once __DIR__ . '/../../includes/db_connection.php';
-if (!isset($conn)) {
-  die("❌ Không thể kết nối CSDL. Kiểm tra db_connection.php");
-}
-header("X-Frame-Options: SAMEORIGIN");
-?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
