@@ -1,45 +1,56 @@
 <?php
-require_once __DIR__ . '/../../env/config.php';
+require_once '../../env/dotenv.php';
+require_once '../../env/config.php';
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['public_id'])) {
-  echo json_encode(['success' => false, 'message' => '❌ public_id không được gửi']);
+$image_url = $_POST['image_url'] ?? null;
+
+if (!$image_url) {
+  echo json_encode(['success' => false, 'error' => 'Thiếu image_url']);
   exit;
 }
 
-$public_id = $_POST['public_id'];
-$cloud_name = CLOUDINARY_CLOUD_NAME;
-$api_key = CLOUDINARY_API_KEY;
-$api_secret = CLOUDINARY_API_SECRET;
+// Tách public_id từ image_url
+$parts = explode('/upload/', $image_url);
+if (count($parts) < 2) {
+  echo json_encode(['success' => false, 'error' => 'Không tách được public_id']);
+  exit;
+}
 
-// Tạo signature
+$public_id_with_ext = $parts[1]; // vd: mc_images/example_image.jpg
+$public_id = preg_replace('/\.[^.]+$/', '', $public_id_with_ext); // Bỏ .jpg
+
+// Gửi xoá đến Cloudinary
+$cloud_name = getenv('CLOUDINARY_CLOUD_NAME');
+$api_key = getenv('CLOUDINARY_API_KEY');
+$api_secret = getenv('CLOUDINARY_API_SECRET');
 $timestamp = time();
 $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
 $signature = sha1($string_to_sign);
 
-// Tạo dữ liệu POST
-$post_fields = [
+$data = [
   'public_id' => $public_id,
-  'api_key'   => $api_key,
+  'api_key' => $api_key,
   'timestamp' => $timestamp,
   'signature' => $signature
 ];
 
-// Gửi yêu cầu tới Cloudinary
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$ch = curl_init("https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($ch);
 curl_close($ch);
 
-// Trả kết quả
 $result = json_decode($response, true);
 
 if ($result['result'] === 'ok') {
-  echo json_encode(['success' => true, 'message' => '✅ Ảnh đã được xóa']);
+  // Nếu cần, bạn có thể xoá mc_image_url trong DB tại đây
+  $stmt = $pdo->prepare("UPDATE mc_questions SET mc_image_url = NULL WHERE mc_image_url = ?");
+  $stmt->execute([$image_url]);
+
+  echo json_encode(['success' => true]);
 } else {
-  echo json_encode(['success' => false, 'message' => '❌ Xóa không thành công', 'raw' => $result]);
+  echo json_encode(['success' => false, 'error' => 'Xoá ảnh thất bại']);
 }
