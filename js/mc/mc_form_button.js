@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         preview.style.display = 'block';
   
         // Gửi URL về server PHP để lưu vào CSDL
-        const saveRes = await fetch('../../includes/mc/mc_uploaded_image.php', {
+        const saveRes = await fetch('../../includes/mc/save_uploaded_image.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
