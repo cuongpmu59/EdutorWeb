@@ -44,9 +44,9 @@
   
     const mc_id = idInput.value;
   
-    if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này? Hành động này không thể hoàn tác.')) return;
+    if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này?')) return;
   
-    fetch('../../includes/mc_delete.php', {
+    fetch('../../includes/mc/mc_delete.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ mc_id })
