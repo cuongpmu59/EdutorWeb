@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../env/config.php'; // chứa CLOUDINARY_* từ .env
+require_once __DIR__ . '/../../env/config.php'; // chứa CLOUDINARY_* từ .env
 
 header('Content-Type: application/json; charset=utf-8');
 
