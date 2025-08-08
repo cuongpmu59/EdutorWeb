@@ -1,5 +1,4 @@
 <?php
-// cloudinary_action.php (no library)
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
