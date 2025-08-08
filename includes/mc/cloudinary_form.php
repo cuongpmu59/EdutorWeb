@@ -1,60 +1,55 @@
-/* Upload ảnh */
+<?php // pages/mc/cloudinary_form.php ?>
+
+<div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
+    <h3>📤 Upload Ảnh lên Cloudinary</h3>
+
+    <input type="file" id="uploadImage" accept="image/*" />
+    <br><br>
+
+    <div id="previewContainer" style="display:none; text-align:center;">
+        <img id="preview" src="" alt="Preview" style="max-width:100%; max-height:200px; border:1px solid #ddd; padding:6px; border-radius:6px;">
+        <br><br>
+    </div>
+
+    <button id="btnUpload" style="margin-right:8px;">📤 Upload</button>
+    <button id="btnDelete" style="display:none;">🗑 Xóa ảnh</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const apiUrl = '../../includes/mc/cloudinary_action.php';
+let currentPublicId = '';
+
+function resetPreview() {
+    $('#previewContainer').hide();
+    $('#preview').attr('src', '');
+    $('#uploadImage').val('');
+    $('#btnDelete').hide();
+    currentPublicId = '';
+}
+
+function toggleButton(selector, disabled) {
+    $(selector).prop('disabled', disabled);
+    if (selector === '#btnUpload') {
+        $(selector).text(disabled ? '⏳ Đang tải lên...' : '📤 Upload');
+    }
+}
+
+$('#uploadImage').on('change', function () {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $('#preview').attr('src', e.target.result);
+            $('#previewContainer').show();
+            $('#btnDelete').hide();
+            currentPublicId = '';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        resetPreview();
+    }
+});
+
 $('#btnUpload').on('click', function () {
-    const file = $('#uploadImage').prop('files')[0];
-    if (!file) return alert('❌ Vui lòng chọn ảnh!');
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    toggleButton('#btnUpload', true);
-
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json'   // jQuery tự parse JSON
-    })
-    .done(function (data) {
-        console.log('Server response:', data);
-        if (data.secure_url) {
-            $('#preview').attr('src', data.secure_url);
-            $('#btnDelete').show();
-            currentPublicId = data.public_id;
-            alert('✅ Upload thành công!');
-        } else {
-            alert(data.error || '❌ Lỗi không xác định khi upload');
-        }
-    })
-    .fail(function () {
-        alert('❌ Không thể kết nối server');
-    })
-    .always(function () {
-        toggleButton('#btnUpload', false);
-    });
-});
-
-/* Xóa ảnh */
-$('#btnDelete').on('click', function () {
-    if (!currentPublicId) return alert('❌ Chưa có ảnh để xóa');
-
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: { public_id: currentPublicId },
-        dataType: 'json'   // jQuery tự parse JSON
-    })
-    .done(function (data) {
-        console.log('Server response:', data);
-        if (data.result === 'ok') {
-            resetPreview();
-            alert('✅ Ảnh đã được xóa');
-        } else {
-            alert(data.error || '❌ Lỗi khi xóa ảnh');
-        }
-    })
-    .fail(function () {
-        alert('❌ Không thể kết nối server');
-    });
-});
+    const file = $('#uploadImag
