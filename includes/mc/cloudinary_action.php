@@ -1,32 +1,71 @@
 <?php
-header('Content-Type: application/json');
+// cloudinary_action.php (no library)
+header('Content-Type: application/json; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
+
 require_once __DIR__ . '/../../env/config.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!empty($_FILES['file']['tmp_name'])) {
-        $url = 'https://api.cloudinary.com/v1_1/' . CLOUDINARY_CLOUD_NAME . '/image/upload';
-        $timestamp = time();
-        $signature = hash_hmac('sha1', "timestamp={$timestamp}" . CLOUDINARY_API_SECRET, CLOUDINARY_API_SECRET);
+try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+        // ==== UPLOAD ====
+        $filePath = $_FILES['file']['tmp_name'];
 
-        $data = [
-            'file' => new CURLFile($_FILES['file']['tmp_name']),
-            'api_key' => CLOUDINARY_API_KEY,
-            'timestamp' => $timestamp,
-            'signature' => $signature,
+        if (!$filePath || !is_uploaded_file($filePath)) {
+            throw new Exception('❌ Không tìm thấy file upload');
+        }
+
+        $timestamp = time();
+        $signature = sha1("timestamp={$timestamp}" . CLOUDINARY_API_SECRET);
+
+        $postFields = [
+            'file'       => new CURLFile($filePath),
+            'api_key'    => CLOUDINARY_API_KEY,
+            'timestamp'  => $timestamp,
+            'signature'  => $signature
         ];
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload");
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
+
+        $result = curl_exec($ch);
         curl_close($ch);
 
-        ob_clean(); // tránh rác output
-        echo $response; // Cloudinary trả về JSON gốc
+        echo $result; // Trả thẳng JSON từ Cloudinary
         exit;
     }
-}
 
-echo json_encode(['error' => 'No action performed']);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['public_id'])) {
+        // ==== DELETE ====
+        $publicId = $_POST['public_id'];
+        $timestamp = time();
+        $signature = sha1("public_id={$publicId}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET);
+
+        $postFields = [
+            'public_id' => $publicId,
+            'api_key'   => CLOUDINARY_API_KEY,
+            'timestamp' => $timestamp,
+            'signature' => $signature
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        echo $result;
+        exit;
+    }
+
+    echo json_encode(['error' => '❌ Request không hợp lệ'], JSON_UNESCAPED_UNICODE);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+}
