@@ -1,13 +1,44 @@
-<input type="file" id="uploadImage">
-<button id="btnUpload">📤 Upload</button>
-<br><br>
-<img id="preview" src="" style="max-width:200px; display:none;">
-<br>
-<button id="btnDelete" style="display:none;">🗑 Xóa ảnh</button>
+<?php
+// Đảm bảo file này được gọi từ trình duyệt
+?>
+<div style="max-width: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+    <h3>📤 Upload Ảnh</h3>
+
+    <!-- Input chọn file -->
+    <input type="file" id="uploadImage" accept="image/*">
+    <br><br>
+
+    <!-- Khung preview -->
+    <div id="previewContainer" style="display:none; text-align:center;">
+        <img id="preview" src="" 
+             style="max-width:100%; max-height:200px; border:1px solid #ddd; padding:4px; border-radius:4px;">
+        <br><br>
+    </div>
+
+    <!-- Nút thao tác -->
+    <button id="btnUpload" style="margin-right:5px;">📤 Upload</button>
+    <button id="btnDelete" style="display:none;">🗑 Xóa ảnh</button>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 let currentPublicId = '';
+
+/* ==== Xem trước ảnh khi chọn ==== */
+$('#uploadImage').on('change', function() {
+    let file = this.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            $('#preview').attr('src', e.target.result);
+            $('#previewContainer').show();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        $('#previewContainer').hide();
+        $('#preview').attr('src', '');
+    }
+});
 
 /* ==== Upload Ảnh ==== */
 $('#btnUpload').on('click', function () {
@@ -62,7 +93,8 @@ $('#btnDelete').on('click', function () {
             try {
                 let data = typeof res === 'string' ? JSON.parse(res) : res;
                 if (data.result === 'ok') {
-                    $('#preview').hide().attr('src', '');
+                    $('#previewContainer').hide();
+                    $('#preview').attr('src', '');
                     $('#btnDelete').hide();
                     $('#uploadImage').val('');
                     currentPublicId = '';
