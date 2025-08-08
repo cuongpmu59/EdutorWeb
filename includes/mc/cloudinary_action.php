@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../env/config.php'; // chứa CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET
+require_once __DIR__ . '/../../env/config.php'; // chứa CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
