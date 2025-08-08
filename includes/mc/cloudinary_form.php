@@ -21,7 +21,7 @@ $('#btnUpload').on('click', function () {
     form_data.append('image', file_data);
 
     $.ajax({
-        url: 'cloudinary_action.php',
+        url: '../../includes/mc/cloudinary_action.php',
         type: 'POST',
         data: form_data,
         processData: false,
@@ -55,7 +55,7 @@ $('#btnDelete').on('click', function () {
     }
 
     $.ajax({
-        url: 'cloudinary_action.php',
+        url: '../../includes/mc/cloudinary_action.php',
         type: 'POST',
         data: { public_id: currentPublicId },
         success: function (res) {
