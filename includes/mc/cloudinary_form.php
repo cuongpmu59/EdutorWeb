@@ -1,82 +1,61 @@
-<input type="file" id="uploadImage">
-<button id="btnUpload">📤 Upload</button>
-<br><br>
-<img id="preview" src="" style="max-width:200px; display:none;">
-<br>
-<button id="btnDelete" style="display:none;">🗑 Xóa ảnh</button>
+<?php
+require_once __DIR__ . '/../env/config.php';
+header('Content-Type: application/json');
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-let currentPublicId = '';
+$action = $_POST['action'] ?? '';
 
-/* ==== Upload Ảnh ==== */
-$('#btnUpload').on('click', function () {
-    let file_data = $('#uploadImage').prop('files')[0];
-    if (!file_data) {
-        alert('❌ Vui lòng chọn ảnh!');
-        return;
+if ($action === 'upload' && isset($_FILES['image'])) {
+    if (empty($_FILES['image']['tmp_name'])) {
+        echo json_encode(['error' => '❌ Không có file nào được tải lên']);
+        exit;
     }
 
-    let form_data = new FormData();
-    form_data.append('image', file_data);
+    $filePath = $_FILES['image']['tmp_name'];
+    $url = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload";
+    $data = [
+        'upload_preset' => CLOUDINARY_UPLOAD_PRESET,
+        'file' => new CURLFile($filePath)
+    ];
 
-    $.ajax({
-        url: '../../includes/mc/cloudinary_action.php',
-        type: 'POST',
-        data: form_data,
-        processData: false,
-        contentType: false,
-        success: function (res) {
-            try {
-                let data = typeof res === 'string' ? JSON.parse(res) : res;
-                if (data.secure_url) {
-                    $('#preview').attr('src', data.secure_url).show();
-                    $('#btnDelete').show();
-                    currentPublicId = data.public_id;
-                    alert('✅ Upload thành công!');
-                } else {
-                    alert(data.error || '❌ Lỗi không xác định khi upload');
-                }
-            } catch (e) {
-                alert('❌ Lỗi xử lý phản hồi từ server');
-            }
-        },
-        error: function () {
-            alert('❌ Không thể kết nối server');
-        }
-    });
-});
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
 
-/* ==== Xóa Ảnh ==== */
-$('#btnDelete').on('click', function () {
-    if (!currentPublicId) {
-        alert('❌ Chưa có ảnh để xóa');
-        return;
-    }
+    echo $err ? json_encode(['error' => '❌ Lỗi CURL: ' . $err]) : $response;
+    exit;
+}
 
-    $.ajax({
-        url: '../../includes/mc/cloudinary_action.php',
-        type: 'POST',
-        data: { public_id: currentPublicId },
-        success: function (res) {
-            try {
-                let data = typeof res === 'string' ? JSON.parse(res) : res;
-                if (data.result === 'ok') {
-                    $('#preview').hide().attr('src', '');
-                    $('#btnDelete').hide();
-                    $('#uploadImage').val('');
-                    currentPublicId = '';
-                    alert('✅ Ảnh đã được xóa');
-                } else {
-                    alert(data.error || '❌ Lỗi khi xóa ảnh');
-                }
-            } catch (e) {
-                alert('❌ Lỗi xử lý phản hồi từ server');
-            }
-        },
-        error: function () {
-            alert('❌ Không thể kết nối server');
-        }
-    });
-});
-</script>
+if ($action === 'delete' && !empty($_POST['public_id'])) {
+    $public_id = trim($_POST['public_id']);
+    $timestamp = time();
+    $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
+    $signature = sha1($string_to_sign);
+
+    $url = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
+    $data = [
+        'public_id' => $public_id,
+        'timestamp' => $timestamp,
+        'api_key' => CLOUDINARY_API_KEY,
+        'signature' => $signature
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    echo $err ? json_encode(['error' => '❌ Lỗi CURL: ' . $err]) : $response;
+    exit;
+}
+
+echo json_encode(['error' => '❌ Request không hợp lệ']);
+exit;
