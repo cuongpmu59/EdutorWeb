@@ -30,7 +30,7 @@
             e.preventDefault();
             const formData = new FormData(this);
 
-            fetch('cloudinary_action.php', {
+            fetch('../../includes/mc/cloudinary_action.php', {
                 method: 'POST',
                 body: formData
             })
@@ -60,7 +60,7 @@
             e.preventDefault();
             const formData = new FormData(this);
 
-            fetch('cloudinary_action.php', {
+            fetch('../../includes/mc/cloudinary_action.php', {
                 method: 'POST',
                 body: formData
             })
