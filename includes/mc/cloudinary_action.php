@@ -15,9 +15,7 @@ try {
             'api_key'    => CLOUDINARY_API_KEY,
             'api_secret' => CLOUDINARY_API_SECRET,
         ],
-        'url' => [
-            'secure' => true
-        ]
+        'url' => ['secure' => true]
     ]);
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -32,9 +30,19 @@ try {
         $uploadApi = new UploadApi();
         $result = $uploadApi->upload($file_path, [
             'upload_preset' => CLOUDINARY_UPLOAD_PRESET,
-            'folder' => 'examTest',  
+            'folder' => 'examTest',
+            //'public_id' => 'img_'.time(), // nếu muốn đặt tên tùy chỉnh
         ]);
-        echo json_encode($result);
+
+        // Trả về JSON với dữ liệu cần thiết
+        echo json_encode([
+            'public_id' => $result['public_id'] ?? null,
+            'secure_url' => $result['secure_url'] ?? null,
+            'original_filename' => $result['original_filename'] ?? null,
+            'format' => $result['format'] ?? null,
+            'width' => $result['width'] ?? null,
+            'height' => $result['height'] ?? null,
+        ]);
         exit;
     }
 
