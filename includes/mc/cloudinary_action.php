@@ -1,26 +1,27 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../../env/config.php'; // file chứa CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_UPLOAD_PRESET
+
+require_once __DIR__ . '/../../env/config.php'; // chứa CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_UPLOAD_PRESET
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Api;
 
-Configuration::instance([
-    'cloud' => [
-        'cloud_name' => CLOUDINARY_CLOUD_NAME,
-        'api_key'    => CLOUDINARY_API_KEY,
-        'api_secret' => CLOUDINARY_API_SECRET,
-    ],
-    'url' => [
-        'secure' => true
-    ]
-]);
-
 try {
+    Configuration::instance([
+        'cloud' => [
+            'cloud_name' => CLOUDINARY_CLOUD_NAME,
+            'api_key'    => CLOUDINARY_API_KEY,
+            'api_secret' => CLOUDINARY_API_SECRET,
+        ],
+        'url' => [
+            'secure' => true
+        ]
+    ]);
+
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        echo json_encode(['error' => '❌ Phải gửi POST']);
+        echo json_encode(['error' => '❌ Yêu cầu phải là POST']);
         exit;
     }
 
@@ -31,7 +32,7 @@ try {
         $uploadApi = new UploadApi();
         $result = $uploadApi->upload($file_path, [
             'upload_preset' => CLOUDINARY_UPLOAD_PRESET,
-            // 'folder' => 'your_folder', // nếu muốn lưu trong folder
+            // 'folder' => 'your_folder', // nếu muốn upload vào thư mục con
         ]);
 
         echo json_encode($result);
@@ -43,7 +44,6 @@ try {
         $publicId = $_POST['public_id'];
 
         $api = new Api();
-
         $deleteResult = $api->deleteAssets([$publicId]);
 
         if (isset($deleteResult['deleted'][$publicId]) && $deleteResult['deleted'][$publicId] === 'deleted') {
