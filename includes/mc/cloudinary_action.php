@@ -1,47 +1,63 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
-require_once __DIR__ . '/../../env/config.php';
+require_once __DIR__ . '/../../env/config.php'; // Chứa CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Cloudinary\Configuration\Configuration;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Api\Admin\AdminApi;
+
+// 🔹 Cấu hình Cloudinary
+Configuration::instance([
+    'cloud' => [
+        'cloud_name' => CLOUDINARY_CLOUD_NAME,
+        'api_key'    => CLOUDINARY_API_KEY,
+        'api_secret' => CLOUDINARY_API_SECRET
+    ],
+    'url' => [
+        'secure' => true
+    ]
+]);
 
 try {
-    // Chỉ xử lý nếu có file gửi lên
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+    // ========================
+    // 1️⃣ UPLOAD (unsigned)
+    // ========================
+    if (!empty($_FILES['image'])) {
+        $fileTmp = $_FILES['image']['tmp_name'];
 
-        $filePath = $_FILES['file']['tmp_name'];
+        // Gọi API upload unsigned
+        $uploadResult = (new UploadApi())->unsignedUpload(
+            $fileTmp,
+            'mc_unsigned_preset', // Tên upload preset bạn tạo trong Cloudinary
+            [
+                'folder' => 'mc_uploads'
+            ]
+        );
 
-        if (!$filePath || !is_uploaded_file($filePath)) {
-            throw new Exception('❌ Không tìm thấy file upload');
-        }
-
-        // Chuẩn bị dữ liệu gửi lên Cloudinary (unsigned)
-        $postFields = [
-            'file'          => new CURLFile($filePath),
-            'upload_preset' => CLOUDINARY_UPLOAD_PRESET
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload");
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-        $error  = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            throw new Exception('❌ Lỗi CURL: ' . $error);
-        }
-
-        echo $result; // Cloudinary trả về JSON
+        echo json_encode([
+            'secure_url' => $uploadResult['secure_url'] ?? null,
+            'public_id'  => $uploadResult['public_id'] ?? null
+        ]);
         exit;
     }
 
-    // Nếu không phải upload ảnh thì trả lỗi
-    echo json_encode(['error' => '❌ Request không hợp lệ'], JSON_UNESCAPED_UNICODE);
+    // ========================
+    // 2️⃣ DELETE
+    // ========================
+    if (!empty($_POST['public_id'])) {
+        $publicId = $_POST['public_id'];
 
+        $deleteResult = (new UploadApi())->destroy($publicId);
+
+        echo json_encode($deleteResult);
+        exit;
+    }
+
+    // Nếu không phải upload hoặc delete
+    echo json_encode(['error' => '❌ Request không hợp lệ']);
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => $e->getMessage()]);
 }
