@@ -32,9 +32,8 @@ try {
         $uploadApi = new UploadApi();
         $result = $uploadApi->upload($file_path, [
             'upload_preset' => CLOUDINARY_UPLOAD_PRESET,
-            // 'folder' => 'your_folder', // nếu muốn upload vào thư mục con
+            'folder' => 'examTest',  
         ]);
-
         echo json_encode($result);
         exit;
     }
