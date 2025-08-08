@@ -1,82 +1,94 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Upload & Delete Cloudinary (AJAX)</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .result { margin-top: 15px; padding: 10px; border: 1px solid #ccc; background: #f8f8f8; }
-        img { max-width: 250px; margin-top: 10px; display: block; }
-    </style>
+<meta charset="UTF-8">
+<title>Test Cloudinary Upload & Delete</title>
+<style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 5px; padding: 5px; }
+    img { max-width: 300px; display: block; margin-top: 10px; }
+</style>
 </head>
 <body>
-    <h1>Upload ảnh lên Cloudinary</h1>
-    <form id="uploadForm">
-        <input type="file" name="image" required>
-        <button type="submit">Upload</button>
-    </form>
-    <div id="uploadResult" class="result"></div>
 
-    <h1>Xoá ảnh trên Cloudinary</h1>
-    <form id="deleteForm">
-        <input type="text" name="public_id_delete" id="public_id_delete" placeholder="Nhập Public ID" required>
-        <button type="submit">Xoá ảnh</button>
-    </form>
-    <div id="deleteResult" class="result"></div>
+<h2>Upload ảnh lên Cloudinary</h2>
+<input type="file" id="imageInput">
+<button id="uploadBtn">Upload</button>
 
-    <script>
-        // Xử lý upload
-        document.getElementById('uploadForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+<div id="result"></div>
 
-            fetch('../../includes/mc/cloudinary_action.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                const resultDiv = document.getElementById('uploadResult');
-                if (data.secure_url) {
-                    resultDiv.innerHTML = `
-                        ✅ Upload thành công!<br>
-                        URL: <a href="${data.secure_url}" target="_blank">${data.secure_url}</a><br>
-                        Public ID: ${data.public_id}
-                        <img src="${data.secure_url}" alt="Uploaded Image">
-                    `;
-                    // 🆕 Auto điền Public ID vào form xoá
-                    document.getElementById('public_id_delete').value = data.public_id;
-                } else {
-                    resultDiv.innerHTML = `❌ Lỗi upload: ${JSON.stringify(data)}`;
-                }
-            })
-            .catch(err => {
-                document.getElementById('uploadResult').innerHTML = `❌ Lỗi: ${err}`;
-            });
-        });
+<h2>Xoá ảnh</h2>
+<input type="text" id="publicIdInput" placeholder="Nhập public_id để xoá">
+<button id="deleteBtn">Delete</button>
 
-        // Xử lý delete
-        document.getElementById('deleteForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+<script>
+const resultDiv = document.getElementById('result');
 
-            fetch('../../includes/mc/cloudinary_action.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                const resultDiv = document.getElementById('deleteResult');
-                if (data.result === "ok") {
-                    resultDiv.innerHTML = "✅ Ảnh đã xoá thành công!";
-                } else {
-                    resultDiv.innerHTML = `❌ Lỗi xoá: ${JSON.stringify(data)}`;
-                }
-            })
-            .catch(err => {
-                document.getElementById('deleteResult').innerHTML = `❌ Lỗi: ${err}`;
-            });
-        });
-    </script>
+// UPLOAD
+document.getElementById('uploadBtn').addEventListener('click', () => {
+    const fileInput = document.getElementById('imageInput');
+    if (!fileInput.files.length) {
+        alert("Vui lòng chọn ảnh!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+
+    fetch('cloudinary_action.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Upload response:", data);
+        if (data.secure_url) {
+            resultDiv.innerHTML = `
+                <p>✅ Upload thành công!</p>
+                <img src="${data.secure_url}" alt="Uploaded image">
+                <p>public_id: <strong>${data.public_id}</strong></p>
+            `;
+            document.getElementById('publicIdInput').value = data.public_id;
+        } else {
+            resultDiv.innerHTML = `<p>❌ Lỗi upload</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        resultDiv.innerHTML = "<p>❌ Lỗi kết nối</p>";
+    });
+});
+
+// DELETE
+document.getElementById('deleteBtn').addEventListener('click', () => {
+    const publicId = document.getElementById('publicIdInput').value.trim();
+    if (!publicId) {
+        alert("Vui lòng nhập public_id!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('public_id', publicId);
+
+    fetch('cloudinary_action.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Delete response:", data);
+        if (data.result === 'ok') {
+            resultDiv.innerHTML = `<p>✅ Xoá thành công ảnh có public_id: ${publicId}</p>`;
+        } else {
+            resultDiv.innerHTML = `<p>❌ Lỗi xoá</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        resultDiv.innerHTML = "<p>❌ Lỗi kết nối</p>";
+    });
+});
+</script>
+
 </body>
 </html>
