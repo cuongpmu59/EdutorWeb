@@ -1,63 +1,83 @@
 <?php
+require_once __DIR__ . '/../env/config.php'; // chứa CLOUDINARY_CLOUD_NAME & CLOUDINARY_UPLOAD_PRESET
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 
-require_once __DIR__ . '/../../env/config.php'; // Chứa CLOUDINARY_CLOUD_NAME, API_KEY, API_SECRET
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
-use Cloudinary\Api\Admin\AdminApi;
-
-// 🔹 Cấu hình Cloudinary
-Configuration::instance([
-    'cloud' => [
-        'cloud_name' => CLOUDINARY_CLOUD_NAME,
-        'api_key'    => CLOUDINARY_API_KEY,
-        'api_secret' => CLOUDINARY_API_SECRET
-    ],
-    'url' => [
-        'secure' => true
-    ]
-]);
-
-try {
-    // ========================
-    // 1️⃣ UPLOAD (unsigned)
-    // ========================
-    if (!empty($_FILES['image'])) {
-        $fileTmp = $_FILES['image']['tmp_name'];
-
-        // Gọi API upload unsigned
-        $uploadResult = (new UploadApi())->unsignedUpload(
-            $fileTmp,
-            'mc_unsigned_preset', // Tên upload preset bạn tạo trong Cloudinary
-            [
-                'folder' => 'mc_uploads'
-            ]
-        );
-
-        echo json_encode([
-            'secure_url' => $uploadResult['secure_url'] ?? null,
-            'public_id'  => $uploadResult['public_id'] ?? null
-        ]);
+// ✅ Upload ảnh (unsigned)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
+    if (!isset($_FILES['image']['tmp_name']) || empty($_FILES['image']['tmp_name'])) {
+        echo json_encode(['error' => '❌ Không có file nào được tải lên']);
         exit;
     }
 
-    // ========================
-    // 2️⃣ DELETE
-    // ========================
-    if (!empty($_POST['public_id'])) {
-        $publicId = $_POST['public_id'];
+    $filePath = $_FILES['image']['tmp_name'];
 
-        $deleteResult = (new UploadApi())->destroy($publicId);
+    // API unsigned upload
+    $url = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload";
 
-        echo json_encode($deleteResult);
-        exit;
+    $data = [
+        'upload_preset' => CLOUDINARY_UPLOAD_PRESET,
+        'file' => new CURLFile($filePath)
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    if ($err) {
+        echo json_encode(['error' => '❌ Lỗi CURL: ' . $err]);
+    } else {
+        echo $response; // Cloudinary trả về JSON
     }
-
-    // Nếu không phải upload hoặc delete
-    echo json_encode(['error' => '❌ Request không hợp lệ']);
-} catch (Exception $e) {
-    echo json_encode(['error' => $e->getMessage()]);
+    exit;
 }
+
+// ✅ Xóa ảnh (signed) - cần API Key & Secret
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['public_id'])) {
+    $public_id = trim($_POST['public_id']);
+    if ($public_id === '') {
+        echo json_encode(['error' => '❌ public_id trống']);
+        exit;
+    }
+
+    // Tạo signature
+    $timestamp = time();
+    $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
+    $signature = sha1($string_to_sign);
+
+    $url = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
+
+    $data = [
+        'public_id' => $public_id,
+        'timestamp' => $timestamp,
+        'api_key' => CLOUDINARY_API_KEY,
+        'signature' => $signature
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    if ($err) {
+        echo json_encode(['error' => '❌ Lỗi CURL: ' . $err]);
+    } else {
+        echo $response; // Cloudinary trả về JSON
+    }
+    exit;
+}
+
+// ❌ Nếu không phải upload hay delete
+echo json_encode(['error' => '❌ Request không hợp lệ']);
+exit;
