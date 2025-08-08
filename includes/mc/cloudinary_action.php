@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-require_once __DIR__ . '/env/dotenv.php';
-require_once __DIR__ . '/env/config.php';
+require_once __DIR__ . '/../../env/dotenv.php';
+require_once __DIR__ . '/../../env/config.php';
 
 // ===== Hàm Upload Ảnh =====
 function uploadImageToCloudinary($filePath, $folder = "uploads") {
