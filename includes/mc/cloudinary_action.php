@@ -3,10 +3,6 @@ header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../../env/config.php'; 
-// Trong config.php cần có:
-// define('CLOUDINARY_CLOUD_NAME', 'ten_cloud');
-// define('CLOUDINARY_UPLOAD_PRESET', 'ten_preset_unsigned');
-
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         // ==== UNSIGNED UPLOAD ====
