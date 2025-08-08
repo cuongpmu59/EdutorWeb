@@ -35,7 +35,7 @@ document.getElementById('uploadBtn').addEventListener('click', () => {
     const formData = new FormData();
     formData.append('image', fileInput.files[0]);
 
-    fetch('cloudinary_action.php', {
+    fetch('../../includes/mc/cloudinary_action.php', {
         method: 'POST',
         body: formData
     })
@@ -70,7 +70,7 @@ document.getElementById('deleteBtn').addEventListener('click', () => {
     const formData = new FormData();
     formData.append('public_id', publicId);
 
-    fetch('cloudinary_action.php', {
+    fetch('../../includes/mc/cloudinary_action.php', {
         method: 'POST',
         body: formData
     })
