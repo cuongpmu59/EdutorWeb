@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once __DIR__ . '/env/config.php'; // Load biến môi trường
+require_once __DIR__ . '/../../env/config.php'; // Load biến môi trường
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['action'])) {
