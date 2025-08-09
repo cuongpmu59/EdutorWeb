@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Upload Ảnh lên Cloudinary</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .preview { margin-top: 15px; }
+    img { max-width: 300px; border: 1px solid #ccc; padding: 5px; border-radius: 8px; }
+    .status { margin-top: 10px; font-weight: bold; color: green; }
+</style>
+</head>
+<body>
+
+<h2>📤 Upload ảnh</h2>
+<input type="file" id="fileInput" accept="image/*">
+<button id="uploadBtn">Tải lên</button>
+
+<div class="status" id="status"></div>
+<div class="preview" id="preview"></div>
+
+<script>
+document.getElementById("uploadBtn").addEventListener("click", function() {
+    let file = document.getElementById("fileInput").files[0];
+    if (!file) {
+        alert("Vui lòng chọn ảnh trước khi tải lên!");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").textContent = "⏳ Đang tải lên...";
+
+    fetch("upload_image.php", { // ⚠️ Đảm bảo file PHP này nằm cùng thư mục hoặc sửa đường dẫn
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.secure_url) {
+            document.getElementById("status").textContent = "✅ Tải lên thành công!";
+            document.getElementById("preview").innerHTML = `
+                <p>Link ảnh: <a href="${data.secure_url}" target="_blank">${data.secure_url}</a></p>
+                <img src="${data.secure_url}" alt="Uploaded Image">
+            `;
+        } else {
+            document.getElementById("status").textContent = "❌ Lỗi: " + (data.error?.message || JSON.stringify(data.error));
+        }
+    })
+    .catch(err => {
+        document.getElementById("status").textContent = "❌ Lỗi: " + err;
+    });
+});
+</script>
+
+</body>
+</html>
