@@ -1,49 +1,40 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Cấu hình Cloudinary
+$cloud_name    = "ten_cloud_cua_ban"; // Thay bằng Cloud Name
+$upload_preset = "ten_upload_preset"; // Thay bằng Upload Preset (unsigned)
 
-header('Content-Type: application/json');
+// Trả kết quả JSON
+header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/env/config.php';
-require_once __DIR__ . '/vendor/autoload.php';
-
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
-
-Configuration::instance([
-    'cloud' => [
-        'cloud_name' => CLOUDINARY_CLOUD_NAME,
-        'api_key'    => CLOUDINARY_API_KEY,
-        'api_secret' => CLOUDINARY_API_SECRET,
-    ],
-    'url' => ['secure' => true],
-]);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-        echo json_encode(['error' => 'No file uploaded or upload error']);
-        exit;
-    }
-
-    $fileTmpPath = $_FILES['image']['tmp_name'];
-
-    try {
-        $uploadResult = (new UploadApi())->upload($fileTmpPath, [
-            'folder' => 'your_folder_name',
-            'use_filename' => true,
-            'unique_filename' => false,
-            'overwrite' => true,
-        ]);
-
-        echo json_encode([
-            'success' => true,
-            'url' => $uploadResult['secure_url'],
-            'public_id' => $uploadResult['public_id'],
-        ]);
-    } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
-    }
-} else {
-    echo json_encode(['error' => 'Invalid request method']);
+// Kiểm tra xem có file được gửi không
+if (!isset($_FILES['file']['tmp_name'])) {
+    echo json_encode(["error" => "Không có file tải lên"]);
+    exit;
 }
+
+// Chuẩn bị dữ liệu upload
+$file_path = $_FILES['file']['tmp_name'];
+$url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
+
+// Tạo POST request
+$data = [
+    "file" => new CURLFile($file_path),
+    "upload_preset" => $upload_preset
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+if (curl_errno($ch)) {
+    echo json_encode(["error" => curl_error($ch)]);
+    curl_close($ch);
+    exit;
+}
+curl_close($ch);
+
+// Trả về kết quả từ Cloudinary
+echo $response;
