@@ -1,7 +1,7 @@
 <?php
 // Cấu hình Cloudinary
-$cloud_name    = "ten_cloud_cua_ban"; // Thay bằng Cloud Name
-$upload_preset = "ten_upload_preset"; // Thay bằng Upload Preset (unsigned)
+$cloud_name    = "dbdf2gwc9"; // Thay bằng Cloud Name
+$upload_preset = "my_exam_preset"; // Thay bằng Upload Preset (unsigned)
 
 // Trả kết quả JSON
 header('Content-Type: application/json; charset=utf-8');
