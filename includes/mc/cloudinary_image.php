@@ -1,87 +1,82 @@
 <?php
-// ⚙️ Cấu hình Cloudinary
-$cloud_name    = "dbdf2gwc9"; 
-$api_key="451298475188791";
-$api_secret="PK2QC";
-$upload_preset = "my_exam_preset"; 
+require_once __DIR__ . '/../env/dotenv.php';
 
-// Cho phép CORS nếu test từ file HTML riêng
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=utf-8");
+// Lấy config từ .env
+$cloudName     = env('CLOUDINARY_CLOUD_NAME');
+$apiKey        = env('CLOUDINARY_API_KEY');
+$apiSecret     = env('CLOUDINARY_API_SECRET');
+$uploadPreset  = env('CLOUDINARY_UPLOAD_PRESET');
+
+header('Content-Type: application/json; charset=utf-8');
+
+// Kiểm tra phương thức
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['error' => 'Invalid request method']);
+    exit;
+}
 
 $action = $_POST['action'] ?? '';
 
+// ========== UPLOAD ẢNH ==========
 if ($action === 'upload') {
-    // Upload ảnh lên Cloudinary (unsigned)
-    if (!isset($_FILES['file']['tmp_name'])) {
-        echo json_encode(["error" => "Không có file tải lên"]);
+    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['error' => 'Không có file tải lên']);
         exit;
     }
 
-    $file_path = $_FILES['file']['tmp_name'];
-    $url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
+    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/image/upload";
 
-    $data = [
-        "file" => new CURLFile($file_path),
-        "upload_preset" => $upload_preset
+    $postFields = [
+        'file' => new CURLFile($_FILES['file']['tmp_name']),
+        'upload_preset' => $uploadPreset
     ];
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_URL, $uploadUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
 
     $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo json_encode(["error" => curl_error($ch)]);
-        curl_close($ch);
-        exit;
-    }
     curl_close($ch);
 
     echo $response;
     exit;
 }
 
+// ========== XÓA ẢNH ==========
 if ($action === 'delete') {
-    // Xóa ảnh theo public_id
-    $public_id = $_POST['public_id'] ?? '';
-    if (!$public_id) {
-        echo json_encode(["error" => "Thiếu public_id để xóa"]);
+    $publicId = $_POST['public_id'] ?? '';
+    if (!$publicId) {
+        echo json_encode(['error' => 'Thiếu public_id']);
         exit;
     }
 
+    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/image/destroy";
+
+    // Cloudinary yêu cầu signature: sha1(string_to_sign + api_secret)
     $timestamp = time();
-    $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
-    $signature = sha1($string_to_sign);
+    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}{$apiSecret}";
+    $signature = sha1($stringToSign);
 
-    $url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy";
-
-    $data = [
-        "public_id" => $public_id,
-        "timestamp" => $timestamp,
-        "api_key"   => $api_key,
-        "signature" => $signature
+    $postFields = [
+        'public_id' => $publicId,
+        'api_key'   => $apiKey,
+        'timestamp' => $timestamp,
+        'signature' => $signature
     ];
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_URL, $deleteUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
 
     $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo json_encode(["error" => curl_error($ch)]);
-        curl_close($ch);
-        exit;
-    }
     curl_close($ch);
 
     echo $response;
     exit;
 }
 
-echo json_encode(["error" => "Hành động không hợp lệ"]);
-exit;
+echo json_encode(['error' => 'Hành động không hợp lệ']);
