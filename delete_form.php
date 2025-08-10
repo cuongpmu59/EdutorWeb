@@ -29,7 +29,7 @@ document.getElementById('deleteForm').addEventListener('submit', async function(
     formData.append('image_url', document.getElementById('image_url').value);
 
     try {
-        const res = await fetch('delete.php', { method: 'POST', body: formData });
+        const res = await fetch('delete_image.php', { method: 'POST', body: formData });
         const data = await res.json();
         const resultDiv = document.getElementById('result');
 
