@@ -1,7 +1,6 @@
 <?php
-header("Content-Type: application/json; charset=utf-8");
+header("Content-Type: application/json");
 
-// Cấu hình Cloudinary
 $cloud_name = "dbdf2gwc9";
 $api_key    = "451298475188791";
 $api_secret = "PK2QC";
@@ -43,10 +42,19 @@ if ($action === 'upload') {
     exit;
 }
 
-if ($action === 'delete') {
-    $public_id = $_POST['public_id'] ?? '';
-    if (!$public_id) {
-        echo json_encode(["error" => "Thiếu public_id"]);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["action"] === "delete") {
+    if (empty($_POST["image_url"])) {
+        echo json_encode(["error" => "Thiếu image_url"]);
+        exit;
+    }
+
+    $image_url = $_POST["image_url"];
+
+    // 🔹 Lấy public_id từ URL bằng regex
+    if (preg_match("~upload/(?:v\d+/)?([^\.]+)~", $image_url, $matches)) {
+        $public_id = $matches[1];
+    } else {
+        echo json_encode(["error" => "Không lấy được public_id"]);
         exit;
     }
 
@@ -54,32 +62,22 @@ if ($action === 'delete') {
     $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
     $signature = sha1($string_to_sign);
 
-    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/destroy";
-
     $data = [
         "public_id" => $public_id,
-        "api_key" => $api_key,
         "timestamp" => $timestamp,
+        "api_key"   => $api_key,
         "signature" => $signature
     ];
 
     $ch = curl_init();
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $data,
-        CURLOPT_RETURNTRANSFER => true
-    ]);
-
-    $res = curl_exec($ch);
+    curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    $response = curl_exec($ch);
     curl_close($ch);
-    $json = json_decode($res, true);
 
-    if (isset($json['result']) && $json['result'] === 'ok') {
-        echo json_encode(["success" => true]);
-    } else {
-        echo json_encode(["error" => $json['error']['message'] ?? "Xoá thất bại"]);
-    }
+    echo $response;
     exit;
 }
 
