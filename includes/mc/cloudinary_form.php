@@ -1,41 +1,78 @@
 <?php // includes/mc/cloudinary_form.php ?>
+<style>
+.image-preview {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.image-buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.btn-upload, .btn-delete {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.btn-upload {
+    background-color: #4CAF50;
+    color: white;
+}
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+</style>
+
 <div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
-    <h3>📤 Ảnh minh hoạ</h3>
-        <div class="image-preview">
-            <img id="preview" src="" alt="Hình minh hoạ" 
-            style="display:none;"></div>
-        <div class="image-buttons"><label class="btn-upload">Tải ảnh
-            <input type="file" id="uploadImage" name="image" 
-            accept="image/*" hidden></label>
-            <button type="button" id="btnDelete">Xóa ảnh</button></div>
-        <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
- </div>
+    <h3>📤 Ảnh minh hoạ</h3>
+    <div class="image-preview">
+        <img id="preview" src="" alt="Hình minh hoạ">
+        <span id="noImageText" style="color:#888; position:absolute;">Chưa có ảnh</span>
+    </div>
+    <div class="image-buttons">
+        <label class="btn-upload">
+            Tải ảnh
+            <input type="file" id="uploadImage" name="image" accept="image/*" hidden>
+        </label>
+        <button type="button" class="btn-delete" id="btnDelete">Xóa ảnh</button>
+    </div>
+    <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 const apiUrl = '../../includes/mc/cloudinary_image.php';
-let currentPublicId = '';
 
-// Reset preview và trạng thái
-function resetPreview() {
-    $('#preview').attr('src', '');
-    $('#uploadImage').val('');
-    $('#btnDelete').hide();
-    $('#statusMsg').html('');
-    currentPublicId = '';
-}
-
-// Bật/tắt nút và đổi text
-function toggleButton(selector, disabled, loadingText = '') {
-    $(selector).prop('disabled', disabled);
-    if (loadingText) {
-        $(selector).text(disabled ? loadingText : $(selector).data('default-text'));
+// Hiển thị hoặc ẩn chữ “Chưa có ảnh”
+function updateNoImageText() {
+    if ($('#preview').attr('src')) {
+        $('#noImageText').hide();
+    } else {
+        $('#noImageText').show();
     }
 }
 
-// Gán text gốc vào data để khi đổi lại không bị sai
-$('#btnUpload').data('default-text', '📤 Upload');
-$('#btnDelete').data('default-text', '🗑 Xóa ảnh');
+// Reset preview
+function resetPreview() {
+    $('#preview').attr('src', '');
+    $('#uploadImage').val('');
+    $('#statusMsg').html('');
+    updateNoImageText();
+}
 
 // Preview ảnh khi chọn file
 $('#uploadImage').on('change', function () {
@@ -44,9 +81,7 @@ $('#uploadImage').on('change', function () {
         const reader = new FileReader();
         reader.onload = function(e) {
             $('#preview').attr('src', e.target.result);
-            $('#btnDelete').hide();
-            $('#statusMsg').html('');
-            currentPublicId = '';
+            updateNoImageText();
         };
         reader.readAsDataURL(file);
     } else {
@@ -55,14 +90,14 @@ $('#uploadImage').on('change', function () {
 });
 
 // Upload ảnh
-$('#btnUpload').on('click', function () {
-    const file = $('#uploadImage')[0].files[0];
-    if (!file) {
-        $('#statusMsg').css('color', 'red').html('❌ Vui lòng chọn ảnh trước.');
-        return;
-    }
+$('.btn-upload').on('click', function () {
+    $('#uploadImage').trigger('click');
+});
 
-    toggleButton('#btnUpload', true, '⏳ Đang tải...');
+$('#uploadImage').on('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
     $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
 
     const formData = new FormData();
@@ -79,8 +114,7 @@ $('#btnUpload').on('click', function () {
         success: function(res) {
             if (res.secure_url) {
                 $('#preview').attr('src', res.secure_url);
-                $('#btnDelete').show();
-                currentPublicId = res.public_id;
+                updateNoImageText();
                 $('#statusMsg').css('color', 'green').html('✅ Upload thành công!');
             } else {
                 $('#statusMsg').css('color', 'red').html('❌ Upload thất bại.');
@@ -88,29 +122,35 @@ $('#btnUpload').on('click', function () {
         },
         error: function() {
             $('#statusMsg').css('color', 'red').html('❌ Lỗi khi upload.');
-        },
-        complete: function() {
-            toggleButton('#btnUpload', false);
         }
     });
 });
 
 // Xóa ảnh
 $('#btnDelete').on('click', function () {
-    if (!currentPublicId) {
+    let imgUrl = $('#preview').attr('src');
+    if (!imgUrl) {
         $('#statusMsg').css('color', 'red').html('❌ Không có ảnh để xóa.');
         return;
     }
 
+    // Tách public_id từ URL
+    let match = imgUrl.match(/\/upload\/(?:v\d+\/)?([^\.]+)/);
+    if (!match || !match[1]) {
+        $('#statusMsg').css('color', 'red').html('❌ Không tìm thấy public_id.');
+        return;
+    }
+
+    let publicIdFromUrl = match[1];
+
     if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
 
-    toggleButton('#btnDelete', true, '⏳ Đang xóa...');
     $('#statusMsg').css('color', '#333').html('⏳ Đang xóa ảnh...');
 
     $.ajax({
         url: apiUrl,
         type: 'POST',
-        data: { action: 'delete', public_id: currentPublicId },
+        data: { action: 'delete', public_id: publicIdFromUrl },
         dataType: 'json',
         success: function(res) {
             if (res.result === 'ok') {
@@ -122,10 +162,9 @@ $('#btnDelete').on('click', function () {
         },
         error: function() {
             $('#statusMsg').css('color', 'red').html('❌ Lỗi khi xóa.');
-        },
-        complete: function() {
-            toggleButton('#btnDelete', false);
         }
     });
 });
+
+updateNoImageText();
 </script>
