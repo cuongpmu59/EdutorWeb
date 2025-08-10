@@ -1,20 +1,15 @@
 <?php // includes/mc/cloudinary_form.php ?>
 <div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
-    <h3>📤 Upload Ảnh lên Cloudinary</h3>
-
-    <input type="file" id="uploadImage" accept="image/*" />
-    <br><br>
-
-    <div id="previewContainer" style="display:none; text-align:center;">
-        <img id="preview" src="" alt="Preview" style="max-width:100%; max-height:200px; border:1px solid #ddd; padding:6px; border-radius:6px;">
-        <br><br>
-    </div>
-
-    <button id="btnUpload" style="margin-right:8px;">📤 Upload</button>
-    <button id="btnDelete" style="display:none;">🗑 Xóa ảnh</button>
-
-    <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
-</div>
+    <h3>📤 Ảnh minh hoạ</h3>
+        <div class="image-preview">
+            <img id="preview" src="" alt="Hình minh hoạ" 
+            style="display:none;"></div>
+        <div class="image-buttons"><label class="btn-upload">Tải ảnh
+            <input type="file" id="uploadImage" name="image" 
+            accept="image/*" hidden></label>
+            <button type="button" id="btnDelete">Xóa ảnh</button></div>
+        <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
+ </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -23,7 +18,6 @@ let currentPublicId = '';
 
 // Reset preview và trạng thái
 function resetPreview() {
-    $('#previewContainer').hide();
     $('#preview').attr('src', '');
     $('#uploadImage').val('');
     $('#btnDelete').hide();
@@ -50,7 +44,6 @@ $('#uploadImage').on('change', function () {
         const reader = new FileReader();
         reader.onload = function(e) {
             $('#preview').attr('src', e.target.result);
-            $('#previewContainer').show();
             $('#btnDelete').hide();
             $('#statusMsg').html('');
             currentPublicId = '';
