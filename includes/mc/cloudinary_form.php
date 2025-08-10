@@ -32,7 +32,7 @@ require_once __DIR__ . '/../../config.php';
         formData.append("action", "upload");
         formData.append("file", file);
 
-        let res = await fetch("cloudinary_image.php", { method: "POST", body: formData });
+        let res = await fetch("../../cloudinary_image.php", { method: "POST", body: formData });
         let data = await res.json();
 
         if (data.url) {
@@ -50,7 +50,7 @@ require_once __DIR__ . '/../../config.php';
         formData.append("action", "delete");
         formData.append("public_id", publicId);
 
-        let res = await fetch("cloudinary_image.php", { method: "POST", body: formData });
+        let res = await fetch("../../cloudinary_image.php", { method: "POST", body: formData });
         let data = await res.json();
 
         if (data.result === "ok") {
