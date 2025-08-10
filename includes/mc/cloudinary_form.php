@@ -40,7 +40,7 @@
 <div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
     <h3>📤 Ảnh minh hoạ</h3>
     <div class="image-preview">
-        <img id="preview" src="" alt="">
+        <img id="preview" src="" alt="Hình minh hoạ">
         <span id="noImageText" style="color:#888; position:absolute;">Chưa có ảnh</span>
     </div>
     <div class="image-buttons">
