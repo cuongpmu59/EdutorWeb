@@ -48,6 +48,7 @@ if ($action === 'delete') {
     }
 
     $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/resources/image/upload";
+
     $data = [
         'public_ids[]' => $publicId,
         'invalidate'   => 'true'
