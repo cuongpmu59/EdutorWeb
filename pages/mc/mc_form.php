@@ -215,8 +215,7 @@ $(document).ready(function () {
       };
     reader.readAsDataURL(file);
     }
-  });
-
+  
     $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
     const formData = new FormData();
     formData.append('action', 'upload');
@@ -242,6 +241,7 @@ $(document).ready(function () {
             $('#statusMsg').css('color', 'red').html('❌ Lỗi khi upload.');
         }
     });
+  });
 });
 
 // Nút xóa ảnh
