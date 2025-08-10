@@ -2,7 +2,7 @@
 // Thông tin Cloudinary
 $cloud_name = "dbdf2gwc9"; // Cloud name của bạn
 $api_key    = "451298475188791"; // Thay bằng API Key
-$api_secret = "PK2QC"; // Thay bằng API Secret
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o"; // Thay bằng API Secret
 
 $image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754796889/kvetifgexifl1tax2ye1.jpg";
 
