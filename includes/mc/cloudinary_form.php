@@ -1,80 +1,75 @@
+<?php
+// cloudinary_form.php
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Upload & Xóa ảnh Cloudinary</title>
-    <style>
-        .image-box { display: inline-block; margin: 10px; position: relative; }
-        .delete-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: red;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Upload & Delete Cloudinary</title>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .preview { margin-top: 10px; }
+    img { max-width: 200px; display: block; margin-bottom: 5px; }
+    button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-delete { background: #e74c3c; color: white; }
+    .btn-upload { background: #3498db; color: white; }
+</style>
 </head>
 <body>
-<h3>📤 Upload ảnh</h3>
-<input type="file" id="fileInput" accept="image/*">
-<button id="uploadBtn">Upload</button>
 
-<div id="gallery"></div>
+<h2>Upload ảnh lên Cloudinary</h2>
+<input type="file" id="fileInput">
+<button class="btn-upload" onclick="uploadImage()">Upload</button>
+
+<div id="preview" class="preview"></div>
 
 <script>
-document.getElementById("uploadBtn").addEventListener("click", function() {
-    const file = document.getElementById("fileInput").files[0];
-    if (!file) {
-        alert("Vui lòng chọn ảnh");
+function uploadImage() {
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput.files.length) {
+        alert('Vui lòng chọn file');
         return;
     }
-
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "YOUR_UNSIGNED_PRESET"); // 🔹 thay bằng preset unsigned
+    formData.append('action', 'upload');
+    formData.append('file', fileInput.files[0]);
 
-    fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", { // 🔹 thay cloud name
-        method: "POST",
+    fetch('cloudinary_image.php', {
+        method: 'POST',
         body: formData
     })
     .then(res => res.json())
     .then(data => {
         if (data.secure_url) {
-            const imgBox = document.createElement("div");
-            imgBox.className = "image-box";
-            imgBox.innerHTML = `
-                <img src="${data.secure_url}" width="200">
-                <button class="delete-btn" data-url="${data.secure_url}">X</button>
+            document.getElementById('preview').innerHTML = `
+                <img src="${data.secure_url}" alt="Ảnh đã upload">
+                <button class="btn-delete" onclick="deleteImage('${data.secure_url}')">Xoá ảnh</button>
             `;
-            document.getElementById("gallery").appendChild(imgBox);
+        } else {
+            alert('Upload thất bại: ' + JSON.stringify(data));
         }
-    })
-    .catch(err => console.error("Upload lỗi:", err));
-});
+    });
+}
 
-document.getElementById("gallery").addEventListener("click", function(e) {
-    if (e.target.classList.contains("delete-btn")) {
-        const imageUrl = e.target.dataset.url;
-        fetch("cloudinary_image.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: "action=delete&image_url=" + encodeURIComponent(imageUrl)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                e.target.parentElement.remove();
-                alert("✅ Ảnh đã xóa thành công!");
-            } else {
-                alert("❌ Lỗi xóa ảnh: " + data.error);
-            }
-        })
-        .catch(err => console.error("Xóa lỗi:", err));
-    }
-});
+function deleteImage(imageUrl) {
+    const formData = new FormData();
+    formData.append('action', 'delete');
+    formData.append('image_url', imageUrl);
+
+    fetch('cloudinary_image.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.result === 'ok') {
+            alert('Xoá ảnh thành công');
+            document.getElementById('preview').innerHTML = '';
+        } else {
+            alert('Xoá ảnh thất bại: ' + JSON.stringify(data));
+        }
+    });
+}
 </script>
 </body>
 </html>
