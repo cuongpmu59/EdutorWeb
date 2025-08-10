@@ -1,76 +1,84 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Tải biến môi trường từ .env
-require_once __DIR__ . '/../../env/config.php'; 
-// File config.php sẽ chứa:
-// define('CLOUDINARY_CLOUD_NAME', 'ten_cloud');
-// define('CLOUDINARY_API_KEY', 'api_key');
-// define('CLOUDINARY_API_SECRET', 'api_secret');
-// define('CLOUDINARY_UPLOAD_PRESET', 'upload_preset_unsigned');
+$cloud_name = "dbdf2gwc9"; // thay bằng cloud_name
+$upload_preset = "my_exam_preset"; // preset unsigned
+$api_key = "451298475188791"; // để xóa ảnh
+$api_secret = "PK2QC"; // để xóa ảnh
 
-$action = $_POST['action'] ?? '';
+$action = $_GET['action'] ?? '';
 
 if ($action === 'upload') {
-    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+    if (!isset($_FILES['image'])) {
         echo json_encode(['error' => 'Không có file tải lên']);
         exit;
     }
 
-    $fileTmpPath = $_FILES['file']['tmp_name'];
-    $uploadUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload";
+    $file_path = $_FILES['image']['tmp_name'];
+
+    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/upload";
 
     $data = [
-        'upload_preset' => CLOUDINARY_UPLOAD_PRESET, // unsigned preset
-        'file' => new CURLFile($fileTmpPath)
+        'upload_preset' => $upload_preset,
+        'file' => new CURLFile($file_path)
     ];
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => $uploadUrl,
+        CURLOPT_URL => $url,
         CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS => $data
+        CURLOPT_POSTFIELDS => $data,
+        CURLOPT_RETURNTRANSFER => true
     ]);
-    $response = curl_exec($ch);
+    $res = curl_exec($ch);
     curl_close($ch);
 
-    echo $response;
+    $result = json_decode($res, true);
+    if (isset($result['secure_url'])) {
+        echo json_encode(['url' => $result['secure_url']]);
+    } else {
+        echo json_encode(['error' => 'Upload thất bại', 'res' => $result]);
+    }
     exit;
 }
 
 if ($action === 'delete') {
-    $publicId = $_POST['public_id'] ?? '';
-    if (!$publicId) {
+    if (empty($_POST['public_id'])) {
         echo json_encode(['error' => 'Thiếu public_id']);
         exit;
     }
 
-    // Tạo signature để xóa
-    $timestamp = time();
-    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
-    $signature = sha1($stringToSign);
+    $public_id = $_POST['public_id'];
 
-    $deleteUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
+    $timestamp = time();
+    $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
+    $signature = sha1($string_to_sign);
+
+    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/destroy";
 
     $data = [
-        'public_id' => $publicId,
-        'api_key' => CLOUDINARY_API_KEY,
+        'public_id' => $public_id,
         'timestamp' => $timestamp,
+        'api_key' => $api_key,
         'signature' => $signature
     ];
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => $deleteUrl,
+        CURLOPT_URL => $url,
         CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS => $data
+        CURLOPT_POSTFIELDS => $data,
+        CURLOPT_RETURNTRANSFER => true
     ]);
-    $response = curl_exec($ch);
+    $res = curl_exec($ch);
     curl_close($ch);
 
-    echo $response;
+    $result = json_decode($res, true);
+    if (isset($result['result']) && $result['result'] === 'ok') {
+        echo json_encode(['result' => 'ok']);
+    } else {
+        echo json_encode(['error' => 'Xóa ảnh thất bại', 'res' => $result]);
+    }
     exit;
 }
 
