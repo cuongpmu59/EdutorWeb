@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Tải biến môi trường từ file config
 // require_once __DIR__ . '/../../env/config.php';
 
 $cloud_name = "dbdf2gwc9"; 
