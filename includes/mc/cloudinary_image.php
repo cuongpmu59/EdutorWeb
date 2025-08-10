@@ -3,11 +3,6 @@ header('Content-Type: application/json; charset=utf-8');
 
 // Tải biến môi trường từ .env
 require_once __DIR__ . '/../../env/config.php'; 
-// File config.php sẽ chứa:
-// define('CLOUDINARY_CLOUD_NAME', 'ten_cloud');
-// define('CLOUDINARY_API_KEY', 'api_key');
-// define('CLOUDINARY_API_SECRET', 'api_secret');
-// define('CLOUDINARY_UPLOAD_PRESET', 'upload_preset_unsigned');
 
 $action = $_POST['action'] ?? '';
 
