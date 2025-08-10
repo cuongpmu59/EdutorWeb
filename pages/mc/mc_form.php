@@ -202,17 +202,25 @@ function getPublicIdFromUrl(url) {
 }
 
 // Khi chọn file => preview + upload
-$('#mc_image').on('change', function () {
+    fileInput.on('change', function () {
     const file = this.files[0];
-    if (!file) return;
+    if (file) {
+      const reader = new FileReader();
 
-    // Preview ảnh tạm thời
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        $('#mc_preview_image').attr('src', e.target.result);
-        updateNoImageText();
-    };
+      reader.onload = function (e) {
+        previewImage.attr('src', e.target.result).show(); // Gán ảnh và hiển thị
+      };
     reader.readAsDataURL(file);
+    }
+  });
+
+    // // Preview ảnh tạm thời
+    // const reader = new FileReader();
+    // reader.onload = function(e) {
+    //     $('#mc_preview_image').attr('src', e.target.result);
+    //     updateNoImageText();
+    // };
+    // reader.readAsDataURL(file);
 
     // Gửi upload
     $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
