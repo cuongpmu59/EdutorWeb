@@ -1,83 +1,64 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-
-// require_once __DIR__ . '/env/config.php';
+// ===================== CẤU HÌNH CLOUDINARY =====================
 $cloud_name = "dbdf2gwc9"; 
 $api_key    = "451298475188791";
 $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
 
-$image_url = trim($_POST['image_url'] ?? '');
-if ($image_url === '') {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Thiếu image_url']);
-    exit;
-}
+// ===================== XỬ LÝ XÓA ẢNH =====================
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json; charset=utf-8');
 
-function getPublicIdFromUrl($url) {
-    $path = parse_url($url, PHP_URL_PATH);
-    if ($path === null) return null;
+    $image_url = trim($_POST['image_url'] ?? '');
+    if (!$image_url) {
+        echo json_encode(['success' => false, 'message' => 'Thiếu image_url']);
+        exit;
+    }
 
-    $parts = array_values(array_filter(explode('/', $path), 'strlen'));
-    $uploadIndex = array_search('upload', $parts, true);
-    if ($uploadIndex === false) {
-        $fileParts = $parts;
+    // Parse public_id từ URL Cloudinary
+    $parsed_path = parse_url($image_url, PHP_URL_PATH);
+    if (!$parsed_path || !str_contains($parsed_path, '/upload/')) {
+        echo json_encode(['success' => false, 'message' => 'URL không hợp lệ hoặc không phải của Cloudinary']);
+        exit;
+    }
+
+    $segments = explode('/', trim($parsed_path, '/'));
+    $upload_index = array_search('upload', $segments);
+
+    if ($upload_index === false || !isset($segments[$upload_index + 2])) {
+        echo json_encode(['success' => false, 'message' => 'Không thể phân tích public_id']);
+        exit;
+    }
+
+    // Lấy public_id
+    $public_id_parts = array_slice($segments, $upload_index + 2);
+    $public_id_with_ext = implode('/', $public_id_parts);
+    $public_id = preg_replace('/\.[^.]+$/', '', $public_id_with_ext);
+
+    // Tạo signature
+    $timestamp = time();
+    $signature = sha1("public_id={$public_id}&timestamp={$timestamp}{$api_secret}");
+
+    // Gọi API xóa ảnh
+    $ch = curl_init("https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => [
+            'public_id' => $public_id,
+            'api_key'   => $api_key,
+            'timestamp' => $timestamp,
+            'signature' => $signature
+        ],
+        CURLOPT_RETURNTRANSFER => true
+    ]);
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    $res_data = json_decode($response, true);
+
+    if ($http_code === 200 && isset($res_data['result']) && $res_data['result'] === 'ok') {
+        echo json_encode(['success' => true, 'message' => 'Xóa ảnh thành công!', 'public_id' => $public_id]);
     } else {
-        $fileParts = array_slice($parts, $uploadIndex + 1);
+        echo json_encode(['success' => false, 'message' => 'Xóa ảnh thất bại!', 'response' => $res_data]);
     }
-
-    if (empty($fileParts)) return null;
-    if (preg_match('/^v\d+$/', $fileParts[0])) {
-        array_shift($fileParts);
-    }
-
-    $filePath = implode('/', $fileParts);
-    $basename = pathinfo($filePath, PATHINFO_FILENAME);
-
-    $dir = pathinfo($filePath, PATHINFO_DIRNAME);
-    if ($dir === '.' || $dir === '') {
-        return $basename;
-    } else {
-        return $dir . '/' . $basename;
-    }
-}
-
-$public_id = getPublicIdFromUrl($image_url);
-if ($public_id === null) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Không thể phân tích URL để lấy public_id']);
-    exit;
-}
-
-$delete_url = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload";
-
-$data = [
-    'public_ids[]' => $public_id,
-    'invalidate'   => 'true'
-];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $delete_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
-curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-
-$response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curl_err = curl_error($ch);
-curl_close($ch);
-
-if ($response === false) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Lỗi cURL', 'error' => $curl_err]);
-    exit;
-}
-
-$decoded = json_decode($response, true);
-if ($http_code >= 200 && $http_code < 300) {
-    echo json_encode(['success' => true, 'http_code' => $http_code, 'response' => $decoded ?? $response]);
-} else {
-    http_response_code($http_code);
-    echo json_encode(['success' => false, 'http_code' => $http_code, 'response' => $decoded ?? $response]);
 }
