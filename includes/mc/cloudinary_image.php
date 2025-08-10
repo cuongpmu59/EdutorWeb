@@ -1,8 +1,14 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Tải biến môi trường từ .env
-require_once __DIR__ . '/../../env/config.php'; 
+// Tải biến môi trường từ file config
+require_once __DIR__ . '/../../env/config.php';
+
+// Đảm bảo các biến môi trường tồn tại
+$cloudName = CLOUDINARY_CLOUD_NAME;
+$apiKey    = CLOUDINARY_API_KEY;
+$apiSecret = CLOUDINARY_API_SECRET;
+$uploadPreset = CLOUDINARY_UPLOAD_PRESET;
 
 $action = $_POST['action'] ?? '';
 
@@ -13,10 +19,10 @@ if ($action === 'upload') {
     }
 
     $fileTmpPath = $_FILES['file']['tmp_name'];
-    $uploadUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload";
+    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/image/upload";
 
     $data = [
-        'upload_preset' => CLOUDINARY_UPLOAD_PRESET, // unsigned preset
+        'upload_preset' => $uploadPreset, // unsigned preset
         'file' => new CURLFile($fileTmpPath)
     ];
 
@@ -30,7 +36,7 @@ if ($action === 'upload') {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    echo $response;
+    echo $response; // Cloudinary trả JSON, gửi thẳng lại cho JS
     exit;
 }
 
@@ -41,32 +47,30 @@ if ($action === 'delete') {
         exit;
     }
 
-    // Tạo signature để xóa
-    $timestamp = time();
-    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
-    $signature = sha1($stringToSign);
-
-    $deleteUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
-
+    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/resources/image/upload";
     $data = [
-        'public_id' => $publicId,
-        'api_key' => CLOUDINARY_API_KEY,
-        'timestamp' => $timestamp,
-        'signature' => $signature
+        'public_ids[]' => $publicId,
+        'invalidate'   => 'true'
     ];
 
     $ch = curl_init();
-    curl_setopt_array($ch, [
-        CURLOPT_URL => $deleteUrl,
-        CURLOPT_POST => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS => $data
-    ]);
+    curl_setopt($ch, CURLOPT_URL, $deleteUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($ch, CURLOPT_USERPWD, "{$apiKey}:{$apiSecret}");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
     $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    echo $response;
+    if ($http_code == 200) {
+        echo json_encode(['result' => 'ok', 'cloudinary_response' => json_decode($response, true)]);
+    } else {
+        echo json_encode(['error' => "Xóa thất bại", 'status' => $http_code, 'cloudinary_response' => $response]);
+    }
     exit;
 }
 
+// Nếu không khớp action nào
 echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
