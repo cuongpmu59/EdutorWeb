@@ -2,10 +2,10 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // Cấu hình Cloudinary
-$cloud_name    = "ten_cloud_cua_ban"; // thay bằng cloud_name của bạn
-$upload_preset = "ten_upload_preset"; // thay bằng upload_preset unsigned
-$api_key       = "API_KEY_CUA_BAN";   // chỉ dùng cho xóa
-$api_secret    = "API_SECRET_CUA_BAN"; // chỉ dùng cho xóa
+$cloud_name    = "dbdf2gwc9"; // thay bằng cloud_name của bạn
+$upload_preset = "my_exam_preset"; // thay bằng upload_preset unsigned
+$api_key       = "451298475188791";   // chỉ dùng cho xóa
+$api_secret    = "PK2QC"; // chỉ dùng cho xóa
 
 // Hàm upload ảnh (unsigned)
 function uploadImage($filePath, $cloud_name, $upload_preset) {
