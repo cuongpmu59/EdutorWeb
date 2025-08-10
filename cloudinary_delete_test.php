@@ -1,10 +1,12 @@
 <?php
 // Thông tin Cloudinary
-$cloud_name = "dbdf2gwc9"; // Cloud name của bạn
-$api_key    = "451298475188791"; // Thay bằng API Key
-$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o"; // Thay bằng API Secret
+// $cloud_name = "dbdf2gwc9"; // Cloud name của bạn
+// $api_key    = "451298475188791"; // Thay bằng API Key
+// $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o"; // Thay bằng API Secret
 
-$image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754796889/kvetifgexifl1tax2ye1.jpg";
+require_once __DIR__ . '/../../env/config.php'; 
+
+$image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754804130/h0s0yv4qpvy6j0iynwfk.png";
 
 function getPublicIdFromUrl($url) {
     $path = parse_url($url, PHP_URL_PATH);
