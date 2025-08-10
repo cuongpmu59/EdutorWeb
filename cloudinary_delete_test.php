@@ -1,10 +1,5 @@
 <?php
-// Thông tin Cloudinary
-// $cloud_name = "dbdf2gwc9"; // Cloud name của bạn
-// $api_key    = "451298475188791"; // Thay bằng API Key
-// $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o"; // Thay bằng API Secret
-
-require_once __DIR__ . '/../../env/config.php'; 
+require_once __DIR__ . '/env/config.php'; 
 
 $image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754804130/h0s0yv4qpvy6j0iynwfk.png";
 
