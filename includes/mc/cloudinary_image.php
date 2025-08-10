@@ -2,13 +2,12 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // Tải biến môi trường từ file config
-require_once __DIR__ . '/../../env/config.php';
+// require_once __DIR__ . '/../../env/config.php';
 
-// Đảm bảo các biến môi trường tồn tại
-$cloudName = CLOUDINARY_CLOUD_NAME;
-$apiKey    = CLOUDINARY_API_KEY;
-$apiSecret = CLOUDINARY_API_SECRET;
-$uploadPreset = CLOUDINARY_UPLOAD_PRESET;
+$cloud_name = "dbdf2gwc9"; 
+$api_key    = "451298475188791";
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$uploadPreset = "my_exam_preset";
 
 $action = $_POST['action'] ?? '';
 
