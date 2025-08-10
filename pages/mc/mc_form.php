@@ -201,7 +201,10 @@ function getPublicIdFromUrl(url) {
     }
 }
 
-// Khi chọn file => preview + upload
+$(document).ready(function () {
+  const fileInput = $('#mc_image');
+  const previewImage = $('#mc_preview_image');
+
     fileInput.on('change', function () {
     const file = this.files[0];
     if (file) {
@@ -214,15 +217,6 @@ function getPublicIdFromUrl(url) {
     }
   });
 
-    // // Preview ảnh tạm thời
-    // const reader = new FileReader();
-    // reader.onload = function(e) {
-    //     $('#mc_preview_image').attr('src', e.target.result);
-    //     updateNoImageText();
-    // };
-    // reader.readAsDataURL(file);
-
-    // Gửi upload
     $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
     const formData = new FormData();
     formData.append('action', 'upload');
