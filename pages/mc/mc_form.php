@@ -162,5 +162,126 @@
   });
 </script>
 
+<script>
+const apiUrl = '../../includes/mc/mc_form_image.php';
+
+function updateNoImageText() {
+    if ($('#mc_preview_image').attr('src')) {
+        $('#noImageText').hide();
+    } else {
+        $('#noImageText').show();
+    }
+}
+
+function resetPreview() {
+    $('#mc_preview_image').attr('src', '');
+    $('#mc_image').val('');
+    $('#statusMsg').html('');
+    updateNoImageText();
+}
+
+function getPublicIdFromUrl(url) {
+    try {
+        let path = new URL(url).pathname; // /<...>/upload/v1234567/folder/file.jpg
+        let parts = path.split('/');
+        let uploadIndex = parts.indexOf('upload');
+        if (uploadIndex === -1) return null;
+
+        let publicPathParts = parts.slice(uploadIndex + 1);
+        if (publicPathParts[0].match(/^v[0-9]+$/)) {
+            publicPathParts.shift();
+        }
+
+        let filename = publicPathParts.pop();
+        let publicIdWithoutExt = filename.split('.')[0];
+
+        return [...publicPathParts, publicIdWithoutExt].join('/');
+    } catch (e) {
+        return null;
+    }
+}
+
+// Khi chọn file => preview + upload
+$('#mc_image').on('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    // Preview ảnh tạm thời
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        $('#mc_preview_image').attr('src', e.target.result);
+        updateNoImageText();
+    };
+    reader.readAsDataURL(file);
+
+    // Gửi upload
+    $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
+    const formData = new FormData();
+    formData.append('action', 'upload');
+    formData.append('file', file);
+
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(res) {
+            if (res.secure_url) {
+                $('#mc_preview_image').attr('src', res.secure_url);
+                updateNoImageText();
+                $('#statusMsg').css('color', 'green').html('✅ Upload thành công!');
+            } else {
+                $('#statusMsg').css('color', 'red').html('❌ Upload thất bại.');
+            }
+        },
+        error: function() {
+            $('#statusMsg').css('color', 'red').html('❌ Lỗi khi upload.');
+        }
+    });
+});
+
+// Nút xóa ảnh
+$('#mc_clear_image').on('click', function () {
+    let imgUrl = $('#mc_preview_image').attr('src');
+    if (!imgUrl) {
+        $('#statusMsg').css('color', 'red').html('❌ Không có ảnh để xóa.');
+        return;
+    }
+
+    let public_id = getPublicIdFromUrl(imgUrl);
+    if (!public_id) {
+        $('#statusMsg').css('color', 'red').html('❌ Không thể lấy public_id.');
+        return;
+    }
+
+    if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
+
+    $('#statusMsg').css('color', '#333').html('⏳ Đang xóa ảnh...');
+
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        data: { action: 'delete', public_id: public_id },
+        dataType: 'json',
+        success: function(res) {
+            if (res.result === 'ok') {
+                resetPreview();
+                $('#statusMsg').css('color', 'green').html('🗑 Ảnh đã được xóa.');
+            } else {
+                $('#statusMsg').css('color', 'red').html('❌ Xóa thất bại.');
+            }
+        },
+        error: function() {
+            $('#statusMsg').css('color', 'red').html('❌ Lỗi khi xóa.');
+        }
+    });
+});
+
+// Khởi tạo
+updateNoImageText();
+</script>
+
 </body>
 </html>
