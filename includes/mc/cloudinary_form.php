@@ -10,10 +10,15 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 .image-preview img {
     max-width: 100%;
     max-height: 100%;
+}
+#noImageText {
+    color: #888;
+    position: absolute;
 }
 .image-buttons {
     margin-top: 10px;
@@ -35,13 +40,18 @@
     background-color: #f44336;
     color: white;
 }
+#statusMsg {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
 </style>
 
 <div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
     <h3>📤 Ảnh minh hoạ</h3>
     <div class="image-preview">
         <img id="preview" src="" alt="">
-        <span id="noImageText" style="color:#888; position:absolute;">Chưa có ảnh</span>
+        <span id="noImageText">Chưa có ảnh</span>
     </div>
     <div class="image-buttons">
         <label class="btn-upload">
@@ -50,7 +60,7 @@
         </label>
         <button type="button" class="btn-delete" id="btnDelete">Xóa ảnh</button>
     </div>
-    <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
+    <div id="statusMsg"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -74,32 +84,33 @@ function resetPreview() {
     updateNoImageText();
 }
 
-// Preview ảnh khi chọn file
-$('#uploadImage').on('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $('#preview').attr('src', e.target.result);
-            updateNoImageText();
-        };
-        reader.readAsDataURL(file);
-    } else {
-        resetPreview();
+// Lấy public_id từ URL Cloudinary
+function getPublicIdFromUrl(url) {
+    try {
+        let path = new URL(url).pathname; // /v<version>/<public_id>.<ext>
+        let parts = path.split('/');
+        let filename = parts[parts.length - 1];
+        return filename.split('.')[0];
+    } catch (e) {
+        return null;
     }
-});
+}
 
-// Upload ảnh
-$('.btn-upload').on('click', function () {
-    $('#uploadImage').trigger('click');
-});
-
+// Khi chọn file => preview + upload
 $('#uploadImage').on('change', function () {
     const file = this.files[0];
     if (!file) return;
 
-    $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
+    // Preview ảnh tạm thời
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        $('#preview').attr('src', e.target.result);
+        updateNoImageText();
+    };
+    reader.readAsDataURL(file);
 
+    // Gửi upload
+    $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
     const formData = new FormData();
     formData.append('action', 'upload');
     formData.append('file', file);
@@ -126,7 +137,7 @@ $('#uploadImage').on('change', function () {
     });
 });
 
-// Xóa ảnh
+// Nút xóa ảnh
 $('#btnDelete').on('click', function () {
     let imgUrl = $('#preview').attr('src');
     if (!imgUrl) {
@@ -134,14 +145,11 @@ $('#btnDelete').on('click', function () {
         return;
     }
 
-    // Tách public_id từ URL
-    let match = imgUrl.match(/\/upload\/(?:v\d+\/)?([^\.]+)/);
-    if (!match || !match[1]) {
-        $('#statusMsg').css('color', 'red').html('❌ Không tìm thấy public_id.');
+    let public_id = getPublicIdFromUrl(imgUrl);
+    if (!public_id) {
+        $('#statusMsg').css('color', 'red').html('❌ Không thể lấy public_id.');
         return;
     }
-
-    let publicIdFromUrl = match[1];
 
     if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
 
@@ -150,7 +158,7 @@ $('#btnDelete').on('click', function () {
     $.ajax({
         url: apiUrl,
         type: 'POST',
-        data: { action: 'delete', public_id: publicIdFromUrl },
+        data: { action: 'delete', public_id: public_id },
         dataType: 'json',
         success: function(res) {
             if (res.result === 'ok') {
@@ -166,5 +174,6 @@ $('#btnDelete').on('click', function () {
     });
 });
 
+// Khởi tạo
 updateNoImageText();
 </script>
