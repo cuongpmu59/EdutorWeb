@@ -1,170 +1,107 @@
-<?php // includes/mc/cloudinary_form.php ?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Ảnh minh họa</title>
 <style>
-.image-preview {
-    width: 100%;
-    aspect-ratio: 4/3;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-}
-.image-buttons {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-}
-.btn-upload, .btn-delete {
-    flex: 1;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.btn-upload {
-    background-color: #4CAF50;
-    color: white;
-}
-.btn-delete {
-    background-color: #f44336;
-    color: white;
-}
+    .preview-container {
+        width: 300px;
+        height: 200px;
+        border: 2px dashed #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+    .preview-container img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    button {
+        padding: 8px 14px;
+        margin: 5px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .upload-btn { background-color: #4CAF50; color: white; }
+    .delete-btn { background-color: #f44336; color: white; }
 </style>
+</head>
+<body>
 
-<div style="max-width: 320px; padding: 15px; border: 1px solid #ccc; border-radius: 6px;">
-    <h3>📤 Ảnh minh hoạ</h3>
-    <div class="image-preview">
-        <img id="preview" src="" alt="">
-        <span id="noImageText" style="color:#888; position:absolute;">Chưa có ảnh</span>
-    </div>
-    <div class="image-buttons">
-        <label class="btn-upload">
-            Tải ảnh
-            <input type="file" id="uploadImage" name="image" accept="image/*" hidden>
-        </label>
-        <button type="button" class="btn-delete" id="btnDelete">Xóa ảnh</button>
-    </div>
-    <div id="statusMsg" style="margin-top:10px; font-size:14px; color:#333;"></div>
+<h3>Ảnh minh họa</h3>
+
+<div class="preview-container" id="preview">
+    <span>Chưa có ảnh</span>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Input file ẩn -->
+<input type="file" id="fileInput" accept="image/*" style="display:none;">
+
+<button class="upload-btn" id="uploadBtn">Tải ảnh</button>
+<button class="delete-btn" id="deleteBtn">Xóa ảnh</button>
+
 <script>
-const apiUrl = '../../includes/mc/cloudinary_image.php';
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const uploadBtn = document.getElementById('uploadBtn');
+const deleteBtn = document.getElementById('deleteBtn');
 
-// Hiển thị hoặc ẩn chữ “Chưa có ảnh”
-function updateNoImageText() {
-    if ($('#preview').attr('src')) {
-        $('#noImageText').hide();
-    } else {
-        $('#noImageText').show();
-    }
-}
+uploadBtn.addEventListener('click', () => fileInput.click());
 
-// Reset preview
-function resetPreview() {
-    $('#preview').attr('src', '');
-    $('#uploadImage').val('');
-    $('#statusMsg').html('');
-    updateNoImageText();
-}
-
-// Preview ảnh khi chọn file
-$('#uploadImage').on('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            $('#preview').attr('src', e.target.result);
-            updateNoImageText();
-        };
-        reader.readAsDataURL(file);
-    } else {
-        resetPreview();
-    }
-});
-
-// Upload ảnh
-$('.btn-upload').on('click', function () {
-    $('#uploadImage').trigger('click');
-});
-
-$('#uploadImage').on('change', function () {
-    const file = this.files[0];
+fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
     if (!file) return;
 
-    $('#statusMsg').css('color', '#333').html('⏳ Đang upload ảnh...');
-
     const formData = new FormData();
-    formData.append('action', 'upload');
-    formData.append('file', file);
+    formData.append("image", file);
 
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(res) {
-            if (res.secure_url) {
-                $('#preview').attr('src', res.secure_url);
-                updateNoImageText();
-                $('#statusMsg').css('color', 'green').html('✅ Upload thành công!');
-            } else {
-                $('#statusMsg').css('color', 'red').html('❌ Upload thất bại.');
-            }
-        },
-        error: function() {
-            $('#statusMsg').css('color', 'red').html('❌ Lỗi khi upload.');
+    fetch("cloudinary_image.php?action=upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.url) {
+            preview.innerHTML = `<img src="${data.url}" alt="Ảnh minh họa">`;
+        } else {
+            alert(data.error || "Tải ảnh thất bại");
         }
     });
 });
 
-// Xóa ảnh
-$('#btnDelete').on('click', function () {
-    let imgUrl = $('#preview').attr('src');
-    if (!imgUrl) {
-        $('#statusMsg').css('color', 'red').html('❌ Không có ảnh để xóa.');
+deleteBtn.addEventListener('click', () => {
+    const img = preview.querySelector('img');
+    if (!img) {
+        alert("Không có ảnh để xóa");
         return;
     }
-
-    // Tách public_id từ URL
-    let match = imgUrl.match(/\/upload\/(?:v\d+\/)?([^\.]+)/);
-    if (!match || !match[1]) {
-        $('#statusMsg').css('color', 'red').html('❌ Không tìm thấy public_id.');
+    const src = img.src;
+    const match = src.match(/\/upload\/(?:v\d+\/)?([^\.]+)/); // Lấy public_id
+    if (!match) {
+        alert("Không lấy được public_id");
         return;
     }
+    const publicId = match[1];
 
-    let publicIdFromUrl = match[1];
-
-    if (!confirm('Bạn có chắc muốn xóa ảnh này?')) return;
-
-    $('#statusMsg').css('color', '#333').html('⏳ Đang xóa ảnh...');
-
-    $.ajax({
-        url: apiUrl,
-        type: 'POST',
-        data: { action: 'delete', public_id: publicIdFromUrl },
-        dataType: 'json',
-        success: function(res) {
-            if (res.result === 'ok') {
-                resetPreview();
-                $('#statusMsg').css('color', 'green').html('🗑 Ảnh đã được xóa.');
-            } else {
-                $('#statusMsg').css('color', 'red').html('❌ Xóa thất bại.');
-            }
-        },
-        error: function() {
-            $('#statusMsg').css('color', 'red').html('❌ Lỗi khi xóa.');
+    fetch("cloudinary_image.php?action=delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "public_id=" + encodeURIComponent(publicId)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.result === "ok") {
+            preview.innerHTML = "<span>Chưa có ảnh</span>";
+        } else {
+            alert(data.error || "Xóa ảnh thất bại");
         }
     });
 });
-
-updateNoImageText();
 </script>
+
+</body>
+</html>
