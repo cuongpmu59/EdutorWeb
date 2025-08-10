@@ -1,86 +1,80 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Ảnh minh hoạ</title>
-<style>
-.preview-box {
-    width: 300px; height: 200px;
-    border: 2px dashed #ccc;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 10px; background: #f9f9f9;
-}
-.preview-box img { max-width: 100%; max-height: 100%; }
-.btn {
-    padding: 8px 12px; margin-right: 5px;
-    border: none; cursor: pointer; border-radius: 4px;
-}
-.btn-upload { background: #28a745; color: white; }
-.btn-delete { background: #dc3545; color: white; }
-</style>
+    <meta charset="UTF-8">
+    <title>Upload & Xóa ảnh Cloudinary</title>
+    <style>
+        .image-box { display: inline-block; margin: 10px; position: relative; }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+<h3>📤 Upload ảnh</h3>
+<input type="file" id="fileInput" accept="image/*">
+<button id="uploadBtn">Upload</button>
 
-<h3>Ảnh minh hoạ</h3>
-
-<div class="preview-box" id="previewBox">
-    <img id="previewImage" src="" alt="Chưa có ảnh">
-</div>
-
-<input type="file" id="fileInput" style="display:none;" accept="image/*">
-<button class="btn btn-upload" id="uploadBtn">Tải ảnh</button>
-<button class="btn btn-delete" id="deleteBtn">Xoá ảnh</button>
+<div id="gallery"></div>
 
 <script>
-// Nút tải ảnh
-document.getElementById("uploadBtn").addEventListener("click", () => {
-    document.getElementById("fileInput").click();
-});
-
-document.getElementById("fileInput").addEventListener("change", async function(){
-    if (!this.files.length) return;
-    let formData = new FormData();
-    formData.append("file", this.files[0]);
-    formData.append("action", "upload");
-
-    let res = await fetch("cloudinary_image.php", { method: "POST", body: formData });
-    let data = await res.json();
-
-    if (data.url) {
-        document.getElementById("previewImage").src = data.url;
-    } else {
-        alert("Lỗi tải ảnh: " + (data.error || "Không xác định"));
+document.getElementById("uploadBtn").addEventListener("click", function() {
+    const file = document.getElementById("fileInput").files[0];
+    if (!file) {
+        alert("Vui lòng chọn ảnh");
+        return;
     }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "YOUR_UNSIGNED_PRESET"); // 🔹 thay bằng preset unsigned
+
+    fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", { // 🔹 thay cloud name
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.secure_url) {
+            const imgBox = document.createElement("div");
+            imgBox.className = "image-box";
+            imgBox.innerHTML = `
+                <img src="${data.secure_url}" width="200">
+                <button class="delete-btn" data-url="${data.secure_url}">X</button>
+            `;
+            document.getElementById("gallery").appendChild(imgBox);
+        }
+    })
+    .catch(err => console.error("Upload lỗi:", err));
 });
 
-// Nút xoá ảnh
-document.getElementById("deleteBtn").addEventListener("click", async function(){
-    let img = document.getElementById("previewImage");
-    let src = img.src.trim();
-
-    if (!src) return alert("Chưa có ảnh để xoá");
-
-    // Regex lấy public_id từ URL
-    let match = src.match(/upload\/(?:v\d+\/)?([^\.]+)/);
-    if (!match) return alert("Không lấy được public_id");
-
-    let public_id = match[1];
-
-    let formData = new FormData();
-    formData.append("action", "delete");
-    formData.append("public_id", public_id);
-
-    let res = await fetch("cloudinary_image.php", { method: "POST", body: formData });
-    let data = await res.json();
-
-    if (data.success) {
-        img.src = "";
-        alert("Xoá ảnh thành công");
-    } else {
-        alert("Lỗi xoá ảnh: " + (data.error || "Không xác định"));
+document.getElementById("gallery").addEventListener("click", function(e) {
+    if (e.target.classList.contains("delete-btn")) {
+        const imageUrl = e.target.dataset.url;
+        fetch("cloudinary_image.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=delete&image_url=" + encodeURIComponent(imageUrl)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                e.target.parentElement.remove();
+                alert("✅ Ảnh đã xóa thành công!");
+            } else {
+                alert("❌ Lỗi xóa ảnh: " + data.error);
+            }
+        })
+        .catch(err => console.error("Xóa lỗi:", err));
     }
 });
 </script>
-
 </body>
 </html>
