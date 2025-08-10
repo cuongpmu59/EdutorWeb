@@ -1,4 +1,6 @@
-<?php require_once __DIR__ . '/../../env/config.php'; ?>
+<?php 
+require_once __DIR__ . '/../../env/config.php'; ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
