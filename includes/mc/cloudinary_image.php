@@ -7,7 +7,7 @@ header('Content-Type: application/json; charset=utf-8');
 $cloud_name = "dbdf2gwc9"; 
 $api_key    = "451298475188791";
 $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
-$uploadPreset = "my_exam_preset";
+$upload_preset = "my_exam_preset";
 
 $action = $_POST['action'] ?? '';
 
@@ -18,10 +18,10 @@ if ($action === 'upload') {
     }
 
     $fileTmpPath = $_FILES['file']['tmp_name'];
-    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/image/upload";
+    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
 
     $data = [
-        'upload_preset' => $uploadPreset, // unsigned preset
+        'upload_preset' => $upload_preset, // unsigned preset
         'file' => new CURLFile($fileTmpPath)
     ];
 
@@ -46,7 +46,7 @@ if ($action === 'delete') {
         exit;
     }
 
-    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloudName}/resources/image/upload";
+    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload";
 
     $data = [
         'public_ids[]' => $publicId,
@@ -57,7 +57,7 @@ if ($action === 'delete') {
     curl_setopt($ch, CURLOPT_URL, $deleteUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-    curl_setopt($ch, CURLOPT_USERPWD, "{$apiKey}:{$apiSecret}");
+    curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
     $response = curl_exec($ch);
