@@ -1,117 +1,75 @@
 <?php
-// includes/mc_image.php
-// Xử lý ảnh minh họa gửi lên qua AJAX (upload, đổi tên, trả kết quả)
+header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../env/config.php';
-require_once __DIR__ . '/../vendor/autoload.php'; // Đảm bảo Cloudinary SDK được autoload
+// require_once __DIR__ . '/../../env/config.php';
 
-use Cloudinary\Cloudinary;
+$cloud_name = "dbdf2gwc9"; 
+$api_key    = "451298475188791";
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$upload_preset = "my_exam_preset";
 
-// Kiểm tra nếu gọi trực tiếp không phải POST thì chặn
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Truy cập không hợp lệ']);
+$action = $_POST['action'] ?? '';
+
+if ($action === 'upload') {
+    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['error' => 'Không có file tải lên']);
+        exit;
+    }
+
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
+
+    $data = [
+        'upload_preset' => $upload_preset, // unsigned preset
+        'file' => new CURLFile($fileTmpPath)
+    ];
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $uploadUrl,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS => $data
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    echo $response; // Cloudinary trả JSON, gửi thẳng lại cho JS
     exit;
 }
 
-// ======= Thiết lập Cloudinary =======
-$cloudinary = new Cloudinary([
-    'cloud' => [
-        'cloud_name' => CLOUDINARY_CLOUD_NAME,
-        'api_key'    => CLOUDINARY_API_KEY,
-        'api_secret' => CLOUDINARY_API_SECRET,
-    ],
-    'url' => ['secure' => true]
-]);
-
-// ======= Hàm xóa ảnh cũ nếu cần =======
-function deleteImage($publicId, $cloudinary) {
-    if (!$publicId) return;
-    try {
-        $cloudinary->uploadApi()->destroy($publicId);
-    } catch (Exception $e) {
-        // Bỏ qua lỗi
-    }
-}
-
-// ======= Hàm upload ảnh mới =======
-function uploadImage($tmpPath, $cloudinary, $publicId = null): array {
-    $options = ['folder' => 'mc_images'];
-    if ($publicId) {
-        $options['public_id'] = $publicId;
-        $options['overwrite'] = true;
+if ($action === 'delete') {
+    $publicId = $_POST['public_id'] ?? '';
+    if (!$publicId) {
+        echo json_encode(['error' => 'Thiếu public_id']);
+        exit;
     }
 
-    try {
-        $res = $cloudinary->uploadApi()->upload($tmpPath, $options);
-        return [
-            'url' => $res['secure_url'] ?? '',
-            'public_id' => $res['public_id'] ?? ''
-        ];
-    } catch (Exception $e) {
-        error_log('[Cloudinary Upload Error] ' . $e->getMessage()); // GHI LẠI LỖI
-        return ['url' => '', 'public_id' => ''];
-    }
-}
+    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload";
 
-// ======= Hàm rename ảnh =======
-function renameImage($oldId, $newId, $cloudinary): array {
-    try {
-        $cloudinary->uploadApi()->rename($oldId, $newId, ['overwrite' => true]);
-        $newUrl = $cloudinary->image($newId)->toUrl();
-        return ['url' => $newUrl, 'public_id' => $newId];
-    } catch (Exception $e) {
-        return ['url' => '', 'public_id' => $oldId];
-    }
-}
-
-// ======= Hàm xử lý toàn bộ ảnh =======
-function processImageUpload(string $inputName, string $oldUrl, string $oldId, $mc_id = null, $cloudinary): array {
-    if (!empty($_FILES[$inputName]['name']) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
-        // Xoá ảnh cũ nếu có
-        deleteImage($oldId, $cloudinary);
-
-        // Upload ảnh mới
-        $upload = uploadImage($_FILES[$inputName]['tmp_name'], $cloudinary);
-        $newUrl = $upload['url'];
-        $newId  = $upload['public_id'];
-
-        // Nếu có mc_id => rename luôn
-        if ($newId && $mc_id) {
-            $targetId = "mc_images/mc_$mc_id";
-            $renamed = renameImage($newId, $targetId, $cloudinary);
-            return [
-                'url'       => $renamed['url'] ?: $newUrl,
-                'public_id' => $renamed['public_id'] ?: $newId
-            ];
-        }
-
-        return [
-            'url'       => $newUrl,
-            'public_id' => $newId
-        ];
-    }
-
-    // Trường hợp không upload mới => giữ nguyên
-    return [
-        'url'       => $oldUrl,
-        'public_id' => $oldId
+    $data = [
+        'public_ids[]' => $publicId,
+        'invalidate'   => 'true'
     ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $deleteUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code == 200) {
+        echo json_encode(['result' => 'ok', 'cloudinary_response' => json_decode($response, true)]);
+    } else {
+        echo json_encode(['error' => "Xóa thất bại", 'status' => $http_code, 'cloudinary_response' => $response]);
+    }
+    exit;
 }
 
-// ======= XỬ LÝ DỮ LIỆU GỬI TỪ FORM =======
-
-$oldUrl = $_POST['existing_image'] ?? '';
-$oldId  = $_POST['public_id']      ?? '';
-$mc_id  = $_POST['mc_id']          ?? null;
-
-$result = processImageUpload('image', $oldUrl, $oldId, $mc_id, $cloudinary);
-
-// ======= TRẢ KẾT QUẢ JSON =======
-header('Content-Type: application/json');
-echo json_encode([
-    'success'   => (bool)$result['url'],
-    'url'       => $result['url'],
-    'public_id' => $result['public_id']
-]);
-exit;
+// Nếu không khớp action nào
+echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
