@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/env/config.php'; 
 
-$image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754804130/h0s0yv4qpvy6j0iynwfk.png";
+$image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754807376/oext3h2nzr6fbd8etp5g.jpg";
 
 function getPublicIdFromUrl($url) {
     $path = parse_url($url, PHP_URL_PATH);
