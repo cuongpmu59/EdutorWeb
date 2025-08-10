@@ -1,26 +1,18 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-$cloud_name = "dbdf2gwc9"; // thay bằng cloud_name
-$upload_preset = "my_exam_preset"; // preset unsigned
-$api_key = "451298475188791"; // để xóa ảnh
-$api_secret = "PK2QC"; // để xóa ảnh
+// Cấu hình Cloudinary
+$cloud_name    = "ten_cloud_cua_ban"; // thay bằng cloud_name của bạn
+$upload_preset = "ten_upload_preset"; // thay bằng upload_preset unsigned
+$api_key       = "API_KEY_CUA_BAN";   // chỉ dùng cho xóa
+$api_secret    = "API_SECRET_CUA_BAN"; // chỉ dùng cho xóa
 
-$action = $_GET['action'] ?? '';
-
-if ($action === 'upload') {
-    if (!isset($_FILES['image'])) {
-        echo json_encode(['error' => 'Không có file tải lên']);
-        exit;
-    }
-
-    $file_path = $_FILES['image']['tmp_name'];
-
-    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/upload";
-
+// Hàm upload ảnh (unsigned)
+function uploadImage($filePath, $cloud_name, $upload_preset) {
+    $url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
     $data = [
         'upload_preset' => $upload_preset,
-        'file' => new CURLFile($file_path)
+        'file' => new CURLFile($filePath)
     ];
 
     $ch = curl_init();
@@ -32,30 +24,16 @@ if ($action === 'upload') {
     ]);
     $res = curl_exec($ch);
     curl_close($ch);
-
-    $result = json_decode($res, true);
-    if (isset($result['secure_url'])) {
-        echo json_encode(['url' => $result['secure_url']]);
-    } else {
-        echo json_encode(['error' => 'Upload thất bại', 'res' => $result]);
-    }
-    exit;
+    return json_decode($res, true);
 }
 
-if ($action === 'delete') {
-    if (empty($_POST['public_id'])) {
-        echo json_encode(['error' => 'Thiếu public_id']);
-        exit;
-    }
-
-    $public_id = $_POST['public_id'];
-
+// Hàm xóa ảnh (signed)
+function deleteImage($public_id, $cloud_name, $api_key, $api_secret) {
     $timestamp = time();
     $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
     $signature = sha1($string_to_sign);
 
-    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/destroy";
-
+    $url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy";
     $data = [
         'public_id' => $public_id,
         'timestamp' => $timestamp,
@@ -72,14 +50,36 @@ if ($action === 'delete') {
     ]);
     $res = curl_exec($ch);
     curl_close($ch);
-
-    $result = json_decode($res, true);
-    if (isset($result['result']) && $result['result'] === 'ok') {
-        echo json_encode(['result' => 'ok']);
-    } else {
-        echo json_encode(['error' => 'Xóa ảnh thất bại', 'res' => $result]);
-    }
-    exit;
+    return json_decode($res, true);
 }
 
-echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
+// Xử lý request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Upload ảnh
+    if (isset($_FILES['image'])) {
+        if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $res = uploadImage($_FILES['image']['tmp_name'], $cloud_name, $upload_preset);
+            echo json_encode($res);
+        } else {
+            echo json_encode(['error' => 'Không thể tải file lên']);
+        }
+        exit;
+    }
+
+    // Xóa ảnh
+    if (isset($_POST['image_url'])) {
+        // Lấy public_id từ URL bằng regex
+        if (preg_match('#/upload/(?:v\d+/)?([^\.]+)#', $_POST['image_url'], $matches)) {
+            $public_id = $matches[1];
+            $res = deleteImage($public_id, $cloud_name, $api_key, $api_secret);
+            echo json_encode($res);
+        } else {
+            echo json_encode(['error' => 'Không tìm thấy public_id']);
+        }
+        exit;
+    }
+
+    echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
+}
+?>
