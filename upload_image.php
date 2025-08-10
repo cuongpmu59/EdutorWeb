@@ -1,42 +1,75 @@
 <?php
-// ⚙️ Cấu hình Cloudinary
-$cloud_name    = "dbdf2gwc9"; // Thay bằng Cloud Name
-$upload_preset = "my_exam_preset"; // Thay bằng Upload Preset (unsigned)
+// cloudinary_form.php
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Upload & Delete Cloudinary</title>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .preview { margin-top: 10px; }
+    img { max-width: 200px; display: block; margin-bottom: 5px; }
+    button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-delete { background: #e74c3c; color: white; }
+    .btn-upload { background: #3498db; color: white; }
+</style>
+</head>
+<body>
 
-// Cho phép CORS nếu test từ file HTML riêng
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=utf-8");
+<h2>Upload ảnh lên Cloudinary</h2>
+<input type="file" id="fileInput">
+<button class="btn-upload" onclick="uploadImage()">Upload</button>
 
-// Kiểm tra file upload
-if (!isset($_FILES['file']['tmp_name'])) {
-    echo json_encode(["error" => "Không có file tải lên"]);
-    exit;
+<div id="preview" class="preview"></div>
+
+<script>
+function uploadImage() {
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput.files.length) {
+        alert('Vui lòng chọn file');
+        return;
+    }
+    const formData = new FormData();
+    formData.append('action', 'upload');
+    formData.append('file', fileInput.files[0]);
+
+    fetch('cloudinary_image.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.secure_url) {
+            document.getElementById('preview').innerHTML = `
+                <img src="${data.secure_url}" alt="Ảnh đã upload">
+                <button class="btn-delete" onclick="deleteImage('${data.secure_url}')">Xoá ảnh</button>
+            `;
+        } else {
+            alert('Upload thất bại: ' + JSON.stringify(data));
+        }
+    });
 }
 
-// Chuẩn bị dữ liệu gửi
-$file_path = $_FILES['file']['tmp_name'];
-$url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
+function deleteImage(imageUrl) {
+    const formData = new FormData();
+    formData.append('action', 'delete');
+    formData.append('image_url', imageUrl);
 
-$data = [
-    "file" => new CURLFile($file_path),
-    "upload_preset" => $upload_preset
-];
-
-// Gửi request lên Cloudinary
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    echo json_encode(["error" => curl_error($ch)]);
-    curl_close($ch);
-    exit;
+    fetch('cloudinary_image.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.result === 'ok') {
+            alert('Xoá ảnh thành công');
+            document.getElementById('preview').innerHTML = '';
+        } else {
+            alert('Xoá ảnh thất bại: ' + JSON.stringify(data));
+        }
+    });
 }
-curl_close($ch);
-
-// Trả về JSON từ Cloudinary
-echo $response;
+</script>
+</body>
+</html>
