@@ -1,114 +1,72 @@
 <?php
-// ===================== CẤU HÌNH CLOUDINARY =====================
-$cloud_name = "dbdf2gwc9"; 
-$api_key    = "451298475188791";
-$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+// ================== CONFIG ==================
+// Lấy thông tin từ biến môi trường hoặc cấu hình
+$CLOUDINARY_CLOUD_NAME = "your_cloud_name"; // Thay bằng Cloud Name
+$CLOUDINARY_UPLOAD_PRESET = "your_unsigned_preset"; // Thay bằng Upload Preset (unsigned)
 
-// ===================== XỬ LÝ XÓA ẢNH =====================
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['image_url'])) {
-    header('Content-Type: application/json; charset=utf-8');
+// ================== XỬ LÝ UPLOAD ==================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['image_url'])) {
     $image_url = trim($_POST['image_url']);
 
-    if (empty($image_url)) {
-        echo json_encode(['success' => false, 'message' => 'Thiếu image_url']);
+    if (filter_var($image_url, FILTER_VALIDATE_URL)) {
+        $api_url = "https://api.cloudinary.com/v1_1/{$CLOUDINARY_CLOUD_NAME}/image/upload";
+
+        // Dữ liệu gửi lên Cloudinary
+        $post_fields = [
+            'file' => $image_url,
+            'upload_preset' => $CLOUDINARY_UPLOAD_PRESET
+        ];
+
+        // Gửi request bằng cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $api_url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => $http_code === 200,
+            'http_code' => $http_code,
+            'response' => json_decode($response, true)
+        ]);
+        exit;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'URL ảnh không hợp lệ']);
         exit;
     }
-
-    // Lấy public_id từ URL (kể cả ảnh nằm trong folder)
-    $parsed_url = parse_url($image_url, PHP_URL_PATH);
-    $parts = explode('/', trim($parsed_url, '/'));
-    $upload_index = array_search('upload', $parts);
-
-    if ($upload_index !== false) {
-        // +2 để bỏ "upload" và "version" (vd: v1720000000)
-        $public_id_parts = array_slice($parts, $upload_index + 2);
-        $public_id_with_ext = implode('/', $public_id_parts);
-        $public_id = preg_replace('/\.[^.]+$/', '', $public_id_with_ext);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Không thể phân tích public_id']);
-        exit;
-    }
-
-    // Gọi API xóa ảnh trên Cloudinary
-    $timestamp = time();
-    $signature = sha1("public_id={$public_id}&timestamp={$timestamp}{$api_secret}");
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, [
-        'public_id' => $public_id,
-        'api_key'   => $api_key,
-        'timestamp' => $timestamp,
-        'signature' => $signature
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($http_code == 200) {
-        $res_data = json_decode($result, true);
-        if (isset($res_data['result']) && $res_data['result'] === 'ok') {
-            echo json_encode(['success' => true, 'message' => 'Xóa ảnh thành công!', 'public_id' => $public_id]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Xóa ảnh thất bại!', 'response' => $res_data]);
-        }
-    } else {
-        echo json_encode(['success' => false, 'message' => "Lỗi HTTP {$http_code}", 'response' => $result]);
-    }
-    exit;
 }
 ?>
 
+<!-- ================== HTML FORM ================== -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Xóa ảnh Cloudinary</title>
-<style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input { width: 80%; padding: 8px; margin-bottom: 10px; }
-    button { padding: 8px 15px; cursor: pointer; }
-    .result { margin-top: 15px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Upload Ảnh từ URL - Cloudinary</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; }
+        input[type=text] { width: 100%; padding: 10px; margin-top: 5px; }
+        button { margin-top: 10px; padding: 10px 20px; background: #00a1ff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #007acc; }
+        pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; }
+    </style>
 </head>
 <body>
+    <h2>📤 Upload Ảnh từ URL</h2>
+    <form method="post" action="">
+        <label>Nhập URL ảnh:</label>
+        <input type="text" name="image_url" placeholder="https://example.com/image.jpg" required>
+        <button type="submit">Upload</button>
+    </form>
 
-<h2>🗑️ Xóa ảnh trên Cloudinary</h2>
-<form id="deleteForm">
-    <input type="text" name="image_url" id="image_url" placeholder="Nhập URL ảnh Cloudinary..." required>
-    <button type="submit">Xóa ảnh</button>
-</form>
-
-<div class="result" id="result"></div>
-
-<script>
-document.getElementById('deleteForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    let formData = new FormData();
-    formData.append('image_url', document.getElementById('image_url').value);
-
-    fetch(window.location.href, {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        let resultDiv = document.getElementById('result');
-        if (data.success) {
-            resultDiv.innerHTML = `<p style="color:green;">✅ ${data.message}</p>`;
-        } else {
-            resultDiv.innerHTML = `<p style="color:red;">❌ ${data.message}</p><pre>${JSON.stringify(data.response || {}, null, 2)}</pre>`;
-        }
-    })
-    .catch(err => {
-        document.getElementById('result').innerHTML = `<p style="color:red;">Lỗi: ${err}</p>`;
-    });
-});
-</script>
-
+    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+        <h3>Kết quả:</h3>
+        <pre><?php echo htmlspecialchars($response ?? ''); ?></pre>
+    <?php endif; ?>
 </body>
 </html>
