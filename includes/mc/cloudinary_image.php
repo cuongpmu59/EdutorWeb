@@ -27,6 +27,7 @@ function uploadImage($filePath, $cloud_name, $upload_preset) {
     return json_decode($res, true);
 }
 
+
 // Hàm xóa ảnh (signed)
 function deleteImage($public_id, $cloud_name, $api_key, $api_secret) {
     $timestamp = time();
