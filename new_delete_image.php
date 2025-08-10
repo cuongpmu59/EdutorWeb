@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $public_id = pathinfo($public_id_with_ext, PATHINFO_FILENAME);
 
     // Cấu hình Cloudinary
-    $cloud_name = 'YOUR_CLOUD_NAME';
-    $api_key    = 'YOUR_API_KEY';
-    $api_secret = 'YOUR_API_SECRET';
+    $cloud_name = "dbdf2gwc9"; 
+    $api_key    = "451298475188791";
+    $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
 
     $timestamp = time();
     $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
