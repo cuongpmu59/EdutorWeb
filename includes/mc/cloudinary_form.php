@@ -1,7 +1,4 @@
-<?php
-// ⚙️ Load cấu hình từ .env hoặc config.php
-require_once __DIR__ . '/../../config.php';
-?>
+<?php require_once __DIR__ . '/../../config.php'; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -23,10 +20,7 @@ require_once __DIR__ . '/../../config.php';
     <script>
     async function uploadImage() {
         const file = document.getElementById("fileInput").files[0];
-        if (!file) {
-            alert("Vui lòng chọn ảnh");
-            return;
-        }
+        if (!file) return alert("Vui lòng chọn ảnh");
 
         const formData = new FormData();
         formData.append("action", "upload");
