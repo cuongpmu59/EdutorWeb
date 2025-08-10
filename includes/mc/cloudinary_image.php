@@ -1,79 +1,37 @@
 <?php
-header("Content-Type: application/json");
+header('Content-Type: application/json; charset=utf-8');
 
-$cloud_name = "dbdf2gwc9";
-$api_key    = "451298475188791";
-$api_secret = "PK2QC";
-$upload_preset = "my_exam_preset";
+// Tải biến môi trường từ .env
+require_once __DIR__ . '/../../env/config.php'; 
+// File config.php sẽ chứa:
+// define('CLOUDINARY_CLOUD_NAME', 'ten_cloud');
+// define('CLOUDINARY_API_KEY', 'api_key');
+// define('CLOUDINARY_API_SECRET', 'api_secret');
+// define('CLOUDINARY_UPLOAD_PRESET', 'upload_preset_unsigned');
 
 $action = $_POST['action'] ?? '';
 
 if ($action === 'upload') {
-    if (!isset($_FILES['file'])) {
-        echo json_encode(["error" => "Không có file tải lên"]);
+    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['error' => 'Không có file tải lên']);
         exit;
     }
 
-    $file = $_FILES['file']['tmp_name'];
-    $url = "https://api.cloudinary.com/v1_1/$cloud_name/image/upload";
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $uploadUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/upload";
 
     $data = [
-        "file" => new CURLFile($file),
-        "upload_preset" => $upload_preset
+        'upload_preset' => CLOUDINARY_UPLOAD_PRESET, // unsigned preset
+        'file' => new CURLFile($fileTmpPath)
     ];
 
     $ch = curl_init();
     curl_setopt_array($ch, [
-        CURLOPT_URL => $url,
+        CURLOPT_URL => $uploadUrl,
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $data,
-        CURLOPT_RETURNTRANSFER => true
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS => $data
     ]);
-
-    $res = curl_exec($ch);
-    curl_close($ch);
-    $json = json_decode($res, true);
-
-    if (isset($json['secure_url'])) {
-        echo json_encode(["url" => $json['secure_url']]);
-    } else {
-        echo json_encode(["error" => $json['error']['message'] ?? "Upload thất bại"]);
-    }
-    exit;
-}
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["action"] === "delete") {
-    if (empty($_POST["image_url"])) {
-        echo json_encode(["error" => "Thiếu image_url"]);
-        exit;
-    }
-
-    $image_url = $_POST["image_url"];
-
-    // 🔹 Lấy public_id từ URL bằng regex
-    if (preg_match("~upload/(?:v\d+/)?([^\.]+)~", $image_url, $matches)) {
-        $public_id = $matches[1];
-    } else {
-        echo json_encode(["error" => "Không lấy được public_id"]);
-        exit;
-    }
-
-    $timestamp = time();
-    $string_to_sign = "public_id={$public_id}&timestamp={$timestamp}{$api_secret}";
-    $signature = sha1($string_to_sign);
-
-    $data = [
-        "public_id" => $public_id,
-        "timestamp" => $timestamp,
-        "api_key"   => $api_key,
-        "signature" => $signature
-    ];
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     $response = curl_exec($ch);
     curl_close($ch);
 
@@ -81,4 +39,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["action"] === "delete") {
     exit;
 }
 
-echo json_encode(["error" => "Yêu cầu không hợp lệ"]);
+if ($action === 'delete') {
+    $publicId = $_POST['public_id'] ?? '';
+    if (!$publicId) {
+        echo json_encode(['error' => 'Thiếu public_id']);
+        exit;
+    }
+
+    // Tạo signature để xóa
+    $timestamp = time();
+    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
+    $signature = sha1($stringToSign);
+
+    $deleteUrl = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
+
+    $data = [
+        'public_id' => $publicId,
+        'api_key' => CLOUDINARY_API_KEY,
+        'timestamp' => $timestamp,
+        'signature' => $signature
+    ];
+
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $deleteUrl,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS => $data
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    echo $response;
+    exit;
+}
+
+echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
