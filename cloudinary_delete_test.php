@@ -15,13 +15,22 @@ function getPublicIdFromUrl($url) {
 
 $public_id = getPublicIdFromUrl($image_url);
 
-$delete_url = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload/{$public_id}?invalidate=true";
+// Endpoint xóa ảnh
+$delete_url = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload";
 
+// Dữ liệu gửi kèm
+$data = [
+    'public_ids[]' => $public_id,
+    'invalidate'   => 'true'
+];
+
+// cURL request
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $delete_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
