@@ -87,10 +87,23 @@ function resetPreview() {
 // Lấy public_id từ URL Cloudinary
 function getPublicIdFromUrl(url) {
     try {
-        let path = new URL(url).pathname; // /v<version>/<public_id>.<ext>
+        let path = new URL(url).pathname; // /<...>/upload/v1234567/folder/file.jpg
         let parts = path.split('/');
-        let filename = parts[parts.length - 1];
-        return filename.split('.')[0];
+        let uploadIndex = parts.indexOf('upload');
+        if (uploadIndex === -1) return null;
+
+        // Lấy tất cả sau 'upload' và bỏ version (v123456...)
+        let publicPathParts = parts.slice(uploadIndex + 1);
+        if (publicPathParts[0].match(/^v[0-9]+$/)) {
+            publicPathParts.shift();
+        }
+
+        // Bỏ phần đuôi file
+        let filename = publicPathParts.pop();
+        let publicIdWithoutExt = filename.split('.')[0];
+
+        // Ghép lại folder + public_id
+        return [...publicPathParts, publicIdWithoutExt].join('/');
     } catch (e) {
         return null;
     }
