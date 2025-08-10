@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/env/config.php'; 
 
+$cloud_name = "dbdf2gwc9"; // thay bằng của bạn
+$api_key    = "451298475188791";
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+// $cloudinary_upload_preset=my_exam_preset;
+
 $image_url = "https://res.cloudinary.com/dbdf2gwc9/image/upload/v1754807376/oext3h2nzr6fbd8etp5g.jpg";
 
 function getPublicIdFromUrl($url) {
