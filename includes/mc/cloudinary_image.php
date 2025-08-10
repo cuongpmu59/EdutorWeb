@@ -2,10 +2,10 @@
 header("Content-Type: application/json; charset=utf-8");
 
 // Cấu hình Cloudinary
-$cloud_name = "ten_cloud";
-$api_key    = "api_key";
-$api_secret = "api_secret";
-$upload_preset = "upload_preset";
+$cloud_name = "dbdf2gwc9";
+$api_key    = "451298475188791";
+$api_secret = "PK2QC";
+$upload_preset = "my_exam_preset";
 
 $action = $_POST['action'] ?? '';
 
