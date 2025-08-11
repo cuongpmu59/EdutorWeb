@@ -35,39 +35,53 @@
 
   //Nút "Xoá" (#mc_delete)
 
-  document.getElementById('mc_delete').addEventListener('click', function () {
+  document.getElementById('mc_delete').addEventListener('click', async function () {
     const idInput = document.getElementById('mc_id');
     if (!idInput) {
       alert('⚠️ Không có câu hỏi nào để xoá.');
       return;
     }
   
-    const mc_id = idInput.value;
+    const mc_id = idInput.value.trim();
+    if (!mc_id) {
+      alert('⚠️ ID câu hỏi không hợp lệ.');
+      return;
+    }
   
     if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này?')) return;
   
-    fetch('../../includes/mc/mc_form_delete.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ mc_id })
-    })
-    .then(res => res.text())
-    .then(msg => {
-      alert(msg);
+    const deleteBtn = this;
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = 'Đang xoá...';
   
-      const resetBtn = document.getElementById('mc_reset');
-      if (resetBtn) resetBtn.click();
+    try {
+      const res = await fetch('../../includes/mc/mc_form_delete.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ mc_id })
+      });
   
-      const frame = document.getElementById('mcTableFrame');
-      if (frame && frame.contentWindow) {
-        frame.contentWindow.location.reload();
+      const data = await res.json();
+  
+      if (data.success) {
+        alert(data.message);
+        document.getElementById('mc_reset')?.click();
+        const frame = document.getElementById('mcTableFrame');
+        if (frame?.contentWindow) {
+          frame.contentWindow.location.reload(true);
+        }
+      } else {
+        alert(data.message);
       }
-    })
-    .catch(err => {
-      alert('❌ Lỗi khi xoá: ' + err);
-    });
-  });
   
+    } catch (err) {
+      alert('❌ Lỗi khi xoá: ' + err);
+    } finally {
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = 'Xoá';
+    }
+  });
+
   //   Xử lý lưu
 
   document.getElementById('mc_save').addEventListener('click', async function () {
