@@ -1,57 +1,39 @@
 <?php
-require_once __DIR__ . '/../includes/db_connection.php';
-header('Content-Type: application/json');
+header('Content-Type: text/plain; charset=utf-8');
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 try {
-  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    throw new Exception('Phương thức không hợp lệ.');
-  }
+    $mc_id = $_POST['mc_id'] ?? '';
+    $mc_topic = $_POST['mc_topic'] ?? '';
+    $mc_question = $_POST['mc_question'] ?? '';
+    $mc_answer1 = $_POST['mc_answer1'] ?? '';
+    $mc_answer2 = $_POST['mc_answer2'] ?? '';
+    $mc_answer3 = $_POST['mc_answer3'] ?? '';
+    $mc_answer4 = $_POST['mc_answer4'] ?? '';
+    $mc_correct_answer = $_POST['mc_correct_answer'] ?? '';
 
-  // Lấy dữ liệu từ POST
-  $mc_id = isset($_POST['mc_id']) && trim($_POST['mc_id']) !== '' ? intval($_POST['mc_id']) : null;
-
-  // Các trường có thể gửi
-  $fields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer', 'mc_image_url', 'public_id'];
-  $data = [];
-
-  foreach ($fields as $field) {
-    if (isset($_POST[$field]) && trim($_POST[$field]) !== '') {
-      $data[$field] = trim($_POST[$field]);
-    }
-  }
-
-  if ($mc_id) {
-    // ✅ CẬP NHẬT — chỉ update các trường được gửi
-    if (empty($data)) {
-      throw new Exception('Không có dữ liệu nào để cập nhật.');
+    if (!$mc_topic||!$mc_question||!$mc_answer1 ||!$mc_answer2||!$mc_answer3||!$mc_answer4||!$mc_correct_answer) {
+        exit('⚠️ Thiếu dữ liệu bắt buộc.');
     }
 
-    $setClause = implode(', ', array_map(fn($key) => "$key = :$key", array_keys($data)));
-    $data['mc_id'] = $mc_id;
-
-    $stmt = $conn->prepare("UPDATE mc_questions SET $setClause WHERE mc_id = :mc_id");
-    $stmt->execute($data);
-
-    echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);
-
-  } else {
-    // ✅ THÊM MỚI — yêu cầu các trường chính, KHÔNG bắt buộc ảnh
-    $required = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
-    foreach ($required as $field) {
-      if (empty($data[$field])) {
-        throw new Exception("Thiếu trường bắt buộc: $field");
-      }
+    if ($mc_id) {
+        // UPDATE
+        $stmt = $pdo->prepare("
+            UPDATE mc_questions 
+            SET mc_topic = ?, mc_question = ?, mc_answer1 = ?, mc_answer2 = ?, mc_answer3 = ?, mc_answer4 = ?, mc_correct_answer = ?
+            WHERE mc_id = ?
+        ");
+        $ok = $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer, $mc_id]);
+        echo $ok ? "✅ Cập nhật câu hỏi thành công." : "❌ Lỗi khi cập nhật câu hỏi.";
+    } else {
+        // INSERT
+        $stmt = $pdo->prepare("
+            INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+        $ok = $stmt->execute([$mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer]);
+        echo $ok ? "✅ Thêm câu hỏi mới thành công." : "❌ Lỗi khi thêm câu hỏi.";
     }
-
-    $columns = implode(', ', array_keys($data));
-    $placeholders = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
-
-    $stmt = $conn->prepare("INSERT INTO mc_questions ($columns) VALUES ($placeholders)");
-    $stmt->execute($data);
-
-    echo json_encode(['success' => true, 'inserted_id' => $conn->lastInsertId()]);
-  }
-
 } catch (Exception $e) {
-  echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo "❌ Lỗi: " . $e->getMessage();
 }
