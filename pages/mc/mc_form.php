@@ -133,7 +133,7 @@
   </div>
 
   <script src="../../js/mc/mc_form_preview.js"></script>
-  <!-- <script src="../../js/mc/mc_form_image.js"></script> --> -->
+  <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
  
   <script>
@@ -163,7 +163,7 @@
   });
 </script>
 
-<script>
+<!-- <script>
 const apiUrl = '../../includes/mc/mc_form_image.php';
 const MAX_WIDTH = 1200;   // Chiều rộng tối đa (px)
 const MAX_HEIGHT = 1200;  // Chiều cao tối đa (px)
@@ -327,6 +327,6 @@ $(document).on('click', '#mc_clear_image', function () {
 // Khởi tạo
 $(document).ready(updateNoImageText);
 </script>
-
+ -->
 </body>
 </html>
