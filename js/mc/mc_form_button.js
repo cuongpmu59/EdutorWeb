@@ -82,60 +82,65 @@
     }
   });
 
-  //   Xử lý lưu
+  // Xử lý lưu
+document.getElementById('mc_save')?.addEventListener('click', function () {
+  const formData = new FormData();
 
-    document.getElementById('mc_save').addEventListener('click', function () {
-    const formData = new FormData();
+  // Hàm lấy giá trị input an toàn
+  const getValue = id => {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+  };
 
-    // Lấy dữ liệu từ form
-    const mc_id = document.getElementById('mc_id')?.value || '';
-    const mc_topic = document.getElementById('mc_topic')?.value.trim();
-    const mc_question = document.getElementById('mc_question')?.value.trim();
-    const mc_answer1 = document.getElementById('mc_answer1')?.value.trim();
-    const mc_answer2 = document.getElementById('mc_answer2')?.value.trim();
-    const mc_answer3 = document.getElementById('mc_answer3')?.value.trim();
-    const mc_answer4 = document.getElementById('mc_answer4')?.value.trim();
-    const mc_correct_answer = document.getElementById('mc_correct_answer')?.value.trim();
+  // Lấy dữ liệu từ form
+  const mc_id = getValue('mc_id');
+  const mc_topic = getValue('mc_topic');
+  const mc_question = getValue('mc_question');
+  const mc_answer1 = getValue('mc_answer1');
+  const mc_answer2 = getValue('mc_answer2');
+  const mc_answer3 = getValue('mc_answer3');
+  const mc_answer4 = getValue('mc_answer4');
+  const mc_correct_answer = getValue('mc_correct_answer');
 
-    // Kiểm tra dữ liệu bắt buộc
-    if (!mc_question ||!mc_topic||!mc_answer1||!mc_answer2||!mc_answer3||!mc_answer4||!mc_correct_answer) {
-        alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án đúng.');
-        return;
-    }
+  // Kiểm tra dữ liệu bắt buộc
+  if (!mc_topic || !mc_question || !mc_answer1 || !mc_answer2 || !mc_answer3 || !mc_answer4 || !mc_correct_answer) {
+      alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án đúng.');
+      return;
+  }
 
-    // Gắn vào FormData
-    formData.append('mc_id', mc_id);
-    formData.append('mc_topic', mc_topic);
-    formData.append('mc_question', mc_question);
-    formData.append('mc_answer1', mc_answer1);
-    formData.append('mc_answer2', mc_answer2);
-    formData.append('mc_answer3', mc_answer3);
-    formData.append('mc_answer4', mc_answer4);
-    formData.append('mc_correct_answer', mc_correct_answer);
+  // Gắn vào FormData
+  formData.append('mc_id', mc_id);
+  formData.append('mc_topic', mc_topic);
+  formData.append('mc_question', mc_question);
+  formData.append('mc_answer1', mc_answer1);
+  formData.append('mc_answer2', mc_answer2);
+  formData.append('mc_answer3', mc_answer3);
+  formData.append('mc_answer4', mc_answer4);
+  formData.append('mc_correct_answer', mc_correct_answer);
 
-    fetch('../../includes/mc/mc_form_save.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.text())
-    .then(msg => {
-        alert(msg);
+  // Gửi dữ liệu
+  fetch('../../includes/mc/mc_form_save.php', {
+      method: 'POST',
+      body: formData
+  })
+  .then(res => res.text())
+  .then(msg => {
+      alert(msg);
 
-        // Sau khi lưu, reload bảng
-        const frame = document.getElementById('mcTableFrame');
-        if (frame && frame.contentWindow) {
-            frame.contentWindow.location.reload();
-        }
+      // Reload bảng
+      const frame = document.getElementById('mcTableFrame');
+      if (frame?.contentWindow) {
+          frame.contentWindow.location.reload();
+      }
 
-        // Reset form
-        const resetBtn = document.getElementById('mc_reset');
-        if (resetBtn) resetBtn.click();
-    })
-    .catch(err => {
-        alert('❌ Lỗi khi lưu: ' + err);
-    });
+      // Reset form
+      document.getElementById('mc_reset')?.click();
+  })
+  .catch(err => {
+      alert('❌ Lỗi khi lưu: ' + err);
+  });
 });
-  
+
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
     document.getElementById('mc_view_list').addEventListener('click', () => {
     const wrapper = document.getElementById('mcTableWrapper');
