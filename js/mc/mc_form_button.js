@@ -83,62 +83,49 @@
   });
 
   // Xử lý lưu
-document.getElementById('mc_save')?.addEventListener('click', function () {
+  document.getElementById('mc_save')?.addEventListener('click', async () => {
   const formData = new FormData();
 
-  // Hàm lấy giá trị input an toàn
-  const getValue = id => {
-      const el = document.getElementById(id);
-      return el ? el.value.trim() : '';
-  };
+  // Lấy giá trị từ input (trim và fallback rỗng)
+  const getVal = id => document.getElementById(id)?.value.trim() || '';
 
-  // Lấy dữ liệu từ form
-  const mc_id = getValue('mc_id');
-  const mc_topic = getValue('mc_topic');
-  const mc_question = getValue('mc_question');
-  const mc_answer1 = getValue('mc_answer1');
-  const mc_answer2 = getValue('mc_answer2');
-  const mc_answer3 = getValue('mc_answer3');
-  const mc_answer4 = getValue('mc_answer4');
-  const mc_correct_answer = getValue('mc_correct_answer');
+  // Các trường bắt buộc
+  const requiredFields = [
+      'mc_topic', 'mc_question',
+      'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4',
+      'mc_correct_answer'
+  ];
 
-  // Kiểm tra dữ liệu bắt buộc
-  if (!mc_topic || !mc_question || !mc_answer1 || !mc_answer2 || !mc_answer3 || !mc_answer4 || !mc_correct_answer) {
-      alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án đúng.');
-      return;
+  // Kiểm tra dữ liệu
+  for (const field of requiredFields) {
+      if (!getVal(field)) {
+          alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án.');
+          return;
+      }
   }
 
-  // Gắn vào FormData
-  formData.append('mc_id', mc_id);
-  formData.append('mc_topic', mc_topic);
-  formData.append('mc_question', mc_question);
-  formData.append('mc_answer1', mc_answer1);
-  formData.append('mc_answer2', mc_answer2);
-  formData.append('mc_answer3', mc_answer3);
-  formData.append('mc_answer4', mc_answer4);
-  formData.append('mc_correct_answer', mc_correct_answer);
+  // Gắn toàn bộ vào FormData (kể cả mc_id nếu có)
+  ['mc_id', ...requiredFields].forEach(id => {
+      formData.append(id, getVal(id));
+  });
 
-  // Gửi dữ liệu
-  fetch('../../includes/mc/mc_form_save.php', {
-      method: 'POST',
-      body: formData
-  })
-  .then(res => res.text())
-  .then(msg => {
-      alert(msg);
+  try {
+      const res = await fetch('../../includes/mc/mc_form_save.php', {
+          method: 'POST',
+          body: formData
+      });
+
+      const text = await res.text();
+      alert(text);
 
       // Reload bảng
-      const frame = document.getElementById('mcTableFrame');
-      if (frame?.contentWindow) {
-          frame.contentWindow.location.reload();
-      }
+      document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
 
       // Reset form
       document.getElementById('mc_reset')?.click();
-  })
-  .catch(err => {
+  } catch (err) {
       alert('❌ Lỗi khi lưu: ' + err);
-  });
+  }
 });
 
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
