@@ -1,14 +1,15 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
-// require_once __DIR__ . '/../../env/config.php'; // Chứa CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME
 
-$cloud_name = "dbdf2gwc9"; 
-$api_key    = "451298475188791";
-$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
-$upload_preset = "my_exam_preset";
+// Thông tin Cloudinary
+$cloud_name     = "dbdf2gwc9"; 
+$api_key        = "451298475188791";
+$api_secret     = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$upload_preset  = "my_exam_preset";
 
 header('Content-Type: application/json');
 
+// Lấy public_id từ URL Cloudinary
 function getPublicIdFromUrl($url) {
     $path = parse_url($url, PHP_URL_PATH);
     $parts = explode('/', $path);
@@ -23,15 +24,16 @@ function getPublicIdFromUrl($url) {
     return implode('/', array_merge($publicParts, [$publicId]));
 }
 
-function deleteCloudinaryImage($publicId) {
+// Xoá ảnh Cloudinary
+function deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret) {
     $timestamp = time();
-    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . CLOUDINARY_API_SECRET;
+    $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . $api_secret;
     $signature = sha1($stringToSign);
 
-    $url = "https://api.cloudinary.com/v1_1/" . CLOUDINARY_CLOUD_NAME . "/image/destroy";
+    $url = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/destroy";
     $data = [
         'public_id' => $publicId,
-        'api_key' => CLOUDINARY_API_KEY,
+        'api_key'   => $api_key,
         'timestamp' => $timestamp,
         'signature' => $signature
     ];
@@ -46,6 +48,7 @@ function deleteCloudinaryImage($publicId) {
     return json_decode($res, true);
 }
 
+// Xử lý request POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mc_id = isset($_POST['mc_id']) ? filter_var($_POST['mc_id'], FILTER_VALIDATE_INT) : null;
     if (!$mc_id) {
@@ -54,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // 1. Lấy ảnh từ DB
-        $stmt = $conn->prepare("SELECT image_url FROM mc_questions WHERE mc_id = ?");
+        // 1. Lấy URL ảnh từ DB
+        $stmt = $conn->prepare("SELECT mc_image_url FROM mc_questions WHERE mc_id = ?");
         $stmt->execute([$mc_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($row && !empty($row['image_url'])) {
-            $publicId = getPublicIdFromUrl($row['image_url']);
+        if ($row && !empty($row['mc_image_url'])) {
+            $publicId = getPublicIdFromUrl($row['mc_image_url']);
             if ($publicId) {
-                $cloudRes = deleteCloudinaryImage($publicId);
+                $cloudRes = deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret);
                 if (!isset($cloudRes['result']) || $cloudRes['result'] !== 'ok') {
                     echo json_encode(['success' => false, 'message' => '❌ Lỗi xoá ảnh Cloudinary.', 'cloud' => $cloudRes]);
                     exit;
