@@ -110,8 +110,9 @@
               </label>
               <button type="button" id="mc_clear_image">Xóa ảnh</button>
             </div>
+            <div id="statusMsg"></div>
           </div>
-
+          
           <div class="mc-buttons">
             <h4>Thao tác</h4>
             <button type="submit" id="mc_save">Lưu</button>
