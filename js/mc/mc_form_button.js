@@ -83,10 +83,10 @@
   });
 
   // Xử lý lưu
-  document.getElementById('mc_save')?.addEventListener('click', async () => {
+document.getElementById('mc_save')?.addEventListener('click', async () => {
   const formData = new FormData();
 
-  // Lấy giá trị từ input (trim và fallback rỗng)
+  // Hàm lấy giá trị từ input (trim và fallback rỗng)
   const getVal = id => document.getElementById(id)?.value.trim() || '';
 
   // Các trường bắt buộc
@@ -115,16 +115,19 @@
           body: formData
       });
 
-      const text = await res.text();
-      alert(text);
+      // Đọc JSON trả về
+      const data = await res.json();
 
-      // Reload bảng
-      document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
+      // Hiển thị thông báo từ server
+      alert(data.message);
 
-      // Reset form
-      document.getElementById('mc_reset')?.click();
+      // Nếu thành công thì reset form và reload bảng
+      if (data.status === 'success') {
+          document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
+          document.getElementById('mc_reset')?.click();
+      }
   } catch (err) {
-      alert('❌ Lỗi khi lưu: ' + err);
+      alert('❌ Lỗi khi lưu: ' + err.message);
   }
 });
 
