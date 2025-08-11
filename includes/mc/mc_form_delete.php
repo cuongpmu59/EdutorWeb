@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
-require_once __DIR__ . '/../../env/config.php'; // Chứa CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME
+// require_once __DIR__ . '/../../env/config.php'; // Chứa CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME
+
+$cloud_name = "dbdf2gwc9"; 
+$api_key    = "451298475188791";
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$upload_preset = "my_exam_preset";
+
 header('Content-Type: application/json');
 
 function getPublicIdFromUrl($url) {
