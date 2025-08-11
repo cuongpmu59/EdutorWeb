@@ -84,85 +84,60 @@
 
   //   Xử lý lưu
 
-  document.getElementById('mc_save').addEventListener('click', async function () {
-    const form = document.getElementById('mcForm');
-    const formData = new FormData(form);
-    const mc_id = form.querySelector('#mc_id')?.value.trim() ?? '';
-  
-    const requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
-  
-    // ✅ Nếu là thêm mới thì yêu cầu nhập đầy đủ
-    if (!mc_id) {
-      for (const field of requiredFields) {
-        if (!form[field]?.value.trim()) {
-          alert('❌ Vui lòng nhập đầy đủ thông tin cho các trường bắt buộc!');
-          return;
-        }
-      }
-  
-      const imageFileCheck = form.mc_image?.files[0];
-      if (!imageFileCheck) {
-        alert('❌ Vui lòng chọn ảnh minh hoạ!');
+    document.getElementById('mc_save').addEventListener('click', function () {
+    const formData = new FormData();
+
+    // Lấy dữ liệu từ form
+    const mc_id = document.getElementById('mc_id')?.value || '';
+    const mc_topic = document.getElementById('mc_topic')?.value.trim();
+    const mc_question = document.getElementById('mc_question')?.value.trim();
+    const mc_answer1 = document.getElementById('mc_answer1')?.value.trim();
+    const mc_answer2 = document.getElementById('mc_answer2')?.value.trim();
+    const mc_answer3 = document.getElementById('mc_answer3')?.value.trim();
+    const mc_answer4 = document.getElementById('mc_answer4')?.value.trim();
+    const mc_correct_answer = document.getElementById('mc_correct_answer')?.value.trim();
+
+    // Kiểm tra dữ liệu bắt buộc
+    if (!mc_question ||!mc_topic||!mc_answer1||!mc_answer2||!mc_answer3||!mc_answer4||!mc_correct_answer) {
+        alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án đúng.');
         return;
-      }
     }
-  
-    const imageFile = form.mc_image?.files[0];
-    const existingImage = form.querySelector('input[name="existing_image"]')?.value;
-  
-    // ✅ Nếu có ảnh mới → upload lên Cloudinary
-    if (imageFile) {
-      const cloudData = new FormData();
-      cloudData.append('file', imageFile);
-      cloudData.append('upload_preset', 'my_exam_preset'); // 👉 Thay bằng tên preset unsigned thực tế
-  
-      try {
-        const cloudRes = await fetch('https://api.cloudinary.com/v1_1/dbdf2gwc9/image/upload', {
-          method: 'POST',
-          body: cloudData
-        });
-  
-        const cloudResult = await cloudRes.json();
-  
-        if (cloudResult.error) {
-          alert('❌ Lỗi khi tải ảnh lên Cloudinary: ' + cloudResult.error.message);
-          return;
-        }
-  
-        formData.append('mc_image_url', cloudResult.secure_url);
-        formData.append('public_id', cloudResult.public_id);
-      } catch (error) {
-        alert('❌ Không thể kết nối đến Cloudinary: ' + error.message);
-        return;
-      }
-    } else if (existingImage) {
-      // ✅ Có ảnh cũ thì giữ lại
-      formData.append('mc_image_url', existingImage);
-    }
-  
-    // ✅ Gửi dữ liệu về PHP để lưu (cập nhật hoặc thêm mới)
-    try {
-      const response = await fetch('../../includes/mc_save.php', {
+
+    // Gắn vào FormData
+    formData.append('mc_id', mc_id);
+    formData.append('mc_topic', mc_topic);
+    formData.append('mc_question', mc_question);
+    formData.append('mc_answer1', mc_answer1);
+    formData.append('mc_answer2', mc_answer2);
+    formData.append('mc_answer3', mc_answer3);
+    formData.append('mc_answer4', mc_answer4);
+    formData.append('mc_correct_answer', mc_correct_answer);
+
+    fetch('../../includes/mc/mc_form_save.php', {
         method: 'POST',
         body: formData
-      });
-  
-      const result = await response.json();
-  
-      if (result.success) {
-        alert('✅ Dữ liệu đã được lưu.');
-        window.location.reload(); // hoặc cập nhật bảng
-      } else {
-        alert('❌ Lỗi khi lưu: ' + (result.message || 'Không xác định'));
-      }
-    } catch (err) {
-      alert('❌ Lỗi kết nối server: ' + err.message);
-    }
-  });
-  
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+
+        // Sau khi lưu, reload bảng
+        const frame = document.getElementById('mcTableFrame');
+        if (frame && frame.contentWindow) {
+            frame.contentWindow.location.reload();
+        }
+
+        // Reset form
+        const resetBtn = document.getElementById('mc_reset');
+        if (resetBtn) resetBtn.click();
+    })
+    .catch(err => {
+        alert('❌ Lỗi khi lưu: ' + err);
+    });
+});
   
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
-  document.getElementById('mc_view_list').addEventListener('click', () => {
+    document.getElementById('mc_view_list').addEventListener('click', () => {
     const wrapper = document.getElementById('mcTableWrapper');
     wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
       ? 'block'
