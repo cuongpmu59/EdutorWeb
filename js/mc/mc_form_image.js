@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append("file", file);
       formData.append("action", "upload");
 
-      fetch("../../includes/mc/mc_form_image.php", {
+      fetch("../../php/mc/cloudinary_action.php", {
           method: "POST",
           body: formData
       })
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
       formData.append("image_url", url);
       formData.append("action", "delete");
 
-      fetch("../../includes/mc/mc_form_image.php", {
+      fetch("../../php/mc/cloudinary_action.php", {
           method: "POST",
           body: formData
       })
