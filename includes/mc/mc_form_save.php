@@ -1,62 +1,75 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../../includes/db_connection.php';
 
-$response = ['status' => 'error', 'message' => 'Lỗi không xác định'];
-
-try {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('Phương thức không hợp lệ.');
-    }
-
-    // Lấy dữ liệu POST
-    $mc_id             = isset($_POST['mc_id']) ? filter_var($_POST['mc_id'], FILTER_VALIDATE_INT) : null;
-    $mc_topic          = trim($_POST['mc_topic'] ?? '');
-    $mc_question       = trim($_POST['mc_question'] ?? '');
-    $mc_answer1        = trim($_POST['mc_answer1'] ?? '');
-    $mc_answer2        = trim($_POST['mc_answer2'] ?? '');
-    $mc_answer3        = trim($_POST['mc_answer3'] ?? '');
-    $mc_answer4        = trim($_POST['mc_answer4'] ?? '');
-    $mc_correct_answer = trim($_POST['mc_correct_answer'] ?? '');
-    $mc_image_url      = trim($_POST['mc_image_url'] ?? ''); // URL ảnh Cloudinary (nếu có)
-
-    // Kiểm tra dữ liệu bắt buộc
-    if (!$mc_topic || !$mc_question || !$mc_answer1 || !$mc_answer2 || !$mc_answer3 || !$mc_answer4 || !$mc_correct_answer) {
-        throw new Exception('⚠️ Thiếu dữ liệu bắt buộc.');
-    }
-
-    if ($mc_id) {
-        // UPDATE
-        $stmt = $pdo->prepare("
-            UPDATE mc_questions 
-            SET mc_topic = ?, mc_question = ?, mc_answer1 = ?, mc_answer2 = ?, mc_answer3 = ?, mc_answer4 = ?, mc_correct_answer = ?, mc_image_url = ?
-            WHERE mc_id = ?
-        ");
-        $ok = $stmt->execute([
-            $mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer, $mc_image_url, $mc_id
-        ]);
-        if ($ok) {
-            $response = ['status' => 'success', 'message' => '✅ Cập nhật câu hỏi thành công.'];
-        } else {
-            throw new Exception('❌ Lỗi khi cập nhật câu hỏi.');
-        }
-    } else {
-        // INSERT
-        $stmt = $pdo->prepare("
-            INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $ok = $stmt->execute([
-            $mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer, $mc_image_url
-        ]);
-        if ($ok) {
-            $response = ['status' => 'success', 'message' => '✅ Thêm câu hỏi mới thành công.'];
-        } else {
-            throw new Exception('❌ Lỗi khi thêm câu hỏi.');
-        }
-    }
-} catch (Exception $e) {
-    $response = ['status' => 'error', 'message' => $e->getMessage()];
+// Chỉ chấp nhận POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Phương thức không hợp lệ.'
+    ]);
+    exit;
 }
 
-echo json_encode($response, JSON_UNESCAPED_UNICODE);
+// Lấy dữ liệu từ POST và lọc
+$mc_id            = isset($_POST['mc_id']) ? filter_var($_POST['mc_id'], FILTER_VALIDATE_INT) : null;
+$mc_topic         = trim($_POST['mc_topic'] ?? '');
+$mc_question      = trim($_POST['mc_question'] ?? '');
+$mc_answer1       = trim($_POST['mc_answer1'] ?? '');
+$mc_answer2       = trim($_POST['mc_answer2'] ?? '');
+$mc_answer3       = trim($_POST['mc_answer3'] ?? '');
+$mc_answer4       = trim($_POST['mc_answer4'] ?? '');
+$mc_correct_answer= trim($_POST['mc_correct_answer'] ?? '');
+
+// Kiểm tra bắt buộc
+if (
+    $mc_topic === '' || $mc_question === '' ||
+    $mc_answer1 === '' || $mc_answer2 === '' ||
+    $mc_answer3 === '' || $mc_answer4 === '' ||
+    $mc_correct_answer === ''
+) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Vui lòng nhập đầy đủ thông tin.'
+    ]);
+    exit;
+}
+
+// Kết nối DB
+require_once __DIR__ . '/../../config.php'; // file config DB
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if ($conn->connect_error) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Kết nối CSDL thất bại: ' . $conn->connect_error
+    ]);
+    exit;
+}
+$conn->set_charset("utf8mb4");
+
+// Lưu hoặc cập nhật
+if ($mc_id) {
+    $stmt = $conn->prepare("UPDATE mc_questions SET topic=?, question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=? WHERE id=?");
+    $stmt->bind_param("sssssssi", $mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer, $mc_id);
+    $success = $stmt->execute();
+    $stmt->close();
+} else {
+    $stmt = $conn->prepare("INSERT INTO mc_questions (topic, question, answer1, answer2, answer3, answer4, correct_answer) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $mc_topic, $mc_question, $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4, $mc_correct_answer);
+    $success = $stmt->execute();
+    $stmt->close();
+}
+
+$conn->close();
+
+// Trả JSON phản hồi
+if ($success) {
+    echo json_encode([
+        'status' => 'success',
+        'message' => $mc_id ? 'Cập nhật câu hỏi thành công.' : 'Thêm câu hỏi thành công.'
+    ]);
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Không thể lưu dữ liệu.'
+    ]);
+}
