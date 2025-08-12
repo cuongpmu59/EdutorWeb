@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Chỉ chấp nhận POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'status' => 'error',
@@ -10,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Lấy dữ liệu từ POST và lọc
 $mc_id            = isset($_POST['mc_id']) ? filter_var($_POST['mc_id'], FILTER_VALIDATE_INT) : null;
 $mc_topic         = trim($_POST['mc_topic'] ?? '');
 $mc_question      = trim($_POST['mc_question'] ?? '');
@@ -20,7 +18,6 @@ $mc_answer3       = trim($_POST['mc_answer3'] ?? '');
 $mc_answer4       = trim($_POST['mc_answer4'] ?? '');
 $mc_correct_answer= trim($_POST['mc_correct_answer'] ?? '');
 
-// Kiểm tra bắt buộc
 if (
     $mc_topic === '' || $mc_question === '' ||
     $mc_answer1 === '' || $mc_answer2 === '' ||
@@ -34,8 +31,7 @@ if (
     exit;
 }
 
-// Kết nối DB
-require_once __DIR__ . '/../../config.php'; // file config DB
+require_once __DIR__ . '/../../env/config.php'; 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($conn->connect_error) {
     echo json_encode([
@@ -61,7 +57,6 @@ if ($mc_id) {
 
 $conn->close();
 
-// Trả JSON phản hồi
 if ($success) {
     echo json_encode([
         'status' => 'success',
