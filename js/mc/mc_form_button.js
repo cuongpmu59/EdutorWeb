@@ -83,7 +83,7 @@
   });
 
   // Xử lý lưu
-document.getElementById('mc_save')?.addEventListener('click', async () => {
+  document.getElementById('mc_save')?.addEventListener('click', async () => {
   const formData = new FormData();
 
   // Hàm lấy giá trị từ input (trim và fallback rỗng)
