@@ -31,12 +31,12 @@ try {
     // Xác định câu SQL và tham số
     if ($mc_id) {
         $sql = "UPDATE mc_questions 
-                SET topic=?, question=?, answer1=?, answer2=?, answer3=?, answer4=?, correct_answer=? 
+                SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=? 
                 WHERE id=?";
         $params = [$data['mc_topic'], $data['mc_question'], $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], $data['mc_correct_answer'], $mc_id];
         $types = "sssssssi";
     } else {
-        $sql = "INSERT INTO mc_questions (topic, question, answer1, answer2, answer3, answer4, correct_answer) 
+        $sql = "INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
         $params = [$data['mc_topic'], $data['mc_question'], $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], $data['mc_correct_answer']];
         $types = "sssssss";
