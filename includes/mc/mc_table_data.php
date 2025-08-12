@@ -1,60 +1,68 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+// Kết nối PDO
 require_once __DIR__ . '/../../includes/db_connection.php';
-$conn = new mysqli("localhost", "root", "", "mydb");
-if ($conn->connect_error) {
-    die(json_encode(["error" => "DB connection failed"]));
-}
 
-$draw = intval($_POST['draw'] ?? 1);
-$start = intval($_POST['start'] ?? 0);
-$length = intval($_POST['length'] ?? 20);
-$searchValue = $_POST['search']['value'] ?? '';
+// Lấy dữ liệu từ DataTables gửi lên
+$draw   = isset($_GET['draw']) ? (int)$_GET['draw'] : 1;
+$start  = isset($_GET['start']) ? (int)$_GET['start'] : 0;
+$length = isset($_GET['length']) ? (int)$_GET['length'] : 10;
+$searchValue = isset($_GET['search']['value']) ? trim($_GET['search']['value']) : "";
 
-// Điều kiện tìm kiếm
-$searchSql = '';
+// Sắp xếp
+$orderColumnIndex = $_GET['order'][0]['column'] ?? 0;
+$orderDir = $_GET['order'][0]['dir'] ?? 'asc';
+$columns = ['mc_id', 'mc_topic', 'mc_question', 'mc_a', 'mc_b', 'mc_c', 'mc_d', 'mc_answer', 'mc_image'];
+$orderColumn = $columns[$orderColumnIndex] ?? 'mc_id';
+
+// ==========================
+// Tổng số bản ghi
+// ==========================
+$totalQuery = $pdo->query("SELECT COUNT(*) FROM mc_table");
+$totalRecords = (int) $totalQuery->fetchColumn();
+
+// ==========================
+// Truy vấn dữ liệu
+// ==========================
+$sql = "SELECT mc_id, mc_topic, mc_question, mc_a, mc_b, mc_c, mc_d, mc_answer, mc_image
+        FROM mc_table";
+
 $params = [];
-$types = '';
-if ($searchValue) {
-    $searchSql = "WHERE mc_topic LIKE ? OR mc_question LIKE ?";
-    $params[] = "%$searchValue%";
-    $params[] = "%$searchValue%";
-    $types .= 'ss';
+if ($searchValue !== "") {
+    $sql .= " WHERE mc_topic LIKE :search
+              OR mc_question LIKE :search
+              OR mc_a LIKE :search
+              OR mc_b LIKE :search
+              OR mc_c LIKE :search
+              OR mc_d LIKE :search";
+    $params[':search'] = "%" . $searchValue . "%";
 }
 
-// Lấy tổng số bản ghi
-$totalRecords = $conn->query("SELECT COUNT(*) AS cnt FROM mc_table")->fetch_assoc()['cnt'];
+// Tổng số bản ghi sau khi lọc
+$stmtFiltered = $pdo->prepare(str_replace("SELECT mc_id, mc_topic, mc_question, mc_a, mc_b, mc_c, mc_d, mc_answer, mc_image", "SELECT COUNT(*)", $sql));
+$stmtFiltered->execute($params);
+$filteredRecords = (int) $stmtFiltered->fetchColumn();
 
-// Lấy tổng số bản ghi sau khi tìm kiếm
-if ($searchValue) {
-    $stmt = $conn->prepare("SELECT COUNT(*) AS cnt FROM mc_table $searchSql");
-    $stmt->bind_param($types, ...$params);
-    $stmt->execute();
-    $filteredRecords = $stmt->get_result()->fetch_assoc()['cnt'];
-} else {
-    $filteredRecords = $totalRecords;
+// Thêm sắp xếp và phân trang
+$sql .= " ORDER BY $orderColumn $orderDir LIMIT :start, :length";
+
+$stmt = $pdo->prepare($sql);
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value, PDO::PARAM_STR);
 }
-
-// Lấy dữ liệu thực tế
-$sql = "SELECT mc_id, mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image
-        FROM mc_table
-        $searchSql
-        ORDER BY mc_id DESC
-        LIMIT ?, ?";
-$params[] = $start;
-$params[] = $length;
-$types .= 'ii';
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param($types, ...$params);
+$stmt->bindValue(':start', $start, PDO::PARAM_INT);
+$stmt->bindValue(':length', $length, PDO::PARAM_INT);
 $stmt->execute();
-$data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Trả về JSON
+// ==========================
+// Trả dữ liệu JSON
+// ==========================
 echo json_encode([
     "draw" => $draw,
     "recordsTotal" => $totalRecords,
     "recordsFiltered" => $filteredRecords,
     "data" => $data
-]);
+], JSON_UNESCAPED_UNICODE);
+
