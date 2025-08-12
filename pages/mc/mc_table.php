@@ -42,7 +42,7 @@
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
   <!-- Khởi tạo DataTable với server-side processing -->
-  <script>
+  <!-- <script>
   $(document).ready(function(){
     $('#mcTable').DataTable({
       processing: true,
@@ -74,7 +74,8 @@
       }
     });
   });
-  </script>
+  </script> -->
+  <script src="../../js/mc/mc_table_data.js"></script>
 
 </body>
 </html>
