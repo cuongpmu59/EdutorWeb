@@ -31,8 +31,8 @@
         <th>B</th>
         <th>C</th>
         <th>D</th>
-        <th>Đáp án</th>
-        <th>Hình minh hoạ</th>
+        <th>Đáp án</th>
+        <th>Hình</th>
       </tr>
     </thead>
   </table>
@@ -41,9 +41,40 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-  <!-- File JS khởi tạo bảng -->
-  <script src="../../js/mc/mc_fetch_data.js"></script>
-  <script src="../../js/mc/mc_table_arrow_key.js"></script>
+  <!-- Khởi tạo DataTable với server-side processing -->
+  <script>
+  $(document).ready(function(){
+    $('#mcTable').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: {
+        url: '../../includes/mc/mc_table_data.php',
+        type: 'POST'
+      },
+      columns: [
+        { data: 'mc_id' },
+        { data: 'mc_topic' },
+        { data: 'mc_question' },
+        { data: 'mc_answer1' },
+        { data: 'mc_answer2' },
+        { data: 'mc_answer3' },
+        { data: 'mc_answer4' },
+        { data: 'mc_correct_answer' },
+        { data: 'mc_image', render: function(data){
+            return data ? `<img src="${data}" width="50">` : '';
+          }
+        }
+      ],
+      pageLength: 20,
+      order: [[0, 'desc']],
+      drawCallback: function(){
+        if (window.MathJax) {
+          MathJax.typesetPromise();
+        }
+      }
+    });
+  });
+  </script>
 
 </body>
 </html>
