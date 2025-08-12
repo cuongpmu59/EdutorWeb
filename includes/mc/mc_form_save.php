@@ -7,9 +7,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once __DIR__ . '/../../env/config.php'; 
+require_once __DIR__ . '/../../env/config.php';
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Bật chế độ ném lỗi
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); 
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 $conn->set_charset("utf8mb4");
 
@@ -19,7 +19,11 @@ try {
     $mc_id = filter_var($data['mc_id'] ?? null, FILTER_VALIDATE_INT);
 
     // Danh sách trường bắt buộc
-    $requiredFields = ['mc_topic', 'mc_question', 'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 'mc_correct_answer'];
+    $requiredFields = [
+        'mc_topic', 'mc_question', 
+        'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4', 
+        'mc_correct_answer'
+    ];
 
     foreach ($requiredFields as $field) {
         if (empty($data[$field])) {
@@ -28,21 +32,34 @@ try {
         }
     }
 
-    // Xác định câu SQL và tham số
+    // Cho phép mc_image_url để trống
+    $mc_image_url = !empty($data['mc_image_url']) ? $data['mc_image_url'] : null;
+
     if ($mc_id) {
+        // Cập nhật
         $sql = "UPDATE mc_questions 
-                SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=? 
+                SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=?, mc_image_url=? 
                 WHERE mc_id=?";
-        $params = [$data['mc_topic'], $data['mc_question'], $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], $data['mc_correct_answer'], $mc_id];
-        $types = "sssssssi";
+        $params = [
+            $data['mc_topic'], $data['mc_question'], 
+            $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], 
+            $data['mc_correct_answer'], $mc_image_url, $mc_id
+        ];
+        $types = "ssssssssi";
     } else {
-        $sql = "INSERT INTO mc_questions (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $params = [$data['mc_topic'], $data['mc_question'], $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], $data['mc_correct_answer']];
-        $types = "sssssss";
+        // Thêm mới
+        $sql = "INSERT INTO mc_questions 
+                (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $params = [
+            $data['mc_topic'], $data['mc_question'], 
+            $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], 
+            $data['mc_correct_answer'], $mc_image_url
+        ];
+        $types = "ssssssss";
     }
 
-    // Thực thi câu lệnh
+    // Thực thi
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
