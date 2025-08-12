@@ -32,7 +32,7 @@ try {
     if ($mc_id) {
         $sql = "UPDATE mc_questions 
                 SET mc_topic=?, mc_question=?, mc_answer1=?, mc_answer2=?, mc_answer3=?, mc_answer4=?, mc_correct_answer=? 
-                WHERE id=?";
+                WHERE mc_id=?";
         $params = [$data['mc_topic'], $data['mc_question'], $data['mc_answer1'], $data['mc_answer2'], $data['mc_answer3'], $data['mc_answer4'], $data['mc_correct_answer'], $mc_id];
         $types = "sssssssi";
     } else {
