@@ -60,7 +60,7 @@
         { data: 'mc_answer3' },
         { data: 'mc_answer4' },
         { data: 'mc_correct_answer' },
-        { data: 'mc_image', render: function(data){
+        { data: 'mc_image_url', render: function(data){
             return data ? `<img src="${data}" width="50">` : '';
           }
         }
