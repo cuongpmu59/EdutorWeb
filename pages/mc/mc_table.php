@@ -48,7 +48,7 @@
       processing: true,
       serverSide: true,
       ajax: {
-        url: '../../includes/mc/mc_fetch_data.php',
+        url: '../../includes/mc/mc_table_data.php',
         type: 'POST'
       },
       columns: [
