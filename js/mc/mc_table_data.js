@@ -1,32 +1,35 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Lưu cache tạm ở client (chỉ trong phiên hiện tại)
     let tableCache = {};
 
     let table = $('#mcTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: function (data, callback, settings) {
+        ajax: function (data, callback) {
             let cacheKey = JSON.stringify(data);
 
-            // Nếu đã có trong cache => trả về ngay
+            // Nếu dữ liệu đã được cache
             if (tableCache[cacheKey]) {
                 callback(tableCache[cacheKey]);
                 return;
             }
 
             $.ajax({
-                url: "../../pages/mc/mc_table_data.php", // PHP server-side
-                type: "GET", // Hoặc POST nếu bạn sửa PHP nhận POST
+                url: "../../pages/mc/mc_table_data.php",
+                type: "POST", // Dùng POST để an toàn
                 data: data,
                 dataType: "json",
                 success: function (json) {
-                    // Lưu vào cache
+                    if (!json || typeof json !== "object" || !json.data) {
+                        console.error("Invalid JSON format:", json);
+                        alert("Lỗi dữ liệu từ server!");
+                        return;
+                    }
                     tableCache[cacheKey] = json;
                     callback(json);
                 },
-                error: function (xhr, error, thrown) {
-                    console.error("DataTables AJAX Error:", xhr.responseText);
-                    alert("Lỗi tải dữ liệu bảng!\n" + thrown);
+                error: function (xhr, status, thrown) {
+                    console.error("AJAX Error:", status, thrown, xhr.responseText);
+                    alert("Không thể tải dữ liệu!\n" + xhr.responseText);
                 }
             });
         },
@@ -59,13 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Xóa cache khi tìm kiếm để lấy dữ liệu mới
-    $('#mcTable_filter input').on('input', function () {
-        tableCache = {};
-    });
-
-    // Xóa cache khi đổi số lượng hiển thị
-    $('#mcTable_length select').on('change', function () {
+    // Xóa cache khi tìm kiếm hoặc thay đổi số bản ghi
+    $('#mcTable_filter input, #mcTable_length select').on('input change', function () {
         tableCache = {};
     });
 });
