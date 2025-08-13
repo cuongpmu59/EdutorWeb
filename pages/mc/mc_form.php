@@ -110,8 +110,7 @@
             </label>
             <button type="button" id="mc_clear_image">Xóa ảnh</button>
           </div>
-          <!-- Input ẩn lưu URL ảnh -->
-              <input type="hidden" name="mc_image_url" id="mc_image_url">
+            <input type="hidden" name="mc_image_url" id="mc_image_url">
           <div id="statusMsg"></div>
           </div>
           
@@ -156,8 +155,10 @@
     // Nếu có ảnh → hiển thị, ngược lại ẩn ảnh
     if (data.mc_image_url) {
       $('#mc_preview_image').attr('src', data.mc_image_url).show();
+      $('#mc_image_url').val(data.mc_image_url); // ✅ Lưu vào input hidden
     } else {
       $('#mc_preview_image').hide().attr('src', '');
+      $('#mc_image_url').val(''); // ✅ Clear luôn
     }
 
     // Cuộn lên đầu trang
