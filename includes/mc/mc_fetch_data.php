@@ -2,9 +2,11 @@
 require_once __DIR__ . '/../../includes/db_connection.php';
 header('Content-Type: application/json; charset=utf-8');
 
+// Chặn rác output
+if (ob_get_length()) ob_clean();
+
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mc_id'])) {
-        // Trả về 1 bản ghi cụ thể
         $mc_id = intval($_POST['mc_id']);
         $stmt = $conn->prepare("
             SELECT mc_id, mc_topic, mc_question, 
@@ -17,11 +19,11 @@ try {
         $stmt->execute(['mc_id' => $mc_id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        echo json_encode($data ?: ['error' => '❌ Không tìm thấy dữ liệu']);
+        echo json_encode($data ?: ['error' => '❌ Không tìm thấy dữ liệu'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // Mặc định: trả danh sách
+    // GET toàn bộ danh sách
     $stmt = $conn->query("
         SELECT mc_id, mc_topic, mc_question, 
                mc_answer1, mc_answer2, mc_answer3, mc_answer4, 
@@ -30,7 +32,10 @@ try {
         ORDER BY mc_id DESC
     ");
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode(['data' => $rows]);
+
+    echo json_encode(['data' => $rows], JSON_UNESCAPED_UNICODE);
+    exit;
 } catch (PDOException $e) {
-    echo json_encode(['data' => [], 'error' => $e->getMessage()]);
+    echo json_encode(['data' => [], 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    exit;
 }
