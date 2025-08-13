@@ -12,6 +12,7 @@ function updateNoImageText() {
 function resetPreview() {
     $('#mc_preview_image').attr('src', '').hide();
     $('#mc_image').val('');
+    $('#mc_image_url').val(''); // 🔹 clear input hidden khi xóa ảnh
     $('#statusMsg').html('');
     updateNoImageText();
 }
