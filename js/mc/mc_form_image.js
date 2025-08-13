@@ -106,6 +106,7 @@ $(document).on('change', '#mc_image', function () {
             success: res => {
                 if (res.secure_url) {
                     previewImage.attr('src', res.secure_url).show();
+                    $('#mc_image_url').val(res.secure_url); // 🔹 Lưu URL vào input hidden
                     $('#statusMsg').css('color', 'green').html('✅ Upload thành công!');
                 } else {
                     resetPreview();
