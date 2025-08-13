@@ -99,18 +99,20 @@
 
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
-            <h4>Ảnh minh họa</h4>
-            <div class="mc-image-preview">
-              <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none;">
-            </div>
-            <div class="mc-image-buttons">
-              <label class="btn-upload">
-                Tải ảnh
-                <input type="file" id="mc_image" name="image" accept="image/*" hidden>
-              </label>
-              <button type="button" id="mc_clear_image">Xóa ảnh</button>
-            </div>
-            <div id="statusMsg"></div>
+          <h4>Ảnh minh họa</h4>
+          <div class="mc-image-preview">
+            <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
+          </div>
+          <div class="mc-image-buttons">
+            <label class="btn-upload">
+              Tải ảnh
+              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+            </label>
+            <button type="button" id="mc_clear_image">Xóa ảnh</button>
+          </div>
+          <!-- Input ẩn lưu URL ảnh -->
+              <input type="hidden" name="mc_image_url" id="mc_image_url">
+          <div id="statusMsg"></div>
           </div>
           
           <div class="mc-buttons">
