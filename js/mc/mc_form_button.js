@@ -85,18 +85,13 @@
   // Xử lý lưu
   document.getElementById('mc_save')?.addEventListener('click', async () => {
   const formData = new FormData();
-
-  // Hàm lấy giá trị từ input (trim và fallback rỗng)
   const getVal = id => document.getElementById(id)?.value.trim() || '';
-
-  // Các trường bắt buộc
   const requiredFields = [
       'mc_topic', 'mc_question',
       'mc_answer1', 'mc_answer2', 'mc_answer3', 'mc_answer4',
       'mc_correct_answer'
   ];
 
-  // Kiểm tra dữ liệu
   for (const field of requiredFields) {
       if (!getVal(field)) {
           alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và đáp án.');
@@ -104,10 +99,10 @@
       }
   }
 
-  // Gắn toàn bộ vào FormData (kể cả mc_id nếu có)
-  ['mc_id', ...requiredFields].forEach(id => {
+   ['mc_id', ...requiredFields].forEach(id => {
       formData.append(id, getVal(id));
   });
+      formData.append('mc_image_url', getVal('mc_image_url'));
 
   try {
       const res = await fetch('../../includes/mc/mc_form_save.php', {
@@ -115,13 +110,8 @@
           body: formData
       });
 
-      // Đọc JSON trả về
       const data = await res.json();
-
-      // Hiển thị thông báo từ server
       alert(data.message);
-
-      // Nếu thành công thì reset form và reload bảng
       if (data.status === 'success') {
           document.getElementById('mcTableFrame')?.contentWindow?.location.reload();
           document.getElementById('mc_reset')?.click();
