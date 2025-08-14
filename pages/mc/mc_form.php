@@ -98,37 +98,41 @@
         </div>
 
         <div class="mc-col mc-col-right">
-          <div class="mc-image-zone">
-          <h4>Ảnh minh họa</h4>
-          <div class="mc-image-preview">
-            <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
-          </div>
-          <div class="mc-image-buttons">
-            <label class="btn-upload">
-              Tải ảnh
-              <input type="file" id="mc_image" name="image" accept="image/*" hidden>
-            </label>
-            <button type="button" id="mc_clear_image">Xóa ảnh</button>
-          </div>
-            <input type="hidden" name="mc_image_url" id="mc_image_url">
-          <div id="statusMsg"></div>
-          </div>
-          
-          <div class="mc-buttons">
-            <h4>Thao tác</h4>
-            <button type="submit" id="mc_save">Lưu</button>
-            <button type="button" id="mc_delete">Xóa</button>
-            <button type="button" id="mc_reset">Làm mới</button>
-            <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
-            <button type="button" id="mc_preview_exam">Làm đề</button>
-          </div>
-          <input type="hidden" id="mc_id" name="mc_id" value="">
-    </form>
+  <div class="mc-image-zone">
+    <h4>Ảnh minh họa</h4>
+    <div class="mc-image-preview">
+      <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
+    </div>
+    <div class="mc-image-buttons">
+      <label class="btn-upload">
+        Tải ảnh
+        <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+      </label>
+      <button type="button" id="mc_clear_image">Xóa ảnh</button>
+    </div>
+    <input type="hidden" name="mc_image_url" id="mc_image_url">
+    <div id="statusMsg"></div>
+  </div>
 
-    <div id="mcTableWrapper" style="display:none;">
-      <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?i=1" style="width:100%; height:600px; border:none;"></iframe>
+  <!-- Khung chứa nút -->
+  <div class="mc-buttons-wrapper">
+    <h4>Thao tác</h4>
+    <div class="mc-buttons">
+      <button type="submit" id="mc_save">Lưu</button>
+      <button type="button" id="mc_delete">Xóa</button>
+      <button type="button" id="mc_reset">Làm mới</button>
+      <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
+      <button type="button" id="mc_preview_exam" class="full-width">Làm đề</button>
     </div>
   </div>
+
+  <input type="hidden" id="mc_id" name="mc_id" value="">
+</form>
+
+<!-- Khung chứa DataTable -->
+<div id="mcTableWrapper" class="datatable-wrapper" style="display:none;">
+  <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?i=1"></iframe>
+</div>
 
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js?v=1.0"></script> 
