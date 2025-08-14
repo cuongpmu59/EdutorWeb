@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../../includes/db_connection.php'; // phải tạo $pdo = new PDO(...)
+require_once __DIR__ . '/../db_connection.php'; // phải tạo $pdo = new PDO(...)
 
 // Lấy params từ DataTables
 $draw   = isset($_POST['draw']) ? (int)$_POST['draw'] : 0;
