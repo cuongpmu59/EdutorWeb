@@ -3,17 +3,17 @@
   margin-top: 20px;
   padding: 15px;
   border-top: 2px solid #ccc;
-  background-color: #f9f9f9; /* Nền nhẹ để tách biệt */
+  background-color: #f9f9f9;
   border-radius: 8px;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 cột bằng nhau */
-  gap: 12px; /* khoảng cách giữa các nút */
+  gap: 14px; /* khoảng cách đều giữa các hàng/cột */
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 /* Tiêu đề */
 .mc-buttons h4 {
-  grid-column: span 2; /* Tiêu đề chiếm cả 2 cột */
+  grid-column: span 2;
   margin-bottom: 8px;
   color: #333;
   font-weight: bold;
@@ -21,22 +21,56 @@
   font-size: 16px;
 }
 
-/* Nút thao tác */
-.mc-buttons button {
-  width: 100%; /* Đảm bảo mỗi nút phủ full cột */
+/* Style chung cho tất cả nút */
+.mc-buttons button,
+.mc-buttons .btn-upload,
+.mc-buttons #mc_remove_image {
+  width: 100%;
+  min-height: 46px; /* Đảm bảo nút cao đều */
   padding: 10px;
   font-size: 15px;
-  background-color: #007bff;
+  font-weight: 500;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-.mc-buttons button:hover {
-  background-color: #0056b3;
+/* Hiệu ứng hover chung */
+.mc-buttons button:hover,
+.mc-buttons .btn-upload:hover,
+.mc-buttons #mc_remove_image:hover {
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+/* Nút chính (thêm, lưu...) */
+.mc-buttons button {
+  background-color: #007bff;
+}
+.mc-buttons button:hover {
+  background-color: #0069d9;
+}
+
+/* Nút upload */
+.mc-buttons .btn-upload {
+  background-color: #28a745;
+}
+.mc-buttons .btn-upload:hover {
+  background-color: #218838;
+}
+
+/* Nút xóa ảnh */
+.mc-buttons #mc_remove_image {
+  background-color: #dc3545;
+}
+.mc-buttons #mc_remove_image:hover {
+  background-color: #c82333;
 }
 
 /* Responsive: nếu màn nhỏ thì 1 nút mỗi hàng */
