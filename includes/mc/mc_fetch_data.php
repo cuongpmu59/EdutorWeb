@@ -1,80 +1,103 @@
-<?php
-header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../../includes/db_connection.php'; // file kết nối PDO
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý câu hỏi</title>
 
-// Lấy params từ DataTables
-$draw   = isset($_POST['draw']) ? (int)$_POST['draw'] : 0;
-$start  = isset($_POST['start']) ? max(0, (int)$_POST['start']) : 0;
-$length = isset($_POST['length']) ? (int)$_POST['length'] : 10;
-$length = ($length < 1 || $length > 500) ? 10 : $length;
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
-$searchValue = trim($_POST['search']['value'] ?? '');
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <style>
+    table img {
+      border-radius: 4px;
+      object-fit: cover;
+      max-width: 80px;
+      max-height: 80px;
+    }
+  </style>
+</head>
+<body>
 
-// Mapping cột cho sort
-$columnsMap = [
-    0 => 'mc_id',
-    1 => 'mc_topic',
-    2 => 'mc_question',
-    3 => 'mc_answer_a',
-    4 => 'mc_answer_b',
-    5 => 'mc_answer_c',
-    6 => 'mc_answer_d',
-    7 => 'mc_correct_answer',
-    8 => 'mc_image_url'
-];
+  <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
+  <table id="mcTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Chủ đề</th>
+        <th>Câu hỏi</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+        <th>D</th>
+        <th>Đáp án</th>
+        <th>Hình minh họa</th>
+      </tr>
+    </thead>
+  </table>
 
-$orderCol = $columnsMap[$_POST['order'][0]['column'] ?? 0] ?? 'mc_id';
-$orderDir = in_array(strtolower($_POST['order'][0]['dir'] ?? 'desc'), ['asc', 'desc']) 
-            ? $_POST['order'][0]['dir'] 
-            : 'desc';
+  <!-- jQuery + DataTables -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-// Base query
-$sqlBase = "FROM mc_questions";
-$where = "";
-$params = [];
+  <script>
+    $(function () {
+      $('#mcTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+          url: '../../includes/mc/mc_fetch_data.php',
+          type: 'POST',
+          error: function (xhr) {
+            console.error('AJAX error:', xhr.status, xhr.responseText);
+            alert('Không thể tải dữ liệu (HTTP ' + xhr.status + ')');
+          }
+        },
+        order: [[0, 'desc']],
+        columns: [
+          { data: 'mc_id' },
+          { data: 'mc_topic' },
+          { data: 'mc_question' },
+          { data: 'mc_answer_a' },
+          { data: 'mc_answer_b' },
+          { data: 'mc_answer_c' },
+          { data: 'mc_answer_d' },
+          { data: 'mc_correct_answer' },
+          {
+            data: 'mc_image_url',
+            render: function (data) {
+              return data
+                ? '<img src="' + data + '" alt="ảnh" />'
+                : '';
+            }
+          }
+        ],
+        language: {
+          processing: 'Đang tải...',
+          search: 'Tìm:',
+          lengthMenu: 'Hiển thị _MENU_ dòng',
+          info: 'Hiển thị _START_–_END_ / _TOTAL_ dòng',
+          infoEmpty: 'Không có dữ liệu',
+          infoFiltered: '(lọc từ _MAX_ dòng)',
+          paginate: {
+            first: 'Đầu',
+            last: 'Cuối',
+            next: 'Sau',
+            previous: 'Trước'
+          },
+          zeroRecords: 'Không tìm thấy kết quả phù hợp'
+        }
+      });
+    });
+  </script>
 
-// Nếu có search
-if ($searchValue !== '') {
-    $where = " WHERE mc_topic LIKE :kw
-               OR mc_question LIKE :kw
-               OR mc_answer_a LIKE :kw
-               OR mc_answer_b LIKE :kw
-               OR mc_answer_c LIKE :kw
-               OR mc_answer_d LIKE :kw
-               OR mc_correct_answer LIKE :kw";
-    $params[':kw'] = "%{$searchValue}%";
-}
-
-// Tổng records
-$totalRecords = (int)$pdo->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
-
-// Tổng records sau lọc
-if ($where) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) {$sqlBase} {$where}");
-    $stmt->execute($params);
-    $filteredRecords = (int)$stmt->fetchColumn();
-} else {
-    $filteredRecords = $totalRecords;
-}
-
-// Lấy dữ liệu
-$stmt = $pdo->prepare("SELECT mc_id, mc_topic, mc_question, mc_answer_a, mc_answer_b, mc_answer_c, mc_answer_d, mc_correct_answer, mc_image_url
-                       {$sqlBase}
-                       {$where}
-                       ORDER BY {$orderCol} {$orderDir}
-                       LIMIT :start, :length");
-foreach ($params as $k => $v) {
-    $stmt->bindValue($k, $v, PDO::PARAM_STR);
-}
-$stmt->bindValue(':start', $start, PDO::PARAM_INT);
-$stmt->bindValue(':length', $length, PDO::PARAM_INT);
-$stmt->execute();
-$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Trả JSON
-echo json_encode([
-    'draw' => $draw,
-    'recordsTotal' => $totalRecords,
-    'recordsFiltered' => $filteredRecords,
-    'data' => $data
-], JSON_UNESCAPED_UNICODE);
+  <script src="../../js/mc/mc_table_arrow_key.js"></script>
+</body>
+</html>
