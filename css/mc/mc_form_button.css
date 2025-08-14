@@ -5,20 +5,25 @@
   border-top: 1px solid #ccc;
 }
 
-/* Tiêu đề của vùng thao tác */
+/* Tiêu đề */
 .mc-buttons h4 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: #333;
   font-weight: bold;
+  text-align: center;
 }
 
-/* Các nút thao tác */
+/* Layout 2 nút mỗi hàng */
+.mc-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px; /* khoảng cách giữa các nút */
+}
+
+/* Nút thao tác */
 .mc-buttons button {
-  display: block;
-  width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 15px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -31,48 +36,9 @@
   background-color: #0056b3;
 }
 
-/* Nút tải ảnh */
-.btn-upload {
-  display: inline-block;
-  padding: 8px 14px;
-  background-color: #28a745;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.btn-upload:hover {
-  background-color: #218838;
-}
-
-/* Nút xóa ảnh */
-#mc_remove_image {
-  display: inline-block;
-  margin-left: 10px;
-  padding: 8px 14px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#mc_remove_image:hover {
-  background-color: #c82333;
-}
-
-/* Nút ẩn/hiện xem trước từng phần (icon con mắt) */
-.toggle-preview {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-left: 5px;
-  color: #666;
-  font-size: 16px;
-  padding: 2px;
-}
-
-.toggle-preview:hover {
-  color: #000;
+/* Responsive: Nếu màn hình nhỏ, chỉ 1 nút mỗi hàng */
+@media (max-width: 480px) {
+  .mc-buttons {
+    grid-template-columns: 1fr;
+  }
 }
