@@ -15,7 +15,9 @@
 
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
   <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
     table img {
       border-radius: 4px;
       object-fit: cover;
@@ -27,6 +29,7 @@
 <body>
 
   <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
+
   <table id="mcTable" class="display" style="width:100%">
     <thead>
       <tr>
@@ -53,11 +56,11 @@
         processing: true,
         serverSide: true,
         ajax: {
-          url: '../../includes/mc/mc_fetch_data.php',
+          url: '../../includes/mc/mc_fetch_data.php', // sửa đường dẫn phù hợp host
           type: 'POST',
-          error: function (xhr) {
+          error: function(xhr) {
             console.error('AJAX error:', xhr.status, xhr.responseText);
-            alert('Không thể tải dữ liệu (HTTP ' + xhr.status + ')');
+            alert('Không thể tải dữ liệu (HTTP ' + xhr.status + '). Xem console để biết chi tiết.');
           }
         },
         order: [[0, 'desc']],
@@ -72,10 +75,8 @@
           { data: 'mc_correct_answer' },
           {
             data: 'mc_image_url',
-            render: function (data) {
-              return data
-                ? '<img src="' + data + '" alt="ảnh" />'
-                : '';
+            render: function(data) {
+              return data ? '<img src="' + data + '" alt="ảnh">' : '';
             }
           }
         ],
@@ -86,18 +87,13 @@
           info: 'Hiển thị _START_–_END_ / _TOTAL_ dòng',
           infoEmpty: 'Không có dữ liệu',
           infoFiltered: '(lọc từ _MAX_ dòng)',
-          paginate: {
-            first: 'Đầu',
-            last: 'Cuối',
-            next: 'Sau',
-            previous: 'Trước'
-          },
+          paginate: { first: 'Đầu', last: 'Cuối', next: 'Sau', previous: 'Trước' },
           zeroRecords: 'Không tìm thấy kết quả phù hợp'
-        }
+        },
+        responsive: true
       });
     });
   </script>
-
   <script src="../../js/mc/mc_table_arrow_key.js"></script>
 </body>
 </html>
