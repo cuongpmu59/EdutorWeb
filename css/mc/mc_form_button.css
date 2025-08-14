@@ -2,26 +2,28 @@
 .mc-buttons {
   margin-top: 20px;
   padding: 15px;
-  border-top: 1px solid #ccc;
+  border-top: 2px solid #ccc;
+  background-color: #f9f9f9; /* Nền nhẹ để tách biệt */
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 cột bằng nhau */
+  gap: 12px; /* khoảng cách giữa các nút */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 /* Tiêu đề */
 .mc-buttons h4 {
-  margin-bottom: 12px;
+  grid-column: span 2; /* Tiêu đề chiếm cả 2 cột */
+  margin-bottom: 8px;
   color: #333;
   font-weight: bold;
   text-align: center;
-}
-
-/* Layout 2 nút mỗi hàng */
-.mc-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px; /* khoảng cách giữa các nút */
+  font-size: 16px;
 }
 
 /* Nút thao tác */
 .mc-buttons button {
+  width: 100%; /* Đảm bảo mỗi nút phủ full cột */
   padding: 10px;
   font-size: 15px;
   background-color: #007bff;
@@ -29,14 +31,15 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.25s ease, transform 0.1s ease;
 }
 
 .mc-buttons button:hover {
   background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
-/* Responsive: Nếu màn hình nhỏ, chỉ 1 nút mỗi hàng */
+/* Responsive: nếu màn nhỏ thì 1 nút mỗi hàng */
 @media (max-width: 480px) {
   .mc-buttons {
     grid-template-columns: 1fr;
