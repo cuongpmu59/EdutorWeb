@@ -50,7 +50,8 @@ function deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret) {
 
 // Xử lý request POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $mc_id = isset($_POST['mc_id']) ? filter_var($_POST['mc_id'], FILTER_VALIDATE_INT) : null;
+    $mc_id = filter_input(INPUT_POST, 'mc_id', FILTER_VALIDATE_INT);
+
     if (!$mc_id) {
         echo json_encode(['success' => false, 'message' => '❌ mc_id không hợp lệ.']);
         exit;
@@ -62,18 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$mc_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($row && !empty($row['mc_image_url'])) {
+        // Nếu có ảnh thì mới thử xóa trên Cloudinary
+        if (!empty($row['mc_image_url'])) {
             $publicId = getPublicIdFromUrl($row['mc_image_url']);
             if ($publicId) {
                 $cloudRes = deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret);
                 if (!isset($cloudRes['result']) || $cloudRes['result'] !== 'ok') {
-                    echo json_encode(['success' => false, 'message' => '❌ Lỗi xoá ảnh Cloudinary.', 'cloud' => $cloudRes]);
-                    exit;
+                    // Chỉ ghi log, không chặn xóa DB
+                    error_log("⚠ Không thể xóa ảnh Cloudinary: " . json_encode($cloudRes));
                 }
             }
         }
 
-        // 2. Xoá câu hỏi trong DB
+        // 2. Xoá câu hỏi trong DB (luôn thực hiện)
         $stmt = $conn->prepare("DELETE FROM mc_questions WHERE mc_id = ?");
         $stmt->execute([$mc_id]);
 
@@ -88,3 +90,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => '❌ Phương thức không hợp lệ.']);
 }
+
