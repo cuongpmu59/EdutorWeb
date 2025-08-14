@@ -51,49 +51,71 @@
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
   <script>
-    $(function () {
-      $('#mcTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-          url: '../../includes/mc/mc_fetch_data.php', // sửa đường dẫn phù hợp host
-          type: 'POST',
-          error: function(xhr) {
-            console.error('AJAX error:', xhr.status, xhr.responseText);
-            alert('Không thể tải dữ liệu (HTTP ' + xhr.status + '). Xem console để biết chi tiết.');
-          }
-        },
-        order: [[0, 'desc']],
-        columns: [
-          { data: 'mc_id' },
-          { data: 'mc_topic' },
-          { data: 'mc_question' },
-          { data: 'mc_answer1' },
-          { data: 'mc_answer2' },
-          { data: 'mc_answer3' },
-          { data: 'mc_answer4' },
-          { data: 'mc_correct_answer' },
-          {
-            data: 'mc_image_url',
-            render: function(data) {
-              return data ? '<img src="' + data + '" alt="ảnh">' : '';
-            }
-          }
-        ],
-        language: {
-          processing: 'Đang tải...',
-          search: 'Tìm:',
-          lengthMenu: 'Hiển thị _MENU_ dòng',
-          info: 'Hiển thị _START_–_END_ / _TOTAL_ dòng',
-          infoEmpty: 'Không có dữ liệu',
-          infoFiltered: '(lọc từ _MAX_ dòng)',
-          paginate: { first: 'Đầu', last: 'Cuối', next: 'Sau', previous: 'Trước' },
-          zeroRecords: 'Không tìm thấy kết quả phù hợp'
-        },
-        responsive: true
-      });
-    });
-  </script>
+$(function () {
+  const table = $('#mcTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: '../../includes/mc/mc_fetch_data.php',
+      type: 'POST',
+      error: function(xhr) {
+        console.error('AJAX error:', xhr.status, xhr.responseText);
+        alert('Không thể tải dữ liệu (HTTP ' + xhr.status + '). Xem console để biết chi tiết.');
+      }
+    },
+    order: [[0, 'desc']],
+    columns: [
+      { data: 'mc_id' },
+      { data: 'mc_topic' },
+      { data: 'mc_question' },
+      { data: 'mc_answer1' },
+      { data: 'mc_answer2' },
+      { data: 'mc_answer3' },
+      { data: 'mc_answer4' },
+      { data: 'mc_correct_answer' },
+      {
+        data: 'mc_image_url',
+        render: function(data) {
+          return data ? '<img src="' + data + '" alt="ảnh">' : '';
+        }
+      }
+    ],
+    language: {
+      processing: 'Đang tải...',
+      search: 'Tìm:',
+      lengthMenu: 'Hiển thị _MENU_ dòng',
+      info: 'Hiển thị _START_–_END_ / _TOTAL_ dòng',
+      infoEmpty: 'Không có dữ liệu',
+      infoFiltered: '(lọc từ _MAX_ dòng)',
+      paginate: { first: 'Đầu', last: 'Cuối', next: 'Sau', previous: 'Trước' },
+      zeroRecords: 'Không tìm thấy kết quả phù hợp'
+    },
+    responsive: true
+  });
+
+  // 🆕 Sự kiện click vào dòng để gửi dữ liệu sang mc_form.php
+  $('#mcTable tbody').on('click', 'tr', function () {
+    const rowData = table.row(this).data();
+    if (!rowData) return;
+
+    window.parent.postMessage({
+      type: 'fill-form',
+      data: {
+        mc_id: rowData.mc_id,
+        mc_topic: rowData.mc_topic,
+        mc_question: rowData.mc_question,
+        mc_answer1: rowData.mc_answer1,
+        mc_answer2: rowData.mc_answer2,
+        mc_answer3: rowData.mc_answer3,
+        mc_answer4: rowData.mc_answer4,
+        mc_correct_answer: rowData.mc_correct_answer,
+        mc_image_url: rowData.mc_image_url
+      }
+    }, '*');
+  });
+});
+</script>
+
   <script src="../../js/mc/mc_table_arrow_key.js"></script>
 </body>
 </html>
