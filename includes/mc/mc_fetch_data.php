@@ -1,21 +1,20 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../db_connection.php'; // phải tạo $pdo = new PDO(...)
 
-// Lấy params từ DataTables
-$draw   = isset($_POST['draw']) ? (int)$_POST['draw'] : 0;
-$start  = isset($_POST['start']) ? max(0, (int)$_POST['start']) : 0;
-$length = isset($_POST['length']) ? (int)$_POST['length'] : 10;
-$length = ($length < 1 || $length > 500) ? 10 : $length;
+// Kết nối CSDL
+require_once __DIR__ . '/../db_connection.php'; // Đảm bảo file này tạo $pdo
 
-$searchValue = trim($_POST['search']['value'] ?? '');
+// Lấy tham số từ DataTables gửi lên
+$draw    = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
+$start   = isset($_POST['start']) ? intval($_POST['start']) : 0;
+$length  = isset($_POST['length']) ? intval($_POST['length']) : 10;
+$search  = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+$orderColIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+$orderDir      = isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc', 'desc'])
+                  ? $_POST['order'][0]['dir'] : 'asc';
 
-// Mapping cột cho sort
-$columnsMap = [
+// Map cột index → tên cột trong DB
+$columns = [
     0 => 'mc_id',
     1 => 'mc_topic',
     2 => 'mc_question',
@@ -26,59 +25,51 @@ $columnsMap = [
     7 => 'mc_correct_answer',
     8 => 'mc_image_url'
 ];
+$orderColumn = $columns[$orderColIndex] ?? 'mc_id';
 
-$orderCol = $columnsMap[$_POST['order'][0]['column'] ?? 0] ?? 'mc_id';
-$orderDir = in_array(strtolower($_POST['order'][0]['dir'] ?? 'desc'), ['asc', 'desc']) 
-            ? $_POST['order'][0]['dir'] 
-            : 'desc';
+// 1. Lấy tổng số bản ghi (chưa lọc)
+$totalRecordsStmt = $pdo->query("SELECT COUNT(*) FROM mc_questions");
+$totalRecords = $totalRecordsStmt->fetchColumn();
 
-// Base query
-$sqlBase = "FROM mc_questions";
-$where = "";
+// 2. Lấy tổng số bản ghi (đã lọc)
+$sqlFiltered = "SELECT COUNT(*) FROM mc_questions";
+$where = '';
 $params = [];
 
-// Nếu có search
-if ($searchValue !== '') {
-    $where = " WHERE mc_topic LIKE :kw
-               OR mc_question LIKE :kw
-               OR mc_answer1 LIKE :kw
-               OR mc_answer2 LIKE :kw
-               OR mc_answer3 LIKE :kw
-               OR mc_answer4 LIKE :kw
-               OR mc_correct_answer LIKE :kw";
-    $params[':kw'] = "%{$searchValue}%";
+if ($search !== '') {
+    $whereParts = [];
+    foreach ($columns as $col) {
+        $whereParts[] = "$col LIKE :search";
+    }
+    $where = ' WHERE ' . implode(' OR ', $whereParts);
+    $params[':search'] = "%$search%";
 }
 
-// Tổng records
-$totalRecords = (int)$pdo->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
+$stmtFiltered = $pdo->prepare($sqlFiltered . $where);
+$stmtFiltered->execute($params);
+$totalFiltered = $stmtFiltered->fetchColumn();
 
-// Tổng records sau lọc
-if ($where) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) {$sqlBase} {$where}");
-    $stmt->execute($params);
-    $filteredRecords = (int)$stmt->fetchColumn();
-} else {
-    $filteredRecords = $totalRecords;
+// 3. Lấy dữ liệu thực tế
+$sqlData = "SELECT * FROM mc_questions" . $where .
+           " ORDER BY $orderColumn $orderDir LIMIT :start, :length";
+$stmtData = $pdo->prepare($sqlData);
+
+// Bind giá trị tìm kiếm
+foreach ($params as $key => $value) {
+    $stmtData->bindValue($key, $value, PDO::PARAM_STR);
 }
 
-// Lấy dữ liệu
-$stmt = $pdo->prepare("SELECT mc_id, mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url
-                       {$sqlBase}
-                       {$where}
-                       ORDER BY {$orderCol} {$orderDir}
-                       LIMIT :start, :length");
-foreach ($params as $k => $v) {
-    $stmt->bindValue($k, $v, PDO::PARAM_STR);
-}
-$stmt->bindValue(':start', $start, PDO::PARAM_INT);
-$stmt->bindValue(':length', $length, PDO::PARAM_INT);
-$stmt->execute();
-$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Bind start, length (phải bind kiểu int)
+$stmtData->bindValue(':start', $start, PDO::PARAM_INT);
+$stmtData->bindValue(':length', $length, PDO::PARAM_INT);
 
-// Trả JSON
+$stmtData->execute();
+$data = $stmtData->fetchAll(PDO::FETCH_ASSOC);
+
+// 4. Trả JSON cho DataTables
 echo json_encode([
-    'draw' => $draw,
-    'recordsTotal' => $totalRecords,
-    'recordsFiltered' => $filteredRecords,
-    'data' => $data
+    "draw"            => $draw,
+    "recordsTotal"    => $totalRecords,
+    "recordsFiltered" => $totalFiltered,
+    "data"            => $data
 ], JSON_UNESCAPED_UNICODE);
