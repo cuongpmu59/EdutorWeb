@@ -103,11 +103,11 @@ $(function () {
 
     // Gán các trường khác
     document.getElementById('mc_question').value = rowData.mc_question || '';
-    document.getElementById('mc_answer_a').value = rowData.mc_answer_a || '';
-    document.getElementById('mc_answer_b').value = rowData.mc_answer_b || '';
-    document.getElementById('mc_answer_c').value = rowData.mc_answer_c || '';
-    document.getElementById('mc_answer_d').value = rowData.mc_answer_d || '';
-    document.getElementById('mc_correct').value = rowData.mc_correct || '';
+    document.getElementById('mc_answer1').value = rowData.mc_answer1 || '';
+    document.getElementById('mc_answer2').value = rowData.mc_answer2 || '';
+    document.getElementById('mc_answer3').value = rowData.mc_answer3 || '';
+    document.getElementById('mc_answer4').value = rowData.mc_answer4 || '';
+    document.getElementById('mc_correct_answer').value = rowData.mc_correct_answer || '';
 
     // Hiển thị ảnh nếu có
     const imgPreview = document.getElementById('mc_image_preview');
