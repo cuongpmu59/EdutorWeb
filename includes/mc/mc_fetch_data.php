@@ -15,10 +15,10 @@ $columnsMap = [
     0 => 'mc_id',
     1 => 'mc_topic',
     2 => 'mc_question',
-    3 => 'mc_answer_a',
-    4 => 'mc_answer_b',
-    5 => 'mc_answer_c',
-    6 => 'mc_answer_d',
+    3 => 'mc_answer1',
+    4 => 'mc_answer2',
+    5 => 'mc_answer3',
+    6 => 'mc_answer4',
     7 => 'mc_correct_answer',
     8 => 'mc_image_url'
 ];
@@ -37,10 +37,10 @@ $params = [];
 if ($searchValue !== '') {
     $where = " WHERE mc_topic LIKE :kw
                OR mc_question LIKE :kw
-               OR mc_answer_a LIKE :kw
-               OR mc_answer_b LIKE :kw
-               OR mc_answer_c LIKE :kw
-               OR mc_answer_d LIKE :kw
+               OR mc_answer1 LIKE :kw
+               OR mc_answer2 LIKE :kw
+               OR mc_answer3 LIKE :kw
+               OR mc_answer4 LIKE :kw
                OR mc_correct_answer LIKE :kw";
     $params[':kw'] = "%{$searchValue}%";
 }
@@ -58,7 +58,7 @@ if ($where) {
 }
 
 // Lấy dữ liệu
-$stmt = $pdo->prepare("SELECT mc_id, mc_topic, mc_question, mc_answer_a, mc_answer_b, mc_answer_c, mc_answer_d, mc_correct_answer, mc_image_url
+$stmt = $pdo->prepare("SELECT mc_id, mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url
                        {$sqlBase}
                        {$where}
                        ORDER BY {$orderCol} {$orderDir}
