@@ -95,24 +95,29 @@ $(function () {
 
   // 🆕 Sự kiện click vào dòng để gửi dữ liệu sang mc_form.php
   $('#mcTable tbody').on('click', 'tr', function () {
-    const rowData = table.row(this).data();
+    const rowData = $('#mcTable').DataTable().row(this).data();
     if (!rowData) return;
 
-    window.parent.postMessage({
-      type: 'fill-form',
-      data: {
-        mc_id: rowData.mc_id,
-        mc_topic: rowData.mc_topic,
-        mc_question: rowData.mc_question,
-        mc_answer1: rowData.mc_answer1,
-        mc_answer2: rowData.mc_answer2,
-        mc_answer3: rowData.mc_answer3,
-        mc_answer4: rowData.mc_answer4,
-        mc_correct_answer: rowData.mc_correct_answer,
-        mc_image_url: rowData.mc_image_url
-      }
-    }, '*');
-  });
+    // Gán ID vào hidden input
+    document.getElementById('mc_id').value = rowData.mc_id;
+
+    // Gán các trường khác
+    document.getElementById('mc_question').value = rowData.mc_question || '';
+    document.getElementById('mc_answer_a').value = rowData.mc_answer_a || '';
+    document.getElementById('mc_answer_b').value = rowData.mc_answer_b || '';
+    document.getElementById('mc_answer_c').value = rowData.mc_answer_c || '';
+    document.getElementById('mc_answer_d').value = rowData.mc_answer_d || '';
+    document.getElementById('mc_correct').value = rowData.mc_correct || '';
+
+    // Hiển thị ảnh nếu có
+    const imgPreview = document.getElementById('mc_image_preview');
+    if (rowData.mc_image_url) {
+        imgPreview.src = rowData.mc_image_url;
+        imgPreview.style.display = 'block';
+    } else {
+        imgPreview.src = '';
+        imgPreview.style.display = 'none';
+    }
 });
 </script>
 
