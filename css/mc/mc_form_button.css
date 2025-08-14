@@ -7,7 +7,7 @@
   border-radius: 8px;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 cột bằng nhau */
-  gap: 14px; /* khoảng cách đều giữa các hàng/cột */
+  gap: 20px; /* khoảng cách đều giữa các hàng/cột */
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
@@ -17,7 +17,7 @@
   margin-bottom: 8px;
   color: #333;
   font-weight: bold;
-  text-align: center;
+  text-align: left;
   font-size: 16px;
 }
 
