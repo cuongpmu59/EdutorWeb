@@ -1,33 +1,25 @@
-/* Vùng chứa các nút thao tác */
 .mc-buttons {
   margin-top: 20px;
   padding: 20px;
   border-top: 2px solid #ccc;
-  background-color: #f9f9f9;
+  background: #f9f9f9;
   border-radius: 8px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 cột */
-  grid-template-rows: repeat(3, auto); /* 3 hàng */
-  gap: 16px; /* Khoảng cách ngang & dọc đều nhau */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-/* Tiêu đề */
 .mc-buttons h4 {
   grid-column: span 2;
-  color: #333;
-  font-weight: bold;
-  text-align: left;
+  margin: 0 0 8px 0;
   font-size: 16px;
-  margin: 0; /* bỏ margin mặc định */
+  font-weight: bold;
+  color: #333;
 }
 
-/* Style chung cho tất cả nút */
-.mc-buttons button,
-.mc-buttons .btn-upload,
-.mc-buttons #mc_remove_image {
-  width: 100%;
-  height: 50px; /* Chiều cao cố định */
+.mc-buttons button {
+  height: 50px;
   font-size: 15px;
   font-weight: 500;
   color: white;
@@ -41,39 +33,25 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-/* Hover chung */
-.mc-buttons button:hover,
-.mc-buttons .btn-upload:hover,
-.mc-buttons #mc_remove_image:hover {
+.mc-buttons button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
 
-/* Màu sắc từng loại */
-.mc-buttons button {
-  background-color: #007bff;
-}
-.mc-buttons button:hover {
-  background-color: #0069d9;
-}
+#mc_save { background: #007bff; }
+#mc_save:hover { background: #0069d9; }
 
-.mc-buttons .btn-upload {
-  background-color: #28a745;
-}
-.mc-buttons .btn-upload:hover {
-  background-color: #218838;
-}
+#mc_delete { background: #dc3545; }
+#mc_delete:hover { background: #c82333; }
 
-.mc-buttons #mc_remove_image {
-  background-color: #dc3545;
-}
-.mc-buttons #mc_remove_image:hover {
-  background-color: #c82333;
-}
+#mc_reset { background: #ffc107; color: #333; }
+#mc_reset:hover { background: #e0a800; }
 
-/* Responsive: màn nhỏ 1 nút mỗi hàng */
-@media (max-width: 480px) {
-  .mc-buttons {
-    grid-template-columns: 1fr;
-  }
+#mc_view_list { background: #17a2b8; }
+#mc_view_list:hover { background: #138496; }
+
+#mc_preview_exam {
+  background: #28a745;
+  grid-column: span 2;
 }
+#mc_preview_exam:hover { background: #218838; }
