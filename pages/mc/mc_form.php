@@ -116,24 +116,13 @@
           
           <div class="mc-buttons">
             <h4>Thao tác</h4>
-
-            <div class="mc-button-row">
             <button type="submit" id="mc_save">Lưu</button>
             <button type="button" id="mc_delete">Xóa</button>
-            </div>
-
-            <div class="mc-button-row">
-            <button type="button" id="mc_reset">Làm lại</button>
+            <button type="button" id="mc_reset">Làm mới</button>
             <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
-            </div>
-
-            <div class="mc-button-row">
             <button type="button" id="mc_preview_exam">Làm đề</button>
-            </div>
-            </div>
-
-
-      <input type="hidden" id="mc_id" name="mc_id" value="">
+          </div>
+          <input type="hidden" id="mc_id" name="mc_id" value="">
     </form>
 
     <div id="mcTableWrapper" style="display:none;">
