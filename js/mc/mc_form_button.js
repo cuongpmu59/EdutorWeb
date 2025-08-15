@@ -1,4 +1,4 @@
-    // Nút "Làm lại" (#mc_reset)
+    // Nút "Làm mới" (#mc_reset)
 
     document.getElementById('mc_reset').addEventListener('click', function () {
     const form = document.getElementById('mcForm');
