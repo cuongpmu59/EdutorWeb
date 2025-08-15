@@ -1,56 +1,90 @@
-/* Thanh toolbar chính */
-#mcToolbar {
+/* mc_table_toolbar.css */
+
+/* Thanh toolbar tổng */
+.mc-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f4f6f9;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-bottom: 10px;
+    gap: 12px;
+    background: #f8f9fa;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    flex-wrap: wrap;
+  }
+  
+  /* Nhóm bên trái và bên phải */
+  .mc-toolbar .toolbar-left,
+  .mc-toolbar .toolbar-right {
+    display: flex;
+    align-items: center;
     gap: 10px;
     flex-wrap: wrap;
   }
   
-  /* Nhóm nút bên trái */
-  .toolbar-left {
-    display: flex;
-    gap: 8px;
-  }
-  
-  /* Nhóm nút bên phải */
-  .toolbar-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  /* Nút chung */
+  /* Nút toolbar */
   .toolbar-btn {
-    background: #4cafef;
-    color: white;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #007bff;
+    color: #fff;
     font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.25s ease, transform 0.15s ease;
+    text-decoration: none;
+    user-select: none;
   }
   
   .toolbar-btn:hover {
-    background: #3a91d8;
+    background: #0056b3;
+    transform: translateY(-1px);
   }
   
-  /* Input file ẩn cho nút Nhập Excel */
-  #importExcelInput {
-    display: none;
+  .toolbar-btn:active {
+    transform: translateY(1px);
   }
   
-  /* Select lọc chủ đề */
+  /* Select lọc */
   #filterTopic {
-    padding: 6px 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    padding: 6px 8px;
     font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    min-width: 140px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  
+  #filterTopic:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .mc-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .mc-toolbar .toolbar-left,
+    .mc-toolbar .toolbar-right {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .toolbar-btn {
+      flex: 1;
+      justify-content: center;
+    }
+    #filterTopic {
+      flex: 1;
+    }
   }
   
