@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
   <link rel="stylesheet" href="../../css/mc/mc_formtype.css">
 
-  <!-- CSS thêm để cố định form và bảng full width -->
+  <!-- CSS tùy chỉnh -->
   <style>
     /* Cố định form trên cùng */
     #formContainer {
@@ -19,7 +19,7 @@
       left: 0;
       width: 100%;
       background: #fff;
-      padding: 10px 15px;
+      padding: 15px;
       border-bottom: 1px solid #ccc;
       z-index: 1000;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -27,9 +27,13 @@
 
     /* DataTable nằm dưới form */
     .datatable-wrapper {
-      display: none; /* Ẩn mặc định */
-      position: relative;
+      display: none;
+      position: fixed;
+      left: 0;
+      top: 0; /* JS sẽ tính */
       width: 100%;
+      z-index: 900;
+      background: #fff;
     }
 
     .datatable-wrapper.show {
@@ -58,12 +62,13 @@
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Bọc form trong div cố định -->
+  <!-- Form cố định -->
   <div id="formContainer">
     <form id="mcForm" method="POST" enctype="multipart/form-data">
       <h2>
@@ -71,17 +76,20 @@
         <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
       </h2>
 
+      <!-- Xem trước toàn bộ -->
       <div id="mcPreview" class="mc-preview-zone" style="display:none;">
         <div id="mcPreviewContent"></div>
       </div>
 
       <div id="mcMainContent" class="mc-columns">
         <div class="mc-col mc-col-left">
+          <!-- Chủ đề -->
           <div class="mc-field">
             <label for="mc_topic">Chủ đề:</label>
             <input type="text" id="mc_topic" name="topic" required>
           </div>
 
+          <!-- Câu hỏi -->
           <div class="mc-field">
             <label for="mc_question">Câu hỏi:
               <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
@@ -90,7 +98,7 @@
             <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
           </div>
 
-          <!-- Câu trả lời A - D -->
+          <!-- Câu trả lời A-D -->
           <?php
           $answers = ['A','B','C','D'];
           foreach ($answers as $i => $label) {
@@ -105,6 +113,7 @@
           }
           ?>
 
+          <!-- Đáp án đúng -->
           <div class="mc-field mc-inline-field">
             <label for="mc_correct_answer">Đáp án đúng:</label>
             <select id="mc_correct_answer" name="answer" required>
@@ -116,6 +125,7 @@
           </div>
         </div>
 
+        <!-- Bên phải: ảnh & nút thao tác -->
         <div class="mc-col mc-col-right">
           <div class="mc-image-zone">
             <h4>Ảnh minh họa</h4>
@@ -150,39 +160,45 @@
     </form>
   </div>
 
-  <!-- Khung chứa DataTable ngay dưới form -->
+  <!-- Khung chứa DataTable -->
   <div id="mcTableWrapper" class="datatable-wrapper">
     <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php"></iframe>
   </div>
 
-  <!-- JS gốc -->
+  <!-- JS -->
   <script src="../../js/mc/mc_form_preview.js"></script>
-  <script src="../../js/mc/mc_form_image.js?"></script>
+  <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
-    // Hàm cập nhật chiều cao DataTable theo form
+    // Cập nhật chiều cao iframe theo form
     function updateTableHeight() {
       const formHeight = document.getElementById('formContainer').offsetHeight;
       document.documentElement.style.setProperty('--form-height', formHeight + 'px');
+      const wrapper = document.getElementById('mcTableWrapper');
+      const iframe = document.getElementById('mcTableFrame');
+      if(wrapper.classList.contains('show')){
+        iframe.style.height = (window.innerHeight - formHeight) + 'px';
+      }
     }
 
     window.addEventListener('resize', updateTableHeight);
     window.addEventListener('load', updateTableHeight);
 
-    // Nút "Ẩn/hiện danh sách"
+    // Nút ẩn/hiện danh sách
     document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('mc_view_list');
-    const wrapper = document.getElementById('mcTableWrapper');
-
-    btn.addEventListener('click', () => {
-    wrapper.classList.toggle('show');
-    updateTableHeight(); // Cập nhật chiều cao iframe
+      const btn = document.getElementById('mc_view_list');
+      const wrapper = document.getElementById('mcTableWrapper');
+      btn.addEventListener('click', () => {
+        wrapper.classList.toggle('show');
+        updateTableHeight();
+        if(wrapper.classList.contains('show')){
+          wrapper.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
     });
-    });
 
-
-    // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
+    // Lắng nghe dữ liệu từ iframe
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
       if (type !== 'fill-form' || !data) return;
@@ -207,5 +223,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
+
 </body>
 </html>
