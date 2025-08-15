@@ -91,10 +91,12 @@
   
   .datatable-wrapper {
     display: none;
-    position: absolute;  /* nằm ngay dưới form */
+    position: fixed;
     left: 0;
+    top: 0; /* sẽ được JS tính */
     width: 100%;
     z-index: 900;
+    background: #fff;
   }
   
   .datatable-wrapper.show {
@@ -104,8 +106,8 @@
   .datatable-wrapper iframe {
     width: 100%;
     border: none;
-    height: calc(100vh - var(--form-height)); /* chiều cao tự động còn lại của viewport */
   }
+  
   
   
   
