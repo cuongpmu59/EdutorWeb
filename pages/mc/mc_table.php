@@ -16,27 +16,26 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
-<!-- DataTables CSS + Buttons -->
+<!-- DataTables + Buttons CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
+<!-- Toolbar CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 
 <style>
-body { font-family: Arial, sans-serif; padding: 16px; }
+body {
+  font-family: Arial, sans-serif;
+  padding: 16px;
+}
+h2 {
+  margin-bottom: 16px;
+}
 table img {
   border-radius: 4px;
   object-fit: cover;
   max-width: 80px;
   max-height: 80px;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.toolbar-left button, .toolbar-left input {
-  margin-right: 5px;
 }
 </style>
 </head>
@@ -44,22 +43,25 @@ table img {
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
-<div id="mcToolbar">
+<!-- Toolbar -->
+<div class="mc-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
-    <input type="file" id="importExcelInput" accept=".xlsx">
-    <button class="toolbar-btn" id="exportExcelBtn">📤 Xuất Excel</button>
-    <button class="toolbar-btn" id="printTableBtn">🖨️ In bảng</button>
+    <input type="file" id="importExcelInput" accept=".xlsx" hidden>
+
+    <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
+    <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
   </div>
+
   <div class="toolbar-right">
-    <label for="filterTopic">Lọc theo chủ đề:</label>
+    <label for="filterTopic">🔍 Lọc chủ đề:</label>
     <select id="filterTopic">
       <option value="">Tất cả</option>
-      <!-- load thêm các option từ DB -->
     </select>
   </div>
 </div>
 
+<!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
   <thead>
     <tr>
@@ -87,6 +89,7 @@ table img {
 
 <script>
 $(function () {
+  // Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
@@ -106,98 +109,75 @@ $(function () {
       { data: 'mc_correct_answer' },
       {
         data: 'mc_image_url',
-        render: function(data) {
-          return data ? '<img src="' + data + '" alt="ảnh">' : '';
+        render: function (data) {
+          return data ? `<img src="${data}" alt="ảnh">` : '';
         }
       }
     ],
     dom: 'Bfrtip',
-    buttons: [],
-    initComplete: function() {
-      // Lấy danh sách chủ đề để fill dropdown
-      $.ajax({
-        url: '../../includes/mc/mc_get_topics.php',
-        dataType: 'json',
-        success: function(res) {
-          res.forEach(t => {
-            $('#filterTopic').append(`<option value="${t}">${t}</option>`);
-          });
-        }
+    buttons: [
+      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } },
+      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } }
+    ],
+    initComplete: function () {
+      // Lấy danh sách chủ đề từ DB
+      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
+        topics.forEach(t => {
+          $('#filterTopic').append(`<option value="${t}">${t}</option>`);
+        });
       });
     }
   });
 
   // Lọc theo chủ đề
-  $('#filterTopic').on('change', function(){
+  $('#filterTopic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
 
   // Export Excel
-  $('#btnExportExcel').on('click', function(){
-    table.button('.buttons-excel').trigger();
+  $('#btnExportExcel').on('click', function () {
+    table.button(0).trigger();
   });
-  new $.fn.dataTable.Buttons(table, {
-    buttons: [
-      {
-        extend: 'excelHtml5',
-        title: 'Danh sách câu hỏi'
-      }
-    ]
-  });
-  table.buttons(0, null).container().appendTo($('#btnExportExcel').parent());
 
   // Print
-  $('#btnPrint').on('click', function(){
-    table.button('.buttons-print').trigger();
+  $('#btnPrint').on('click', function () {
+    table.button(1).trigger();
   });
-  new $.fn.dataTable.Buttons(table, {
-    buttons: [
-      { extend: 'print', title: 'Danh sách câu hỏi' }
-    ]
-  });
-  table.buttons(1, null).container().appendTo($('#btnPrint').parent());
 
   // Import Excel
-  $('#btnImport').on('click', function(){
-    $('#importExcel').click();
-  });
-
-  $('#importExcel').on('change', function(e){
+  $('#importExcelInput').on('change', function (e) {
     const file = e.target.files[0];
-    if(!file) return;
+    if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(evt) {
+    reader.onload = function (evt) {
       const data = new Uint8Array(evt.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      
-      if(worksheet.length === 0) {
+
+      if (worksheet.length === 0) {
         alert('File Excel rỗng!');
         return;
       }
 
-      $.ajax({
-        url: '../../includes/mc/mc_import_excel.php',
-        type: 'POST',
-        data: { rows: JSON.stringify(worksheet) },
-        success: function(res) {
-          alert('Nhập thành công!');
+      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
+        .done(res => {
+          alert('📥 Nhập dữ liệu thành công!');
           table.ajax.reload();
-        },
-        error: function(err) {
+        })
+        .fail(err => {
           console.error(err);
-          alert('Lỗi khi nhập Excel');
-        }
-      });
+          alert('❌ Lỗi khi nhập Excel');
+        });
     };
     reader.readAsArrayBuffer(file);
   });
-
 });
 </script>
 
+<!-- Điều khiển bằng phím mũi tên -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
+
 </body>
 </html>
