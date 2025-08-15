@@ -90,13 +90,16 @@
   /* KHU VỰC ẨN HIỆN BẢNG */
   
   .datatable-wrapper {
-    display: none; /* Ẩn mặc định */
-    position: relative;
+    display: none;
     width: 100%;
+    position: fixed; /* sửa từ relative -> fixed để nằm ngay dưới form */
+    top: 0; /* sẽ dịch xuống bằng JS */
+    left: 0;
+    z-index: 900; /* thấp hơn form nhưng cao hơn content khác */
   }
   
   .datatable-wrapper.show {
-    display: block; /* Hiện khi bật */
+    display: block;
   }
   
   
