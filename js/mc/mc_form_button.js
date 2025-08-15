@@ -152,6 +152,4 @@ window.addEventListener('load', () => {
     updateTableHeight();
   }
 });
-
     
-      
