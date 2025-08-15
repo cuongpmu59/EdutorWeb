@@ -178,6 +178,7 @@ $(function () {
 
 <!-- Điều khiển bằng phím mũi tên -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
+<script src="../../js/mc/mc_table_import_excel.js"></script>
 
 </body>
 </html>
