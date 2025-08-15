@@ -141,7 +141,7 @@
               <button type="submit" id="mc_save">Lưu</button>
               <button type="button" id="mc_delete">Xóa</button>
               <button type="button" id="mc_reset">Làm mới</button>
-              <button type="button" id="mc_view_list" onclick="toggleTable()">Ẩn/hiện danh sách</button>
+              <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
               <button type="button" id="mc_preview_exam" class="full-width">Làm đề</button>
             </div>
             <input type="hidden" id="mc_id" name="mc_id">
@@ -162,6 +162,13 @@
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
+  //   // Nút "Ẩn/hiện danh sách"
+  // document.getElementById('mc_view_list').addEventListener('click', () => {
+  //   const wrapper = document.getElementById('mcTableWrapper');
+  //   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+  //     ? 'block'
+  //     : 'none';
+  // });
     // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
