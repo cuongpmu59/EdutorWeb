@@ -96,7 +96,8 @@
   }
   
   .datatable-wrapper.show {
-    display: block; /* Khi mở */
+    display: block; /* Hiện khi bật */
   }
+  
   
   
