@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
-  <link rel="stylesheet" href="../../css/mc/mc_formtype.css">
+  <link rel="stylesheet" href="../../css/mc/mc_form_layout.css">
 
   <!-- MathJax -->
   <script>
