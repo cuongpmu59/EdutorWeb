@@ -91,16 +91,22 @@
   
   .datatable-wrapper {
     display: none;
-    width: 100%;
-    position: fixed; /* sửa từ relative -> fixed để nằm ngay dưới form */
-    top: 0; /* sẽ dịch xuống bằng JS */
+    position: absolute;  /* nằm ngay dưới form */
     left: 0;
-    z-index: 900; /* thấp hơn form nhưng cao hơn content khác */
+    width: 100%;
+    z-index: 900;
   }
   
   .datatable-wrapper.show {
     display: block;
   }
+  
+  .datatable-wrapper iframe {
+    width: 100%;
+    border: none;
+    height: calc(100vh - var(--form-height)); /* chiều cao tự động còn lại của viewport */
+  }
+  
   
   
   
