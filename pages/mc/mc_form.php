@@ -124,11 +124,10 @@
       <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
       <button type="button" id="mc_preview_exam" class="full-width">Làm đề</button>
     </div>
-  <!-- </div> -->
+   </div>
 
   <input type="hidden" id="mc_id" name="mc_id" value="">
 </form>
-</div>
 
 <!-- Khung chứa DataTable -->
 <div id="mcTableWrapper" class="datatable-wrapper" style="display:none;">
