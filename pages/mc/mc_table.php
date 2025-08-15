@@ -94,25 +94,25 @@ $(function () {
   });
 
   // 🆕 Sự kiện click vào dòng để gửi dữ liệu sang mc_form.php
-  $('#mcTable tbody').on('click', 'tr', function () {
-    const rowData = table.row(this).data();
-    if (!rowData) return;
+  // $('#mcTable tbody').on('click', 'tr', function () {
+  //   const rowData = table.row(this).data();
+  //   if (!rowData) return;
 
-    window.parent.postMessage({
-      type: 'fill-form',
-      data: {
-        mc_id: rowData.mc_id,
-        mc_topic: rowData.mc_topic,
-        mc_question: rowData.mc_question,
-        mc_answer1: rowData.mc_answer1,
-        mc_answer2: rowData.mc_answer2,
-        mc_answer3: rowData.mc_answer3,
-        mc_answer4: rowData.mc_answer4,
-        mc_correct_answer: rowData.mc_correct_answer,
-        mc_image_url: rowData.mc_image_url
-      }
-    }, '*');
-  });
+  //   window.parent.postMessage({
+  //     type: 'fill-form',
+  //     data: {
+  //       mc_id: rowData.mc_id,
+  //       mc_topic: rowData.mc_topic,
+  //       mc_question: rowData.mc_question,
+  //       mc_answer1: rowData.mc_answer1,
+  //       mc_answer2: rowData.mc_answer2,
+  //       mc_answer3: rowData.mc_answer3,
+  //       mc_answer4: rowData.mc_answer4,
+  //       mc_correct_answer: rowData.mc_correct_answer,
+  //       mc_image_url: rowData.mc_image_url
+  //     }
+  //   }, '*');
+  // });
 });
 </script>
 
