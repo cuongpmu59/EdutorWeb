@@ -171,14 +171,14 @@
     window.addEventListener('load', updateTableHeight);
 
     // Nút "Ẩn/hiện danh sách"
-    document.getElementById('mc_view_list').addEventListener('click', () => {
-      const wrapper = document.getElementById('mcTableWrapper');
-      wrapper.classList.toggle('show');
-      updateTableHeight();
-      if (wrapper.classList.contains('show')) {
-        document.getElementById('mcTableFrame').contentWindow.location.reload();
-      }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('mc_view_list');
+  const wrapper = document.getElementById('mcTableWrapper');
+
+  btn.addEventListener('click', () => {
+    wrapper.classList.toggle('show');
+  });
+  });
 
     // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
     window.addEventListener('message', function (event) {
