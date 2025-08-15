@@ -90,13 +90,13 @@
   /* KHU VỰC ẨN HIỆN BẢNG */
   
   .datatable-wrapper {
-    width: 100%;              /* Chiếm toàn bộ chiều rộng */
-    margin-top: 20px;         /* Cách form một chút */
+    display: none; /* Ẩn mặc định */
+    position: relative;
+    width: 100%;
   }
   
-  .datatable-wrapper iframe {
-    width: 100%;              /* Chiều rộng 100% */
-    height: 600px;            /* Chiều cao cố định hoặc dùng calc */
-    border: none;             /* Bỏ viền iframe */
+  .datatable-wrapper.show {
+    display: block; /* Khi mở */
   }
+  
   
