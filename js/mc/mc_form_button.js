@@ -122,12 +122,24 @@
 });
 
   // Nút "Ẩn/hiện danh sách" (#mc_view_list)
-    document.getElementById('mc_view_list').addEventListener('click', () => {
+    document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('mc_view_list');
     const wrapper = document.getElementById('mcTableWrapper');
-    wrapper.classList.toggle('show'); // toggle class 'show'
-    updateTableHeight(); // cập nhật chiều cao iframe
-    if (wrapper.classList.contains('show')) {
-      document.getElementById('mcTableFrame').contentWindow.location.reload();
+    const form = document.getElementById('formContainer');
+    const iframe = document.getElementById('mcTableFrame');
+  
+    function updateTableHeight() {
+      const formHeight = form.offsetHeight;
+      iframe.style.height = (window.innerHeight - formHeight) + 'px';
+      wrapper.style.top = formHeight + 'px';
     }
+  
+    btn.addEventListener('click', () => {
+      wrapper.classList.toggle('show');
+      updateTableHeight(); // cập nhật chiều cao và top
+    });
+  
+    window.addEventListener('resize', updateTableHeight);
   });
+  
   
