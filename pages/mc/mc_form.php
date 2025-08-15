@@ -153,7 +153,7 @@
 
   <!-- Khung chứa DataTable -->
   <!-- <div id="mcTableWrapper" class="datatable-wrapper" style="display:none;">
-    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?i=1"></iframe>
+    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?"></iframe>
   </div> -->
 
   <div id="mcTableWrapper" style="display:none;">
