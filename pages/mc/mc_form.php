@@ -161,15 +161,7 @@
   <script src="../../js/mc/mc_form_image.js?v=1.0"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
 
-  <!-- JS thêm -->
   <script>
-    function toggleTable() {
-      const wrapper = document.getElementById("mcTableWrapper");
-      wrapper.style.display = (wrapper.style.display === "none" || wrapper.style.display === "") 
-        ? "block" 
-        : "none";
-    }
-
     // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
