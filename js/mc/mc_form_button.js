@@ -128,3 +128,13 @@
   //     ? 'block'
   //     : 'none';
   // });
+
+    document.getElementById('mc_view_list').addEventListener('click', () => {
+    const wrapper = document.getElementById('mcTableWrapper');
+    wrapper.classList.toggle('show'); // toggle class 'show'
+    updateTableHeight(); // cập nhật chiều cao iframe
+    if (wrapper.classList.contains('show')) {
+      document.getElementById('mcTableFrame').contentWindow.location.reload();
+    }
+  });
+  
