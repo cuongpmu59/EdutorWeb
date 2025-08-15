@@ -10,41 +10,6 @@
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
   <link rel="stylesheet" href="../../css/mc/mc_formtype.css">
 
-  <!-- CSS thêm để cố định form và bảng full width -->
-  <style>
-    /* Cố định form trên cùng */
-    #formContainer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      padding: 10px 15px;
-      border-bottom: 1px solid #ccc;
-      z-index: 1000;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Khoảng trống để nội dung bên dưới không bị che */
-    body {
-      margin: 0;
-      padding-top: 480px; /* chiều cao form (tùy chỉnh lại nếu form cao hơn/thấp hơn) */
-    }
-
-    /* Khung DataTable full width & cuộn */
-    .datatable-wrapper {
-      width: 100%;
-      height: calc(100vh - 480px); /* màn hình trừ chiều cao form */
-      overflow-y: auto;
-    }
-
-    .datatable-wrapper iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
-
   <!-- MathJax -->
   <script>
     window.MathJax = {
@@ -151,16 +116,10 @@
     </form>
   </div>
 
-  <!-- Khung chứa DataTable -->
-  <!-- <div id="mcTableWrapper" class="datatable-wrapper" style="display:none;">
-    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?"></iframe>
-  </div> -->
-
   <div id="mcTableWrapper" style="display:none;">
       <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
     </div>
 
-  <!-- JS gốc -->
   <script src="../../js/mc/mc_form_preview.js"></script>
   <script src="../../js/mc/mc_form_image.js?"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
