@@ -25,22 +25,20 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    /* Khoảng trống để nội dung bên dưới không bị che */
-    body {
-      margin: 0;
-      padding-top: 480px; /* chiều cao form (tùy chỉnh lại nếu form cao hơn/thấp hơn) */
+    /* DataTable nằm dưới form */
+    .datatable-wrapper {
+      display: none; /* Ẩn mặc định */
+      position: relative;
+      width: 100%;
     }
 
-    /* Khung DataTable full width & cuộn */
-    .datatable-wrapper {
-      width: 100%;
-      height: calc(100vh - 480px); /* màn hình trừ chiều cao form */
-      overflow-y: auto;
+    .datatable-wrapper.show {
+      display: block;
     }
 
     .datatable-wrapper iframe {
       width: 100%;
-      height: 100%;
+      height: calc(100vh - var(--form-height));
       border: none;
     }
   </style>
@@ -64,6 +62,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
   <!-- Bọc form trong div cố định -->
   <div id="formContainer">
     <form id="mcForm" method="POST" enctype="multipart/form-data">
@@ -151,24 +150,36 @@
     </form>
   </div>
 
-  <!-- Khung chứa DataTable -->
-  <div id="mcTableWrapper" class="datatable-wrapper" style="display:none;">
-    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php?i=1"></iframe>
+  <!-- Khung chứa DataTable ngay dưới form -->
+  <div id="mcTableWrapper" class="datatable-wrapper">
+    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php"></iframe>
   </div>
 
   <!-- JS gốc -->
   <script src="../../js/mc/mc_form_preview.js"></script>
-  <script src="../../js/mc/mc_form_image.js?v=1.0"></script>
+  <script src="../../js/mc/mc_form_image.js?"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
+    // Hàm cập nhật chiều cao DataTable theo form
+    function updateTableHeight() {
+      const formHeight = document.getElementById('formContainer').offsetHeight;
+      document.documentElement.style.setProperty('--form-height', formHeight + 'px');
+    }
+
+    window.addEventListener('resize', updateTableHeight);
+    window.addEventListener('load', updateTableHeight);
+
     // Nút "Ẩn/hiện danh sách"
-  document.getElementById('mc_view_list').addEventListener('click', () => {
-    const wrapper = document.getElementById('mcTableWrapper');
-    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-      ? 'block'
-      : 'none';
-  });
+    document.getElementById('mc_view_list').addEventListener('click', () => {
+      const wrapper = document.getElementById('mcTableWrapper');
+      wrapper.classList.toggle('show');
+      updateTableHeight();
+      if (wrapper.classList.contains('show')) {
+        document.getElementById('mcTableFrame').contentWindow.location.reload();
+      }
+    });
+
     // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
