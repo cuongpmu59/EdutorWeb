@@ -20,6 +20,8 @@ window.MathJax = {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
+<link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
+
 <style>
 body { font-family: Arial, sans-serif; padding: 16px; }
 table img {
@@ -42,19 +44,19 @@ table img {
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
-<div class="toolbar">
+<div id="mcToolbar">
   <div class="toolbar-left">
-    <input type="file" id="importExcel" accept=".xlsx" style="display:none;">
-    <button id="btnImport">📥 Nhập Excel</button>
-    <button id="btnExportExcel">📤 Xuất Excel</button>
-    <button id="btnPrint">🖨 In bảng</button>
+    <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
+    <input type="file" id="importExcelInput" accept=".xlsx">
+    <button class="toolbar-btn" id="exportExcelBtn">📤 Xuất Excel</button>
+    <button class="toolbar-btn" id="printTableBtn">🖨️ In bảng</button>
   </div>
   <div class="toolbar-right">
-    <label>Chủ đề:
-      <select id="filterTopic">
-        <option value="">-- Tất cả --</option>
-      </select>
-    </label>
+    <label for="filterTopic">Lọc theo chủ đề:</label>
+    <select id="filterTopic">
+      <option value="">Tất cả</option>
+      <!-- load thêm các option từ DB -->
+    </select>
   </div>
 </div>
 
