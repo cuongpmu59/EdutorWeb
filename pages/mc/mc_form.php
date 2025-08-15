@@ -162,13 +162,13 @@
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
-  //   // Nút "Ẩn/hiện danh sách"
-  // document.getElementById('mc_view_list').addEventListener('click', () => {
-  //   const wrapper = document.getElementById('mcTableWrapper');
-  //   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-  //     ? 'block'
-  //     : 'none';
-  // });
+    // Nút "Ẩn/hiện danh sách"
+  document.getElementById('mc_view_list').addEventListener('click', () => {
+    const wrapper = document.getElementById('mcTableWrapper');
+    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+      ? 'block'
+      : 'none';
+  });
     // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
