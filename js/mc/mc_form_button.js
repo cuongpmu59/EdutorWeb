@@ -123,22 +123,35 @@
   
     // Nút "Ẩn/hiện danh sách" (#mc_view_list)
     const btn = document.getElementById('mc_view_list');
-    const wrapper = document.getElementById('mcTableWrapper');
-    const form = document.getElementById('formContainer');
-    const iframe = document.getElementById('mcTableFrame');
-    
-    function updateTableHeight() {
-      const formHeight = form.offsetHeight;
-      wrapper.style.top = formHeight + 'px';
-      iframe.style.height = (window.innerHeight - formHeight) + 'px';
-    }
-    
-    btn.addEventListener('click', () => {
-      wrapper.classList.toggle('show');
-      updateTableHeight();
-    });
-    
-    window.addEventListener('resize', updateTableHeight);
-    window.addEventListener('load', updateTableHeight);
+const wrapper = document.getElementById('mcTableWrapper');
+const form = document.getElementById('formContainer');
+const iframe = document.getElementById('mcTableFrame');
+
+function updateTableHeight() {
+  const formHeight = form.offsetHeight;
+  wrapper.style.top = formHeight + 'px';
+  iframe.style.height = (window.innerHeight - formHeight) + 'px';
+}
+
+// Nút ẩn/hiện danh sách
+btn.addEventListener('click', () => {
+  wrapper.classList.toggle('show');
+  if (wrapper.classList.contains('show')) {
+    updateTableHeight();
+  }
+});
+
+// Cập nhật khi resize hoặc load
+window.addEventListener('resize', () => {
+  if (wrapper.classList.contains('show')) {
+    updateTableHeight();
+  }
+});
+window.addEventListener('load', () => {
+  if (wrapper.classList.contains('show')) {
+    updateTableHeight();
+  }
+});
+
     
       
