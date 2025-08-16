@@ -19,18 +19,54 @@ window.MathJax = {
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
 
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
 <style>
+  body {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background: #f9fafb;
+    margin: 20px;
+  }
+  h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  /* DataTable đẹp hơn */
+  #mcTable {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #mcTable thead th {
+    background: #2563eb;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+  #mcTable tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+  }
+  #mcTable tbody tr:nth-child(even) {
+    background: #f3f4f6;
+  }
   /* Giới hạn kích thước ảnh */
   #mcTable img {
     max-width: 80px;
     max-height: 80px;
     border-radius: 6px;
     object-fit: cover;
+  }
+  /* Căn chỉnh thanh toolbar */
+  .mc-toolbar {
+    margin-bottom: 15px;
   }
 </style>
 </head>
@@ -74,12 +110,13 @@ window.MathJax = {
   </thead>
 </table>
 
-<!-- jQuery + DataTables + Buttons + SheetJS -->
+<!-- jQuery + DataTables + Plugins -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -116,6 +153,7 @@ $(function () {
       { extend: 'excelHtml5', text: '📤 Xuất Excel', title: 'Danh sách câu hỏi', className: 'toolbar-btn' },
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi', className: 'toolbar-btn' }
     ],
+    fixedHeader: true, // 🔒 Cố định header
     initComplete: function() {
       // Append nút Excel/Print
       table.buttons().container().appendTo('#dtButtons');
@@ -141,7 +179,7 @@ $(function () {
     drawCallback: function() { 
       if (window.MathJax) MathJax.typesetPromise(); 
     }
-  }); // <-- kết thúc DataTable
+  });
 
   // Import Excel
   $('#importExcelInput').on('change', function(e) {
