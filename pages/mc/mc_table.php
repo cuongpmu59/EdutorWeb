@@ -16,13 +16,11 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
-<!-- DataTables + Buttons CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-
-<!-- Toolbar + Table CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
+
 </head>
 <body>
 
@@ -72,8 +70,96 @@ window.MathJax = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<!-- JS riêng -->
-<script src="../../js/mc/mc_table_layout.js"></script>
+<script>
+$(function () {
+  // Khởi tạo DataTable
+  const table = $('#mcTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: '../../includes/mc/mc_fetch_data.php',
+      type: 'POST'
+    },
+    order: [[0, 'desc']],
+    columns: [
+      { data: 'mc_id' },
+      { data: 'mc_topic' },
+      { data: 'mc_question' },
+      { data: 'mc_answer1' },
+      { data: 'mc_answer2' },
+      { data: 'mc_answer3' },
+      { data: 'mc_answer4' },
+      { data: 'mc_correct_answer' },
+      {
+        data: 'mc_image_url',
+        render: function (data) {
+          return data ? `<img src="${data}" alt="ảnh">` : '';
+        }
+      }
+    ],
+    dom: 'Bfrtip',
+    buttons: [
+      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } },
+      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } }
+    ],
+    initComplete: function () {
+      // Lấy danh sách chủ đề từ DB
+      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
+        topics.forEach(t => {
+          $('#filterTopic').append(`<option value="${t}">${t}</option>`);
+        });
+      });
+    }
+  });
+
+  // Lọc theo chủ đề
+  $('#filterTopic').on('change', function () {
+    table.column(1).search(this.value).draw();
+  });
+
+  // Export Excel
+  $('#btnExportExcel').on('click', function () {
+    table.button(0).trigger();
+  });
+
+  // Print
+  $('#btnPrint').on('click', function () {
+    table.button(1).trigger();
+  });
+
+  // Import Excel
+  $('#importExcelInput').on('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      const data = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+      if (worksheet.length === 0) {
+        alert('File Excel rỗng!');
+        return;
+      }
+
+      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
+        .done(res => {
+          alert('📥 Nhập dữ liệu thành công!');
+          table.ajax.reload();
+        })
+        .fail(err => {
+          console.error(err);
+          alert('❌ Lỗi khi nhập Excel');
+        });
+    };
+    reader.readAsArrayBuffer(file);
+  });
+});
+</script>
+
+<!-- Điều khiển bằng phím mũi tên -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
 <script src="../../js/mc/mc_table_import_excel.js"></script>
 
