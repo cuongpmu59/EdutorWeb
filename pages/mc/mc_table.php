@@ -22,7 +22,7 @@ window.MathJax = {
 
 <!-- Toolbar + Table CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
-<link rel="stylesheet" href="../../css/mc/mc_table.css">
+<link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 </head>
 <body>
 
