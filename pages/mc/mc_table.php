@@ -119,29 +119,17 @@ $(function () {
       if (window.MathJax) MathJax.typeset();
     },
     initComplete: function () {
-  const $filter = $('#filterTopic');
-  
-  initComplete: function () {
-  const $filter = $('#filterTopic');
-
-  // Lấy danh sách chủ đề từ DB
-  $.getJSON('../../includes/mc/mc_get_topics.php')
-    .done(function (topics) {
-      if (Array.isArray(topics) && topics.length) {
-        topics.forEach(t => $filter.append(`<option value="${t}">${t}</option>`));
-      } else {
-        console.warn("⚠️ Không có chủ đề nào trong DB");
-      }
-    })
-    .fail(function (xhr) {
-      console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
-    });
-
-  // Gán sự kiện lọc (chỉ cần một lần ở đây)
-  $filter.on('change', function () {
-    table.column(1).search(this.value).draw();
+      // Lấy danh sách chủ đề từ DB
+      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
+        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
+      });
+    }
   });
-}
+
+  // // Lọc theo chủ đề
+  // $('#filterTopic').on('change', function () {
+  //   table.column(1).search(this.value).draw();
+  // });
 
   // Nút Export / Print
   $('[data-action="export"]').on('click', () => table.button(0).trigger());
