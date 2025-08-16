@@ -16,11 +16,22 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
+<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+<!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
+<style>
+  /* Giới hạn kích thước ảnh */
+  #mcTable img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 6px;
+  }
+</style>
 </head>
 <body>
 
@@ -32,8 +43,8 @@ window.MathJax = {
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
 
-    <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
-    <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
+    <button class="toolbar-btn" data-action="export">📤 Xuất Excel</button>
+    <button class="toolbar-btn" data-action="print">🖨️ In bảng</button>
   </div>
 
   <div class="toolbar-right">
@@ -78,7 +89,10 @@ $(function () {
     serverSide: true,
     ajax: {
       url: '../../includes/mc/mc_fetch_data.php',
-      type: 'POST'
+      type: 'POST',
+      error: function (xhr) {
+        console.error("❌ Lỗi Ajax:", xhr.responseText);
+      }
     },
     order: [[0, 'desc']],
     columns: [
@@ -92,22 +106,22 @@ $(function () {
       { data: 'mc_correct_answer' },
       {
         data: 'mc_image_url',
-        render: function (data) {
-          return data ? `<img src="${data}" alt="ảnh">` : '';
-        }
+        render: data => data ? `<img src="${data}" alt="ảnh">` : ''
       }
     ],
     dom: 'Bfrtip',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } },
-      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } }
+      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none' },
+      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none' }
     ],
+    drawCallback: function () {
+      // Render lại MathJax khi bảng cập nhật
+      if (window.MathJax) MathJax.typeset();
+    },
     initComplete: function () {
       // Lấy danh sách chủ đề từ DB
       $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
-        topics.forEach(t => {
-          $('#filterTopic').append(`<option value="${t}">${t}</option>`);
-        });
+        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
     }
   });
@@ -117,42 +131,41 @@ $(function () {
     table.column(1).search(this.value).draw();
   });
 
-  // Export Excel
-  $('#btnExportExcel').on('click', function () {
-    table.button(0).trigger();
-  });
+  // Nút Export / Print
+  $('[data-action="export"]').on('click', () => table.button(0).trigger());
+  $('[data-action="print"]').on('click', () => table.button(1).trigger());
 
-  // Print
-  $('#btnPrint').on('click', function () {
-    table.button(1).trigger();
-  });
-
-  // Import Excel
+  // Import Excel (chuyển sang file js riêng nếu muốn)
   $('#importExcelInput').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = function (evt) {
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      try {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-      if (worksheet.length === 0) {
-        alert('File Excel rỗng!');
-        return;
+        if (worksheet.length === 0) {
+          alert('File Excel rỗng!');
+          return;
+        }
+
+        $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
+          .done(res => {
+            alert('📥 Nhập dữ liệu thành công!');
+            table.ajax.reload();
+          })
+          .fail(err => {
+            console.error("❌ Lỗi nhập Excel:", err.responseText);
+            alert('❌ Lỗi khi nhập Excel');
+          });
+      } catch (ex) {
+        console.error(ex);
+        alert('❌ File Excel không hợp lệ');
       }
-
-      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-        .done(res => {
-          alert('📥 Nhập dữ liệu thành công!');
-          table.ajax.reload();
-        })
-        .fail(err => {
-          console.error(err);
-          alert('❌ Lỗi khi nhập Excel');
-        });
     };
     reader.readAsArrayBuffer(file);
   });
