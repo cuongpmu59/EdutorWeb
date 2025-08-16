@@ -42,7 +42,6 @@ window.MathJax = {
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
-    <!-- Nơi DataTables append nút Excel + Print -->
     <div id="dtButtons"></div>
   </div>
   <div class="toolbar-right">
@@ -50,6 +49,9 @@ window.MathJax = {
     <select id="filterTopic">
       <option value="">Tất cả</option>
     </select>
+
+    <label for="searchBox">🔎 Tìm kiếm:</label>
+    <input type="text" id="searchBox" placeholder="Nhập từ khóa...">
   </div>
 </div>
 
