@@ -42,6 +42,8 @@ window.MathJax = {
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
+    <!-- Nơi DataTables append nút Excel + Print -->
+    <div id="dtButtons"></div>
   </div>
   <div class="toolbar-right">
     <label for="filterTopic">🔍 Lọc chủ đề:</label>
@@ -86,7 +88,7 @@ $(function () {
     ajax: {
       url: '../../includes/mc/mc_fetch_data.php',
       type: 'POST',
-      dataSrc: function(json) { return json.data; },
+      dataSrc: 'data',
       error: function(xhr) { console.error("❌ Lỗi Ajax:", xhr.responseText); }
     },
     order: [[0, 'desc']],
@@ -101,42 +103,33 @@ $(function () {
       { data: 'mc_correct_answer' },
       {
         data: 'mc_image_url',
-        render: data => data ? `<img src="${data}" alt="ảnh" loading="lazy">` : ''
+        render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : ''
       },
       { data: 'mc_created_at' }
     ],
-    dom: '<"mc-toolbar"Bfrtip>',
+    dom: 'Bfrtip',
     buttons: [
       { extend: 'excelHtml5', text: '📤 Xuất Excel', title: 'Danh sách câu hỏi', className: 'toolbar-btn' },
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi', className: 'toolbar-btn' }
     ],
-    drawCallback: function () {
-      if (window.MathJax) MathJax.typesetPromise();
-    },
-    initComplete: function () {
+    initComplete: function() {
+      // Chuyển nút DataTables vào toolbar-left
+      table.buttons().container().appendTo('#dtButtons');
+
+      // Load chủ đề cho filter
       const $filter = $('#filterTopic');
-      $filter.find('option:not(:first)').remove();
-
       $.getJSON('../../includes/mc/mc_get_topics.php')
-        .done(topics => {
-          if (Array.isArray(topics)) {
-            topics.forEach(t => $filter.append($('<option>', { value: t, text: t })));
-          }
-        })
-        .fail(xhr => console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText));
-
-      $filter.on('change', function () {
+        .done(topics => topics.forEach(t => $filter.append($('<option>', { value: t, text: t }))));
+      $filter.on('change', function() {
         const val = this.value;
-        table.column(1).search(
-          val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '',
-          true, false
-        ).draw();
+        table.column(1).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
       });
-    }
+    },
+    drawCallback: function() { if (window.MathJax) MathJax.typesetPromise(); }
   });
 
   // Import Excel
-  $('#importExcelInput').on('change', function (e) {
+  $('#importExcelInput').on('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -147,7 +140,6 @@ $(function () {
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
         if (!worksheet.length) { alert('File Excel rỗng!'); return; }
 
         $.ajax({
@@ -173,6 +165,5 @@ $(function () {
   });
 });
 </script>
-
 </body>
 </html>
