@@ -30,6 +30,7 @@ window.MathJax = {
     max-width: 80px;
     max-height: 80px;
     border-radius: 6px;
+    object-fit: cover;
   }
 </style>
 </head>
@@ -87,6 +88,7 @@ $(function () {
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
+    responsive: true,
     ajax: {
       url: '../../includes/mc/mc_fetch_data.php',
       type: 'POST',
@@ -139,6 +141,7 @@ $(function () {
     drawCallback: function() { 
       if (window.MathJax) MathJax.typesetPromise(); 
     }
+  }); // <-- kết thúc DataTable
 
   // Import Excel
   $('#importExcelInput').on('change', function(e) {
