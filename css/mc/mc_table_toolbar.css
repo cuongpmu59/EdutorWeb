@@ -57,13 +57,21 @@
   display: none;
 }
 
-/* Filter select */
-.mc-toolbar select {
+/* Filter select và search box */
+.mc-toolbar select,
+.mc-toolbar input#searchBox {
   padding: 5px 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
   cursor: pointer;
+}
+
+/* Search box */
+.mc-toolbar input#searchBox {
+  width: 180px;
+  margin-left: 4px;
+  box-sizing: border-box;
 }
 
 /* Responsive: wrap xuống trên mobile */
@@ -78,6 +86,7 @@
     width: 100%;
   }
   .mc-toolbar select,
+  .mc-toolbar input#searchBox,
   .toolbar-btn {
     width: 100%;
     justify-content: center;
