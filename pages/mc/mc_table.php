@@ -118,15 +118,21 @@ $(function () {
       // Render lại MathJax khi bảng cập nhật
       if (window.MathJax) MathJax.typeset();
     },
-    // Lấy danh sách chủ đề từ DB
-    initComplete: function () {
-    const $filter = $('#filterTopic');
 
-    $filter.find('option:not(:first)').remove();
-    $.getJSON('../../includes/mc/mc_get_topics.php')
+    // Lấy danh sách chủ đề từ DB
+  initComplete: function () {
+  const $filter = $('#filterTopic');
+
+  // Xóa option cũ (chỉ giữ lại "Tất cả")
+  $filter.find('option:not(:first)').remove();
+
+  // Gọi API lấy danh sách chủ đề
+  $.getJSON('../../includes/mc/mc_get_topics.php')
     .done(function (topics) {
       if (Array.isArray(topics) && topics.length) {
-        topics.forEach(t => $filter.append(`<option value="${t}">${t}</option>`));
+        topics.forEach(t => {
+          $filter.append(`<option value="${t}">${t}</option>`);
+        });
       } else {
         console.warn("⚠️ Không có chủ đề nào trong DB");
       }
@@ -135,11 +141,12 @@ $(function () {
       console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
     });
 
-  // Gán sự kiện lọc (xóa cũ rồi gán mới để tránh double-bind)
+  // Gán sự kiện lọc (chỉ 1 lần)
     $filter.off('change').on('change', function () {
     table.column(1).search(this.value).draw();
     });
   }
+
   // Nút Export / Print
   $('[data-action="export"]').on('click', () => table.button(0).trigger());
   $('[data-action="print"]').on('click', () => table.button(1).trigger());
