@@ -118,19 +118,28 @@ $(function () {
       // Render lại MathJax khi bảng cập nhật
       if (window.MathJax) MathJax.typeset();
     },
+    // Lấy danh sách chủ đề từ DB
     initComplete: function () {
-      // Lấy danh sách chủ đề từ DB
-      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
-        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
-      });
-    }
-  });
+    const $filter = $('#filterTopic');
 
-  // // Lọc theo chủ đề
-  // $('#filterTopic').on('change', function () {
-  //   table.column(1).search(this.value).draw();
-  // });
+    $filter.find('option:not(:first)').remove();
+    $.getJSON('../../includes/mc/mc_get_topics.php')
+    .done(function (topics) {
+      if (Array.isArray(topics) && topics.length) {
+        topics.forEach(t => $filter.append(`<option value="${t}">${t}</option>`));
+      } else {
+        console.warn("⚠️ Không có chủ đề nào trong DB");
+      }
+    })
+    .fail(function (xhr) {
+      console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
+    });
 
+  // Gán sự kiện lọc (xóa cũ rồi gán mới để tránh double-bind)
+    $filter.off('change').on('change', function () {
+    table.column(1).search(this.value).draw();
+    });
+  }
   // Nút Export / Print
   $('[data-action="export"]').on('click', () => table.button(0).trigger());
   $('[data-action="print"]').on('click', () => table.button(1).trigger());
