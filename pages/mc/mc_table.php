@@ -218,5 +218,9 @@ $(function () {
   });
 });
 </script>
+
+<!-- File JS khởi tạo bảng -->
+  <!-- <script src="../../js/mc/mc_fetch_data.js"></script> -->
+  <script src="../../js/mc/mc_table_arrow_key.js"></script>
 </body>
 </html>
