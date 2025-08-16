@@ -7,11 +7,11 @@
   align-items: center;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 8px;
-  background-color: #f9f9f9;
-  padding: 8px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  gap: 10px;
+  background-color: #f5f6fa;
+  padding: 10px 16px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
 /* Left / Right sections */
@@ -20,33 +20,38 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
-/* Nút chung */
+/* Nút toolbar */
 .toolbar-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background-color: #4CAF50;
+  justify-content: center;
+  gap: 6px;
+  background-color: #1abc9c; /* màu chủ đạo */
   color: #fff;
-  font-weight: 500;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  text-decoration: none;
+  font-weight: 600;
   font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  min-width: 100px;
+  height: 36px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
 }
 
 /* Hover effect */
 .toolbar-btn:hover {
-  background-color: #45a049;
+  background-color: #16a085;
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Disabled / hidden state */
+/* Disabled */
 .toolbar-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -57,19 +62,30 @@
   display: none;
 }
 
-/* Filter select và search box */
+/* Select & Input chung */
 .mc-toolbar select,
 .mc-toolbar input#dtSearchBox {
-  padding: 5px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
-  cursor: pointer;
+  height: 36px;
+  line-height: 1.2;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+/* Focus effect cho input / select */
+.mc-toolbar select:focus,
+.mc-toolbar input#dtSearchBox:focus {
+  border-color: #1abc9c;
+  box-shadow: 0 0 4px rgba(26, 188, 156, 0.4);
+  outline: none;
 }
 
 /* Search box */
 .mc-toolbar input#dtSearchBox {
-  width: 180px;
+  width: 200px;
   margin-left: 4px;
   box-sizing: border-box;
 }
