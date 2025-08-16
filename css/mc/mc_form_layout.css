@@ -5,7 +5,7 @@
   border-radius: 8px;
   border: 1px solid #ccc;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;       /* có khoảng cách trên dưới */
   font-size: 16px;
   font-family: Arial, sans-serif;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -14,6 +14,7 @@
 /* CỘT BỐ CỤC CHUNG */
 .mc-columns {
   display: flex;
+  flex-wrap: wrap;        /* để mobile tự xuống hàng */
   gap: 24px;
   margin-top: 16px;
 }
@@ -23,11 +24,13 @@
 }
 
 .mc-col-left {
-  max-width: 60%;
+  flex: 3;
+  min-width: 300px;
 }
 
 .mc-col-right {
-  max-width: 40%;
+  flex: 2;
+  min-width: 260px;
 }
 
 /* TRƯỜNG NHẬP */
@@ -39,19 +42,29 @@
   font-weight: bold;
   display: block;
   margin-bottom: 6px;
+  color: #222;
 }
 
 .mc-field input,
 .mc-field textarea,
 .mc-field select {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 6px;
   resize: vertical;
+  transition: border-color 0.2s;
 }
 
+.mc-field input:focus,
+.mc-field textarea:focus,
+.mc-field select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* TEXTAREA */
 .mc-field textarea {
   min-height: 100px;
 }
@@ -62,6 +75,11 @@
   background: none;
   border: none;
   color: #007bff;
+  cursor: pointer;
+}
+
+.toggle-preview:hover {
+  color: #0056b3;
 }
 
 .toggle-preview i {
@@ -80,22 +98,59 @@
 
 /* KHU VỰC XEM TRƯỚC TOÀN BỘ */
 .mc-preview-zone {
-  margin-top: 36px;
+  margin-top: 24px;
   border: 1px dashed #aaa;
   padding: 20px;
   border-radius: 6px;
   background-color: #fafafa;
 }
 
-/* KHU VỰC ẨN HIỆN BẢNG */
-
+/* KHU VỰC BẢNG (iframe) */
 .datatable-wrapper {
-  width: 100%;              
-  margin-top: 20px;         
+  width: 100%;
+  margin-top: 20px;
 }
 
 .datatable-wrapper iframe {
-  width: 100%;              
-  height: 600px;            
-  border: none;             
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+/* NHÓM (fieldset/h4) */
+.mc-group {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: #fafafa;
+}
+
+.mc-group legend,
+.mc-group h4 {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* NÚT (trong thao tác) */
+.mc-buttons button {
+  display: inline-block;
+  margin: 4px 6px 4px 0;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mc-buttons button:hover {
+  background: #0056b3;
+}
+
+.mc-buttons .full-width {
+  width: 100%;
+  margin-top: 10px;
 }
