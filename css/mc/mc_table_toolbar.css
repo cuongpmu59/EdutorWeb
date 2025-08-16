@@ -3,14 +3,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(90deg, #f8f9fa, #eef1f5);
+  background: linear-gradient(90deg, #fdfdfd, #f3f6f9);
   padding: 12px 16px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #e1e4e8;
   border-radius: 10px;
-  margin-bottom: 18px;
-  gap: 12px;
+  margin-bottom: 20px;
+  gap: 14px;
   flex-wrap: wrap;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
 }
 
 /* Căn trái/phải */
@@ -18,37 +18,41 @@
 .toolbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-/* ===== Nút ===== */
+/* ===== Nút chung ===== */
 .toolbar-btn, 
 .dt-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px; /* khoảng cách icon - text */
-  background: linear-gradient(135deg, #007bff, #0062cc);
+  gap: 6px;
   color: #fff !important;
   border: none;
-  padding: 9px 16px;
+  padding: 9px 18px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
   text-decoration: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  height: 38px; /* đồng bộ với select/input */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  height: 38px; /* đồng bộ */
+  min-width: 120px; /* đảm bảo bằng nhau */
+  text-align: center;
 }
 
-.toolbar-btn:hover,
-.dt-button:hover {
-  background: linear-gradient(135deg, #0056b3, #004099) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
+/* ===== Màu riêng cho từng nút ===== */
+.btn-import { background: linear-gradient(135deg, #28a745, #218838); }
+.btn-import:hover { background: linear-gradient(135deg, #218838, #1e7e34); }
+
+.btn-export { background: linear-gradient(135deg, #007bff, #0056d6); }
+.btn-export:hover { background: linear-gradient(135deg, #0056b3, #004099); }
+
+.btn-print { background: linear-gradient(135deg, #fd7e14, #e8590c); }
+.btn-print:hover { background: linear-gradient(135deg, #e8590c, #d9480f); }
 
 /* Nút Import Excel label */
 label.toolbar-btn {
@@ -59,21 +63,21 @@ label.toolbar-btn {
 .mc-toolbar select,
 .mc-toolbar input[type="text"] {
   padding: 8px 12px;
-  border: 1px solid #bbb;
+  border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 14px;
   outline: none;
   min-width: 180px;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   background: #fff;
-  height: 38px; /* đồng bộ với nút */
+  height: 38px;
 }
 
 .mc-toolbar select:focus,
 .mc-toolbar input[type="text"]:focus {
   border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0,123,255,0.35);
-  transform: scale(1.01);
+  box-shadow: 0 0 5px rgba(0,123,255,0.4);
+  transform: scale(1.015);
 }
 
 /* Label */
@@ -81,7 +85,7 @@ label.toolbar-btn {
   font-size: 14px;
   font-weight: 500;
   margin-right: 4px;
-  color: #555; /* nhẹ hơn để không “đậm” quá */
+  color: #444;
 }
 
 /* ===== Responsive ===== */
