@@ -50,8 +50,8 @@ window.MathJax = {
       <option value="">Tất cả</option>
     </select>
 
-    <label for="dtSearchBox">🔎 Tìm kiếm:</label>
-    <input type="text" id="dtSearchBox" placeholder="Nhập từ khóa...">
+    <label for="searchBox">🔎 Tìm kiếm:</label>
+    <input type="text" id="searchBox" placeholder="Nhập từ khóa...">
   </div>
 </div>
 
@@ -127,8 +127,8 @@ $(function () {
         table.column(1).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
       });
 
-      // Search box toolbar đồng bộ với DataTables search
-      $('#dtSearchBox').on('keyup', function() {
+      // Search box chung
+      $('#searchBox').on('keyup', function() {
         table.search(this.value).draw();
       });
     },
