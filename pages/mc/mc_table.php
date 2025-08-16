@@ -37,13 +37,12 @@ window.MathJax = {
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
-<!-- Toolbar + DataTables -->
+<!-- Toolbar + Filter -->
 <div class="mc-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
   </div>
-
   <div class="toolbar-right">
     <label for="filterTopic">🔍 Lọc chủ đề:</label>
     <select id="filterTopic">
@@ -52,6 +51,7 @@ window.MathJax = {
   </div>
 </div>
 
+<!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
   <thead>
     <tr>
@@ -69,6 +69,15 @@ window.MathJax = {
   </thead>
 </table>
 
+<!-- jQuery + DataTables + Buttons + SheetJS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
 $(function () {
   const table = $('#mcTable').DataTable({
@@ -77,13 +86,8 @@ $(function () {
     ajax: {
       url: '../../includes/mc/mc_fetch_data.php',
       type: 'POST',
-      dataSrc: function(json) {
-        console.log("👉 JSON trả về:", json);
-        return json.data;
-      },
-      error: function(xhr) {
-        console.error("❌ Lỗi Ajax:", xhr.responseText);
-      }
+      dataSrc: function(json) { return json.data; },
+      error: function(xhr) { console.error("❌ Lỗi Ajax:", xhr.responseText); }
     },
     order: [[0, 'desc']],
     columns: [
@@ -103,18 +107,8 @@ $(function () {
     ],
     dom: '<"mc-toolbar"Bfrtip>',
     buttons: [
-      {
-        extend: 'excelHtml5',
-        text: '📤 Xuất Excel',
-        title: 'Danh sách câu hỏi',
-        className: 'toolbar-btn'
-      },
-      {
-        extend: 'print',
-        text: '🖨️ In bảng',
-        title: 'Danh sách câu hỏi',
-        className: 'toolbar-btn'
-      }
+      { extend: 'excelHtml5', text: '📤 Xuất Excel', title: 'Danh sách câu hỏi', className: 'toolbar-btn' },
+      { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi', className: 'toolbar-btn' }
     ],
     drawCallback: function () {
       if (window.MathJax) MathJax.typesetPromise();
@@ -179,10 +173,6 @@ $(function () {
   });
 });
 </script>
-
-<!-- Điều khiển bằng phím mũi tên -->
-<script src="../../js/mc/mc_table_arrow_key.js"></script>
-<script src="../../js/mc/mc_table_import_excel.js"></script>
 
 </body>
 </html>
