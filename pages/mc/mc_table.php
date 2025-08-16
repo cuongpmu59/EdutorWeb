@@ -31,11 +31,6 @@ window.MathJax = {
   max-height: 80px;
   border-radius: 6px;
 }
-
-/* Ẩn search mặc định DataTables */
-.dataTables_filter {
-  display: none !important;
-}
 </style>
 </head>
 <body>
@@ -132,7 +127,7 @@ $(function () {
         table.column(1).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
       });
 
-      // Search toolbar đồng bộ
+      // Search box toolbar đồng bộ với DataTables search
       $('#dtSearchBox').on('keyup', function() {
         table.search(this.value).draw();
       });
