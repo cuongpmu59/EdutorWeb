@@ -3,10 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// --- Kết nối CSDL ---
-// mc_fetch_data.php ở /includes/mc/
-// db_connection.php ở /includes/
-require_once __DIR__ . '/../db_connection.php'; // biến PDO là $conn
+require_once __DIR__ . '/../db_connection.php'; // $conn là PDO
 
 // --- Lấy tham số DataTables ---
 $draw    = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
@@ -14,7 +11,7 @@ $start   = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length  = isset($_POST['length']) ? intval($_POST['length']) : 10;
 $search  = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
 $orderColIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
-$orderDir      = isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc','desc'])
+$orderDir      = (isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc','desc']))
                   ? $_POST['order'][0]['dir'] : 'asc';
 
 // --- Map DataTables index → cột DB ---
@@ -35,30 +32,39 @@ try {
     // 1. Tổng số bản ghi
     $totalRecords = $conn->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
 
-    // 2. Tổng số bản ghi lọc
+    // 2. Điều kiện WHERE
     $where = '';
     $params = [];
     if ($search !== '') {
         $parts = [];
-        foreach ($columns as $col) $parts[] = "$col LIKE :search";
+        foreach ($columns as $col) {
+            // Nếu cột là mc_id (số), tìm theo chính xác
+            if ($col === 'mc_id' && ctype_digit($search)) {
+                $parts[] = "$col = :id_search";
+                $params[':id_search'] = intval($search);
+            } else {
+                $parts[] = "$col LIKE :search";
+            }
+        }
         $where = ' WHERE ' . implode(' OR ', $parts);
-        $params[':search'] = "%$search%";
+        if (!isset($params[':id_search'])) {
+            $params[':search'] = "%$search%";
+        }
     }
 
-    $totalFiltered = $conn->prepare("SELECT COUNT(*) FROM mc_questions" . $where);
-    $totalFiltered->execute($params);
-    $totalFiltered = $totalFiltered->fetchColumn();
+    // 3. Tổng số bản ghi sau khi lọc
+    $sqlCount = "SELECT COUNT(*) FROM mc_questions" . $where;
+    $stmt = $conn->prepare($sqlCount);
+    $stmt->execute($params);
+    $totalFiltered = $stmt->fetchColumn();
 
-    // 3. Lấy dữ liệu thực tế
-    $sql = "SELECT * FROM mc_questions" . $where . " ORDER BY $orderColumn $orderDir LIMIT :start,:length";
+    // 4. Lấy dữ liệu thực tế
+    $sql = "SELECT * FROM mc_questions" . $where . " ORDER BY $orderColumn $orderDir LIMIT $start, $length";
     $stmt = $conn->prepare($sql);
-    foreach ($params as $k=>$v) $stmt->bindValue($k,$v,PDO::PARAM_STR);
-    $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-    $stmt->bindValue(':length', $length, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt->execute($params);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Trả JSON cho DataTables
+    // 5. Trả JSON cho DataTables
     echo json_encode([
         "draw" => $draw,
         "recordsTotal" => intval($totalRecords),
@@ -68,5 +74,8 @@ try {
 
 } catch(PDOException $e){
     http_response_code(500);
-    echo json_encode(['status'=>'error','message'=>'Lỗi PDO: '.$e->getMessage()], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'status'=>'error',
+        'message'=>'Lỗi PDO: '.$e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
