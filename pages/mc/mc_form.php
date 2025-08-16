@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Câu hỏi trắc nghiệm</title>
 
-  <!-- CSS gốc -->
+  <!-- CSS -->
   <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
   <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
@@ -19,17 +19,18 @@
         processEscapes: true
       },
       options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-        ignoreHtmlClass: 'tex2jax_ignore',
+        skipHtmlTags: ['script','noscript','style','textarea','pre'],
+        ignoreHtmlClass: 'tex2jax_ignore'
       }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <!-- jQuery + icon -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Bọc form trong div cố định -->
   <div id="formContainer">
     <form id="mcForm" method="POST" enctype="multipart/form-data">
       <h2>
@@ -42,48 +43,54 @@
       </div>
 
       <div id="mcMainContent" class="mc-columns">
+        <!-- Cột trái -->
         <div class="mc-col mc-col-left">
-          <div class="mc-field">
-            <label for="mc_topic">Chủ đề:</label>
-            <input type="text" id="mc_topic" name="topic" required>
-          </div>
+          <fieldset class="mc-group">
+            <legend>Thông tin câu hỏi</legend>
 
-          <div class="mc-field">
-            <label for="mc_question">Câu hỏi:
-              <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
-            </label>
-            <textarea id="mc_question" name="question" required></textarea>
-            <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
-          </div>
+            <div class="mc-field">
+              <label for="mc_topic">Chủ đề:</label>
+              <input type="text" id="mc_topic" name="topic" required>
+            </div>
 
-          <!-- Câu trả lời A - D -->
-          <?php
-          $answers = ['A','B','C','D'];
-          foreach ($answers as $i => $label) {
-              $num = $i+1;
-              echo '<div class="mc-field mc-inline-field">
-                      <label for="mc_answer'.$num.'">'.$label.'. 
-                        <button type="button" class="toggle-preview" data-target="mc_answer'.$num.'"><i class="fa fa-eye"></i></button>
-                      </label>
-                      <input type="text" id="mc_answer'.$num.'" name="answer'.$num.'" required>
-                      <div class="preview-box" id="preview-mc_answer'.$num.'" style="display:none;"></div>
-                    </div>';
-          }
-          ?>
+            <div class="mc-field">
+              <label for="mc_question">Câu hỏi:
+                <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
+              </label>
+              <textarea id="mc_question" name="question" required></textarea>
+              <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
+            </div>
 
-          <div class="mc-field mc-inline-field">
-            <label for="mc_correct_answer">Đáp án đúng:</label>
-            <select id="mc_correct_answer" name="answer" required>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </div>
+            <!-- Câu trả lời A - D -->
+            <?php
+            $answers = ['A','B','C','D'];
+            foreach ($answers as $i => $label) {
+                $num = $i+1;
+                echo '<div class="mc-field mc-inline-field">
+                        <label for="mc_answer'.$num.'">'.$label.'. 
+                          <button type="button" class="toggle-preview" data-target="mc_answer'.$num.'"><i class="fa fa-eye"></i></button>
+                        </label>
+                        <input type="text" id="mc_answer'.$num.'" name="answer'.$num.'" required>
+                        <div class="preview-box" id="preview-mc_answer'.$num.'" style="display:none;"></div>
+                      </div>';
+            }
+            ?>
+
+            <div class="mc-field mc-inline-field">
+              <label for="mc_correct_answer">Đáp án đúng:</label>
+              <select id="mc_correct_answer" name="answer" required>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+          </fieldset>
         </div>
 
+        <!-- Cột phải -->
         <div class="mc-col mc-col-right">
-          <div class="mc-image-zone">
+          <div class="mc-image-zone mc-group">
             <h4>Ảnh minh họa</h4>
             <div class="mc-image-preview">
               <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
@@ -99,8 +106,7 @@
             <div id="statusMsg"></div>
           </div>
 
-          <!-- Nút thao tác -->
-          <div class="mc-buttons-wrapper">
+          <div class="mc-buttons-wrapper mc-group">
             <h4>Thao tác</h4>
             <div class="mc-buttons">
               <button type="submit" id="mc_save">Lưu</button>
@@ -116,16 +122,18 @@
     </form>
   </div>
 
+  <!-- Bảng quản lý -->
   <div id="mcTableWrapper" style="display:none;">
-      <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
-    </div>
+    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
+  </div>
 
+  <!-- JS -->
   <script src="../../js/mc/mc_form_preview.js"></script>
-  <script src="../../js/mc/mc_form_image.js?"></script>
+  <script src="../../js/mc/mc_form_image.js"></script>
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
-    // Lắng nghe dữ liệu từ iframe (bảng DataTable) gửi về
+    // Nhận dữ liệu từ iframe DataTable để fill form
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
       if (type !== 'fill-form' || !data) return;
