@@ -68,6 +68,7 @@ window.MathJax = {
       <th>D</th>
       <th>Đáp án</th>
       <th>Hình minh họa</th>
+      <th>Ngày tạo</th>
     </tr>
   </thead>
 </table>
@@ -90,6 +91,10 @@ $(function () {
     ajax: {
       url: '../../includes/mc/mc_fetch_data.php',
       type: 'POST',
+      dataSrc: function(json) {
+        console.log("👉 JSON trả về:", json); // debug
+        return json.data;
+      },
       error: function (xhr) {
         console.error("❌ Lỗi Ajax:", xhr.responseText);
       }
@@ -106,8 +111,11 @@ $(function () {
       { data: 'mc_correct_answer' },
       {
         data: 'mc_image_url',
-        render: data => data ? `<img src="${data}" alt="ảnh">` : ''
-      }
+        render: data => data 
+          ? `<img src="${encodeURI(data)}" alt="ảnh">` 
+          : ''
+      },
+      { data: 'mc_created_at' }
     ],
     dom: 'Bfrtip',
     buttons: [
@@ -115,43 +123,42 @@ $(function () {
       { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none' }
     ],
     drawCallback: function () {
-      // Render lại MathJax khi bảng cập nhật
       if (window.MathJax) MathJax.typeset();
     },
+    initComplete: function () {
+      const $filter = $('#filterTopic');
+      $filter.find('option:not(:first)').remove();
 
-    // Lấy danh sách chủ đề từ DB
-  initComplete: function () {
-  const $filter = $('#filterTopic');
-
-  // Xóa option cũ (chỉ giữ lại "Tất cả")
-  $filter.find('option:not(:first)').remove();
-
-  // Gọi API lấy danh sách chủ đề
-  $.getJSON('../../includes/mc/mc_get_topics.php')
-    .done(function (topics) {
-      if (Array.isArray(topics) && topics.length) {
-        topics.forEach(t => {
-          $filter.append(`<option value="${t}">${t}</option>`);
+      $.getJSON('../../includes/mc/mc_get_topics.php')
+        .done(function (topics) {
+          if (Array.isArray(topics) && topics.length) {
+            topics.forEach(t => {
+              $filter.append($('<option>', { value: t, text: t }));
+            });
+          } else {
+            console.warn("⚠️ Không có chủ đề nào trong DB");
+          }
+        })
+        .fail(xhr => {
+          console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
         });
-      } else {
-        console.warn("⚠️ Không có chủ đề nào trong DB");
-      }
-    })
-    .fail(function (xhr) {
-      console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
-    });
 
-  // Gán sự kiện lọc (chỉ 1 lần)
-    $filter.off('change').on('change', function () {
-    table.column(1).search(this.value).draw();
-    });
-  }
+      // Lọc chủ đề (regex chính xác)
+      $filter.off('change').on('change', function () {
+        const val = this.value;
+        table.column(1).search(
+          val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '',
+          true, false
+        ).draw();
+      });
+    }
+  });
 
   // Nút Export / Print
   $('[data-action="export"]').on('click', () => table.button(0).trigger());
   $('[data-action="print"]').on('click', () => table.button(1).trigger());
 
-  // Import Excel (chuyển sang file js riêng nếu muốn)
+  // Import Excel
   $('#importExcelInput').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -164,13 +171,13 @@ $(function () {
         const sheetName = workbook.SheetNames[0];
         const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        if (worksheet.length === 0) {
+        if (!worksheet.length) {
           alert('File Excel rỗng!');
           return;
         }
 
         $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-          .done(res => {
+          .done(() => {
             alert('📥 Nhập dữ liệu thành công!');
             table.ajax.reload();
           })
