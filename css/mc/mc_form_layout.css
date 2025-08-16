@@ -1,20 +1,24 @@
-/* FORM CHUNG */
+/* ==============================
+   FORM CHUNG
+============================== */
 #mcForm {
   background: #fff;
   padding: 24px;
   border-radius: 8px;
   border: 1px solid #ccc;
   max-width: 1200px;
-  margin: 20px auto;       /* có khoảng cách trên dưới */
+  margin: 20px auto;
   font-size: 16px;
   font-family: Arial, sans-serif;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* CỘT BỐ CỤC CHUNG */
+/* ==============================
+   BỐ CỤC 2 CỘT
+============================== */
 .mc-columns {
   display: flex;
-  flex-wrap: wrap;        /* để mobile tự xuống hàng */
+  flex-wrap: wrap;     /* mobile tự xuống hàng */
   gap: 24px;
   margin-top: 16px;
 }
@@ -33,49 +37,76 @@
   min-width: 260px;
 }
 
-/* TRƯỜNG NHẬP */
+/* ==============================
+   TRƯỜNG NHẬP LIỆU
+============================== */
 .mc-field {
-  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  max-width: 100%;
 }
 
 .mc-field label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 6px;
-  color: #222;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
 }
 
-.mc-field input,
+/* Input/textarea/select phủ ngang field */
+.mc-field input[type="text"],
 .mc-field textarea,
 .mc-field select {
   width: 100%;
-  padding: 10px;
+  box-sizing: border-box;
   font-size: 15px;
+}
+
+/* Trang trí input/select */
+.mc-field input[type="text"],
+.mc-field select {
+  padding: 6px 8px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  resize: vertical;
-  transition: border-color 0.2s;
+  border-radius: 4px;
 }
 
-.mc-field input:focus,
-.mc-field textarea:focus,
-.mc-field select:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* TEXTAREA */
 .mc-field textarea {
-  min-height: 100px;
+  min-height: 80px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
 }
 
-/* NÚT XEM TRƯỚC CẠNH NHÃN */
+/* ==============================
+   ĐÁP ÁN INLINE (A–D)
+============================== */
+.mc-inline-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.mc-inline-field label {
+  margin-bottom: 0;
+  min-width: 40px;   /* đủ cho "A.", "B." */
+}
+
+.mc-inline-field input {
+  flex: 1;
+}
+
+/* ==============================
+   NÚT XEM TRƯỚC (cạnh nhãn)
+============================== */
 .toggle-preview {
-  margin-left: 8px;
+  margin-left: 6px;
   background: none;
   border: none;
   color: #007bff;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .toggle-preview:hover {
@@ -86,7 +117,9 @@
   pointer-events: none;
 }
 
-/* KHU VỰC XEM TRƯỚC CÁC TRƯỜNG */
+/* ==============================
+   KHU VỰC XEM TRƯỚC
+============================== */
 .preview-box {
   margin-top: 6px;
   padding: 10px;
@@ -96,7 +129,6 @@
   font-style: italic;
 }
 
-/* KHU VỰC XEM TRƯỚC TOÀN BỘ */
 .mc-preview-zone {
   margin-top: 24px;
   border: 1px dashed #aaa;
@@ -105,7 +137,9 @@
   background-color: #fafafa;
 }
 
-/* KHU VỰC BẢNG (iframe) */
+/* ==============================
+   KHUNG BẢNG (iframe DataTable)
+============================== */
 .datatable-wrapper {
   width: 100%;
   margin-top: 20px;
@@ -117,7 +151,9 @@
   border: none;
 }
 
-/* NHÓM (fieldset/h4) */
+/* ==============================
+   NHÓM (fieldset / h4)
+============================== */
 .mc-group {
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -133,7 +169,9 @@
   margin-bottom: 10px;
 }
 
-/* NÚT (trong thao tác) */
+/* ==============================
+   NÚT THAO TÁC
+============================== */
 .mc-buttons button {
   display: inline-block;
   margin: 4px 6px 4px 0;
@@ -144,6 +182,7 @@
   color: #fff;
   cursor: pointer;
   transition: background 0.2s;
+  font-size: 15px;
 }
 
 .mc-buttons button:hover {
