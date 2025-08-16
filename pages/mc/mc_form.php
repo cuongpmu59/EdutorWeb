@@ -133,6 +133,23 @@
   <script src="../../js/mc/mc_form_button.js"></script>
 
   <script>
+  // Auto-resize tất cả textarea
+  document.addEventListener("input", function(e) {
+    if (e.target.tagName.toLowerCase() !== "textarea") return;
+    e.target.style.height = "auto";                     // reset trước
+    e.target.style.height = e.target.scrollHeight + "px"; // cao vừa đủ
+  });
+
+  // Chạy 1 lần khi trang load (để resize theo dữ liệu sẵn có)
+  window.addEventListener("load", function() {
+    document.querySelectorAll("textarea").forEach(function(el) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    });
+  });
+  </script>
+
+  <script>
     // Nhận dữ liệu từ iframe DataTable để fill form
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
@@ -158,5 +175,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
+  
 </body>
 </html>
