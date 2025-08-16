@@ -37,14 +37,11 @@ window.MathJax = {
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
-<!-- Toolbar -->
+<!-- Toolbar + DataTables -->
 <div class="mc-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
-
-    <button class="toolbar-btn" data-action="export">📤 Xuất Excel</button>
-    <button class="toolbar-btn" data-action="print">🖨️ In bảng</button>
   </div>
 
   <div class="toolbar-right">
@@ -55,7 +52,6 @@ window.MathJax = {
   </div>
 </div>
 
-<!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
   <thead>
     <tr>
@@ -73,18 +69,8 @@ window.MathJax = {
   </thead>
 </table>
 
-<!-- jQuery + DataTables + Buttons + SheetJS -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script>
 $(function () {
-  // Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
@@ -92,10 +78,10 @@ $(function () {
       url: '../../includes/mc/mc_fetch_data.php',
       type: 'POST',
       dataSrc: function(json) {
-        console.log("👉 JSON trả về:", json); // debug
+        console.log("👉 JSON trả về:", json);
         return json.data;
       },
-      error: function (xhr) {
+      error: function(xhr) {
         console.error("❌ Lỗi Ajax:", xhr.responseText);
       }
     },
@@ -111,40 +97,41 @@ $(function () {
       { data: 'mc_correct_answer' },
       {
         data: 'mc_image_url',
-        render: data => data 
-          ? `<img src="${encodeURI(data)}" alt="ảnh">` 
-          : ''
+        render: data => data ? `<img src="${data}" alt="ảnh" loading="lazy">` : ''
       },
       { data: 'mc_created_at' }
     ],
-    dom: 'Bfrtip',
+    dom: '<"mc-toolbar"Bfrtip>',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none' },
-      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none' }
+      {
+        extend: 'excelHtml5',
+        text: '📤 Xuất Excel',
+        title: 'Danh sách câu hỏi',
+        className: 'toolbar-btn'
+      },
+      {
+        extend: 'print',
+        text: '🖨️ In bảng',
+        title: 'Danh sách câu hỏi',
+        className: 'toolbar-btn'
+      }
     ],
     drawCallback: function () {
-      if (window.MathJax) MathJax.typeset();
+      if (window.MathJax) MathJax.typesetPromise();
     },
     initComplete: function () {
       const $filter = $('#filterTopic');
       $filter.find('option:not(:first)').remove();
 
       $.getJSON('../../includes/mc/mc_get_topics.php')
-        .done(function (topics) {
-          if (Array.isArray(topics) && topics.length) {
-            topics.forEach(t => {
-              $filter.append($('<option>', { value: t, text: t }));
-            });
-          } else {
-            console.warn("⚠️ Không có chủ đề nào trong DB");
+        .done(topics => {
+          if (Array.isArray(topics)) {
+            topics.forEach(t => $filter.append($('<option>', { value: t, text: t })));
           }
         })
-        .fail(xhr => {
-          console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText);
-        });
+        .fail(xhr => console.error("❌ Lỗi khi tải chủ đề:", xhr.responseText));
 
-      // Lọc chủ đề (regex chính xác)
-      $filter.off('change').on('change', function () {
+      $filter.on('change', function () {
         const val = this.value;
         table.column(1).search(
           val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '',
@@ -154,37 +141,35 @@ $(function () {
     }
   });
 
-  // Nút Export / Print
-  $('[data-action="export"]').on('click', () => table.button(0).trigger());
-  $('[data-action="print"]').on('click', () => table.button(1).trigger());
-
   // Import Excel
   $('#importExcelInput').on('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (evt) {
+    reader.onload = function(evt) {
       try {
         const data = new Uint8Array(evt.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        if (!worksheet.length) {
-          alert('File Excel rỗng!');
-          return;
-        }
+        if (!worksheet.length) { alert('File Excel rỗng!'); return; }
 
-        $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-          .done(() => {
+        $.ajax({
+          url: '../../includes/mc/mc_table_import_excel.php',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ rows: worksheet }),
+          success: function() {
             alert('📥 Nhập dữ liệu thành công!');
             table.ajax.reload();
-          })
-          .fail(err => {
+          },
+          error: function(err) {
             console.error("❌ Lỗi nhập Excel:", err.responseText);
             alert('❌ Lỗi khi nhập Excel');
-          });
+          }
+        });
       } catch (ex) {
         console.error(ex);
         alert('❌ File Excel không hợp lệ');
