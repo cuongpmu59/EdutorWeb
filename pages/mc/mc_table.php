@@ -115,25 +115,30 @@ $(function () {
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi', className: 'toolbar-btn' }
     ],
     initComplete: function() {
-  // Append nút Excel/Print
-  table.buttons().container().appendTo('#dtButtons');
+      // Append nút Excel/Print
+      table.buttons().container().appendTo('#dtButtons');
 
-  // Filter chủ đề
-  const $filter = $('#filterTopic');
-  $.getJSON('../../includes/mc/mc_get_topics.php')
-    .done(topics => topics.forEach(t => $filter.append($('<option>', { value: t, text: t }))));
-  $filter.on('change', function() {
-    const val = this.value;
-    table.column(1).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
-  });
+      // Filter chủ đề
+      const $filter = $('#filterTopic');
+      $.getJSON('../../includes/mc/mc_get_topics.php')
+        .done(topics => topics.forEach(t => 
+          $filter.append($('<option>', { value: t, text: t }))
+        ));
+      $filter.on('change', function() {
+        const val = this.value;
+        table.column(1)
+          .search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false)
+          .draw();
+      });
 
-  // Search box chung
-  $('#searchBox').on('keyup', function() {
-    table.search(this.value).draw();
-  });
-  }
-  drawCallback: function() { if (window.MathJax) MathJax.typesetPromise(); }
-  });
+      // Search box chung
+      $('#searchBox').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+    },
+    drawCallback: function() { 
+      if (window.MathJax) MathJax.typesetPromise(); 
+    }
 
   // Import Excel
   $('#importExcelInput').on('change', function(e) {
