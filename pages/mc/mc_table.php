@@ -111,7 +111,7 @@ $(function () {
       },
       { data: 'mc_created_at' }
     ],
-    dom: 'Bfrtip',
+    dom: 'Brtip',
     buttons: [
       { extend: 'excelHtml5', text: '📤 Xuất Excel', title: 'Danh sách câu hỏi', className: 'toolbar-btn' },
       { extend: 'print', text: '🖨️ In bảng', title: 'Danh sách câu hỏi', className: 'toolbar-btn' }
