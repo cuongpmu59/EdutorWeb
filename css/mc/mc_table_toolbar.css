@@ -46,7 +46,7 @@
   transform: translateY(-1px);
 }
 
-/* Disabled / hidden state (nếu dùng) */
+/* Disabled / hidden state */
 .toolbar-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -66,19 +66,17 @@
   cursor: pointer;
 }
 
-/* Responsive: nếu toolbar quá hẹp, wrap xuống */
+/* Responsive: wrap xuống trên mobile */
 @media (max-width: 600px) {
   .mc-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
-
   .mc-toolbar .toolbar-left,
   .mc-toolbar .toolbar-right {
     justify-content: flex-start;
     width: 100%;
   }
-
   .mc-toolbar select,
   .toolbar-btn {
     width: 100%;
