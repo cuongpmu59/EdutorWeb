@@ -25,7 +25,10 @@
 /* ===== Nút ===== */
 .toolbar-btn, 
 .dt-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* khoảng cách icon - text */
   background: linear-gradient(135deg, #007bff, #0062cc);
   color: #fff !important;
   border: none;
@@ -37,6 +40,7 @@
   transition: all 0.25s ease-in-out;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 38px; /* đồng bộ với select/input */
 }
 
 .toolbar-btn:hover,
@@ -60,14 +64,16 @@ label.toolbar-btn {
   font-size: 14px;
   outline: none;
   min-width: 180px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   background: #fff;
+  height: 38px; /* đồng bộ với nút */
 }
 
 .mc-toolbar select:focus,
 .mc-toolbar input[type="text"]:focus {
   border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0,123,255,0.4);
+  box-shadow: 0 0 4px rgba(0,123,255,0.35);
+  transform: scale(1.01);
 }
 
 /* Label */
@@ -75,7 +81,7 @@ label.toolbar-btn {
   font-size: 14px;
   font-weight: 500;
   margin-right: 4px;
-  color: #333;
+  color: #555; /* nhẹ hơn để không “đậm” quá */
 }
 
 /* ===== Responsive ===== */
@@ -89,7 +95,8 @@ label.toolbar-btn {
     justify-content: flex-start;
   }
   .mc-toolbar select,
-  .mc-toolbar input[type="text"] {
+  .mc-toolbar input[type="text"],
+  .toolbar-btn {
     width: 100%;
   }
 }
