@@ -59,7 +59,7 @@
 
 /* Filter select và search box */
 .mc-toolbar select,
-.mc-toolbar input#searchBox {
+.mc-toolbar input#dtSearchBox {
   padding: 5px 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
@@ -68,7 +68,7 @@
 }
 
 /* Search box */
-.mc-toolbar input#searchBox {
+.mc-toolbar input#dtSearchBox {
   width: 180px;
   margin-left: 4px;
   box-sizing: border-box;
@@ -86,7 +86,7 @@
     width: 100%;
   }
   .mc-toolbar select,
-  .mc-toolbar input#searchBox,
+  .mc-toolbar input#dtSearchBox,
   .toolbar-btn {
     width: 100%;
     justify-content: center;
