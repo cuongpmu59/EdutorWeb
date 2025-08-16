@@ -13,13 +13,18 @@
   box-shadow: 0 3px 8px rgba(0,0,0,0.06);
 }
 
-/* Căn trái/phải */
 .toolbar-left,
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+/* ===== Kích thước chuẩn ===== */
+:root {
+  --toolbar-height: 40px;   /* thay đổi ở đây nếu muốn cao/thấp hơn */
+  --toolbar-font: 14px;
 }
 
 /* ===== Nút chung ===== */
@@ -31,18 +36,17 @@ div.dt-buttons .dt-button,
   gap: 6px !important;
   color: #fff !important;
   border: none !important;
-  padding: 9px 18px !important;
+  padding: 0 18px !important;
   border-radius: 8px !important;
-  font-size: 14px !important;
+  font-size: var(--toolbar-font) !important;
   font-weight: 500 !important;
   cursor: pointer !important;
   transition: all 0.25s ease-in-out !important;
   text-decoration: none !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
-  height: 38px !important;
+  height: var(--toolbar-height) !important;
   min-width: 120px !important;
-  text-align: center !important;
-  background: linear-gradient(135deg, #6c757d, #495057) !important; /* màu mặc định */
+  background: linear-gradient(135deg, #6c757d, #495057) !important;
 }
 
 /* Hiệu ứng nhấn */
@@ -86,16 +90,17 @@ div.dt-buttons .dt-button.buttons-print:hover,
 /* ===== Select + Input ===== */
 .mc-toolbar select,
 .mc-toolbar input[type="text"] {
-  padding: 8px 12px;
+  padding: 0 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: var(--toolbar-font);
   outline: none;
   min-width: 180px;
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   background: #fff;
-  height: 38px;
+  height: var(--toolbar-height);
   color: #333;
+  box-sizing: border-box;
 }
 
 .mc-toolbar select:focus,
@@ -112,7 +117,7 @@ div.dt-buttons .dt-button.buttons-print:hover,
 
 /* Label */
 .mc-toolbar label {
-  font-size: 14px;
+  font-size: var(--toolbar-font);
   font-weight: 500;
   margin-right: 4px;
   color: #444;
