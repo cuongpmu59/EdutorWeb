@@ -23,8 +23,8 @@
 }
 
 /* ===== Nút chung ===== */
-.mc-toolbar .toolbar-btn,
-.mc-toolbar .dt-button {
+div.dt-buttons .dt-button,
+.mc-toolbar .toolbar-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -39,39 +39,43 @@
   transition: all 0.25s ease-in-out !important;
   text-decoration: none !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
-  height: 38px !important;      /* đồng bộ chiều cao */
-  min-width: 120px !important;  /* nút bằng nhau */
+  height: 38px !important;
+  min-width: 120px !important;
   text-align: center !important;
-  user-select: none !important;
+  background: linear-gradient(135deg, #6c757d, #495057) !important; /* màu mặc định */
 }
 
 /* Hiệu ứng nhấn */
-.mc-toolbar .toolbar-btn:active,
-.mc-toolbar .dt-button:active {
+div.dt-buttons .dt-button:active,
+.mc-toolbar .toolbar-btn:active {
   transform: translateY(2px) !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
 }
 
-/* ===== Màu riêng cho từng nút ===== */
-.mc-toolbar .btn-import { 
-  background: linear-gradient(135deg, #28a745, #218838) !important; 
+/* ===== Màu riêng từng nút ===== */
+.mc-toolbar .btn-import {
+  background: linear-gradient(135deg, #28a745, #218838) !important;
 }
-.mc-toolbar .btn-import:hover { 
-  background: linear-gradient(135deg, #218838, #1e7e34) !important; 
-}
-
-.mc-toolbar .btn-export { 
-  background: linear-gradient(135deg, #007bff, #0056d6) !important; 
-}
-.mc-toolbar .btn-export:hover { 
-  background: linear-gradient(135deg, #0056b3, #004099) !important; 
+.mc-toolbar .btn-import:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34) !important;
 }
 
-.mc-toolbar .btn-print { 
-  background: linear-gradient(135deg, #fd7e14, #e8590c) !important; 
+div.dt-buttons .dt-button.buttons-excel,
+.mc-toolbar .btn-export {
+  background: linear-gradient(135deg, #007bff, #0056d6) !important;
 }
-.mc-toolbar .btn-print:hover { 
-  background: linear-gradient(135deg, #e8590c, #d9480f) !important; 
+div.dt-buttons .dt-button.buttons-excel:hover,
+.mc-toolbar .btn-export:hover {
+  background: linear-gradient(135deg, #0056b3, #004099) !important;
+}
+
+div.dt-buttons .dt-button.buttons-print,
+.mc-toolbar .btn-print {
+  background: linear-gradient(135deg, #fd7e14, #e8590c) !important;
+}
+div.dt-buttons .dt-button.buttons-print:hover,
+.mc-toolbar .btn-print:hover {
+  background: linear-gradient(135deg, #e8590c, #d9480f) !important;
 }
 
 /* Nút Import Excel label */
@@ -127,7 +131,7 @@
   .mc-toolbar select,
   .mc-toolbar input[type="text"],
   .mc-toolbar .toolbar-btn,
-  .mc-toolbar .dt-button {
+  div.dt-buttons .dt-button {
     width: 100% !important;
   }
 }
