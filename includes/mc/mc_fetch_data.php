@@ -6,12 +6,12 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../db_connection.php'; // $conn là PDO
 
 // --- Lấy tham số DataTables ---
-$draw    = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
-$start   = isset($_POST['start']) ? intval($_POST['start']) : 0;
-$length  = isset($_POST['length']) ? intval($_POST['length']) : 10;
-$search  = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
-$orderColIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
-$orderDir      = (isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc','desc']))
+$draw         = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
+$start        = isset($_POST['start']) ? intval($_POST['start']) : 0;
+$length       = isset($_POST['length']) ? intval($_POST['length']) : 10;
+$search       = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+$orderColIndex= isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+$orderDir     = isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc','desc'])
                   ? $_POST['order'][0]['dir'] : 'asc';
 
 // --- Map DataTables index → cột DB ---
@@ -29,7 +29,7 @@ $columns = [
 ];
 $orderColumn = $columns[$orderColIndex] ?? 'mc_id';
 
-// --- Lấy filter chủ đề từ DataTables column search (cột 1) ---
+// --- Lấy filter chủ đề từ column search ---
 $topicFilter = $_POST['columns'][1]['search']['value'] ?? '';
 
 try {
@@ -40,13 +40,11 @@ try {
     $whereParts = [];
     $params = [];
 
-    // Filter theo chủ đề
     if ($topicFilter !== '') {
         $whereParts[] = "mc_topic = :topic";
         $params[':topic'] = $topicFilter;
     }
 
-    // Search toàn bộ cột (ngoại trừ mc_id đã filter ở trên)
     if ($search !== '') {
         $searchParts = [];
         foreach ($columns as $col) {
@@ -68,15 +66,22 @@ try {
     $where = $whereParts ? ' WHERE ' . implode(' AND ', $whereParts) : '';
 
     // 3. Tổng số bản ghi sau khi lọc
-    $sqlCount = "SELECT COUNT(*) FROM mc_questions" . $where;
-    $stmt = $conn->prepare($sqlCount);
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM mc_questions $where");
     $stmt->execute($params);
     $totalFiltered = $stmt->fetchColumn();
 
     // 4. Lấy dữ liệu thực tế
-    $sql = "SELECT * FROM mc_questions" . $where . " ORDER BY $orderColumn $orderDir LIMIT $start, $length";
+    $sql = "SELECT * FROM mc_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+
+    // Bind giới hạn phân trang an toàn
+    foreach ($params as $key => $val) {
+        $stmt->bindValue($key, $val);
+    }
+    $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+    $stmt->bindValue(':length', $length, PDO::PARAM_INT);
+
+    $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // 5. Trả JSON cho DataTables
