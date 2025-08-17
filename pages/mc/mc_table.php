@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Quản lý câu hỏi</title>
+  <!-- MathJax -->
   <script>
   window.MathJax = {
     tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
@@ -10,12 +11,16 @@
   };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
+
+  <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
+
   <style>
     table img {
       border-radius: 4px;
       object-fit: cover;
+      max-height: 80px;
     }
   </style>
 </head>
@@ -38,26 +43,52 @@
     </thead>
   </table>
 
-  <!-- JS thư viện -->
+  <!-- jQuery + DataTables -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <!-- JS FixedHeader -->
   <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+
   <script>
-  $(document).ready(function () {
-    $('#mcTable').DataTable({
-      paging: true,          // có thể bật phân trang
-      fixedHeader: true,     // bật header cố định
-      destroy: true          // tránh lỗi reinit
+    let mcTable; // biến toàn cục để dùng lại
+
+    $(document).ready(function () {
+      mcTable = $('#mcTable').DataTable({
+        ajax: {
+          url: '../../php/mc/mc_fetch_data.php', // đường dẫn PHP trả JSON
+          dataSrc: ''
+        },
+        columns: [
+          { data: 'mc_id' },
+          { data: 'mc_topic' },
+          { data: 'mc_question' },
+          { data: 'mc_answer_a' },
+          { data: 'mc_answer_b' },
+          { data: 'mc_answer_c' },
+          { data: 'mc_answer_d' },
+          { data: 'mc_correct' },
+          {
+            data: 'mc_image_url',
+            render: function (data) {
+              return data
+                ? '<img src="' + data + '" style="max-width:100px;">'
+                : '';
+            }
+          }
+        ],
+        paging: true,
+        fixedHeader: true,
+        destroy: true
+      });
     });
-  });
-</script>
 
-  <!-- File JS khởi tạo bảng -->
-  <script src="../../js/mc/mc_fetch_data.js"></script>
+    // Hàm reload lại dữ liệu khi cần
+    function reloadMcTable() {
+      mcTable.ajax.reload(null, false);
+    }
+  </script>
+
+  <!-- JS hỗ trợ -->
   <script src="../../js/mc/mc_table_arrow_key.js"></script>
-
-  
 
 </body>
 </html>
