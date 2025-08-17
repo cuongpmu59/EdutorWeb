@@ -34,6 +34,11 @@ window.MathJax = {
   max-width: 80px;
   height: auto;
 }
+
+/* Ẩn nút mặc định DataTables Buttons */
+.dt-hidden {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -123,12 +128,13 @@ $(function () {
     ],
     dom: 'Bfrtip',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } },
-      { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } }
+      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' },
+      { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' }
     ],
     responsive: true,
     scrollX: true,
     initComplete: function () {
+      // Load chủ đề vào filter
       $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
         topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
@@ -147,10 +153,8 @@ $(function () {
     table.column(1).search(this.value).draw();
   });
 
-  // Export Excel
+  // Trigger DataTables Buttons từ toolbar tuỳ chỉnh
   $('#btnExportExcel').on('click', () => table.button(0).trigger());
-
-  // Print
   $('#btnPrint').on('click', () => table.button(1).trigger());
 
   // Import Excel
