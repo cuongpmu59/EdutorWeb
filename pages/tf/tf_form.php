@@ -1,137 +1,177 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once __DIR__ . '/../../env/config.php';
+// tf_form.php
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>✅ Câu hỏi Đúng / Sai</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+  <title>Câu hỏi Đúng/Sai</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../css/tf/tf_form_image.css">
+  <link rel="stylesheet" href="../../css/tf/tf_form_preview.css">
+  <link rel="stylesheet" href="../../css/tf/tf_form_button.css">
+  <link rel="stylesheet" href="../../css/tf/tf_form_layout.css">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script','noscript','style','textarea','pre'],
+        ignoreHtmlClass: 'tex2jax_ignore'
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <!-- jQuery + FontAwesome -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<!-- Tabs -->
-<div class="tab-container">
-  <div class="tab-button active" data-tab="tab-form">📝 Nhập câu hỏi</div>
-  <div class="tab-button" data-tab="tab-image">🖼️ Ảnh minh hoạ</div>
-  <div class="tab-button" data-tab="tab-preview">👁️ Xem trước toàn bộ</div>
-</div>
+  <div id="formContainer">
+    <form id="tfForm" method="POST" enctype="multipart/form-data">
+      <h2>
+        Câu hỏi Đúng/Sai
+        <span id="tfTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
+      </h2>
 
-<!-- Tab 1: Form nhập liệu -->
-<div class="tab-content active" id="tab-form">
-  <form id="tfForm" class="question-form" method="POST" action="tf_insert.php" enctype="multipart/form-data">
-    <input type="hidden" id="tf_id" name="tf_id">
-    <input type="hidden" id="tf_image_url" name="tf_image_url">
-    <input type="file" id="tf_image" name="tf_image" style="display:none;">
-
-    <div class="form-group">
-      <label for="tf_topic">📚 Chủ đề:</label>
-      <input type="text" id="tf_topic" name="tf_topic" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="tf_question">🧠 Câu hỏi:</label>
-      <textarea id="tf_question" name="tf_question" rows="3" class="form-control" required></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="previewFormulaInput">📌 Xem trước công thức (LaTeX):</label>
-      <textarea id="previewFormulaInput" rows="2" class="form-control" placeholder="\\( a^2 + b^2 = c^2 \\)"></textarea>
-      <div id="previewFormulaOutput" class="preview-box mt-2 p-3 border bg-white dark:bg-gray-800 rounded shadow-sm"></div>
-    </div>
-
-    <!-- Các phát biểu đúng/sai -->
-    <?php for ($i = 1; $i <= 4; $i++): ?>
-      <div class="form-group">
-        <label for="tf_statement<?= $i ?>">🔹 Phát biểu <?= $i ?>:</label>
-        <input type="text" id="tf_statement<?= $i ?>" name="tf_statement<?= $i ?>" class="form-control" required>
+      <!-- Preview toàn bộ -->
+      <div id="tfPreview" class="tf-preview-zone" style="display:none;">
+        <div id="tfPreviewContent"></div>
       </div>
-      <div class="form-group">
-        <label for="tf_correct_answer<?= $i ?>">🔘 Đúng / Sai:</label>
-        <select id="tf_correct_answer<?= $i ?>" name="tf_correct_answer<?= $i ?>" class="form-control" required>
-          <option value="">-- Chọn --</option>
-          <option value="1">✅ Đúng</option>
-          <option value="0">❌ Sai</option>
-        </select>
+
+      <div id="tfMainContent" class="tf-columns">
+        <!-- Cột trái -->
+        <div class="tf-col tf-col-left">
+          <fieldset class="tf-group">
+            <legend>Thông tin câu hỏi</legend>
+
+            <div class="tf-field">
+              <label for="tf_topic">Chủ đề:</label>
+              <input type="text" id="tf_topic" name="topic" required>
+            </div>
+
+            <div class="tf-field">
+              <label for="tf_question">Câu hỏi chính:
+                <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
+              </label>
+              <textarea id="tf_question" name="question" required></textarea>
+              <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
+            </div>
+
+            <!-- 4 mệnh đề + đáp án đúng/sai -->
+            <?php
+            for ($i=1; $i<=4; $i++) {
+              echo '<div class="tf-field">
+                      <label for="tf_statement'.$i.'">Mệnh đề '.$i.':
+                        <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
+                      </label>
+                      <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>
+                      <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>
+                      <div class="tf-radio-group">
+                        <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
+                        <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
+                      </div>
+                    </div>';
+            }
+            ?>
+          </fieldset>
+        </div>
+
+        <!-- Cột phải -->
+        <div class="tf-col tf-col-right">
+          <div class="tf-image-zone tf-group">
+            <h4>Ảnh minh họa</h4>
+            <div class="tf-image-preview">
+              <img id="tf_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
+            </div>
+            <div class="tf-image-buttons">
+              <label class="btn-upload">
+                Tải ảnh
+                <input type="file" id="tf_image" name="image" accept="image/*" hidden>
+              </label>
+              <button type="button" id="tf_clear_image">Xóa ảnh</button>
+            </div>
+            <input type="hidden" name="tf_image_url" id="tf_image_url">
+            <div id="statusMsg"></div>
+          </div>
+
+          <div class="tf-buttons-wrapper tf-group">
+            <h4>Thao tác</h4>
+            <div class="tf-buttons">
+              <button type="submit" id="tf_save">Lưu</button>
+              <button type="button" id="tf_delete">Xóa</button>
+              <button type="button" id="tf_reset">Làm mới</button>
+              <button type="button" id="tf_view_list">Ẩn/hiện danh sách</button>
+              <button type="button" id="tf_preview_exam" class="full-width">Làm đề</button>
+            </div>
+            <input type="hidden" id="tf_id" name="tf_id">
+          </div>
+        </div>
       </div>
-    <?php endfor; ?>
+    </form>
+  </div>
 
-    <div id="formWarning" class="form-warning alert alert-warning" style="display:none;">
-      ⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc.
-    </div>
+  <!-- Bảng quản lý -->
+  <div id="tfTableWrapper" style="display:none;">
+    <iframe id="tfTableFrame" src="../../pages/tf/tf_table.php" style="width:100%; height:600px; border:none;"></iframe>
+  </div>
 
-    <div class="form-actions mt-3 flex gap-2">
-      <button type="submit" class="btn btn-primary">💾 Lưu</button>
-      <button type="reset" class="btn btn-secondary">🔄 Làm mới</button>
-      <button type="button" id="deleteBtn" class="btn btn-danger" style="display:none;">🗑️ Xoá</button>
-      <button type="button" id="exportPdfBtn" class="btn btn-secondary">📝 Xuất PDF</button>
-    </div>
-  </form>
-</div>
+  <!-- JS -->
+  <script src="../../js/tf/tf_form_preview.js"></script>
+  <script src="../../js/tf/tf_form_image.js"></script>
+  <script src="../../js/tf/tf_form_button.js"></script>
 
-<!-- Tab 2: Ảnh minh hoạ -->
-<div class="tab-content" id="tab-image">
-  <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
-  <img id="imageTabPreview" style="max-height:150px; border:1px solid #ccc; display:none;">
-  <div id="imageTabFileName" style="color:gray; font-style:italic;"></div>
-  <button type="button" class="btn-danger" id="delete_image_tab" style="display:none;">🗑️ Xoá ảnh</button>
-  <button type="button" class="btn-secondary" id="select_image_tab">📂 Chọn ảnh</button>
-</div>
-
-<!-- Tab 3: Xem trước toàn bộ -->
-<div class="tab-content" id="tab-preview">
-  <div id="preview_area"><em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em></div>
-  <img id="preview_image" style="display:none; max-height:150px; margin-top:10px; border:1px solid #ccc;">
-</div>
-
-<!-- Danh sách câu hỏi -->
-<iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border:1px solid #aaa;"></iframe>
-
-<!-- Cloudinary từ env -->
-<script>
-  const CLOUDINARY_CLOUD_NAME = "<?= CLOUDINARY_CLOUD_NAME ?>";
-  const CLOUDINARY_UPLOAD_PRESET = "<?= CLOUDINARY_UPLOAD_PRESET ?>";
-</script>
-
-<!-- JavaScript xử lý -->
-<script src="../../js/modules/mathPreview.js"></script>
-<script type="module" src="js/modules/controller.js"></script>
-
-<script>
-  // Validate
-  document.getElementById("tfForm").addEventListener("submit", function (e) {
-    const ids = [
-      "tf_topic", "tf_question",
-      "tf_statement1", "tf_correct_answer1",
-      "tf_statement2", "tf_correct_answer2",
-      "tf_statement3", "tf_correct_answer3",
-      "tf_statement4", "tf_correct_answer4"
-    ];
-    let isValid = ids.every(id => document.getElementById(id)?.value.trim());
-    document.getElementById("formWarning").style.display = isValid ? "none" : "block";
-    if (!isValid) e.preventDefault();
+  <script>
+  // Auto-resize textarea
+  document.addEventListener("input", function(e) {
+    if (e.target.tagName.toLowerCase() !== "textarea") return;
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
   });
 
-  // Xem trước công thức toán
-  const formulaInput = document.getElementById("previewFormulaInput");
-  const formulaOutput = document.getElementById("previewFormulaOutput");
-  if (formulaInput && formulaOutput && typeof updateLivePreview === "function") {
-    formulaInput.addEventListener("input", () => updateLivePreview(formulaInput, formulaOutput));
-    updateLivePreview(formulaInput, formulaOutput);
-  }
-
-  // Chuyển tab
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
+  window.addEventListener("load", function() {
+    document.querySelectorAll("textarea").forEach(function(el) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
     });
   });
-</script>
+  </script>
+
+  <script>
+    // Nhận dữ liệu từ iframe DataTable để fill form
+    window.addEventListener('message', function (event) {
+      const { type, data } = event.data || {};
+      if (type !== 'fill-form' || !data) return;
+
+      $('#tf_id').val(data.tf_id || '');
+      $('#tf_topic').val(data.tf_topic || '');
+      $('#tf_question').val(data.tf_question || '');
+      for (let i=1; i<=4; i++) {
+        $('#tf_statement'+i).val(data['tf_statement'+i] || '');
+        const correct = data['tf_correct_answer'+i];
+        if (correct !== undefined && correct !== null) {
+          $(`input[name="correct_answer${i}"][value="${correct}"]`).prop('checked', true);
+        }
+      }
+
+      if (data.tf_image_url) {
+        $('#tf_preview_image').attr('src', data.tf_image_url).show();
+        $('#tf_image_url').val(data.tf_image_url);
+      } else {
+        $('#tf_preview_image').hide().attr('src', '');
+        $('#tf_image_url').val('');
+      }
+
+      MathJax.typesetPromise();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>
