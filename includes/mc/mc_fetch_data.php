@@ -1,45 +1,31 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '/../db_connection.php'; // $conn là PDO
 
 // --- Lấy tham số DataTables ---
-$draw         = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
-$start        = isset($_POST['start']) ? intval($_POST['start']) : 0;
-$length       = isset($_POST['length']) ? intval($_POST['length']) : 10;
-$search       = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
-$orderColIndex= isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
-$orderDir     = isset($_POST['order'][0]['dir']) && in_array($_POST['order'][0]['dir'], ['asc','desc'])
-                  ? $_POST['order'][0]['dir'] : 'asc';
+$draw  = intval($_POST['draw'] ?? 0);
+$start = intval($_POST['start'] ?? 0);
+$length= intval($_POST['length'] ?? 10);
+$search= trim($_POST['search']['value'] ?? '');
+$orderColIndex = intval($_POST['order'][0]['column'] ?? 0);
+$orderDir      = in_array($_POST['order'][0]['dir'] ?? '', ['asc','desc']) ? $_POST['order'][0]['dir'] : 'asc';
 
-// --- Map DataTables index → cột DB ---
+// --- Map cột DataTables sang cột DB ---
 $columns = [
-    0 => 'mc_id',
-    1 => 'mc_topic',
-    2 => 'mc_question',
-    3 => 'mc_answer1',
-    4 => 'mc_answer2',
-    5 => 'mc_answer3',
-    6 => 'mc_answer4',
-    7 => 'mc_correct_answer',
-    8 => 'mc_image_url',
-    9 => 'mc_created_at'
+    0 => 'mc_id', 1 => 'mc_topic', 2 => 'mc_question', 3 => 'mc_answer1',
+    4 => 'mc_answer2', 5 => 'mc_answer3', 6 => 'mc_answer4',
+    7 => 'mc_correct_answer', 8 => 'mc_image_url', 9 => 'mc_created_at'
 ];
 $orderColumn = $columns[$orderColIndex] ?? 'mc_id';
 
-// --- Lấy filter chủ đề từ column search (cột 1) ---
-$topicFilter = '';
-if (isset($_POST['columns'][1]['search']['value'])) {
-    $topicFilter = trim($_POST['columns'][1]['search']['value']);
-}
+// --- Filter chủ đề từ cột 1 ---
+$topicFilter = trim($_POST['columns'][1]['search']['value'] ?? '');
 
 try {
     // 1. Tổng số bản ghi
     $totalRecords = $conn->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
 
-    // 2. Điều kiện WHERE
+    // 2. Build WHERE
     $whereParts = [];
     $params = [];
 
@@ -62,32 +48,25 @@ try {
         }
         if ($searchParts) {
             $whereParts[] = '(' . implode(' OR ', $searchParts) . ')';
-            if (!isset($params[':id_search'])) {
-                $params[':search'] = "%$search%";
-            }
+            if (!isset($params[':id_search'])) $params[':search'] = "%$search%";
         }
     }
 
-    $where = '';
-    if (!empty($whereParts)) {
-        $where = ' WHERE ' . implode(' AND ', $whereParts);
-    }
+    $where = $whereParts ? ' WHERE '.implode(' AND ', $whereParts) : '';
 
-    // 3. Tổng số bản ghi sau khi lọc
+    // 3. Tổng số bản ghi sau filter
     $stmt = $conn->prepare("SELECT COUNT(*) FROM mc_questions $where");
     $stmt->execute($params);
     $totalFiltered = $stmt->fetchColumn();
 
-    // 4. Lấy dữ liệu thực tế
+    // 4. Lấy dữ liệu
     $sql = "SELECT * FROM mc_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
     $stmt = $conn->prepare($sql);
 
-    // Bind tham số search/filter
-    foreach ($params as $key => $val) {
-        $stmt->bindValue($key, $val);
-    }
-    $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-    $stmt->bindValue(':length', $length, PDO::PARAM_INT);
+    // Bind tham số
+    foreach ($params as $k=>$v) { $stmt->bindValue($k,$v); }
+    $stmt->bindValue(':start',$start,PDO::PARAM_INT);
+    $stmt->bindValue(':length',$length,PDO::PARAM_INT);
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -100,7 +79,7 @@ try {
         "data" => $data
     ], JSON_UNESCAPED_UNICODE);
 
-} catch(PDOException $e){
+} catch(PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'status'=>'error',
