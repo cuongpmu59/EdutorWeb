@@ -19,26 +19,32 @@ window.MathJax = {
 <!-- DataTables + Buttons CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+<!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
 <style>
+/* Chỉ giữ lại phần cần inline */
 #mcTable td.mc-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#mcTable img { max-width: 80px; height: auto; }
-.dataTables_filter { display: none; } /* ẩn search box mặc định */
-.dt-hidden { display: none; }
-.dt-buttons { display: none; }
+#mcTable img {
+  max-width: 80px;
+  height: auto;
+}
+.dataTables_filter { display: none; } /* Ẩn search mặc định */
+.dt-hidden { display: none; }         /* Ẩn nút gốc, chỉ trigger thủ công */
 </style>
 </head>
 <body>
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
+<!-- Toolbar -->
 <div class="mc-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
@@ -56,6 +62,7 @@ window.MathJax = {
   </div>
 </div>
 
+<!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
   <thead>
     <tr>
@@ -73,6 +80,7 @@ window.MathJax = {
   </thead>
 </table>
 
+<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -92,10 +100,17 @@ $(function () {
     columns: [
       { data:'mc_id' },
       { data:'mc_topic' },
-      { data:'mc_question', className:'mc-question-cell', render: d=>d ? `<span title="${d.replace(/"/g,'&quot;')}">${d.length>80?d.substr(0,80)+'…':d}</span>` : '' },
-      { data:'mc_answer1' }, { data:'mc_answer2' }, { data:'mc_answer3' }, { data:'mc_answer4' },
+      { data:'mc_question', className:'mc-question-cell',
+        render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length>80 ? d.substr(0,80)+'…' : d}
+                          </span>` : ''
+      },
+      { data:'mc_answer1' },
+      { data:'mc_answer2' },
+      { data:'mc_answer3' },
+      { data:'mc_answer4' },
       { data:'mc_correct_answer' },
-      { data:'mc_image_url', render:d=>d?`<img src="${d}" alt="ảnh" loading="lazy">`:'' },
+      { data:'mc_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'mc_created_at' }
     ],
     dom: 'Brtip',
@@ -107,19 +122,23 @@ $(function () {
     scrollX: true,
     initComplete: function() {
       $.getJSON('../../includes/mc/mc_get_topics.php', function(topics){
-        topics.forEach(t=>$('#filterTopic').append(`<option value="${t}">${t}</option>`));
+        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
     }
   });
 
-  table.on('draw',()=>{ if(window.MathJax) MathJax.typesetPromise(); });
+  // MathJax render lại mỗi khi vẽ bảng
+  table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
 
-  $('#filterTopic').on('change',function(){ table.column(1).search(this.value).draw(); });
-  $('#customSearch').on('keyup change',function(){ table.search(this.value).draw(); });
+  // Filter + Search thủ công
+  $('#filterTopic').on('change', function(){ table.column(1).search(this.value).draw(); });
+  $('#customSearch').on('keyup change', function(){ table.search(this.value).draw(); });
 
-  $('#btnExportExcel').on('click',()=>table.button(0).trigger());
-  $('#btnPrint').on('click',()=>table.button(1).trigger());
+  // Xuất Excel + Print trigger thủ công
+  $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
+  $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
+  // Nhập Excel
   $('#importExcelInput').on('change', function(e){
     const file = e.target.files[0];
     if(!file) return;
@@ -139,6 +158,7 @@ $(function () {
 });
 </script>
 
+<!-- Hỗ trợ di chuyển bằng phím -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
 
 </body>
