@@ -22,6 +22,16 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
+<style>
+/* Thu hẹp cột câu hỏi */
+#mcTable td.mc-question-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
+
 </head>
 <body>
 
@@ -42,9 +52,6 @@ window.MathJax = {
     <select id="filterTopic">
       <option value="">Tất cả</option>
     </select>
-
-    <label for="filterDate">📅 Lọc ngày tạo:</label>
-    <input type="date" id="filterDate">
   </div>
 </div>
 
@@ -88,7 +95,16 @@ $(function () {
     columns: [
       { data: 'mc_id' },
       { data: 'mc_topic' },
-      { data: 'mc_question' },
+      { 
+        data: 'mc_question',
+        className: 'mc-question-cell',
+        render: function(data, type, row) {
+          if (!data) return '';
+          const maxLength = 80; // số ký tự hiển thị
+          const shortText = data.length > maxLength ? data.substr(0, maxLength) + '…' : data;
+          return `<span title="${data.replace(/"/g, '&quot;')}">${shortText}</span>`;
+        }
+      },
       { data: 'mc_answer1' },
       { data: 'mc_answer2' },
       { data: 'mc_answer3' },
@@ -122,11 +138,6 @@ $(function () {
   // Lọc theo chủ đề
   $('#filterTopic').on('change', function () {
     table.column(1).search(this.value).draw();
-  });
-
-  // Lọc theo ngày tạo
-  $('#filterDate').on('change', function () {
-    table.column(9).search(this.value).draw();
   });
 
   // Export Excel
