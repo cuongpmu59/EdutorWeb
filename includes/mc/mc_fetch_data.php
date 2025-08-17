@@ -29,7 +29,7 @@ $columns = [
 ];
 $orderColumn = $columns[$orderColIndex] ?? 'mc_id';
 
-// --- Lấy filter chủ đề từ column search ---
+// --- Filter chủ đề từ column search ---
 $topicFilter = $_POST['columns'][1]['search']['value'] ?? '';
 
 try {
@@ -71,15 +71,16 @@ try {
     $totalFiltered = $stmt->fetchColumn();
 
     // 4. Lấy dữ liệu thực tế
-    $sql = "SELECT * FROM mc_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
+    $start  = max(0, $start);
+    $length = max(1, $length);
+
+    $sql = "SELECT * FROM mc_questions $where ORDER BY $orderColumn $orderDir LIMIT $start, $length";
     $stmt = $conn->prepare($sql);
 
-    // Bind giới hạn phân trang an toàn
+    // Bind các tham số filter/search
     foreach ($params as $key => $val) {
         $stmt->bindValue($key, $val);
     }
-    $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-    $stmt->bindValue(':length', $length, PDO::PARAM_INT);
 
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,7 +93,7 @@ try {
         "data" => $data
     ], JSON_UNESCAPED_UNICODE);
 
-} catch(PDOException $e){
+} catch(PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'status'=>'error',
