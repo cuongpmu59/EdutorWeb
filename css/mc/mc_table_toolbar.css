@@ -1,142 +1,46 @@
-/* ===== Toolbar Layout ===== */
 .mc-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(90deg, #ffffff, #f8fafc);
-  padding: 12px 16px;
-  border: 1px solid #e1e4e8;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  gap: 14px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  gap: 10px;
   flex-wrap: wrap;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.toolbar-left,
-.toolbar-right {
+.toolbar-left, .toolbar-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-/* ===== Kích thước chuẩn ===== */
-:root {
-  --toolbar-height: 40px;   /* thay đổi ở đây nếu muốn cao/thấp hơn */
-  --toolbar-font: 14px;
+.toolbar-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-/* ===== Nút chung ===== */
-div.dt-buttons .dt-button,
-.mc-toolbar .toolbar-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  color: #fff !important;
-  border: none !important;
-  padding: 0 18px !important;
-  border-radius: 8px !important;
-  font-size: var(--toolbar-font) !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
-  transition: all 0.25s ease-in-out !important;
-  text-decoration: none !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
-  height: var(--toolbar-height) !important;
-  min-width: 120px !important;
-  background: linear-gradient(135deg, #6c757d, #495057) !important;
+.toolbar-btn:hover {
+  background: #0056b3;
 }
 
-/* Hiệu ứng nhấn */
-div.dt-buttons .dt-button:active,
-.mc-toolbar .toolbar-btn:active {
-  transform: translateY(2px) !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
-}
-
-/* ===== Màu riêng từng nút ===== */
-.mc-toolbar .btn-import {
-  background: linear-gradient(135deg, #28a745, #218838) !important;
-}
-.mc-toolbar .btn-import:hover {
-  background: linear-gradient(135deg, #218838, #1e7e34) !important;
-}
-
-div.dt-buttons .dt-button.buttons-excel,
-.mc-toolbar .btn-export {
-  background: linear-gradient(135deg, #007bff, #0056d6) !important;
-}
-div.dt-buttons .dt-button.buttons-excel:hover,
-.mc-toolbar .btn-export:hover {
-  background: linear-gradient(135deg, #0056b3, #004099) !important;
-}
-
-div.dt-buttons .dt-button.buttons-print,
-.mc-toolbar .btn-print {
-  background: linear-gradient(135deg, #fd7e14, #e8590c) !important;
-}
-div.dt-buttons .dt-button.buttons-print:hover,
-.mc-toolbar .btn-print:hover {
-  background: linear-gradient(135deg, #e8590c, #d9480f) !important;
-}
-
-/* Nút Import Excel label */
-.mc-toolbar label.toolbar-btn {
-  cursor: pointer !important;
-}
-
-/* ===== Select + Input ===== */
-.mc-toolbar select,
-.mc-toolbar input[type="text"] {
-  padding: 0 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: var(--toolbar-font);
-  outline: none;
-  min-width: 180px;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-  background: #fff;
-  height: var(--toolbar-height);
-  color: #333;
-  box-sizing: border-box;
-}
-
-.mc-toolbar select:focus,
-.mc-toolbar input[type="text"]:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0,123,255,0.35);
-  transform: scale(1.015);
-}
-
-.mc-toolbar input::placeholder {
-  color: #aaa;
-  font-style: italic;
-}
-
-/* Label */
 .mc-toolbar label {
-  font-size: var(--toolbar-font);
   font-weight: 500;
-  margin-right: 4px;
-  color: #444;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .mc-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .toolbar-left, .toolbar-right {
-    width: 100%;
-    justify-content: flex-start;
-  }
-  .mc-toolbar select,
-  .mc-toolbar input[type="text"],
-  .mc-toolbar .toolbar-btn,
-  div.dt-buttons .dt-button {
-    width: 100% !important;
-  }
+.mc-toolbar input[type="text"], 
+.mc-toolbar select {
+  padding: 5px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 180px;
 }
