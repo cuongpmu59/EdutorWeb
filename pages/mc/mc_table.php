@@ -42,6 +42,9 @@ window.MathJax = {
     <select id="filterTopic">
       <option value="">Tất cả</option>
     </select>
+
+    <label for="filterDate">📅 Lọc ngày tạo:</label>
+    <input type="date" id="filterDate">
   </div>
 </div>
 
@@ -58,6 +61,7 @@ window.MathJax = {
       <th>D</th>
       <th>Đáp án</th>
       <th>Hình minh họa</th>
+      <th>Ngày tạo</th>
     </tr>
   </thead>
 </table>
@@ -73,7 +77,6 @@ window.MathJax = {
 
 <script>
 $(function () {
-  // Khởi tạo DataTable
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
@@ -94,15 +97,18 @@ $(function () {
       {
         data: 'mc_image_url',
         render: function (data) {
-          return data ? `<img src="${data}" alt="ảnh">` : '';
+          return data ? `<img src="${data}" alt="ảnh" style="max-width:80px;">` : '';
         }
-      }
+      },
+      { data: 'mc_created_at' }
     ],
     dom: 'Bfrtip',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } },
-      { extend: 'print', title: 'Danh sách câu hỏi', className: 'd-none', exportOptions: { columns: ':visible' } }
+      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } },
+      { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } }
     ],
+    responsive: true,
+    scrollX: true,
     initComplete: function () {
       // Lấy danh sách chủ đề từ DB
       $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
@@ -116,6 +122,11 @@ $(function () {
   // Lọc theo chủ đề
   $('#filterTopic').on('change', function () {
     table.column(1).search(this.value).draw();
+  });
+
+  // Lọc theo ngày tạo
+  $('#filterDate').on('change', function () {
+    table.column(9).search(this.value).draw();
   });
 
   // Export Excel
@@ -160,9 +171,8 @@ $(function () {
 });
 </script>
 
-<!-- Điều khiển bằng phím mũi tên -->
+<!-- Optional: điều khiển bằng phím mũi tên -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
-<script src="../../js/mc/mc_table_import_excel.js"></script>
 
 </body>
 </html>
