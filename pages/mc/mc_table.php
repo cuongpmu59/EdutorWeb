@@ -30,30 +30,31 @@ window.MathJax = {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Căn toolbar cho đẹp */
+.mc-toolbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+}
+.toolbar-right label {
+  margin-right: 5px;
+}
+#mcTable_filter {
+  margin-left: 10px; /* search box cách filter topic */
+}
 </style>
 
 </head>
 <body>
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
-
-<!-- Toolbar -->
-<div class="mc-toolbar">
-  <div class="toolbar-left">
-    <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
-    <input type="file" id="importExcelInput" accept=".xlsx" hidden>
-
-    <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
-    <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
-  </div>
-
-  <div class="toolbar-right">
-    <label for="filterTopic">🔍 Lọc chủ đề:</label>
-    <select id="filterTopic">
-      <option value="">Tất cả</option>
-    </select>
-  </div>
-</div>
 
 <!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
@@ -100,7 +101,7 @@ $(function () {
         className: 'mc-question-cell',
         render: function(data, type, row) {
           if (!data) return '';
-          const maxLength = 80; // số ký tự hiển thị
+          const maxLength = 80;
           const shortText = data.length > maxLength ? data.substr(0, maxLength) + '…' : data;
           return `<span title="${data.replace(/"/g, '&quot;')}">${shortText}</span>`;
         }
@@ -118,7 +119,10 @@ $(function () {
       },
       { data: 'mc_created_at' }
     ],
-    dom: 'Bfrtip',
+    dom: '<"mc-toolbar-top"<"toolbar-left"B><"toolbar-right"l f>>rtip',
+    language: {
+      search: "Tìm kiếm:" // search box label tiếng Việt
+    },
     buttons: [
       { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } },
       { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' } }
