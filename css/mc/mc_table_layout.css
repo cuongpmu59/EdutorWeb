@@ -17,7 +17,7 @@
 #mcTable thead th {
   position: sticky;          /* cố định khi cuộn */
   top: 0;
-  z-index: 10;               /* luôn nổi trên cùng */
+  z-index: 50;               /* cao hơn wrapper */
   background: linear-gradient(135deg, #4a90e2, #357ab7);
   color: #fff;
   font-weight: 600;
@@ -26,6 +26,7 @@
   border-bottom: 2px solid #2f5fa1;
   white-space: nowrap;
   font-size: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* tạo bóng để header tách biệt */
 }
 
 /* Bo tròn góc header */
@@ -79,10 +80,12 @@
   cursor: pointer;
 }
 
-/* Responsive cuộn ngang */
+/* DataTables wrapper để sticky hoạt động */
 .dataTables_wrapper {
   width: 100%;
   overflow-x: auto;
+  position: relative; /* để header sticky hiển thị đúng */
+  z-index: 1;
 }
 
 /* Ẩn search box mặc định DataTables */
