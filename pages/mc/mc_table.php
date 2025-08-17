@@ -23,15 +23,18 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
 <style>
-/* Thu hẹp cột câu hỏi */
+/* Thu gọn cột câu hỏi */
 #mcTable td.mc-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#mcTable img {
+  max-width: 80px;
+  height: auto;
+}
 </style>
-
 </head>
 <body>
 
@@ -42,7 +45,6 @@ window.MathJax = {
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
-
     <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
     <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
   </div>
@@ -92,15 +94,16 @@ $(function () {
       type: 'POST'
     },
     order: [[0, 'desc']],
+    stateSave: true,
     columns: [
       { data: 'mc_id' },
       { data: 'mc_topic' },
       { 
         data: 'mc_question',
         className: 'mc-question-cell',
-        render: function(data, type, row) {
+        render: function(data) {
           if (!data) return '';
-          const maxLength = 80; // số ký tự hiển thị
+          const maxLength = 80;
           const shortText = data.length > maxLength ? data.substr(0, maxLength) + '…' : data;
           return `<span title="${data.replace(/"/g, '&quot;')}">${shortText}</span>`;
         }
@@ -113,7 +116,7 @@ $(function () {
       {
         data: 'mc_image_url',
         render: function (data) {
-          return data ? `<img src="${data}" alt="ảnh" style="max-width:80px;">` : '';
+          return data ? `<img src="${data}" alt="ảnh" loading="lazy">` : '';
         }
       },
       { data: 'mc_created_at' }
@@ -126,29 +129,29 @@ $(function () {
     responsive: true,
     scrollX: true,
     initComplete: function () {
-      // Lấy danh sách chủ đề từ DB
       $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
-        topics.forEach(t => {
-          $('#filterTopic').append(`<option value="${t}">${t}</option>`);
-        });
+        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
     }
   });
 
-  // Lọc theo chủ đề
+  // Render MathJax sau mỗi draw
+  table.on('draw', function() {
+    if (window.MathJax) {
+      MathJax.typesetPromise();
+    }
+  });
+
+  // Filter chủ đề
   $('#filterTopic').on('change', function () {
     table.column(1).search(this.value).draw();
   });
 
   // Export Excel
-  $('#btnExportExcel').on('click', function () {
-    table.button(0).trigger();
-  });
+  $('#btnExportExcel').on('click', () => table.button(0).trigger());
 
   // Print
-  $('#btnPrint').on('click', function () {
-    table.button(1).trigger();
-  });
+  $('#btnPrint').on('click', () => table.button(1).trigger());
 
   // Import Excel
   $('#importExcelInput').on('change', function (e) {
@@ -160,7 +163,7 @@ $(function () {
       const data = new Uint8Array(evt.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
 
       if (worksheet.length === 0) {
         alert('File Excel rỗng!');
