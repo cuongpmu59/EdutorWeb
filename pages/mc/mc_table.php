@@ -44,13 +44,15 @@
   <!-- JS FixedHeader -->
   <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
   <script>
-    $(document).ready(function () {
+  $(document).ready(function () {
     $('#mcTable').DataTable({
       paging: true,          // có thể bật phân trang
-      fixedHeader: true      // bật header cố định
+      fixedHeader: true,     // bật header cố định
+      destroy: true          // tránh lỗi reinit
     });
   });
-  </script>
+</script>
+
   <!-- File JS khởi tạo bảng -->
   <script src="../../js/mc/mc_fetch_data.js"></script>
   <script src="../../js/mc/mc_table_arrow_key.js"></script>
