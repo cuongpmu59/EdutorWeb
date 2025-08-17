@@ -23,24 +23,14 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
 <style>
-/* Thu gọn cột câu hỏi */
 #mcTable td.mc-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#mcTable img {
-  max-width: 80px;
-  height: auto;
-}
-
-/* Ẩn search box mặc định DataTables */
-.dataTables_filter {
-  display: none;
-}
-
-/* Ẩn nút mặc định DataTables Buttons */
+#mcTable img { max-width: 80px; height: auto; }
+.dataTables_filter { display: none; } /* ẩn search box mặc định */
 .dt-hidden { display: none; }
 .dt-buttons { display: none; }
 </style>
@@ -49,7 +39,6 @@ window.MathJax = {
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
 
-<!-- Toolbar -->
 <div class="mc-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
@@ -60,16 +49,13 @@ window.MathJax = {
 
   <div class="toolbar-right">
     <label for="filterTopic">🔍 Lọc chủ đề:</label>
-    <select id="filterTopic">
-      <option value="">Tất cả</option>
-    </select>
+    <select id="filterTopic"><option value="">Tất cả</option></select>
 
     <label for="customSearch">🔎 Tìm kiếm:</label>
     <input type="text" id="customSearch" placeholder="Nhập từ khóa...">
   </div>
 </div>
 
-<!-- DataTable -->
 <table id="mcTable" class="display nowrap" style="width:100%">
   <thead>
     <tr>
@@ -87,7 +73,6 @@ window.MathJax = {
   </thead>
 </table>
 
-<!-- jQuery + DataTables + Buttons + SheetJS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -101,107 +86,59 @@ $(function () {
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: {
-      url: '../../includes/mc/mc_fetch_data.php',
-      type: 'POST'
-    },
-    order: [[0, 'desc']],
+    ajax: { url: '../../includes/mc/mc_fetch_data.php', type: 'POST' },
+    order: [[0,'desc']],
     stateSave: true,
     columns: [
-      { data: 'mc_id' },
-      { data: 'mc_topic' },
-      { 
-        data: 'mc_question',
-        className: 'mc-question-cell',
-        render: function(data) {
-          if (!data) return '';
-          const maxLength = 80;
-          const shortText = data.length > maxLength ? data.substr(0, maxLength) + '…' : data;
-          return `<span title="${data.replace(/"/g, '&quot;')}">${shortText}</span>`;
-        }
-      },
-      { data: 'mc_answer1' },
-      { data: 'mc_answer2' },
-      { data: 'mc_answer3' },
-      { data: 'mc_answer4' },
-      { data: 'mc_correct_answer' },
-      {
-        data: 'mc_image_url',
-        render: function (data) {
-          return data ? `<img src="${data}" alt="ảnh" loading="lazy">` : '';
-        }
-      },
-      { data: 'mc_created_at' }
+      { data:'mc_id' },
+      { data:'mc_topic' },
+      { data:'mc_question', className:'mc-question-cell', render: d=>d ? `<span title="${d.replace(/"/g,'&quot;')}">${d.length>80?d.substr(0,80)+'…':d}</span>` : '' },
+      { data:'mc_answer1' }, { data:'mc_answer2' }, { data:'mc_answer3' }, { data:'mc_answer4' },
+      { data:'mc_correct_answer' },
+      { data:'mc_image_url', render:d=>d?`<img src="${d}" alt="ảnh" loading="lazy">`:'' },
+      { data:'mc_created_at' }
     ],
-    dom: 'Brtip', // Loại bỏ 'f' để ẩn search mặc định
+    dom: 'Brtip',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' },
-      { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' }
+      { extend:'excelHtml5', title:'Danh sách câu hỏi', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
     ],
     responsive: true,
     scrollX: true,
-    initComplete: function () {
-      // Load chủ đề vào filter
-      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
-        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
+    initComplete: function() {
+      $.getJSON('../../includes/mc/mc_get_topics.php', function(topics){
+        topics.forEach(t=>$('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
     }
   });
 
-  // Render MathJax sau mỗi draw
-  table.on('draw', function() {
-    if (window.MathJax) {
-      MathJax.typesetPromise();
-    }
-  });
+  table.on('draw',()=>{ if(window.MathJax) MathJax.typesetPromise(); });
 
-  // Filter chủ đề
-  $('#filterTopic').on('change', function () {
-    table.column(1).search(this.value).draw();
-  });
+  $('#filterTopic').on('change',function(){ table.column(1).search(this.value).draw(); });
+  $('#customSearch').on('keyup change',function(){ table.search(this.value).draw(); });
 
-  // Search toàn cột (custom search)
-  $('#customSearch').on('keyup change', function () {
-    table.search(this.value).draw();
-  });
+  $('#btnExportExcel').on('click',()=>table.button(0).trigger());
+  $('#btnPrint').on('click',()=>table.button(1).trigger());
 
-  // Trigger nút DataTables từ toolbar tuỳ chỉnh
-  $('#btnExportExcel').on('click', () => table.button(0).trigger());
-  $('#btnPrint').on('click', () => table.button(1).trigger());
-
-  // Import Excel
-  $('#importExcelInput').on('change', function (e) {
+  $('#importExcelInput').on('change', function(e){
     const file = e.target.files[0];
-    if (!file) return;
-
+    if(!file) return;
     const reader = new FileReader();
-    reader.onload = function (evt) {
+    reader.onload = function(evt){
       const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
+      const workbook = XLSX.read(data,{type:'array'});
       const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
-
-      if (worksheet.length === 0) {
-        alert('File Excel rỗng!');
-        return;
-      }
-
-      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-        .done(res => {
-          alert('📥 Nhập dữ liệu thành công!');
-          table.ajax.reload();
-        })
-        .fail(err => {
-          console.error(err);
-          alert('❌ Lỗi khi nhập Excel');
-        });
+      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{defval:''});
+      if(!worksheet.length){ alert('File Excel rỗng!'); return; }
+      $.post('../../includes/mc/mc_table_import_excel.php',{rows:JSON.stringify(worksheet)})
+       .done(()=>{ alert('📥 Nhập dữ liệu thành công!'); table.ajax.reload(); })
+       .fail(()=>{ alert('❌ Lỗi khi nhập Excel'); });
     };
     reader.readAsArrayBuffer(file);
   });
 });
 </script>
 
-<!-- Optional: điều khiển bằng phím mũi tên -->
 <script src="../../js/mc/mc_table_arrow_key.js"></script>
 
 </body>
