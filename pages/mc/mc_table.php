@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
 <meta charset="UTF-8">
 <title>Quản lý câu hỏi</title>
@@ -15,37 +16,13 @@ window.MathJax = {
 };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
-
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
-
-<!-- <style>
-  body {
-    font-family: "Segoe UI", Roboto, sans-serif;
-    background: #f9fafb;
-    margin: 20px;
-  }
-  h2 {
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  /* Giới hạn kích thước ảnh */
-  #mcTable img {
-    max-width: 80px;
-    max-height: 80px;
-    border-radius: 6px;
-    object-fit: cover;
-  }
-  /* Căn chỉnh thanh toolbar */
-  .mc-toolbar {
-    margin-bottom: 15px;
-  }
-</style> -->
 </head>
+
 <body>
 
 <h2>📋 Danh sách câu hỏi trắc nghiệm</h2>
