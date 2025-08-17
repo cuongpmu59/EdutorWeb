@@ -35,6 +35,11 @@ window.MathJax = {
   height: auto;
 }
 
+/* Ẩn search box mặc định DataTables */
+.dataTables_filter {
+  display: none;
+}
+
 /* Ẩn nút mặc định DataTables Buttons */
 .dt-hidden { display: none; }
 .dt-buttons { display: none; }
@@ -128,7 +133,7 @@ $(function () {
       },
       { data: 'mc_created_at' }
     ],
-    dom: 'Bfrtip',
+    dom: 'Brtip', // Loại bỏ 'f' để ẩn search mặc định
     buttons: [
       { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' },
       { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' }
