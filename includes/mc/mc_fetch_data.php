@@ -24,33 +24,48 @@ $columns = [
     5 => 'mc_answer3',
     6 => 'mc_answer4',
     7 => 'mc_correct_answer',
-    8 => 'mc_image_url'
+    8 => 'mc_image_url',
+    9 => 'mc_created_at'
 ];
 $orderColumn = $columns[$orderColIndex] ?? 'mc_id';
+
+// --- Lấy filter chủ đề từ DataTables column search (cột 1) ---
+$topicFilter = $_POST['columns'][1]['search']['value'] ?? '';
 
 try {
     // 1. Tổng số bản ghi
     $totalRecords = $conn->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
 
     // 2. Điều kiện WHERE
-    $where = '';
+    $whereParts = [];
     $params = [];
+
+    // Filter theo chủ đề
+    if ($topicFilter !== '') {
+        $whereParts[] = "mc_topic = :topic";
+        $params[':topic'] = $topicFilter;
+    }
+
+    // Search toàn bộ cột (ngoại trừ mc_id đã filter ở trên)
     if ($search !== '') {
-        $parts = [];
+        $searchParts = [];
         foreach ($columns as $col) {
-            // Nếu cột là mc_id (số), tìm theo chính xác
             if ($col === 'mc_id' && ctype_digit($search)) {
-                $parts[] = "$col = :id_search";
+                $searchParts[] = "$col = :id_search";
                 $params[':id_search'] = intval($search);
-            } else {
-                $parts[] = "$col LIKE :search";
+            } elseif ($col !== 'mc_id') {
+                $searchParts[] = "$col LIKE :search";
             }
         }
-        $where = ' WHERE ' . implode(' OR ', $parts);
-        if (!isset($params[':id_search'])) {
-            $params[':search'] = "%$search%";
+        if ($searchParts) {
+            $whereParts[] = '(' . implode(' OR ', $searchParts) . ')';
+            if (!isset($params[':id_search'])) {
+                $params[':search'] = "%$search%";
+            }
         }
     }
+
+    $where = $whereParts ? ' WHERE ' . implode(' AND ', $whereParts) : '';
 
     // 3. Tổng số bản ghi sau khi lọc
     $sqlCount = "SELECT COUNT(*) FROM mc_questions" . $where;
