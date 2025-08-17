@@ -35,7 +35,7 @@ window.MathJax = {
   height: auto;
 }
 
-/* Ẩn nút DataTables mặc định */
+/* Ẩn nút mặc định DataTables Buttons */
 .dt-hidden { display: none; }
 .dt-buttons { display: none; }
 </style>
@@ -59,8 +59,8 @@ window.MathJax = {
       <option value="">Tất cả</option>
     </select>
 
-    <label for="customSearch" style="margin-left:10px;">🔎 Tìm kiếm:</label>
-    <input type="text" id="customSearch" placeholder="Nhập từ khóa..." style="padding:3px 5px;">
+    <label for="customSearch">🔎 Tìm kiếm:</label>
+    <input type="text" id="customSearch" placeholder="Nhập từ khóa...">
   </div>
 </div>
 
@@ -136,9 +136,6 @@ $(function () {
     responsive: true,
     scrollX: true,
     initComplete: function () {
-      // Ẩn search mặc định
-      $('.dataTables_filter').hide();
-
       // Load chủ đề vào filter
       $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
         topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
@@ -148,7 +145,9 @@ $(function () {
 
   // Render MathJax sau mỗi draw
   table.on('draw', function() {
-    if (window.MathJax) MathJax.typesetPromise();
+    if (window.MathJax) {
+      MathJax.typesetPromise();
+    }
   });
 
   // Filter chủ đề
@@ -156,12 +155,12 @@ $(function () {
     table.column(1).search(this.value).draw();
   });
 
-  // Search custom
+  // Search toàn cột (custom search)
   $('#customSearch').on('keyup change', function () {
     table.search(this.value).draw();
   });
 
-  // Trigger nút Excel/Print
+  // Trigger nút DataTables từ toolbar tuỳ chỉnh
   $('#btnExportExcel').on('click', () => table.button(0).trigger());
   $('#btnPrint').on('click', () => table.button(1).trigger());
 
