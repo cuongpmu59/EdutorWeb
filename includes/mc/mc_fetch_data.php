@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db_connection.php';
 
+// Lấy các tham số từ DataTables
 $draw  = intval($_POST['draw'] ?? 0);
 $start = intval($_POST['start'] ?? 0);
 $length= intval($_POST['length'] ?? 10);
@@ -32,13 +33,13 @@ try {
     // Tổng số bản ghi
     $totalRecords = $conn->query("SELECT COUNT(*) FROM mc_questions")->fetchColumn();
 
-    // Build WHERE
+    // Build WHERE clause
     $whereParts = [];
     $params = [];
 
     if ($topicFilter !== '') {
-        $whereParts[] = "mc_topic = :topic";
-        $params[':topic'] = $topicFilter;
+        $whereParts[] = "mc_topic LIKE :topic";
+        $params[':topic'] = "%$topicFilter%";
     }
 
     if ($search !== '') {
@@ -48,12 +49,13 @@ try {
                 $searchParts[] = "$col = :id_search";
                 $params[':id_search'] = intval($search);
             } elseif ($col !== 'mc_id') {
-                $searchParts[] = "$col LIKE :search";
+                $ph = ":search_$col";
+                $searchParts[] = "$col LIKE $ph";
+                $params[$ph] = "%$search%";
             }
         }
         if ($searchParts) {
             $whereParts[] = '(' . implode(' OR ', $searchParts) . ')';
-            if (!isset($params[':id_search'])) $params[':search'] = "%$search%";
         }
     }
 
@@ -64,10 +66,11 @@ try {
     $stmt->execute($params);
     $totalFiltered = $stmt->fetchColumn();
 
-    // Lấy dữ liệu với giới hạn
+    // Lấy dữ liệu với giới hạn, sắp xếp
     $sql = "SELECT * FROM mc_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
     $stmt = $conn->prepare($sql);
 
+    // Bind parameters
     foreach ($params as $k => $v) {
         $stmt->bindValue($k, $v);
     }
@@ -77,6 +80,7 @@ try {
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Trả về JSON
     echo json_encode([
         "draw" => $draw,
         "recordsTotal" => intval($totalRecords),
