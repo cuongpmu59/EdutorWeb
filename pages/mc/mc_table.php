@@ -22,7 +22,7 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
-<style>
+<!-- <style>
   body {
     font-family: "Segoe UI", Roboto, sans-serif;
     background: #f9fafb;
@@ -32,28 +32,7 @@ window.MathJax = {
     margin-bottom: 15px;
     color: #333;
   }
-  /* DataTable đẹp hơn */
-  /* #mcTable {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  #mcTable thead th {
-    background: #2563eb;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-  }
-  #mcTable tbody td {
-    padding: 8px 12px;
-    border-bottom: 1px solid #eee;
-  }
-  #mcTable tbody tr:nth-child(even) {
-    background: #f3f4f6;
-  } */
+  
   /* Giới hạn kích thước ảnh */
   #mcTable img {
     max-width: 80px;
@@ -65,7 +44,7 @@ window.MathJax = {
   .mc-toolbar {
     margin-bottom: 15px;
   }
-</style>
+</style> -->
 </head>
 <body>
 
