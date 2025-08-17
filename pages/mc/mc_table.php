@@ -39,6 +39,9 @@ window.MathJax = {
 .dt-hidden {
   display: none;
 }
+
+.dt-buttons { display: none; }
+
 </style>
 </head>
 <body>
