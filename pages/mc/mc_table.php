@@ -16,12 +16,9 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css">
-
-<!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
@@ -36,7 +33,7 @@ window.MathJax = {
     color: #333;
   }
   /* DataTable đẹp hơn */
-  #mcTable {
+  /* #mcTable {
     border-collapse: collapse;
     width: 100%;
     background: white;
@@ -56,7 +53,7 @@ window.MathJax = {
   }
   #mcTable tbody tr:nth-child(even) {
     background: #f3f4f6;
-  }
+  } */
   /* Giới hạn kích thước ảnh */
   #mcTable img {
     max-width: 80px;
@@ -218,7 +215,5 @@ $(function () {
   });
 });
 </script>
-
-<script src="../../js/mc/mc_table_arrow_key.js"></script>
 </body>
 </html>
