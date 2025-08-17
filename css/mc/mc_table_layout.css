@@ -1,87 +1,97 @@
 /* ===============================
-   Layout chung cho DataTable
+   Layout bảng quản lý câu hỏi
    =============================== */
-   #mcTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-    line-height: 1.5;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    table-layout: auto;
-  }
-  
-  /* ===============================
-     Header
-     =============================== */
-  #mcTable thead th {
-    background: linear-gradient(135deg, #4a90e2, #357ab8);
-    color: #fff;
-    font-weight: bold;
-    text-align: center;
-    padding: 12px 10px;
-    border-bottom: 2px solid #2d5a91;
-    font-size: 15px;
-    white-space: nowrap;
-  }
-  
-  #mcTable thead th:hover {
-    background: linear-gradient(135deg, #5aa0f2, #4688c8);
-    cursor: pointer;
-  }
-  
-  /* ===============================
-     Body
-     =============================== */
-  #mcTable tbody td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
-    text-align: left;
-  }
-  
-  /* Cột chứa câu hỏi */
-  #mcTable td.mc-question-cell {
-    max-width: 350px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Hình minh họa */
-  #mcTable td img {
-    max-width: 80px;
-    max-height: 60px;
-    border-radius: 4px;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  }
-  
-  /* ===============================
-     Hover & Zebra
-     =============================== */
-  #mcTable tbody tr:nth-child(even) {
-    background-color: #fafafa;
-  }
-  
-  #mcTable tbody tr:hover {
-    background-color: #eef6ff;
-    transition: background-color 0.2s ease-in-out;
-  }
-  
-  /* ===============================
-     Responsive fix
-     =============================== */
-  .dataTables_wrapper {
-    overflow-x: auto;
-  }
-  
-  /* ===============================
-     StateSave highlight (optional)
-     =============================== */
-  #mcTable tbody tr.selected {
-    background-color: #d0ebff !important;
-  }
-  
+
+/* Bảng chính */
+#mcTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Header */
+#mcTable thead th {
+  position: sticky;          /* cố định khi cuộn */
+  top: 0;
+  z-index: 10;               /* luôn nổi trên cùng */
+  background: linear-gradient(135deg, #4a90e2, #357ab7);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 12px;
+  border-bottom: 2px solid #2f5fa1;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+/* Bo tròn góc header */
+#mcTable thead th:first-child {
+  border-top-left-radius: 6px;
+}
+#mcTable thead th:last-child {
+  border-top-right-radius: 6px;
+}
+
+/* Hàng dữ liệu */
+#mcTable tbody td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e6e6e6;
+  vertical-align: middle;
+}
+
+/* Cột câu hỏi (giới hạn chiều rộng, ellipsis) */
+#mcTable td.mc-question-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ảnh minh họa trong bảng */
+#mcTable td img {
+  max-width: 80px;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #eee;
+  transition: transform 0.2s ease-in-out;
+}
+#mcTable td img:hover {
+  transform: scale(1.8);
+  z-index: 1000;
+  position: relative;
+}
+
+/* Zebra striping */
+#mcTable tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* Hover row */
+#mcTable tbody tr:hover {
+  background-color: #f2f8ff;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+/* Responsive cuộn ngang */
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Ẩn search box mặc định DataTables */
+.dataTables_filter {
+  display: none !important;
+}
+
+/* Ẩn các nút mặc định Excel/Print của DataTables */
+button.dt-button.buttons-excel,
+button.dt-button.buttons-print {
+  display: none !important;
+}
