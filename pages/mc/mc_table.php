@@ -23,25 +23,15 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
 <style>
-/* Thu gọn cột câu hỏi */
 #mcTable td.mc-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#mcTable img {
-  max-width: 80px;
-  height: auto;
-}
-
+#mcTable img { max-width: 80px; height: auto; }
 /* Ẩn nút mặc định DataTables Buttons */
-.dt-hidden {
-  display: none;
-}
-
-.dt-buttons { display: none; }
-
+.dt-hidden, .dt-buttons { display: none; }
 </style>
 </head>
 <body>
@@ -56,7 +46,6 @@ window.MathJax = {
     <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
     <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
   </div>
-
   <div class="toolbar-right">
     <label for="filterTopic">🔍 Lọc chủ đề:</label>
     <select id="filterTopic">
@@ -83,7 +72,7 @@ window.MathJax = {
   </thead>
 </table>
 
-<!-- jQuery + DataTables + Buttons + SheetJS -->
+<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -93,27 +82,25 @@ window.MathJax = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
-$(function () {
+$(function() {
   const table = $('#mcTable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: {
-      url: '../../includes/mc/mc_fetch_data.php',
-      type: 'POST'
-    },
-    order: [[0, 'desc']],
+    ajax: { url: '../../includes/mc/mc_fetch_data.php', type: 'POST' },
+    order: [[0,'desc']],
     stateSave: true,
+    responsive: true,
+    scrollX: true,
     columns: [
       { data: 'mc_id' },
       { data: 'mc_topic' },
       { 
         data: 'mc_question',
         className: 'mc-question-cell',
-        render: function(data) {
-          if (!data) return '';
-          const maxLength = 80;
-          const shortText = data.length > maxLength ? data.substr(0, maxLength) + '…' : data;
-          return `<span title="${data.replace(/"/g, '&quot;')}">${shortText}</span>`;
+        render: d => {
+          if (!d) return '';
+          const txt = d.length > 80 ? d.slice(0,80)+'…' : d;
+          return `<span title="${d.replace(/"/g,'&quot;')}">${txt}</span>`;
         }
       },
       { data: 'mc_answer1' },
@@ -121,71 +108,44 @@ $(function () {
       { data: 'mc_answer3' },
       { data: 'mc_answer4' },
       { data: 'mc_correct_answer' },
-      {
-        data: 'mc_image_url',
-        render: function (data) {
-          return data ? `<img src="${data}" alt="ảnh" loading="lazy">` : '';
-        }
-      },
+      { data: 'mc_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data: 'mc_created_at' }
     ],
     dom: 'Bfrtip',
     buttons: [
-      { extend: 'excelHtml5', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' },
-      { extend: 'print', title: 'Danh sách câu hỏi', exportOptions: { columns: ':visible' }, className: 'dt-hidden' }
+      { extend:'excelHtml5', title:'Danh sách câu hỏi', exportOptions:{columns:':visible'}, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi', exportOptions:{columns:':visible'}, className:'dt-hidden' }
     ],
-    responsive: true,
-    scrollX: true,
-    initComplete: function () {
-      // Load chủ đề vào filter
-      $.getJSON('../../includes/mc/mc_get_topics.php', function (topics) {
+    initComplete: function() {
+      $.getJSON('../../includes/mc/mc_get_topics.php', topics => {
         topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
       });
     }
   });
 
   // Render MathJax sau mỗi draw
-  table.on('draw', function() {
-    if (window.MathJax) {
-      MathJax.typesetPromise();
-    }
-  });
+  table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
 
   // Filter chủ đề
-  $('#filterTopic').on('change', function () {
-    table.column(1).search(this.value).draw();
-  });
+  $('#filterTopic').on('change', function() { table.column(1).search(this.value).draw(); });
 
-  // Trigger DataTables Buttons từ toolbar tuỳ chỉnh
-  $('#btnExportExcel').on('click', () => table.button(0).trigger());
-  $('#btnPrint').on('click', () => table.button(1).trigger());
+  // Trigger nút Excel/Print từ toolbar tuỳ chỉnh
+  $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
+  $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
   // Import Excel
-  $('#importExcelInput').on('change', function (e) {
+  $('#importExcelInput').on('change', function(e){
     const file = e.target.files[0];
-    if (!file) return;
-
+    if(!file) return;
     const reader = new FileReader();
-    reader.onload = function (evt) {
+    reader.onload = evt => {
       const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
-
-      if (worksheet.length === 0) {
-        alert('File Excel rỗng!');
-        return;
-      }
-
-      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-        .done(res => {
-          alert('📥 Nhập dữ liệu thành công!');
-          table.ajax.reload();
-        })
-        .fail(err => {
-          console.error(err);
-          alert('❌ Lỗi khi nhập Excel');
-        });
+      const wb = XLSX.read(data,{type:'array'});
+      const ws = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval:'' });
+      if(ws.length===0){ alert('File Excel rỗng!'); return; }
+      $.post('../../includes/mc/mc_table_import_excel.php',{ rows: JSON.stringify(ws) })
+        .done(()=>{ alert('📥 Nhập dữ liệu thành công!'); table.ajax.reload(); })
+        .fail(()=>{ alert('❌ Lỗi khi nhập Excel'); });
     };
     reader.readAsArrayBuffer(file);
   });
