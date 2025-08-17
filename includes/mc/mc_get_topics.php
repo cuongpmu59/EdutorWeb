@@ -7,25 +7,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once __DIR__ . '/../db_connection.php'; // Biến kết nối PDO: $conn
+require_once __DIR__ . '/../db_connection.php'; // biến kết nối là $conn (PDO)
 
 try {
-    // Lấy danh sách chủ đề duy nhất, loại bỏ NULL/empty, sắp xếp ASC
-    $sql = "SELECT DISTINCT mc_topic 
-            FROM mc_questions 
-            WHERE mc_topic IS NOT NULL AND mc_topic != '' 
-            ORDER BY mc_topic ASC";
+    $sql = "SELECT DISTINCT mc_topic FROM mc_questions ORDER BY mc_topic ASC";
     $stmt = $conn->query($sql);
 
-    $topics = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $topics = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if (!empty($row['mc_topic'])) {
+            $topics[] = $row['mc_topic'];
+        }
+    }
 
     echo json_encode($topics, JSON_UNESCAPED_UNICODE);
-
-} catch (PDOException $e) {
+} catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
         'message' => 'Không thể lấy danh sách chủ đề',
-        'error' => $e->getMessage()
+        'error'   => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
