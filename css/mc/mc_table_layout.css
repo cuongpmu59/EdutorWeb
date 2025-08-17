@@ -1,34 +1,105 @@
-/* === BẢNG CÂU HỎI (BỐ CỤC & ĐỊNH DẠNG) === */
-table#mcTable {
-    font-size: 14px;
-    border-collapse: collapse;
-    width: 100%;
+/* ===============================
+   Bố cục bảng mc_table
+   =============================== */
+
+/* Bảng chính */
+#mcTable {
+  width: 100% !important;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+}
+
+/* =============================
+   HEADER CỦA BẢNG
+============================= */
+#mcTable thead th {
+  background: linear-gradient(135deg, #4a90e2, #357ab7);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding: 12px;
+  border-bottom: 2px solid #2c5aa0;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+#mcTable thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+#mcTable thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* Khi hover vào tiêu đề */
+#mcTable thead th:hover {
+  background: #2c5aa0;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+/* =============================
+   BODY CỦA BẢNG
+============================= */
+#mcTable td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+#mcTable td.mc-question-cell {
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#mcTable img {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+/* Zebra striping */
+#mcTable tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* Hover highlight */
+#mcTable tbody tr:hover {
+  background-color: #f1f7ff;
+  transition: background 0.2s;
+}
+
+/* =============================
+   DataTables custom
+============================= */
+.dataTables_filter {
+  display: none !important; /* Ẩn search box mặc định */
+}
+
+.dt-hidden {
+  display: none !important;
+}
+
+.dataTables_wrapper {
+  overflow-x: auto;
+}
+
+/* =============================
+   Responsive
+============================= */
+@media (max-width: 768px) {
+  #mcTable td.mc-question-cell {
+    max-width: 200px;
   }
-  
-  /* Tiêu đề cột */
-  #mcTable thead th {
-    background: #f0f0f8;
-    text-align: center;
-    padding: 8px 12px;
+  #mcTable img {
+    max-width: 60px;
+    max-height: 60px;
   }
-  
-  /* Nội dung ô */
-  #mcTable tbody td {
-    padding: 8px 12px;
-    vertical-align: top;
-  }
-  
-  /* Dòng đang chọn */
-  #mcTable tbody tr.selected {
-    background-color: #dff0ff !important;
-  }
-  
-  /* Ảnh thu nhỏ trong bảng */
-  #mcTable img.thumb {
-    width: 60px;
-    height: auto;
-    cursor: pointer;
-    border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  }
-  
+}
