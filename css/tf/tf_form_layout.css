@@ -21,28 +21,13 @@
   align-items: center;
   justify-content: space-between;
 }
-#tfForm h2 .fa-eye {
-  cursor: pointer;
-  color: #555;
-}
-#tfForm h2 .fa-eye:hover {
-  color: #000;
-}
+#tfForm h2 .fa-eye { cursor: pointer; color: #555; }
+#tfForm h2 .fa-eye:hover { color: #000; }
 
 /* Hai cột chính */
-.tf-columns {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.tf-col-left {
-  flex: 2;
-  min-width: 300px;
-}
-.tf-col-right {
-  flex: 1;
-  min-width: 250px;
-}
+.tf-columns { display: flex; gap: 20px; flex-wrap: wrap; }
+.tf-col-left { flex: 2; min-width: 300px; }
+.tf-col-right { flex: 1; min-width: 250px; }
 
 /* Fieldset */
 .tf-group {
@@ -52,60 +37,80 @@
   background: #f9f9f9;
   margin-bottom: 20px;
 }
-.tf-group legend {
-  font-weight: bold;
-  padding: 0 6px;
-}
+.tf-group legend { font-weight: bold; padding: 0 6px; }
 
-/* Field */
+/* Field chung */
 .tf-field {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 .tf-field label {
-  min-width: 120px;
+  width: 150px;         
+  flex-shrink: 0;       
   font-weight: 500;
 }
-.tf-field input[type="text"] {
-  flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-}
 
-/* Textarea */
-textarea {
-  width: 100%;
+/* Input/select/textarea full phần còn lại */
+.tf-field input[type="text"],
+.tf-field input[type="number"],
+.tf-field select,
+.tf-field textarea {
+  flex: 1;
+  min-width: 0;
   padding: 8px 10px;
   border: 1px solid #bbb;
   border-radius: 6px;
   font-size: 15px;
-  resize: none;
-  overflow-y: hidden;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
-/* Radio group */
+/* Textarea */
+textarea {
+  resize: none;
+  overflow-y: hidden;
+  line-height: 1.6;
+  min-height: 80px;
+}
+
+/* Field đặc biệt cho mệnh đề có icon preview */
+.tf-field.preview-field {
+  display: flex;
+  align-items: center;
+}
+.tf-field.preview-field label {
+  width: auto; /* không fix cứng, để linh hoạt */
+  margin-right: 6px;
+}
+.tf-field.preview-field .fa-eye {
+  cursor: pointer;
+  color: #555;
+  margin-right: 8px;
+}
+.tf-field.preview-field .fa-eye:hover { color: #000; }
+.tf-field.preview-field input[type="text"],
+.tf-field.preview-field textarea {
+  flex: 1;
+}
+
+/* Radio group căn giữa */
 .tf-radio-group {
   display: flex;
+  justify-content: center;
   gap: 20px;
-  margin-left: 28px;
-  margin-bottom: 12px;
+  margin: 12px 0;
 }
 .tf-radio-group label {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  cursor: pointer;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .tf-columns {
-    flex-direction: column;
-  }
-  .tf-col-left, .tf-col-right {
-    min-width: 100%;
-  }
+  .tf-columns { flex-direction: column; }
+  .tf-col-left, .tf-col-right { min-width: 100%; }
 }
-
