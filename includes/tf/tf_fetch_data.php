@@ -1,80 +1,93 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../db_connection.php';
 
-// Chỉ cho phép GET
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    echo json_encode(['status' => 'error', 'message' => 'Phương thức không hợp lệ']);
-    exit;
-}
+// Lấy các tham số từ DataTables
+$draw  = intval($_POST['draw'] ?? 0);
+$start = intval($_POST['start'] ?? 0);
+$length= intval($_POST['length'] ?? 10);
+$search= trim($_POST['search']['value'] ?? '');
+$orderColIndex = intval($_POST['order'][0]['column'] ?? 0);
+$orderDir      = in_array($_POST['order'][0]['dir'] ?? '', ['asc','desc']) ? $_POST['order'][0]['dir'] : 'asc';
 
-require_once __DIR__ . '/../db_connection.php'; // biến kết nối là $conn (PDO)
-
-$draw   = intval($_GET['draw'] ?? 0);
-$start  = intval($_GET['start'] ?? 0);
-$length = intval($_GET['length'] ?? 10);
-$search = $_GET['search']['value'] ?? '';
-
-$orderColumnIndex = $_GET['order'][0]['column'] ?? 0;
-$orderDir         = $_GET['order'][0]['dir'] ?? 'asc';
-
-// Mapping cột DataTables -> cột DB
+// Các cột trong bảng True/False
 $columns = [
     0 => 'tf_id',
     1 => 'tf_topic',
     2 => 'tf_question',
-    3 => 'tf_statement1',
-    4 => 'tf_correct_answer1',
-    5 => 'tf_statement2',
-    6 => 'tf_correct_answer2',
-    7 => 'tf_statement3',
-    8 => 'tf_correct_answer3',
-    9 => 'tf_statement4',
-    10 => 'tf_correct_answer4',
-    11 => 'tf_image_url',
-    12 => 'created_at'
+    3 => 'tf_correct_answer',
+    4 => 'tf_image_url',
+    5 => 'tf_created_at'
 ];
-$orderColumn = $columns[$orderColumnIndex] ?? 'tf_id';
 
-$where = '';
-$params = [];
-if ($search !== '') {
-    $where = "WHERE tf_topic LIKE :search 
-              OR tf_question LIKE :search 
-              OR tf_statement1 LIKE :search 
-              OR tf_statement2 LIKE :search 
-              OR tf_statement3 LIKE :search 
-              OR tf_statement4 LIKE :search";
-    $params[':search'] = "%$search%";
-}
+$orderColumn = $columns[$orderColIndex] ?? 'tf_id';
+
+// Lọc chủ đề nếu có
+$topicFilter = trim($_POST['columns'][1]['search']['value'] ?? '');
 
 try {
     // Tổng số bản ghi
-    $stmtTotal = $conn->prepare("SELECT COUNT(*) FROM tf_questions");
-    $stmtTotal->execute();
-    $recordsTotal = $stmtTotal->fetchColumn();
+    $totalRecords = $conn->query("SELECT COUNT(*) FROM tf_questions")->fetchColumn();
 
-    // Số bản ghi lọc
-    $stmtFiltered = $conn->prepare("SELECT COUNT(*) FROM tf_questions $where");
-    $stmtFiltered->execute($params);
-    $recordsFiltered = $stmtFiltered->fetchColumn();
+    // Build WHERE clause
+    $whereParts = [];
+    $params = [];
 
-    // Lấy dữ liệu
+    if ($topicFilter !== '') {
+        $whereParts[] = "tf_topic LIKE :topic";
+        $params[':topic'] = "%$topicFilter%";
+    }
+
+    if ($search !== '') {
+        $searchParts = [];
+        foreach ($columns as $col) {
+            if ($col === 'tf_id' && ctype_digit($search)) {
+                $searchParts[] = "$col = :id_search";
+                $params[':id_search'] = intval($search);
+            } elseif ($col !== 'tf_id') {
+                $ph = ":search_$col";
+                $searchParts[] = "$col LIKE $ph";
+                $params[$ph] = "%$search%";
+            }
+        }
+        if ($searchParts) {
+            $whereParts[] = '(' . implode(' OR ', $searchParts) . ')';
+        }
+    }
+
+    $where = $whereParts ? ' WHERE ' . implode(' AND ', $whereParts) : '';
+
+    // Tổng số bản ghi sau filter
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM tf_questions $where");
+    $stmt->execute($params);
+    $totalFiltered = $stmt->fetchColumn();
+
+    // Lấy dữ liệu với giới hạn, sắp xếp
     $sql = "SELECT * FROM tf_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
     $stmt = $conn->prepare($sql);
+
+    // Bind parameters
     foreach ($params as $k => $v) {
-        $stmt->bindValue($k, $v, PDO::PARAM_STR);
+        $stmt->bindValue($k, $v);
     }
     $stmt->bindValue(':start', $start, PDO::PARAM_INT);
     $stmt->bindValue(':length', $length, PDO::PARAM_INT);
+
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Trả về JSON
     echo json_encode([
         "draw" => $draw,
-        "recordsTotal" => intval($recordsTotal),
-        "recordsFiltered" => intval($recordsFiltered),
+        "recordsTotal" => intval($totalRecords),
+        "recordsFiltered" => intval($totalFiltered),
         "data" => $data
-    ]);
-} catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    ], JSON_UNESCAPED_UNICODE);
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Lỗi PDO: '.$e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
