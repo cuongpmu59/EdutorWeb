@@ -12,10 +12,11 @@ try {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     $conn->set_charset("utf8mb4");
 
+    // Lấy dữ liệu POST
     $data = array_map('trim', $_POST);
     $tf_id = filter_var($data['tf_id'] ?? null, FILTER_VALIDATE_INT);
 
-    // Bắt buộc nhập chủ đề + câu hỏi + ít nhất 1 phát biểu
+    // Kiểm tra bắt buộc: topic, question, statement1 + answer1
     $requiredFields = ['tf_topic', 'tf_question', 'tf_statement1', 'tf_correct_answer1'];
     foreach ($requiredFields as $field) {
         if (empty($data[$field]) && $data[$field] !== "0") {
@@ -23,7 +24,7 @@ try {
         }
     }
 
-    // Cho phép để trống ảnh
+    // Ảnh có thể null
     $tf_image_url = !empty($data['tf_image_url']) ? $data['tf_image_url'] : null;
 
     if ($tf_id) {
@@ -36,7 +37,7 @@ try {
                     tf_statement4=?, tf_correct_answer4=?, 
                     tf_image_url=? 
                 WHERE tf_id=?";
-        $types = "sssisisiissi";
+        $types = "sssisisiisii"; 
         $params = [
             $data['tf_topic'], $data['tf_question'],
             $data['tf_statement1'], (int)$data['tf_correct_answer1'],
@@ -56,7 +57,7 @@ try {
                  tf_statement4, tf_correct_answer4, 
                  tf_image_url, tf_created_at) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $types = "sssisisiiss";
+        $types = "sssisisiisss"; 
         $params = [
             $data['tf_topic'], $data['tf_question'],
             $data['tf_statement1'], (int)$data['tf_correct_answer1'],
@@ -75,6 +76,7 @@ try {
         'status' => 'success',
         'message' => $tf_id ? 'Cập nhật câu hỏi thành công.' : 'Thêm câu hỏi thành công.'
     ]);
+
 } catch (mysqli_sql_exception $e) {
     echo json_encode(['status' => 'error', 'message' => 'Lỗi CSDL: ' . $e->getMessage()]);
 } finally {
