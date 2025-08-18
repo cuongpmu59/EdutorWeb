@@ -139,10 +139,22 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
 });
 
 
-// Nút "Ẩn/hiện danh sách" (#tf_view_list)
-document.getElementById('tf_view_list').addEventListener('click', () => {
-  const wrapper = document.getElementById('tfTableWrapper');
-  wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-    ? 'block'
-    : 'none';
-});
+// // Nút "Ẩn/hiện danh sách" (#tf_view_list)
+// document.getElementById('tf_view_list').addEventListener('click', () => {
+//   const wrapper = document.getElementById('tfTableWrapper');
+//   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+//     ? 'block'
+//     : 'none';
+// });
+
+const btnToggle = document.getElementById('tf_view_list');
+const wrapper = document.getElementById('tfTableWrapper');
+
+if (btnToggle && wrapper) {
+  btnToggle.addEventListener('click', () => {
+    const isHidden = wrapper.style.display === 'none' || getComputedStyle(wrapper).display === 'none';
+    wrapper.style.display = isHidden ? 'block' : 'none';
+    btnToggle.textContent = isHidden ? 'Ẩn danh sách' : 'Hiện danh sách';
+  });
+}
+
