@@ -32,6 +32,47 @@
   <!-- jQuery + FontAwesome -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Input + textarea trong khung */
+    .tf-group input[type="text"],
+    .tf-group textarea {
+      max-width: 600px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .tf-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .tf-field span {
+      flex-shrink: 0;
+      width: 20px;
+    }
+
+    .toggle-preview {
+      flex-shrink: 0;
+    }
+
+    .tf-radio-group {
+      display: flex;
+      gap: 10px;
+      margin-left: 28px; /* căn lề dưới hàng input */
+      margin-bottom: 12px;
+    }
+
+    .tf-group {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      background: #f9f9f9;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="formContainer">
@@ -52,33 +93,33 @@
           <fieldset class="tf-group">
             <legend>Thông tin câu hỏi</legend>
 
+            <!-- Chủ đề -->
             <div class="tf-field">
               <label for="tf_topic">Chủ đề:</label>
               <input type="text" id="tf_topic" name="topic" required>
             </div>
 
+            <!-- Câu hỏi chính -->
             <div class="tf-field">
-              <label for="tf_question">Câu hỏi chính:
-                <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
-              </label>
-              <textarea id="tf_question" name="question" required></textarea>
-              <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
+              <label for="tf_question">Câu hỏi chính:</label>
+              <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
             </div>
+            <textarea id="tf_question" name="question" required></textarea>
+            <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
 
-            <!-- 4 mệnh đề + đáp án đúng/sai -->
+            <!-- 4 mệnh đề + Đúng/Sai -->
             <?php
             for ($i=1; $i<=4; $i++) {
               echo '<div class="tf-field">
-                      <label for="tf_statement'.$i.'">'.$i.'.
-                        <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
-                      </label>
+                      <span>'.$i.'.</span>
+                      <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
                       <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>
-                      <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>
-                      <div class="tf-radio-group">
-                        <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
-                        <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
-                      </div>
-                    </div>';
+                    </div>
+                    <div class="tf-radio-group">
+                      <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
+                      <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
+                    </div>
+                    <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>';
             }
             ?>
           </fieldset>
@@ -129,23 +170,24 @@
   <script src="../../js/tf/tf_form_button.js"></script>
 
   <script>
-  // Auto-resize textarea
-  document.addEventListener("input", function(e) {
-    if (e.target.tagName.toLowerCase() !== "textarea") return;
-    e.target.style.height = "auto";
-    e.target.style.height = e.target.scrollHeight + "px";
-  });
-
-  window.addEventListener("load", function() {
-    document.querySelectorAll("textarea").forEach(function(el) {
-      el.style.height = "auto";
+    // Auto-resize textarea
+    document.querySelectorAll("textarea").forEach(el => {
       el.style.height = el.scrollHeight + "px";
+      el.addEventListener("input", () => {
+        el.style.height = "auto";
+        el.style.height = el.scrollHeight + "px";
+      });
     });
-  });
-  </script>
 
-  <script>
-    // Nhận dữ liệu từ iframe DataTable để fill form
+    // Toggle preview từng mệnh đề
+    $('.toggle-preview').click(function() {
+      const target = $(this).data('target');
+      const content = $('#' + target).val();
+      $('#preview-' + target).text(content).toggle();
+      MathJax.typesetPromise([document.getElementById('preview-' + target)]);
+    });
+
+    // Nhận dữ liệu từ iframe DataTable
     window.addEventListener('message', function (event) {
       const { type, data } = event.data || {};
       if (type !== 'fill-form' || !data) return;
