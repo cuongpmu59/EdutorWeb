@@ -69,7 +69,7 @@
             <?php
             for ($i=1; $i<=4; $i++) {
               echo '<div class="tf-field">
-                      <label for="tf_statement'.$i.'">Mệnh đề '.$i.':
+                      <label for="tf_statement'.$i.'">'.$i.'.
                         <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
                       </label>
                       <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>
