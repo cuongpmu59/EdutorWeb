@@ -1,0 +1,50 @@
+/* Khu vực ảnh minh họa */
+.tf-image-zone {
+    text-align: center;
+  }
+  
+  .tf-image-preview {
+    margin-bottom: 10px;
+  }
+  
+  .tf-image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .tf-image-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  .tf-image-buttons label.btn-upload {
+    background: #007bff;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .tf-image-buttons button {
+    background: #6c757d;
+    color: #fff;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .tf-image-buttons label.btn-upload:hover {
+    background: #0056b3;
+  }
+  .tf-image-buttons button:hover {
+    background: #5a6268;
+  }
+  
