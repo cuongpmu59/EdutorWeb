@@ -1,0 +1,67 @@
+/* Nút bấm */
+.tf-buttons-wrapper {
+    margin-top: 20px;
+  }
+  
+  .tf-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .tf-buttons button {
+    flex: 1;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+  
+  /* Màu nút */
+  #tf_save {
+    background: #28a745;
+    color: #fff;
+  }
+  #tf_save:hover {
+    background: #218838;
+  }
+  
+  #tf_delete {
+    background: #dc3545;
+    color: #fff;
+  }
+  #tf_delete:hover {
+    background: #c82333;
+  }
+  
+  #tf_reset {
+    background: #ffc107;
+    color: #000;
+  }
+  #tf_reset:hover {
+    background: #e0a800;
+  }
+  
+  #tf_view_list {
+    background: #17a2b8;
+    color: #fff;
+  }
+  #tf_view_list:hover {
+    background: #138496;
+  }
+  
+  #tf_preview_exam {
+    background: #007bff;
+    color: #fff;
+  }
+  #tf_preview_exam:hover {
+    background: #0056b3;
+  }
+  
+  .tf-buttons .full-width {
+    flex: 100%;
+  }
+  
