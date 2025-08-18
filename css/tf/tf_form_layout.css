@@ -13,19 +13,12 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-/* Tiêu đề */
-#tfForm h2 {
-  font-size: 20px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-#tfForm h2 .fa-eye { cursor: pointer; color: #555; }
-#tfForm h2 .fa-eye:hover { color: #000; }
-
 /* Hai cột chính */
-.tf-columns { display: flex; gap: 20px; flex-wrap: wrap; }
+.tf-columns {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 .tf-col-left { flex: 2; min-width: 300px; }
 .tf-col-right { flex: 1; min-width: 250px; }
 
@@ -37,9 +30,12 @@
   background: #f9f9f9;
   margin-bottom: 20px;
 }
-.tf-group legend { font-weight: bold; padding: 0 6px; }
+.tf-group legend {
+  font-weight: bold;
+  padding: 0 6px;
+}
 
-/* Field chung */
+/* Field inline (label + icon + input cùng hàng) */
 .tf-field {
   display: flex;
   align-items: center;
@@ -47,24 +43,23 @@
   margin-bottom: 12px;
 }
 .tf-field label {
-  width: 150px;         
-  flex-shrink: 0;       
+  white-space: nowrap;
   font-weight: 500;
 }
-
-/* Input/select/textarea full phần còn lại */
+.tf-field .fa-eye {
+  cursor: pointer;
+  color: #555;
+}
+.tf-field .fa-eye:hover { color: #000; }
 .tf-field input[type="text"],
-.tf-field input[type="number"],
-.tf-field select,
-.tf-field textarea {
-  flex: 1;
-  min-width: 0;
+.tf-field textarea,
+.tf-field select {
+  flex: 1;                 /* chiếm toàn bộ phần còn lại */
   padding: 8px 10px;
   border: 1px solid #bbb;
   border-radius: 6px;
   font-size: 15px;
   box-sizing: border-box;
-  max-width: 100%;
 }
 
 /* Textarea */
@@ -73,26 +68,6 @@ textarea {
   overflow-y: hidden;
   line-height: 1.6;
   min-height: 80px;
-}
-
-/* Field đặc biệt cho mệnh đề có icon preview */
-.tf-field.preview-field {
-  display: flex;
-  align-items: center;
-}
-.tf-field.preview-field label {
-  width: auto; /* không fix cứng, để linh hoạt */
-  margin-right: 6px;
-}
-.tf-field.preview-field .fa-eye {
-  cursor: pointer;
-  color: #555;
-  margin-right: 8px;
-}
-.tf-field.preview-field .fa-eye:hover { color: #000; }
-.tf-field.preview-field input[type="text"],
-.tf-field.preview-field textarea {
-  flex: 1;
 }
 
 /* Radio group căn giữa */
