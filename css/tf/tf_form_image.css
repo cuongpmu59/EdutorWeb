@@ -1,10 +1,7 @@
-/* ===============================
-   CSS cho khu vực ảnh trong tf_form.php
-   Tương ứng với trường: tf_image_url
-   =============================== */
-
-/* Vùng chứa ảnh minh họa */
-.tf-image-zone {
+/* ==============================
+   Khu vực ảnh minh họa
+============================== */
+.mc-image-zone {
   border: 1px solid #ccc;
   padding: 16px;
   border-radius: 8px;
@@ -12,19 +9,18 @@
   margin-bottom: 20px;
 }
 
-/* Tiêu đề khu vực ảnh */
-.tf-image-zone h4 {
+.mc-image-zone h4 {
   margin-bottom: 12px;
   font-weight: bold;
   font-size: 1.05rem;
   color: #333;
 }
 
-/* Khung xem trước ảnh */
-.tf-image-preview {
+.mc-image-preview {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   min-height: 160px;
   border: 1px dashed #aaa;
   border-radius: 6px;
@@ -34,57 +30,32 @@
   position: relative;
 }
 
-/* Ảnh bên trong khung */
-.tf-image-preview img {
+.mc-image-preview img {
   max-width: 100%;
   max-height: 50vh;
   object-fit: contain;
   display: block;
 }
 
-/* Tên file overlay trên ảnh */
-.tf-image-preview .image-filename {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  max-width: 70%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Hiệu ứng khi ảnh mới xuất hiện */
-.tf-image-preview img.fade-in {
+.mc-image-preview img.fade-in {
   opacity: 0;
   animation: fadeIn 0.4s ease-in-out forwards;
+  will-change: opacity, transform;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* Vùng chứa các nút ảnh */
-.tf-image-buttons {
+.mc-image-buttons {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-/* Nút chung */
-.tf-image-buttons label,
-.tf-image-buttons button {
+.mc-image-buttons label,
+.mc-image-buttons button {
   padding: 8px 14px;
   font-size: 15px;
   border: none;
@@ -94,26 +65,11 @@
   transition: background-color 0.3s ease;
 }
 
-/* Nút upload (chọn file) */
-.tf-image-buttons .btn-upload {
-  background-color: #17a2b8;
-}
-.tf-image-buttons .btn-upload:hover {
-  background-color: #138496;
-}
+.mc-image-buttons .btn-upload { background-color: #17a2b8; }
+.mc-image-buttons .btn-upload:hover { background-color: #138496; }
 
-/* Nút lưu */
-.tf-image-buttons .btn-save {
-  background-color: #28a745;
-}
-.tf-image-buttons .btn-save:hover {
-  background-color: #1e7e34;
-}
+.mc-image-buttons .btn-save { background-color: #28a745; }
+.mc-image-buttons .btn-save:hover { background-color: #1e7e34; }
 
-/* Nút xóa */
-.tf-image-buttons .btn-delete {
-  background-color: #dc3545;
-}
-.tf-image-buttons .btn-delete:hover {
-  background-color: #a71d2a;
-}
+.mc-image-buttons .btn-delete { background-color: #dc3545; }
+.mc-image-buttons .btn-delete:hover { background-color: #a71d2a; }
