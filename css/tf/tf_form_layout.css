@@ -1,103 +1,73 @@
-/* ==============================
-   FORM CHUNG
-============================== */
-#mcForm {
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  max-width: 1200px;
-  margin: 20px auto;
-  font-size: 16px;
-  font-family: Arial, sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-/* ==============================
-   BỐ CỤC 2 CỘT
-============================== */
-.mc-columns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 16px;
-}
-
-.mc-col-left {
-  flex: 3;
-  min-width: 300px;
-}
-
-.mc-col-right {
-  flex: 2;
-  min-width: 260px;
-}
-
-/* ==============================
-   FIELD
-============================== */
-.mc-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
-  max-width: 100%;
-}
-
-.mc-field label {
-  font-weight: 500;
-  margin-bottom: 4px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.mc-field input[type="text"],
-.mc-field textarea,
-.mc-field select {
-  width: 100%;
-  box-sizing: border-box;
-  font-size: 15px;
-}
-
-.mc-field input[type="text"],
-.mc-field select {
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.mc-field textarea {
-  min-height: 80px;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-  overflow-y: hidden;
-}
-
-/* ==============================
-   NHÓM (fieldset / h4)
-============================== */
-.mc-group {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 20px;
-  background: #fafafa;
-}
-
-.mc-group legend,
-.mc-group h4 {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-/* ==============================
-   RESPONSIVE MOBILE
-============================== */
-@media (max-width: 768px) {
-  .mc-col-left, .mc-col-right {
-    flex: 1 1 100%;
-    min-width: auto;
+/* ===========================
+   Layout & Form Container
+   =========================== */
+   #tfForm {
+    background: #fff;
+    padding: 24px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    max-width: 1200px;
+    margin: 20px auto;
+    font-size: 16px;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
-}
+  
+  /* Fieldset */
+  #tfForm fieldset {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #fafafa;
+  }
+  
+  #tfForm legend {
+    font-weight: bold;
+    padding: 0 8px;
+    color: #333;
+  }
+  
+  /* Label + Input chung */
+  #tfForm label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  
+  #tfForm input[type="text"],
+  #tfForm textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  #tfForm input[type="text"]:focus,
+  #tfForm textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0,123,255,0.4);
+    outline: none;
+  }
+  
+  #tfForm textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  /* Radio group */
+  .tf-radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  
+  .tf-radio-group label {
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
