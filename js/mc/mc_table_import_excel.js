@@ -1,5 +1,3 @@
-// Yêu cầu: đã include thư viện SheetJS (xlsx.full.min.js) trong HTML
-
 document.getElementById('btnImportExcel')?.addEventListener('click', () => {
     const input = document.createElement('input');
     input.type = 'file';
