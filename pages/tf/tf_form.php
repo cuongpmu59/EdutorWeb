@@ -34,37 +34,31 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* Input + textarea trong khung */
     .tf-group input[type="text"],
     .tf-group textarea {
       max-width: 600px;
       width: 100%;
       box-sizing: border-box;
     }
-
     .tf-field {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
     }
-
     .tf-field span {
       flex-shrink: 0;
       width: 20px;
     }
-
     .toggle-preview {
       flex-shrink: 0;
     }
-
     .tf-radio-group {
       display: flex;
       gap: 10px;
-      margin-left: 28px; /* căn lề dưới hàng input */
+      margin-left: 28px;
       margin-bottom: 12px;
     }
-
     .tf-group {
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -101,27 +95,25 @@
 
             <!-- Câu hỏi chính -->
             <div class="tf-field">
-              <label for="tf_question">Câu hỏi chính:</label>
+              <label for="tf_question">Câu hỏi:</label>
               <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
+              <textarea id="tf_question" name="question" required></textarea>
             </div>
-            <textarea id="tf_question" name="question" required></textarea>
             <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
 
             <!-- 4 mệnh đề + Đúng/Sai -->
-            <?php
-            for ($i=1; $i<=4; $i++) {
-              echo '<div class="tf-field">
-                      <span>'.$i.'.</span>
-                      <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
-                      <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>
-                    </div>
-                    <div class="tf-radio-group">
-                      <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
-                      <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
-                    </div>
-                    <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>';
-            }
-            ?>
+            <?php for ($i=1; $i<=4; $i++): ?>
+              <div class="tf-field">
+                <span><?= $i ?>.</span>
+                <button type="button" class="toggle-preview" data-target="tf_statement<?= $i ?>"><i class="fa fa-eye"></i></button>
+                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required>
+              </div>
+              <div class="preview-box" id="preview-tf_statement<?= $i ?>" style="display:none;"></div>
+              <div class="tf-radio-group">
+                <label><input type="radio" name="correct_answer<?= $i ?>" value="1" required> Đúng</label>
+                <label><input type="radio" name="correct_answer<?= $i ?>" value="0"> Sai</label>
+              </div>
+            <?php endfor; ?>
           </fieldset>
         </div>
 
