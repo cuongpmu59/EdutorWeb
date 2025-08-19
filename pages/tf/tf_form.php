@@ -37,7 +37,7 @@
 <div id="formContainer">
   <form id="tfForm" method="POST" enctype="multipart/form-data">
     <h2>
-      Câu hỏi Đúng/Sai
+      Câu hỏi trắc nghiệm Đúng/Sai
       <span id="tfTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
     </h2>
 
