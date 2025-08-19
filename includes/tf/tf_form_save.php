@@ -12,58 +12,50 @@ try {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     $conn->set_charset("utf8mb4");
 
-    // Lấy dữ liệu POST
     $data = array_map('trim', $_POST);
     $tf_id = filter_var($data['tf_id'] ?? null, FILTER_VALIDATE_INT);
 
-    // Kiểm tra bắt buộc: topic, question, statement1 + answer1
-    $requiredFields = ['tf_topic', 'tf_question', 'tf_statement1', 'tf_correct_answer1'];
+    // Kiểm tra trường bắt buộc
+    $requiredFields = ['tf_topic', 'tf_question'];
+    for ($i = 1; $i <= 4; $i++) {
+        $requiredFields[] = 'statement'.$i;
+        $requiredFields[] = 'correct_answer'.$i;
+    }
+
     foreach ($requiredFields as $field) {
-        if (empty($data[$field]) && $data[$field] !== "0") {
-            exit(json_encode(['status' => 'error', 'message' => 'Vui lòng nhập đầy đủ thông tin bắt buộc.']));
+        if (!isset($data[$field]) || $data[$field] === '') {
+            exit(json_encode(['status' => 'error', 'message' => 'Vui lòng nhập đầy đủ thông tin.']));
         }
     }
 
-    // Ảnh có thể null
     $tf_image_url = !empty($data['tf_image_url']) ? $data['tf_image_url'] : null;
 
     if ($tf_id) {
-        // UPDATE
-        $sql = "UPDATE tf_questions 
-                SET tf_topic=?, tf_question=?, 
-                    tf_statement1=?, tf_correct_answer1=?, 
-                    tf_statement2=?, tf_correct_answer2=?, 
-                    tf_statement3=?, tf_correct_answer3=?, 
-                    tf_statement4=?, tf_correct_answer4=?, 
+        // Cập nhật
+        $sql = "UPDATE tf_questions SET 
+                    tf_topic=?, tf_question=?, 
+                    tf_statement1=?, tf_statement2=?, tf_statement3=?, tf_statement4=?,
+                    tf_correct_answer1=?, tf_correct_answer2=?, tf_correct_answer3=?, tf_correct_answer4=?,
                     tf_image_url=? 
                 WHERE tf_id=?";
-        $types = "sssisisiisii"; 
+        $types = "sssssssssssi";
         $params = [
             $data['tf_topic'], $data['tf_question'],
-            $data['tf_statement1'], (int)$data['tf_correct_answer1'],
-            $data['tf_statement2'] ?? null, isset($data['tf_correct_answer2']) ? (int)$data['tf_correct_answer2'] : null,
-            $data['tf_statement3'] ?? null, isset($data['tf_correct_answer3']) ? (int)$data['tf_correct_answer3'] : null,
-            $data['tf_statement4'] ?? null, isset($data['tf_correct_answer4']) ? (int)$data['tf_correct_answer4'] : null,
-            $tf_image_url,
-            $tf_id
+            $data['statement1'], $data['statement2'], $data['statement3'], $data['statement4'],
+            $data['correct_answer1'], $data['correct_answer2'], $data['correct_answer3'], $data['correct_answer4'],
+            $tf_image_url, $tf_id
         ];
     } else {
-        // INSERT
+        // Thêm mới
         $sql = "INSERT INTO tf_questions 
-                (tf_topic, tf_question, 
-                 tf_statement1, tf_correct_answer1, 
-                 tf_statement2, tf_correct_answer2, 
-                 tf_statement3, tf_correct_answer3, 
-                 tf_statement4, tf_correct_answer4, 
-                 tf_image_url, tf_created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $types = "sssisisiisss"; 
+                (tf_topic, tf_question, tf_statement1, tf_statement2, tf_statement3, tf_statement4,
+                 tf_correct_answer1, tf_correct_answer2, tf_correct_answer3, tf_correct_answer4, tf_image_url)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $types = "sssssssssss";
         $params = [
             $data['tf_topic'], $data['tf_question'],
-            $data['tf_statement1'], (int)$data['tf_correct_answer1'],
-            $data['tf_statement2'] ?? null, isset($data['tf_correct_answer2']) ? (int)$data['tf_correct_answer2'] : null,
-            $data['tf_statement3'] ?? null, isset($data['tf_correct_answer3']) ? (int)$data['tf_correct_answer3'] : null,
-            $data['tf_statement4'] ?? null, isset($data['tf_correct_answer4']) ? (int)$data['tf_correct_answer4'] : null,
+            $data['statement1'], $data['statement2'], $data['statement3'], $data['statement4'],
+            $data['correct_answer1'], $data['correct_answer2'], $data['correct_answer3'], $data['correct_answer4'],
             $tf_image_url
         ];
     }
