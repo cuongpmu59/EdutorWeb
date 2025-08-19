@@ -1,7 +1,9 @@
-/* ==============================
-   Khu vực ảnh minh họa
-============================== */
-.mc-image-zone {
+/* ===============================
+   Image Upload & Preview
+   =============================== */
+
+/* Vùng chứa ảnh */
+.tf-image-zone {
   border: 1px solid #ccc;
   padding: 16px;
   border-radius: 8px;
@@ -9,18 +11,19 @@
   margin-bottom: 20px;
 }
 
-.mc-image-zone h4 {
+/* Tiêu đề */
+.tf-image-zone h4 {
   margin-bottom: 12px;
   font-weight: bold;
   font-size: 1.05rem;
   color: #333;
 }
 
-.mc-image-preview {
+/* Khung xem trước */
+.tf-image-preview {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   min-height: 160px;
   border: 1px dashed #aaa;
   border-radius: 6px;
@@ -30,32 +33,49 @@
   position: relative;
 }
 
-.mc-image-preview img {
+.tf-image-preview img {
   max-width: 100%;
   max-height: 50vh;
   object-fit: contain;
   display: block;
 }
 
-.mc-image-preview img.fade-in {
+/* Filename overlay */
+.tf-image-preview .image-filename {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hiệu ứng fade-in */
+.tf-image-preview img.fade-in {
   opacity: 0;
   animation: fadeIn 0.4s ease-in-out forwards;
-  will-change: opacity, transform;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-.mc-image-buttons {
+/* Button nhóm */
+.tf-image-buttons {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.mc-image-buttons label,
-.mc-image-buttons button {
+.tf-image-buttons label,
+.tf-image-buttons button {
   padding: 8px 14px;
   font-size: 15px;
   border: none;
@@ -65,11 +85,26 @@
   transition: background-color 0.3s ease;
 }
 
-.mc-image-buttons .btn-upload { background-color: #17a2b8; }
-.mc-image-buttons .btn-upload:hover { background-color: #138496; }
+/* Nút upload */
+.tf-image-buttons .btn-upload {
+  background-color: #17a2b8;
+}
+.tf-image-buttons .btn-upload:hover {
+  background-color: #138496;
+}
 
-.mc-image-buttons .btn-save { background-color: #28a745; }
-.mc-image-buttons .btn-save:hover { background-color: #1e7e34; }
+/* Nút lưu */
+.tf-image-buttons .btn-save {
+  background-color: #28a745;
+}
+.tf-image-buttons .btn-save:hover {
+  background-color: #1e7e34;
+}
 
-.mc-image-buttons .btn-delete { background-color: #dc3545; }
-.mc-image-buttons .btn-delete:hover { background-color: #a71d2a; }
+/* Nút xóa */
+.tf-image-buttons .btn-delete {
+  background-color: #dc3545;
+}
+.tf-image-buttons .btn-delete:hover {
+  background-color: #a71d2a;
+}
