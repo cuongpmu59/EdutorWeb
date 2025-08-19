@@ -1,5 +1,3 @@
-// tf_form_preview.js
-
 // Danh sách các trường liên quan
 const previewFields = [
   { id: 'tf_question', label: 'Câu hỏi' },
@@ -9,42 +7,52 @@ const previewFields = [
   { id: 'tf_statement4', label: 'Mệnh đề 4' }
 ];
 
-// Cập nhật preview cho từng trường riêng lẻ
+// Cập nhật preview cho từng trường riêng lẻ (kèm radio đúng/sai)
 function updatePreview(id) {
   const inputEl = document.getElementById(id);
   const previewEl = document.getElementById(`preview-${id}`);
   if (!inputEl || !previewEl) return;
 
   const value = inputEl.value.trim();
-  previewEl.innerHTML = value;
+  let html = value;
+
+  // Nếu là mệnh đề => thêm radio đúng/sai
+  if (id.startsWith('tf_statement')) {
+    const radios = document.querySelectorAll(`input[name="${id}_ans"]`);
+    let selected = '';
+    radios.forEach(r => {
+      if (r.checked) selected = r.value === 'true' ? '✔ Đúng' : '✘ Sai';
+    });
+    html += selected ? ` &nbsp; <em>(${selected})</em>` : '';
+  }
+
+  previewEl.innerHTML = html;
 
   if (window.MathJax) {
     MathJax.typesetPromise([previewEl]);
   }
 }
 
-// Cập nhật toàn bộ nội dung vào tfPreviewContent
+// Cập nhật toàn bộ nội dung
 function updateFullPreview() {
   const topic = document.getElementById('tf_topic')?.value.trim() || '';
-
   let html = `<p><strong>Chủ đề:</strong> ${topic}</p>`;
 
-  // Câu hỏi chính
-  const questionVal = document.getElementById('tf_question')?.value.trim() || '';
-  html += `<p><strong>Câu hỏi:</strong> ${questionVal}</p>`;
+  previewFields.forEach(({ id, label }) => {
+    const value = document.getElementById(id)?.value.trim() || '';
+    let radioHtml = '';
 
-  // Các mệnh đề và đáp án đúng/sai
-  previewFields
-    .filter(f => f.id.startsWith('tf_statement'))
-    .forEach(({ id, label }, idx) => {
-      const value = document.getElementById(id)?.value.trim() || '';
-      const correctEl = document.getElementById(`tf_correct_answer${idx + 1}`);
-      const correct = correctEl ? correctEl.value : '';
-      if (value) {
-        html += `<p><strong>${label}:</strong> ${value} 
-                 <em>(Đáp án: ${correct === "1" ? "Đúng" : "Sai"})</em></p>`;
-      }
-    });
+    if (id.startsWith('tf_statement')) {
+      const radios = document.querySelectorAll(`input[name="${id}_ans"]`);
+      let selected = '';
+      radios.forEach(r => {
+        if (r.checked) selected = r.value === 'true' ? '✔ Đúng' : '✘ Sai';
+      });
+      radioHtml = selected ? ` <em>(${selected})</em>` : '';
+    }
+
+    html += `<p><strong>${label}: </strong> ${value}${radioHtml}</p>`;
+  });
 
   const fullPreviewEl = document.getElementById('tfPreviewContent');
   if (fullPreviewEl) {
@@ -55,7 +63,7 @@ function updateFullPreview() {
   }
 }
 
-// Thiết lập sự kiện input realtime cho tất cả trường
+// Thiết lập sự kiện input realtime
 function setupRealtimePreview() {
   previewFields.forEach(({ id }) => {
     const inputEl = document.getElementById(id);
@@ -65,24 +73,24 @@ function setupRealtimePreview() {
         updateFullPreview();
       });
     }
+
+    // Thêm listener cho radio đúng/sai
+    const radios = document.querySelectorAll(`input[name="${id}_ans"]`);
+    radios.forEach(r => {
+      r.addEventListener('change', () => {
+        updatePreview(id);
+        updateFullPreview();
+      });
+    });
   });
 
-  // Cập nhật khi chọn đúng/sai của từng mệnh đề
-  for (let i = 1; i <= 4; i++) {
-    const ansEl = document.getElementById(`tf_correct_answer${i}`);
-    if (ansEl) {
-      ansEl.addEventListener('change', updateFullPreview);
-    }
-  }
-
-  // Cập nhật khi thay đổi chủ đề
   const topicEl = document.getElementById('tf_topic');
   if (topicEl) {
     topicEl.addEventListener('input', updateFullPreview);
   }
 }
 
-// Thiết lập nút con mắt ẩn/hiện preview từng trường
+// Toggle preview từng trường
 function setupPreviewToggle() {
   const toggleButtons = document.querySelectorAll('.toggle-preview');
   toggleButtons.forEach(button => {
@@ -101,7 +109,7 @@ function setupPreviewToggle() {
   });
 }
 
-// Thiết lập toggle xem trước toàn bộ
+// Toggle preview toàn bộ
 function setupFullPreviewToggle() {
   const btn = document.getElementById('tfTogglePreview');
   const zone = document.getElementById('tfPreview');
@@ -113,14 +121,14 @@ function setupFullPreviewToggle() {
       if (isVisible) {
         zone.style.display = 'none';
       } else {
-        zone.style.display = 'flex';  // hoặc 'block'
+        zone.style.display = 'flex';
         updateFullPreview();
       }
     });
   }
 }
 
-// Khởi tạo tất cả khi DOM sẵn sàng
+// Khởi tạo
 document.addEventListener('DOMContentLoaded', () => {
   setupRealtimePreview();
   setupPreviewToggle();
