@@ -69,9 +69,9 @@
           <!-- 4 mệnh đề + Đúng/Sai -->
           <?php for ($i=1; $i<=4; $i++): ?>
             <div class="tf-field preview-field">
-              <span><?= $i ?>.
+              <span><?= $i ?>.</span>
                 <button type="button" class="toggle-preview" data-target="tf_statement<?= $i ?>"><i class="fa fa-eye"></i></button>
-                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required></span>
+                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required>
                 <div class="preview-box" id="preview-tf_statement<?= $i ?>" style="display:none;"></div>
               <div class="tf-radio-group">
                 <label><input type="radio" name="correct_answer<?= $i ?>" value="1" required> Đúng</label>
