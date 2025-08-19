@@ -1,32 +1,46 @@
-/* Khu vực preview nhỏ */
+/* ==============================
+   Preview nhỏ
+============================== */
 .preview-box {
-    margin-top: 6px;
-    padding: 8px 10px;
-    border: 1px dashed #aaa;
-    border-radius: 4px;
-    background: #f9f9f9;
-    font-style: italic;
-  }
-  
-  /* Toggle preview icon */
-  .toggle-preview {
-    background: none;
-    border: none;
-    color: #0077cc;
-    cursor: pointer;
-    margin-left: 6px;
-  }
-  
-  .toggle-preview:hover {
-    color: #0056b3;
-  }
-  
-  /* Preview toàn bộ */
-  .tf-preview-zone {
-    border: 1px solid #0077cc;
-    padding: 12px;
-    margin-bottom: 16px;
-    border-radius: 6px;
-    background: #f0f8ff;
-  }
-  
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  background: #f9f9f9;
+  font-style: italic;
+  transition: all 0.2s ease-in-out;
+}
+.preview-box:empty {
+  display: none;
+}
+
+/* ==============================
+   Toggle preview icon
+============================== */
+.toggle-preview {
+  background: none;
+  border: none;
+  color: #0077cc;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: color 0.2s, transform 0.2s;
+}
+.toggle-preview:hover {
+  color: #0056b3;
+}
+.toggle-preview:hover i {
+  transform: scale(1.2);
+}
+
+/* ==============================
+   Preview toàn bộ
+============================== */
+.mc-preview-zone {
+  border: 1px solid #0077cc;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background: #f0f8ff;
+  max-height: 300px;
+  overflow-y: auto;
+}
