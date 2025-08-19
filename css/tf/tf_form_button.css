@@ -1,51 +1,71 @@
-.mc-buttons-wrapper {
-  margin-top: 20px;
-}
+/* ===========================
+   Button Grid 3x2
+   =========================== */
 
-.mc-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, auto);
-  gap: 12px;
-}
-
-.mc-buttons button {
-  width: 100%;
-  padding: 12px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  transition: background 0.3s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.mc-buttons button:active {
-  transform: scale(0.97);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-}
-
-/* Màu nút */
-#mc_save { background: #28a745; color: #fff; }
-#mc_save:hover { background: #218838; }
-
-#mc_delete { background: #dc3545; color: #fff; }
-#mc_delete:hover { background: #c82333; }
-
-#mc_reset { background: #ffc107; color: #000; }
-#mc_reset:hover { background: #e0a800; }
-
-#mc_view_list { background: #17a2b8; color: #fff; }
-#mc_view_list:hover { background: #138496; }
-
-#mc_preview_exam { background: #007bff; color: #fff; }
-#mc_preview_exam:hover { background: #0056b3; }
-
-/* Responsive mobile: 1 cột */
-@media (max-width: 600px) {
-  .mc-buttons {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+   .tf-buttons-wrapper {
+    margin-top: 20px;
   }
-}
+  
+  .tf-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: repeat(3, auto);   
+    gap: 12px;
+  }
+  
+  .tf-buttons button {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .tf-buttons button:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  
+  /* Màu nút */
+  #tf_save {
+    background: #28a745;
+    color: #fff;
+  }
+  #tf_save:hover { background: #218838; }
+  
+  #tf_delete {
+    background: #dc3545;
+    color: #fff;
+  }
+  #tf_delete:hover { background: #c82333; }
+  
+  #tf_reset {
+    background: #ffc107;
+    color: #000;
+  }
+  #tf_reset:hover { background: #e0a800; }
+  
+  #tf_view_list {
+    background: #17a2b8;
+    color: #fff;
+  }
+  #tf_view_list:hover { background: #138496; }
+  
+  #tf_preview_exam {
+    background: #007bff;
+    color: #fff;
+  }
+  #tf_preview_exam:hover { background: #0056b3; }
+  
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .tf-buttons {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+  }
+  
