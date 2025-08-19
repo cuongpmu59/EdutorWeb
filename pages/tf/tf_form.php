@@ -60,12 +60,12 @@
 
           <!-- Câu hỏi chính -->
           <div class="tf-field preview-field">
-            <label for="tf_question">Câu hỏi:</label>
-            <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
+            <label for="tf_question">Câu hỏi:
+            <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button></label>
             <textarea id="tf_question" name="question" required></textarea>
+            <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
           </div>
-          <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
-
+          
           <!-- 4 mệnh đề + Đúng/Sai -->
           <?php for ($i=1; $i<=4; $i++): ?>
             <div class="tf-field preview-field">
