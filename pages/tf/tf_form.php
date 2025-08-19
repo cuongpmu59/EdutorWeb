@@ -70,8 +70,8 @@
           <?php for ($i=1; $i<=4; $i++): ?>
             <div class="tf-field preview-field">
               <span><?= $i ?>.
-                <button type="button" class="toggle-preview" data-target="tf_statement<?= $i ?>"><i class="fa fa-eye"></i></button></span>
-                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required>
+                <button type="button" class="toggle-preview" data-target="tf_statement<?= $i ?>"><i class="fa fa-eye"></i></button>
+                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required></span>
                 <div class="preview-box" id="preview-tf_statement<?= $i ?>" style="display:none;"></div>
               <div class="tf-radio-group">
                 <label><input type="radio" name="correct_answer<?= $i ?>" value="1" required> Đúng</label>
