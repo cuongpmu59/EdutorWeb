@@ -1,7 +1,7 @@
 /* ==============================
    FORM CHUNG
 ============================== */
-#tfForm {
+#mcForm {
   background: #fff;
   padding: 24px;
   border-radius: 8px;
@@ -16,146 +16,68 @@
 /* ==============================
    BỐ CỤC 2 CỘT
 ============================== */
-.tf-columns {
+.mc-columns {
   display: flex;
-  flex-wrap: wrap;     /* mobile tự xuống hàng */
+  flex-wrap: wrap;
   gap: 24px;
   margin-top: 16px;
 }
 
-.tf-col {
-  flex: 1;
-}
-
-.tf-col-left {
+.mc-col-left {
   flex: 3;
   min-width: 300px;
 }
 
-.tf-col-right {
+.mc-col-right {
   flex: 2;
   min-width: 260px;
 }
 
 /* ==============================
-   TRƯỜNG NHẬP LIỆU CHUNG
+   FIELD
 ============================== */
-.tf-field {
+.mc-field {
   display: flex;
   flex-direction: column;
   margin-bottom: 12px;
   max-width: 100%;
 }
 
-.tf-field label {
+.mc-field label {
   font-weight: 500;
   margin-bottom: 4px;
   display: inline-flex;
   align-items: center;
 }
 
-.tf-field input[type="text"],
-.tf-field textarea,
-.tf-field select {
+.mc-field input[type="text"],
+.mc-field textarea,
+.mc-field select {
   width: 100%;
   box-sizing: border-box;
   font-size: 15px;
 }
 
-.tf-field input[type="text"],
-.tf-field select {
+.mc-field input[type="text"],
+.mc-field select {
   padding: 6px 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.tf-field textarea {
+.mc-field textarea {
   min-height: 80px;
   padding: 6px 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   resize: vertical;
-}
-
-/* ==============================
-   ĐÁP ÁN TRUE/FALSE INLINE
-============================== */
-.tf-truefalse-field {
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
-
-.tf-truefalse-field label {
-  margin-bottom: 0;
-  min-width: 60px;   /* "True"/"False" đủ rộng */
-}
-
-.tf-truefalse-field input[type="radio"] {
-  margin-right: 4px;
-}
-
-/* ==============================
-   NÚT XEM TRƯỚC (cạnh nhãn)
-============================== */
-.tf-toggle-preview {
-  margin-left: 6px;
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.tf-toggle-preview:hover {
-  color: #0056b3;
-}
-
-.tf-toggle-preview i {
-  pointer-events: none;
-}
-
-/* ==============================
-   KHU VỰC XEM TRƯỚC
-============================== */
-.tf-preview-box {
-  margin-top: 6px;
-  padding: 10px;
-  border: 1px dashed #ccc;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  font-style: italic;
-}
-
-.tf-preview-zone {
-  margin-top: 24px;
-  border: 1px dashed #aaa;
-  padding: 20px;
-  border-radius: 6px;
-  background-color: #fafafa;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-/* ==============================
-   KHUNG BẢNG (iframe DataTable)
-============================== */
-.tf-datatable-wrapper {
-  width: 100%;
-  margin-top: 20px;
-}
-
-.tf-datatable-wrapper iframe {
-  width: 100%;
-  height: 600px;
-  border: none;
-  border-radius: 6px;
+  overflow-y: hidden;
 }
 
 /* ==============================
    NHÓM (fieldset / h4)
 ============================== */
-.tf-group {
+.mc-group {
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 15px;
@@ -163,44 +85,18 @@
   background: #fafafa;
 }
 
-.tf-group legend,
-.tf-group h4 {
+.mc-group legend,
+.mc-group h4 {
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 }
 
 /* ==============================
-   NÚT THAO TÁC
-============================== */
-.tf-buttons button {
-  display: inline-block;
-  margin: 4px 6px 4px 0;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  background: #007bff;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  font-size: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.tf-buttons button:hover {
-  background: #0056b3;
-}
-
-.tf-buttons .full-width {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* ==============================
    RESPONSIVE MOBILE
 ============================== */
 @media (max-width: 768px) {
-  .tf-col-left, .tf-col-right {
+  .mc-col-left, .mc-col-right {
     flex: 1 1 100%;
     min-width: auto;
   }
