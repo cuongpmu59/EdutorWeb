@@ -8,11 +8,6 @@ $api_key        = CLOUDINARY_API_KEY;
 $api_secret     = CLOUDINARY_API_SECRET;
 $upload_preset  = CLOUDINARY_UPLOAD_PRESET;
 
-// $cloud_name = "dbdf2gwc9"; 
-// $api_key    = "451298475188791";
-// $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
-// $upload_preset = "my_exam_preset";
-
 $action = $_POST['action'] ?? '';
 
 if ($action === 'upload') {
