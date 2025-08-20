@@ -1,7 +1,0 @@
-<?php
-require_once 'dotenv.php';
-
-define('CLOUDINARY_CLOUD_NAME', env('CLOUDINARY_CLOUD_NAME'));
-define('CLOUDINARY_API_KEY',    env('CLOUDINARY_API_KEY'));
-define('CLOUDINARY_API_SECRET', env('CLOUDINARY_API_SECRET'));
-define('CLOUDINARY_UPLOAD_PRESET', env('CLOUDINARY_UPLOAD_PRESET'));
