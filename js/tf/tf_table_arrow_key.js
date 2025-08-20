@@ -17,7 +17,7 @@ $(document).ready(function () {
       } else {
         selectedRowIndex++;
       }
-      highlightAndSendTF(rows, selectedRowIndex, table);
+      highlightAndSend(rows, selectedRowIndex, table);
     }
 
     if (e.key === 'ArrowUp') {
@@ -27,7 +27,7 @@ $(document).ready(function () {
       } else {
         selectedRowIndex--;
       }
-      highlightAndSendTF(rows, selectedRowIndex, table);
+      highlightAndSend(rows, selectedRowIndex, table);
     }
   });
 
@@ -35,12 +35,12 @@ $(document).ready(function () {
   $('#tfTable tbody').on('click', 'tr', function () {
     const rows = table.rows({ search: 'applied' }).nodes();
     selectedRowIndex = table.row(this).index();
-    highlightAndSendTF(rows, selectedRowIndex, table);
+    highlightAndSend(rows, selectedRowIndex, table);
   });
 });
 
 // --- Hàm tô sáng dòng và gửi dữ liệu về form ---
-function highlightAndSendTF(rows, index, table) {
+function highlightAndSend(rows, index, table) {
   // Xóa highlight ở tất cả các dòng
   $(rows).removeClass('selected');
 
@@ -58,12 +58,12 @@ function highlightAndSendTF(rows, index, table) {
         tf_topic: rowData.tf_topic || '',
         tf_question: rowData.tf_question || '',
         tf_statement1: rowData.tf_statement1 || '',
-        tf_correct_answer1: rowData.tf_correct_answer1 || '',
         tf_statement2: rowData.tf_statement2 || '',
-        tf_correct_answer2: rowData.tf_correct_answer2 || '',
         tf_statement3: rowData.tf_statement3 || '',
-        tf_correct_answer3: rowData.tf_correct_answer3 || '',
         tf_statement4: rowData.tf_statement4 || '',
+        tf_correct_answer1: rowData.tf_correct_answer1 || '',
+        tf_correct_answer2: rowData.tf_correct_answer2 || '',
+        tf_correct_answer3: rowData.tf_correct_answer3 || '',
         tf_correct_answer4: rowData.tf_correct_answer4 || '',
         tf_image_url: rowData.tf_image_url || ''
       }
