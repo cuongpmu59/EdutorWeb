@@ -1,120 +1,159 @@
-<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once __DIR__ . '/../../env/config.php';
-?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📝 Câu hỏi trắc nghiệm trả lời ngắn</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../css/main_ui.css">
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+  <title>Câu hỏi Trắc nghiệm ngắn (Short Answer)</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../css/sa/sa_form_image.css">
+  <link rel="stylesheet" href="../../css/sa/sa_form_preview.css">
+  <link rel="stylesheet" href="../../css/sa/sa_form_button.css">
+  <link rel="stylesheet" href="../../css/sa/sa_form_layout.css">
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script','noscript','style','textarea','pre'],
+        ignoreHtmlClass: 'tex2jax_ignore'
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <!-- jQuery + FontAwesome -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<div id="formContainer">
+  <form id="saForm" method="POST" enctype="multipart/form-data">
+    <h2>
+      Câu hỏi Short Answer
+      <span id="saTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
+    </h2>
 
-<!-- Tabs -->
-<div class="tab-container">
-  <div class="tab-button active" data-tab="tab-form">📝 Nhập câu hỏi</div>
-  <div class="tab-button" data-tab="tab-image">🖼️ Ảnh minh hoạ</div>
-  <div class="tab-button" data-tab="tab-preview">👁️ Xem trước toàn bộ</div>
-</div>
-
-<!-- Tab 1: Form nhập liệu -->
-<div class="tab-content active" id="tab-form">
-  <form id="saForm" class="question-form" method="POST" action="sa_insert.php" enctype="multipart/form-data">
-    <input type="hidden" id="sa_id" name="sa_id">
-    <input type="hidden" id="sa_image_url" name="sa_image_url">
-    <input type="file" id="sa_image" name="sa_image" style="display:none;">
-
-    <div class="form-group">
-      <label for="sa_topic">📚 Chủ đề:</label>
-      <input type="text" id="sa_topic" name="sa_topic" class="form-control" required>
+    <div id="saPreview" class="sa-preview-zone" style="display:none;">
+      <div id="saPreviewContent"></div>
     </div>
 
-    <div class="form-group">
-      <label for="sa_question">🧠 Câu hỏi:</label>
-      <textarea id="sa_question" name="sa_question" rows="3" class="form-control" required></textarea>
-    </div>
+    <div id="saMainContent" class="sa-columns">
+      <!-- Cột trái -->
+      <div class="sa-col sa-col-left">
+        <fieldset class="sa-group">
+          <legend>Thông tin câu hỏi</legend>
 
-    <div class="form-group">
-      <label for="previewFormulaInput">📌 Xem trước công thức (LaTeX):</label>
-      <textarea id="previewFormulaInput" rows="2" class="form-control" placeholder="\\( a^2 + b^2 = c^2 \\)"></textarea>
-      <div id="previewFormulaOutput" class="preview-box mt-2 p-3 border bg-white dark:bg-gray-800 rounded shadow-sm"></div>
-    </div>
+          <div class="sa-field">
+            <label for="sa_topic">Chủ đề:</label>
+            <input type="text" id="sa_topic" name="topic" required>
+          </div>
 
-    <div class="form-group">
-      <label for="sa_correct_answer">✅ Đáp án đúng (dạng văn bản):</label>
-      <textarea id="sa_correct_answer" name="sa_correct_answer" rows="2" class="form-control" required></textarea>
-    </div>
+          <div class="sa-field preview-field">
+            <label for="sa_question">Câu hỏi:
+              <button type="button" class="toggle-preview" data-target="sa_question"><i class="fa fa-eye"></i></button>
+            </label>
+            <textarea id="sa_question" name="question" required></textarea>
+            <div class="preview-box" id="preview-sa_question" style="display:none;"></div>
+          </div>
 
-    <div id="formWarning" class="form-warning alert alert-warning" style="display:none;">
-      ⚠️ Vui lòng nhập đầy đủ tất cả các trường bắt buộc.
-    </div>
+          <div class="sa-field sa-inline-field">
+            <label for="sa_correct_answer">Đáp án đúng:</label>
+            <input type="text" id="sa_correct_answer" name="correct_answer" required>
+          </div>
+        </fieldset>
+      </div>
 
-    <div class="form-actions mt-3 flex gap-2">
-      <button type="submit" class="btn btn-primary">💾 Lưu</button>
-      <button type="reset" class="btn btn-secondary">🔄 Làm mới</button>
-      <button type="button" id="deleteBtn" class="btn btn-danger" style="display:none;">🗑️ Xoá</button>
-      <button type="button" id="exportPdfBtn" class="btn btn-secondary">📝 Xuất PDF</button>
+      <!-- Cột phải -->
+      <div class="sa-col sa-col-right">
+        <div class="sa-image-zone sa-group">
+          <h4>Ảnh minh họa</h4>
+          <div class="sa-image-preview">
+            <img id="sa_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
+          </div>
+          <div class="sa-image-buttons">
+            <label class="btn-upload">
+              Tải ảnh
+              <input type="file" id="sa_image" name="image" accept="image/*" hidden>
+            </label>
+            <button type="button" id="sa_clear_image">Xóa ảnh</button>
+          </div>
+          <input type="hidden" name="sa_image_url" id="sa_image_url">
+          <div id="statusMsg"></div>
+        </div>
+
+        <div class="sa-buttons-wrapper sa-group">
+          <h4>Thao tác</h4>
+          <div class="sa-buttons">
+            <button type="submit" id="sa_save">Lưu</button>
+            <button type="button" id="sa_delete">Xóa</button>
+            <button type="button" id="sa_reset">Làm mới</button>
+            <button type="button" id="sa_view_list">Ẩn/hiện danh sách</button>
+            <button type="button" id="sa_preview_exam" class="full-width">Làm đề</button>
+          </div>
+          <input type="hidden" id="sa_id" name="sa_id">
+        </div>
+      </div>
     </div>
   </form>
 </div>
 
-<!-- Tab 2: Ảnh minh hoạ -->
-<div class="tab-content" id="tab-image">
-  <p><strong>Ảnh minh hoạ hiện tại:</strong></p>
-  <img id="imageTabPreview" style="max-height:150px; border:1px solid #ccc; display:none;">
-  <div id="imageTabFileName" style="color:gray; font-style:italic;"></div>
-  <button type="button" class="btn-danger" id="delete_image_tab" style="display:none;">🗑️ Xoá ảnh</button>
-  <button type="button" class="btn-secondary" id="select_image_tab">📂 Chọn ảnh</button>
+<!-- Bảng quản lý -->
+<div id="saTableWrapper" style="display:none;">
+  <iframe id="saTableFrame" src="../../pages/sa/sa_table.php" style="width:100%; height:600px; border:none;"></iframe>
 </div>
 
-<!-- Tab 3: Xem trước toàn bộ -->
-<div class="tab-content" id="tab-preview">
-  <div id="preview_area"><em>⚡ Nội dung xem trước sẽ hiển thị tại đây...</em></div>
-  <img id="preview_image" style="display:none; max-height:150px; margin-top:10px; border:1px solid #ccc;">
-</div>
-
-<!-- Danh sách câu hỏi -->
-<iframe id="questionIframe" src="get_question.php" width="100%" height="500" style="margin-top:30px; border:1px solid #aaa;"></iframe>
-
-<!-- Cloudinary từ env -->
-<script>
-  const CLOUDINARY_CLOUD_NAME = "<?= CLOUDINARY_CLOUD_NAME ?>";
-  const CLOUDINARY_UPLOAD_PRESET = "<?= CLOUDINARY_UPLOAD_PRESET ?>";
-</script>
-
-<!-- JavaScript xử lý -->
-<script src="../../js/modules/mathPreview.js"></script>
-<script type="module" src="js/modules/controller.js"></script>
+<!-- JS -->
+<script src="../../js/sa/sa_form_preview.js"></script>
+<script src="../../js/sa/sa_form_image.js"></script>
+<script src="../../js/sa/sa_form_button.js"></script>
 
 <script>
-  // Validate
-  document.getElementById("saForm").addEventListener("submit", function (e) {
-    const ids = ["sa_topic", "sa_question", "sa_correct_answer"];
-    let isValid = ids.every(id => document.getElementById(id)?.value.trim());
-    document.getElementById("formWarning").style.display = isValid ? "none" : "block";
-    if (!isValid) e.preventDefault();
+  // Auto-resize textarea
+  document.querySelectorAll("textarea").forEach(el => {
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+    el.addEventListener("input", () => {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    });
   });
 
-  // Xem trước công thức
-  const formulaInput = document.getElementById("previewFormulaInput");
-  const formulaOutput = document.getElementById("previewFormulaOutput");
-  if (formulaInput && formulaOutput && typeof updateLivePreview === "function") {
-    formulaInput.addEventListener("input", () => updateLivePreview(formulaInput, formulaOutput));
-    updateLivePreview(formulaInput, formulaOutput);
-  }
+  // Toggle preview từng trường
+  $('.toggle-preview').click(function() {
+    const target = $(this).data('target');
+    const content = $('#' + target).val();
+    $('#preview-' + target).text(content).slideToggle(200);
+    MathJax.typesetPromise([document.getElementById('preview-' + target)]);
+  });
 
-  // Chuyển tab
-  document.querySelectorAll(".tab-button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
-    });
+  // Toggle preview toàn bộ
+  $('#saTogglePreview').click(() => $('#saPreview').fadeToggle(200));
+
+  // Nhận dữ liệu từ iframe DataTable
+  window.addEventListener('message', function (event) {
+    const { type, data } = event.data || {};
+    if (type !== 'fill-form' || !data) return;
+
+    $('#sa_id').val(data.sa_id || '');
+    $('#sa_topic').val(data.sa_topic || '');
+    $('#sa_question').val(data.sa_question || '');
+    $('#sa_correct_answer').val(data.sa_correct_answer || '');
+
+    if (data.sa_image_url) {
+      $('#sa_preview_image').attr('src', data.sa_image_url).show();
+      $('#sa_image_url').val(data.sa_image_url);
+    } else {
+      $('#sa_preview_image').hide().attr('src','');
+      $('#sa_image_url').val('');
+    }
+
+    MathJax.typesetPromise();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
 </body>
