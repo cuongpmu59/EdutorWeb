@@ -1,0 +1,78 @@
+/* ===========================
+   Button Grid 3x2
+   =========================== */
+
+   .sa-buttons-wrapper {
+    margin-top: 20px;
+  }
+  
+  .sa-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    grid-template-rows: repeat(3, auto);   
+    gap: 12px;
+  }
+  
+  .sa-buttons button {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .sa-buttons button:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  
+  /* Màu nút */
+  #sa_save {
+    background: #28a745;
+    color: #fff;
+  }
+  #sa_save:hover { background: #218838; }
+  
+  #sa_delete {
+    background: #dc3545;
+    color: #fff;
+  }
+  #sa_delete:hover { background: #c82333; }
+  
+  #sa_reset {
+    background: #ffc107;
+    color: #000;
+  }
+  #sa_reset:hover { background: #e0a800; }
+  
+  #sa_view_list {
+    background: #17a2b8;
+    color: #fff;
+  }
+  #sa_view_list:hover { background: #138496; }
+  
+  #sa_preview_exam {
+    background: #007bff;
+    color: #fff;
+  }
+  #sa_preview_exam:hover { background: #0056b3; }
+  
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .sa-buttons {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+  }
+  
+  /* Highlight input lỗi */
+  .input-error {
+    border: 2px solid red !important;
+    background: #ffe6e6;
+    transition: all 0.3s ease;
+  }
+  
