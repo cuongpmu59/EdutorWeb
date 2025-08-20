@@ -1,12 +1,12 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../../env/config.php';
+// require_once __DIR__ . '/../../env/config.php';
 
-// $cloud_name = "dbdf2gwc9"; 
-// $api_key    = "451298475188791";
-// $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
-// $upload_preset = "my_exam_preset";
+$cloud_name = "dbdf2gwc9"; 
+$api_key    = "451298475188791";
+$api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$upload_preset = "my_exam_preset";
 
 $action = $_POST['action'] ?? '';
 
