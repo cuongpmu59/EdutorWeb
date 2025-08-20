@@ -111,11 +111,26 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
     'tf_correct_answer1', 'tf_correct_answer2', 'tf_correct_answer3', 'tf_correct_answer4'
   ];
 
+  let hasError = false;
+
+  // ✅ Reset highlight trước
+  requiredFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('input-error');
+  });
+
+  // ✅ Check tất cả đều phải có giá trị
   for (const field of requiredFields) {
-    if (!getVal(field)) {
-      alert('⚠️ Vui lòng nhập đầy đủ câu hỏi, mệnh đề và đáp án đúng.');
-      return;
+    const el = document.getElementById(field);
+    if (el && !getVal(field)) {
+      el.classList.add('input-error');   // highlight ô bị thiếu
+      hasError = true;
     }
+  }
+
+  if (hasError) {
+    alert('⚠️ Vui lòng nhập đầy đủ Chủ đề, Câu hỏi, Mệnh đề và Đáp án đúng.');
+    return;
   }
 
   // Gom dữ liệu gửi đi
