@@ -3,6 +3,11 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../../env/config.php';
 
+$cloud_name     = CLOUDINARY_CLOUD_NAME;
+$api_key        = CLOUDINARY_API_KEY;
+$api_secret     = CLOUDINARY_API_SECRET;
+$upload_preset  = CLOUDINARY_UPLOAD_PRESET;
+
 // $cloud_name = "dbdf2gwc9"; 
 // $api_key    = "451298475188791";
 // $api_secret = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
