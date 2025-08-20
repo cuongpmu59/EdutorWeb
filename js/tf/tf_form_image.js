@@ -152,3 +152,6 @@ $(document).on('click', '#tf_clear_image', function () {
         }
     });
 });
+
+// Khởi tạo
+$(document).ready(updateNoImageText);
