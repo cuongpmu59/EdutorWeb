@@ -109,9 +109,13 @@ $(document).ready(function () {
     $("#tf_image_url").val("");
   });
 
-  // ===== Nút Ẩn/Hiện danh sách =====
-  $("#tf_view_list").on("click", function () {
-    $("#tfTableWrapper").slideToggle(200);
+  
+  // Nút "Ẩn/hiện danh sách" (#mc_view_list)
+  document.getElementById('mc_view_list').addEventListener('click', () => {
+    const wrapper = document.getElementById('tfTableWrapper');
+    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+      ? 'block'
+      : 'none';
   });
 
   // ===== Nút Làm đề =====
