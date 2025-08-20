@@ -1,15 +1,10 @@
-// Nút "Làm mới" (#tf_reset)
+// Nút "Làm mới" (#tf_reset)
 document.getElementById('tf_reset').addEventListener('click', function () {
   const form = document.getElementById('tfForm');
 
-  // Xóa text, textarea
   form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
   form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
-
-  // Reset radio Đúng/Sai
-  form.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-
-  // Ẩn ảnh preview
+  
   const img = document.getElementById('tf_preview_image');
   if (img) {
     img.src = '';
@@ -19,9 +14,9 @@ document.getElementById('tf_reset').addEventListener('click', function () {
   const imageInput = form.querySelector('#tf_image');
   if (imageInput) imageInput.value = '';
 
-  document.getElementById('tf_image_url').value = '';
+  const hiddenImage = form.querySelector('input[name="existing_image"]');
+  if (hiddenImage) hiddenImage.remove();
 
-  // Reset preview box
   document.querySelectorAll('.preview-box').forEach(div => {
     div.innerHTML = '';
     div.style.display = 'none';
@@ -33,15 +28,21 @@ document.getElementById('tf_reset').addEventListener('click', function () {
     MathJax.typeset();
   }
 
-  document.getElementById('tf_id').value = '';
+  const idInput = document.getElementById('tf_id');
+  if (idInput) idInput.remove();
 });
-
 
 // Nút "Xoá" (#tf_delete)
 document.getElementById('tf_delete').addEventListener('click', async function () {
-  const tf_id = document.getElementById('tf_id').value.trim();
-  if (!tf_id) {
+  const idInput = document.getElementById('tf_id');
+  if (!idInput) {
     alert('⚠️ Không có câu hỏi nào để xoá.');
+    return;
+  }
+
+  const tf_id = idInput.value.trim();
+  if (!tf_id) {
+    alert('⚠️ ID câu hỏi không hợp lệ.');
     return;
   }
 
@@ -79,47 +80,27 @@ document.getElementById('tf_delete').addEventListener('click', async function ()
   }
 });
 
-
 // Nút "Lưu" (#tf_save)
 document.getElementById('tf_save')?.addEventListener('click', async () => {
   const formData = new FormData();
   const getVal = id => document.getElementById(id)?.value.trim() || '';
-
-  // Bắt buộc nhập
   const requiredFields = [
-    'tf_topic',
-    'tf_question',
-    'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4'
+    'tf_topic', 'tf_question',
+    'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
+    'tf_correct_answer'
   ];
 
   for (const field of requiredFields) {
     if (!getVal(field)) {
-      alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và các mệnh đề.');
+      alert('⚠️ Vui lòng nhập đầy đủ câu hỏi và mệnh đề.');
       return;
     }
   }
 
-  // Bắt buộc chọn Đúng/Sai cho từng mệnh đề
-  for (let i = 1; i <= 4; i++) {
-    const radios = document.querySelectorAll(`input[name="correct_answer${i}"]`);
-    if (![...radios].some(r => r.checked)) {
-      alert(`⚠️ Vui lòng chọn Đúng/Sai cho mệnh đề ${i}.`);
-      return;
-    }
-  }
-
-  // Gom dữ liệu vào formData
   ['tf_id', ...requiredFields].forEach(id => {
     formData.append(id, getVal(id));
   });
   formData.append('tf_image_url', getVal('tf_image_url'));
-
-  for (let i = 1; i <= 4; i++) {
-    const checked = document.querySelector(`input[name="correct_answer${i}"]:checked`);
-    if (checked) {
-      formData.append(`tf_correct_answer${i}`, checked.value);
-    }
-  }
 
   try {
     const res = await fetch('../../includes/tf/tf_form_save.php', {
@@ -138,23 +119,10 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
   }
 });
 
-
-// // Nút "Ẩn/hiện danh sách" (#tf_view_list)
-// document.getElementById('tf_view_list').addEventListener('click', () => {
-//   const wrapper = document.getElementById('tfTableWrapper');
-//   wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-//     ? 'block'
-//     : 'none';
-// });
-
-const btnToggle = document.getElementById('tf_view_list');
-const wrapper = document.getElementById('tfTableWrapper');
-
-if (btnToggle && wrapper) {
-  btnToggle.addEventListener('click', () => {
-    const isHidden = wrapper.style.display === 'none' || getComputedStyle(wrapper).display === 'none';
-    wrapper.style.display = isHidden ? 'block' : 'none';
-    btnToggle.textContent = isHidden ? 'Ẩn danh sách' : 'Hiện danh sách';
-  });
-}
-
+// Nút "Ẩn/hiện danh sách" (#tf_view_list)
+document.getElementById('tf_view_list').addEventListener('click', () => {
+  const wrapper = document.getElementById('tfTableWrapper');
+  wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+    ? 'block'
+    : 'none';
+});
