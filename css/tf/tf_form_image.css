@@ -1,77 +1,44 @@
-/* ===============================
-   Image Upload & Preview
-   =============================== */
-
-/* Vùng chứa ảnh */
+/* Vùng chứa ảnh minh hoạ */
 .tf-image-zone {
   border: 1px solid #ccc;
-  padding: 16px;
+  padding: 15px;
   border-radius: 8px;
   background-color: #fafafa;
   margin-bottom: 20px;
 }
 
-/* Tiêu đề */
+/* Tiêu đề khu vực ảnh */
 .tf-image-zone h4 {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: bold;
-  font-size: 1.05rem;
   color: #333;
 }
 
-/* Khung xem trước */
+/* Khung xem trước ảnh */
 .tf-image-preview {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 160px;
+  min-height: 150px;
   border: 1px dashed #aaa;
   border-radius: 6px;
   background-color: #fff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   overflow: hidden;
   position: relative;
 }
 
 .tf-image-preview img {
   max-width: 100%;
-  max-height: 50vh;
+  max-height: 200px;
   object-fit: contain;
   display: block;
 }
 
-/* Filename overlay */
-.tf-image-preview .image-filename {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  max-width: 70%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Hiệu ứng fade-in */
-.tf-image-preview img.fade-in {
-  opacity: 0;
-  animation: fadeIn 0.4s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* Button nhóm */
+/* Nút tải, xoá và lưu ảnh */
 .tf-image-buttons {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .tf-image-buttons label,
@@ -85,26 +52,52 @@
   transition: background-color 0.3s ease;
 }
 
-/* Nút upload */
-.tf-image-buttons .btn-upload {
+.tf-image-buttons label {
   background-color: #17a2b8;
 }
-.tf-image-buttons .btn-upload:hover {
+
+.tf-image-buttons label:hover {
   background-color: #138496;
 }
 
-/* Nút lưu */
-.tf-image-buttons .btn-save {
-  background-color: #28a745;
-}
-.tf-image-buttons .btn-save:hover {
-  background-color: #1e7e34;
-}
-
-/* Nút xóa */
-.tf-image-buttons .btn-delete {
+.tf-image-buttons button {
   background-color: #dc3545;
 }
-.tf-image-buttons .btn-delete:hover {
-  background-color: #a71d2a;
+
+.tf-image-buttons button:hover {
+  background-color: #c82333;
+}
+
+/* Hiệu ứng khi ảnh mới xuất hiện */
+.tf-image-preview img.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.tf-image-preview .image-name {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #555;
+  word-break: break-all;
+}
+
+.tf-image-preview .image-filename {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
