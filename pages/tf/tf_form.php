@@ -61,24 +61,30 @@
           <!-- Câu hỏi chính -->
           <div class="tf-field preview-field">
             <label for="tf_question">Câu hỏi:
-            <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button></label>
+              <button type="button" class="toggle-preview" data-target="tf_question"><i class="fa fa-eye"></i></button>
+            </label>
             <textarea id="tf_question" name="question" required></textarea>
             <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
           </div>
 
-          <!-- 4 mệnh đề + Đúng/Sai -->
-          <?php for ($i=1; $i<=4; $i++): ?>
-            <div class="tf-field preview-field">
-              <span><?= $i ?>.</span>
-                <button type="button" class="toggle-preview" data-target="tf_statement<?= $i ?>"><i class="fa fa-eye"></i></button>
-                <input type="text" id="tf_statement<?= $i ?>" name="statement<?= $i ?>" required>
-                <div class="preview-box" id="preview-tf_statement<?= $i ?>" style="display:none;"></div>
+          <!-- 4 mệnh đề + Đúng/Sai <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>-->
+          <?php
+          for ($i = 1; $i <= 4; $i++) {
+            echo '
+            <div class="tf-field tf-inline-field">
+              <label for="tf_statement'.$i.'">'.$i.'. 
+                <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
+              </label>
+              
+              <textarea id="tf_statement'.$i.'" name="statement'.$i.'" required></textarea>
+              <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>
               <div class="tf-radio-group">
-                <label><input type="radio" name="correct_answer<?= $i ?>" value="1" required> Đúng</label>
-                <label><input type="radio" name="correct_answer<?= $i ?>" value="0"> Sai</label>
+                <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
+                <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
               </div>
-            </div>
-          <?php endfor; ?>
+            </div>';
+          }
+          ?>
         </fieldset>
       </div>
 
@@ -128,21 +134,26 @@
 
 <script>
   // Auto-resize textarea
-  document.querySelectorAll("textarea").forEach(el => {
+  function autoResize(el) {
+    el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
-    el.addEventListener("input", () => {
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + "px";
-    });
+  }
+
+  document.querySelectorAll("textarea").forEach(el => {
+    autoResize(el);
+    el.addEventListener("input", () => autoResize(el));
   });
 
   // Toggle preview từng mệnh đề
   $('.toggle-preview').click(function() {
     const target = $(this).data('target');
     const content = $('#' + target).val();
-    $('#preview-' + target).text(content).toggle();
+    $('#preview-' + target).text(content).slideToggle(200);
     MathJax.typesetPromise([document.getElementById('preview-' + target)]);
   });
+
+  // Toggle preview toàn bộ
+  $('#tfTogglePreview').click(() => $('#tfPreview').fadeToggle(200));
 
   // Nhận dữ liệu từ iframe DataTable
   window.addEventListener('message', function (event) {
@@ -151,9 +162,10 @@
 
     $('#tf_id').val(data.tf_id || '');
     $('#tf_topic').val(data.tf_topic || '');
-    $('#tf_question').val(data.tf_question || '');
+    $('#tf_question').val(data.tf_question || '').trigger('input');
+
     for (let i=1; i<=4; i++) {
-      $('#tf_statement'+i).val(data['tf_statement'+i] || '');
+      $('#tf_statement'+i).val(data['tf_statement'+i] || '').trigger('input');
       const correct = data['tf_correct_answer'+i];
       if (correct !== undefined && correct !== null) {
         $(`input[name="correct_answer${i}"][value="${correct}"]`).prop('checked', true);
@@ -161,10 +173,12 @@
     }
 
     if (data.tf_image_url) {
-      $('#tf_preview_image').attr('src', data.tf_image_url).show();
+      $('#tf_preview_image').attr('src', data.tf_image_url).fadeIn(200);
       $('#tf_image_url').val(data.tf_image_url);
     } else {
-      $('#tf_preview_image').hide().attr('src', '');
+      $('#tf_preview_image').fadeOut(200, function() {
+        $(this).attr('src', '');
+      });
       $('#tf_image_url').val('');
     }
 
