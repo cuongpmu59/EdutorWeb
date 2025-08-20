@@ -54,7 +54,7 @@ $(document).ready(function () {
     const formData = new FormData(form[0]);
 
     $.ajax({
-      url: "../../includes/tf/tf_save.php",
+      url: "../../includes/tf/tf_form_save.php",
       type: "POST",
       data: formData,
       contentType: false,
