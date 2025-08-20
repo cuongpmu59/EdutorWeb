@@ -1,66 +1,74 @@
 <?php
-// tf_form_image.php
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../../env/config.php';
-require_once __DIR__ . '/../../vendor/autoload.php';
+// Cloudinary config
+$cloud_name    = "dbdf2gwc9"; 
+$api_key       = "451298475188791";
+$api_secret    = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
+$upload_preset = "my_exam_preset";
 
-use Cloudinary\Configuration\Configuration;
-use Cloudinary\Api\Upload\UploadApi;
+$action = $_POST['action'] ?? '';
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-// === Cấu hình Cloudinary ===
-Configuration::instance([
-    'cloud' => [
-        'cloud_name' => CLOUD_NAME,
-        'api_key'    => CLOUD_API_KEY,
-        'api_secret' => CLOUD_API_SECRET
-    ],
-    'url' => [
-        'secure' => true
-    ]
-]);
-
-try {
-    // ==== Xử lý upload ảnh ====
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-        $fileTmpPath = $_FILES['file']['tmp_name'];
-        $fileName    = $_FILES['file']['name'];
-
-        if (!is_uploaded_file($fileTmpPath)) {
-            echo json_encode(['status' => 'error', 'message' => 'Không tìm thấy file tải lên.']);
-            exit;
-        }
-
-        // Upload lên Cloudinary, đưa ảnh vào folder tf_questions
-        $result = (new UploadApi())->upload($fileTmpPath, [
-            'folder' => 'tf_questions'
-        ]);
-
-        echo json_encode([
-            'status'      => 'success',
-            'secure_url'  => $result['secure_url'],
-            'public_id'   => $result['public_id']
-        ]);
+if ($action === 'upload') {
+    if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['error' => 'Không có file tải lên']);
         exit;
     }
 
-    // ==== Xử lý xóa ảnh ====
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'], $_POST['public_id'])) {
-        $publicId = $_POST['public_id'];
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $uploadUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload";
 
-        $result = (new UploadApi())->destroy($publicId);
+    $data = [
+        'upload_preset' => $upload_preset, // unsigned preset
+        'file' => new CURLFile($fileTmpPath)
+    ];
 
-        if ($result['result'] === 'ok') {
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Không thể xóa ảnh.']);
-        }
-        exit;
-    }
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $uploadUrl,
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS => $data
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-    echo json_encode(['status' => 'error', 'message' => 'Yêu cầu không hợp lệ.']);
-} catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo $response; // Cloudinary trả JSON về cho JS
+    exit;
 }
+
+if ($action === 'delete') {
+    $publicId = $_POST['public_id'] ?? '';
+    if (!$publicId) {
+        echo json_encode(['error' => 'Thiếu public_id']);
+        exit;
+    }
+
+    $deleteUrl = "https://api.cloudinary.com/v1_1/{$cloud_name}/resources/image/upload";
+
+    $data = [
+        'public_ids[]' => $publicId,
+        'invalidate'   => 'true'
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $deleteUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($ch, CURLOPT_USERPWD, "{$api_key}:{$api_secret}");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code == 200) {
+        echo json_encode(['result' => 'ok', 'cloudinary_response' => json_decode($response, true)]);
+    } else {
+        echo json_encode(['error' => "Xóa thất bại", 'status' => $http_code, 'cloudinary_response' => $response]);
+    }
+    exit;
+}
+
+// Nếu action không hợp lệ
+echo json_encode(['error' => 'Yêu cầu không hợp lệ']);
