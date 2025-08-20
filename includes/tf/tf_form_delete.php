@@ -1,15 +1,15 @@
 <?php
 require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../env/config.php';
 
-// Thông tin Cloudinary (nên để trong biến môi trường .env thay vì hardcode)
-$cloud_name     = "dbdf2gwc9"; 
-$api_key        = "451298475188791";
-$api_secret     = "e-lLavuDlEKvm3rg-Tg_P6yMM3o";
-$upload_preset  = "my_exam_preset";
+$cloud_name     = CLOUDINARY_CLOUD_NAME;
+$api_key        = CLOUDINARY_API_KEY;
+$api_secret     = CLOUDINARY_API_SECRET;
+$upload_preset  = CLOUDINARY_UPLOAD_PRESET;
 
 header('Content-Type: application/json');
 
-// Hàm lấy public_id từ URL Cloudinary
+// --- Hàm lấy public_id từ URL Cloudinary ---
 function getPublicIdFromUrl($url) {
     $path = parse_url($url, PHP_URL_PATH);
     $parts = explode('/', $path);
@@ -20,12 +20,11 @@ function getPublicIdFromUrl($url) {
     if (preg_match('/^v\d+$/', $publicParts[0])) array_shift($publicParts);
 
     $filename = array_pop($publicParts);
-    // Xoá đuôi .jpg/.png/.gif...
-    $publicId = preg_replace('/\.[^.]+$/', '', $filename);
+    $publicId = substr($filename, 0, strrpos($filename, '.'));
     return implode('/', array_merge($publicParts, [$publicId]));
 }
 
-// Hàm xoá ảnh Cloudinary
+// --- Hàm xoá ảnh Cloudinary ---
 function deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret) {
     $timestamp = time();
     $stringToSign = "public_id={$publicId}&timestamp={$timestamp}" . $api_secret;
@@ -49,7 +48,7 @@ function deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret) {
     return json_decode($res, true);
 }
 
-// Xử lý request POST
+// --- Xử lý request POST ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tf_id = filter_input(INPUT_POST, 'tf_id', FILTER_VALIDATE_INT);
 
@@ -64,18 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$tf_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Nếu có ảnh thì xoá trên Cloudinary
+        // Nếu có ảnh thì mới thử xoá trên Cloudinary
         if (!empty($row['tf_image_url'])) {
             $publicId = getPublicIdFromUrl($row['tf_image_url']);
             if ($publicId) {
                 $cloudRes = deleteCloudinaryImage($publicId, $cloud_name, $api_key, $api_secret);
                 if (!isset($cloudRes['result']) || $cloudRes['result'] !== 'ok') {
-                    error_log("⚠ Không thể xóa ảnh Cloudinary: " . json_encode($cloudRes));
+                    // Chỉ ghi log, không chặn xoá DB
+                    error_log("⚠ Không thể xoá ảnh Cloudinary: " . json_encode($cloudRes));
                 }
             }
         }
 
-        // 2. Xoá câu hỏi trong DB (luôn thực hiện)
+        // 2. Xoá câu hỏi trong DB
         $stmt = $conn->prepare("DELETE FROM tf_questions WHERE tf_id = ?");
         $stmt->execute([$tf_id]);
 
