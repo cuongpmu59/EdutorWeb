@@ -1,0 +1,47 @@
+.sa-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .toolbar-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .toolbar-btn:hover {
+    background: #0056b3;
+  }
+  
+  .sa-toolbar label {
+    font-weight: 500;
+  }
+  
+  .sa-toolbar input[type="text"], 
+  .sa-toolbar select {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 180px;
+  }
+  
