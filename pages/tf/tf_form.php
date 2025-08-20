@@ -67,7 +67,7 @@
             <div class="preview-box" id="preview-tf_question" style="display:none;"></div>
           </div>
 
-          <!-- 4 mệnh đề + Đúng/Sai <input type="text" id="tf_statement'.$i.'" name="statement'.$i.'" required>-->
+          <!-- 4 mệnh đề + Đúng/Sai -->
           <?php
           for ($i = 1; $i <= 4; $i++) {
             echo '
