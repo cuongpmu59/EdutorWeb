@@ -119,7 +119,7 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
   formData.append('tf_image_url', getVal('tf_image_url'));
 
   try {
-    const res = await fetch('../../includes/tf/tf_save.php', {
+    const res = await fetch('../../includes/tf/tf_form_save.php', {
       method: 'POST',
       body: formData
     });
