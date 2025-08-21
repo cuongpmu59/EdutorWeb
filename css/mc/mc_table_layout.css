@@ -1,9 +1,11 @@
 /* ===============================
-   Layout bảng quản lý câu hỏi
+   mc_table_layout.css
+   Layout bảng quản lý câu hỏi (#mcTable)
+   Override DataTables giữ style custom
    =============================== */
 
 /* Bảng chính */
-#mcTable {
+#mcTable.dataTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 15px;
@@ -11,49 +13,62 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   border-radius: 6px;
   overflow: hidden;
+  border: none !important;
 }
 
-/* Header */
-#mcTable thead th {
-  position: sticky;          /* cố định khi cuộn */
+/* HEADER – ép màu xanh, override mọi trạng thái */
+#mcTable.dataTable thead th,
+#mcTable.dataTable thead td,
+#mcTable.dataTable thead th.sorting,
+#mcTable.dataTable thead th.sorting_asc,
+#mcTable.dataTable thead th.sorting_desc,
+#mcTable.dataTable thead th.sorting_asc_disabled,
+#mcTable.dataTable thead th.sorting_desc_disabled {
+  position: sticky;
   top: 0;
-  z-index: 50;               /* cao hơn wrapper */
-  background: linear-gradient(135deg, #4a90e2, #357ab7);
-  color: #fff;
-  font-weight: 600;
+  z-index: 50;
+  background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
   text-align: center;
   padding: 10px 12px;
-  border-bottom: 2px solid #2f5fa1;
+  border: none !important;
+  border-bottom: 2px solid #2f5fa1 !important;
   white-space: nowrap;
   font-size: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* tạo bóng để header tách biệt */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Bo tròn góc header */
-#mcTable thead th:first-child {
-  border-top-left-radius: 6px;
-}
-#mcTable thead th:last-child {
-  border-top-right-radius: 6px;
+/* Bo góc header */
+#mcTable.dataTable thead th:first-child { border-top-left-radius: 6px; }
+#mcTable.dataTable thead th:last-child  { border-top-right-radius: 6px; }
+
+/* Sort arrow màu trắng */
+#mcTable.dataTable thead th:before,
+#mcTable.dataTable thead th:after {
+  color: #fff !important;
+  opacity: 0.8;
 }
 
-/* Hàng dữ liệu */
-#mcTable tbody td {
+/* BODY */
+#mcTable.dataTable tbody th,
+#mcTable.dataTable tbody td {
+  border: none !important;
   padding: 8px 12px;
   border-bottom: 1px solid #e6e6e6;
   vertical-align: middle;
 }
 
-/* Cột câu hỏi (giới hạn chiều rộng, ellipsis) */
-#mcTable td.mc-question-cell {
+/* Cột câu hỏi */
+#mcTable.dataTable td.mc-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Ảnh minh họa trong bảng */
-#mcTable td img {
+/* Ảnh minh họa */
+#mcTable.dataTable td img {
   max-width: 80px;
   height: auto;
   border-radius: 4px;
@@ -62,39 +77,31 @@
   border: 1px solid #eee;
   transition: transform 0.2s ease-in-out;
 }
-#mcTable td img:hover {
+#mcTable.dataTable td img:hover {
   transform: scale(1.8);
   z-index: 1000;
   position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-/* Zebra striping */
-#mcTable tbody tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-/* Hover row */
-#mcTable tbody tr:hover {
-  background-color: #f2f8ff;
+/* Zebra striping + hover */
+#mcTable.dataTable tbody tr:nth-child(even) { background: #f9f9f9; }
+#mcTable.dataTable tbody tr:nth-child(odd)  { background: #fff; }
+#mcTable.dataTable tbody tr:hover {
+  background: #f2f8ff !important;
   transition: background 0.2s;
   cursor: pointer;
 }
 
-/* DataTables wrapper để sticky hoạt động */
+/* Wrapper */
 .dataTables_wrapper {
   width: 100%;
   overflow-x: auto;
-  position: relative; /* để header sticky hiển thị đúng */
+  position: relative;
   z-index: 1;
 }
 
-/* Ẩn search box mặc định DataTables */
-.dataTables_filter {
-  display: none !important;
-}
-
-/* Ẩn các nút mặc định Excel/Print của DataTables */
+/* Ẩn search + Excel/Print */
+.dataTables_filter { display: none !important; }
 button.dt-button.buttons-excel,
-button.dt-button.buttons-print {
-  display: none !important;
-}
+button.dt-button.buttons-print { display: none !important; }
