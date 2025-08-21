@@ -171,7 +171,9 @@
         $('#mc_preview_image').hide().attr('src', '');
         $('#mc_image_url').val('');
       }
-
+      // 👉 cập nhật lại toàn bộ preview sau khi fill form
+        previewFields.forEach(({ id }) => updatePreview(id));
+        updateFullPreview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
