@@ -23,21 +23,6 @@ window.MathJax = {
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/tf/tf_table_toolbar.css">
 <link rel="stylesheet" href="../../css/tf/tf_table_layout.css">
-
-<style>
-#tfTable td.tf-question-cell {
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-#tfTable img {
-  max-width: 80px;
-  height: auto;
-}
-.dataTables_filter { display: none; } /* Ẩn search mặc định */
-.dt-hidden { display: none; }         /* Ẩn nút gốc, chỉ trigger thủ công */
-</style>
 </head>
 <body>
 
