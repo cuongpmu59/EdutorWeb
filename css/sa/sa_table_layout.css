@@ -1,6 +1,6 @@
 /* ===============================
    Layout bảng quản lý câu hỏi (#saTable)
-   Override DataTables để giữ style custom
+   Override DataTables giữ style custom
    =============================== */
 
 /* Bảng chính */
@@ -24,12 +24,12 @@ table#saTable.dataTable thead td {
   color: inherit !important;
 }
 
-/* Header custom */
+/* Header custom (màu cố định: Blue) */
 table#saTable.dataTable thead th {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
+  background: linear-gradient(135deg, #4a90e2, #357ab7) !important; /* màu cố định */
   color: #fff !important;
   font-weight: 600;
   text-align: center;
