@@ -20,6 +20,9 @@ window.MathJax = {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
@@ -74,6 +77,9 @@ window.MathJax = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
 $(function () {
   const table = $('#mcTable').DataTable({
@@ -123,6 +129,14 @@ $(function () {
   $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
   $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
+  // Toastr config mặc định
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: "3000"
+  };
+
   // Nhập Excel
   $('#importExcelInput').on('change', function(e){
     const file = e.target.files[0];
@@ -133,10 +147,10 @@ $(function () {
       const workbook = XLSX.read(data,{type:'array'});
       const sheetName = workbook.SheetNames[0];
       const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{defval:''});
-      if(!worksheet.length){ alert('File Excel rỗng!'); return; }
+      if(!worksheet.length){ toastr.warning('📂 File Excel rỗng!'); return; }
       $.post('../../includes/mc/mc_table_import_excel.php',{rows:JSON.stringify(worksheet)})
-       .done(()=>{ alert('📥 Nhập dữ liệu thành công!'); table.ajax.reload(); })
-       .fail(()=>{ alert('❌ Lỗi khi nhập Excel'); });
+       .done(()=>{ toastr.success('📥 Nhập dữ liệu thành công!'); table.ajax.reload(); })
+       .fail(()=>{ toastr.error('❌ Lỗi khi nhập Excel'); });
     };
     reader.readAsArrayBuffer(file);
   });
