@@ -31,6 +31,11 @@
   color: #222;
 }
 
+/* Ảnh minh họa trong preview */
+.preview-image {
+  margin: 12px 0;
+  text-align: center;
+}
 .preview-image img {
   max-width: 100%;
   max-height: 200px; /* ❗ Giới hạn chiều cao ảnh */
@@ -39,6 +44,35 @@
   object-fit: contain;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+/* Danh sách đáp án */
+.answers-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.answer-item {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f4f4f4;
+  min-width: 80px; /* để các item không bị quá hẹp */
+  word-break: break-word; /* xuống dòng nếu text dài */
+}
+
+.correct-answer {
+  border: 2px solid #4caf50;
+  background: #eaffea;
+  font-weight: bold;
+}
+
+/* Danh sách tùy chọn preview */
+.preview-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 .preview-options li {
   margin: 6px 0;
