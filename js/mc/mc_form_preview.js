@@ -94,19 +94,22 @@ function setupFullPreviewToggle() {
   const btn = document.getElementById('mcTogglePreview');
   const zone = document.getElementById('mcPreview');
 
-  if (btn && zone) {
-    btn.addEventListener('click', () => {
-      const isVisible = window.getComputedStyle(zone).display !== 'none';
+  if (!btn || !zone) return;
 
-      if (isVisible) {
-        zone.style.display = 'none';
-      } else {
-        zone.style.display = 'flex';  // hoặc 'block' tùy layout CSS
-        updateFullPreview();
-      }
-    });
-  }
+  btn.addEventListener('click', () => {
+    const isVisible = window.getComputedStyle(zone).display !== 'none';
+
+    if (isVisible) {
+      zone.style.display = 'none';
+      btn.classList.remove('active'); // (tùy CSS bạn có muốn highlight nút hay ko)
+    } else {
+      zone.style.display = 'flex';  // hoặc 'block' tùy layout CSS
+      btn.classList.add('active');
+      updateFullPreview(); // cập nhật nội dung mỗi khi mở
+    }
+  });
 }
+
 
 // Khởi tạo tất cả khi DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
