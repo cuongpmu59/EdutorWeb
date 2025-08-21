@@ -149,34 +149,50 @@
   });
   </script>
 
-  <script>
-    // Nhận dữ liệu từ iframe DataTable để fill form
-    window.addEventListener('message', function (event) {
-      const { type, data } = event.data || {};
-      if (type !== 'fill-form' || !data) return;
+<script>
+  // Nhận dữ liệu từ iframe DataTable để fill form
+  window.addEventListener('message', function (event) {
+    const { type, data } = event.data || {};
+    if (type !== 'fill-form' || !data) return;
 
-      $('#mc_id').val(data.mc_id || '');
-      $('#mc_topic').val(data.mc_topic || '');
-      $('#mc_question').val(data.mc_question || '');
-      $('#mc_answer1').val(data.mc_answer1 || '');
-      $('#mc_answer2').val(data.mc_answer2 || '');
-      $('#mc_answer3').val(data.mc_answer3 || '');
-      $('#mc_answer4').val(data.mc_answer4 || '');
-      $('#mc_correct_answer').val(data.mc_correct_answer || '');
+    $('#mc_id').val(data.mc_id || '');
+    $('#mc_topic').val(data.mc_topic || '');
+    $('#mc_question').val(data.mc_question || '');
+    $('#mc_answer1').val(data.mc_answer1 || '');
+    $('#mc_answer2').val(data.mc_answer2 || '');
+    $('#mc_answer3').val(data.mc_answer3 || '');
+    $('#mc_answer4').val(data.mc_answer4 || '');
+    $('#mc_correct_answer').val(data.mc_correct_answer || '');
 
-      if (data.mc_image_url) {
-        $('#mc_preview_image').attr('src', data.mc_image_url).show();
-        $('#mc_image_url').val(data.mc_image_url);
-      } else {
-        $('#mc_preview_image').hide().attr('src', '');
-        $('#mc_image_url').val('');
-      }
-      // 👉 cập nhật lại toàn bộ preview sau khi fill form
-        previewFields.forEach(({ id }) => updatePreview(id));
+    if (data.mc_image_url) {
+      $('#mc_preview_image').attr('src', data.mc_image_url).show();
+      $('#mc_image_url').val(data.mc_image_url);
+    } else {
+      $('#mc_preview_image').hide().attr('src', '');
+      $('#mc_image_url').val('');
+    }
+
+    // 👉 cập nhật lại các preview field
+    if (typeof previewFields !== 'undefined') {
+      previewFields.forEach(({ id }) => {
+        if (typeof updatePreview === 'function') {
+          updatePreview(id);
+        }
+      });
+    }
+
+    // 👉 chỉ update full preview nếu đang hiển thị
+    const fullPreviewZone = document.getElementById('mcPreview');
+    if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
+      if (typeof updateFullPreview === 'function') {
         updateFullPreview();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
   
 </body>
 </html>
