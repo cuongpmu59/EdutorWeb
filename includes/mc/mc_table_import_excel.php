@@ -12,16 +12,29 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-// Nhận dữ liệu từ $_POST['rows']
-$data = [];
-if (isset($_POST['rows'])) {
-    $data = json_decode($_POST['rows'], true);
+// === Nhận dữ liệu từ FormData ===
+if (!isset($_POST['rows'])) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Không tìm thấy dữ liệu rows trong request.'
+    ]);
+    exit;
+}
+
+$data = json_decode($_POST['rows'], true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Dữ liệu JSON không hợp lệ: ' . json_last_error_msg()
+    ]);
+    exit;
 }
 
 if (!is_array($data) || empty($data)) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Dữ liệu không hợp lệ hoặc rỗng.'
+        'message' => 'Dữ liệu trống hoặc không đúng định dạng.'
     ]);
     exit;
 }
@@ -38,9 +51,7 @@ $mapping = [
     'mc_image_url'      => ['mc_image_url', 'image', 'ảnh', 'hình ảnh']
 ];
 
-/**
- * Hàm tìm value theo mapping
- */
+// Hàm tìm value theo mapping
 function mapValue($row, $candidates) {
     foreach ($candidates as $key) {
         foreach ($row as $colName => $val) {
@@ -49,14 +60,13 @@ function mapValue($row, $candidates) {
             }
         }
     }
-    return ''; // Nếu không thấy thì trả về rỗng
+    return '';
 }
 
 $inserted = 0;
 $errors = [];
 
 foreach ($data as $rowIndex => $row) {
-    // Lấy dữ liệu theo mapping
     $mc_topic          = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_topic'])));
     $mc_question       = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_question'])));
     $mc_answer1        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer1'])));
