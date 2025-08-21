@@ -90,26 +90,47 @@ function setupPreviewToggle() {
 }
 
 // Thiết lập toggle xem trước toàn bộ
-function setupFullPreviewToggle() {
-  const btn = document.getElementById('mcTogglePreview');
-  const zone = document.getElementById('mcPreview');
+function updateFullPreview() {
+  const topic = document.getElementById('mc_topic')?.value.trim() || '';
+  const answerSelect = document.getElementById('mc_correct_answer');
+  const correct = answerSelect ? answerSelect.value : '';
 
-  if (!btn || !zone) return;
+  let html = `<p><strong>Chủ đề:</strong> ${topic}</p>`;
 
-  btn.addEventListener('click', () => {
-    const isVisible = window.getComputedStyle(zone).display !== 'none';
+  // Câu hỏi
+  const question = document.getElementById('mc_question')?.value.trim() || '';
+  html += `<p><strong>Câu hỏi:</strong> ${question}</p>`;
 
-    if (isVisible) {
-      zone.style.display = 'none';
-      btn.classList.remove('active'); // (tùy CSS bạn có muốn highlight nút hay ko)
-    } else {
-      zone.style.display = 'flex';  // hoặc 'block' tùy layout CSS
-      btn.classList.add('active');
-      updateFullPreview(); // cập nhật nội dung mỗi khi mở
+  // Ảnh minh họa (nếu có) -> ngay sau câu hỏi
+  const imageUrl = document.getElementById('mc_image_url')?.value;
+  if (imageUrl) {
+    html += `<div class="preview-image">
+      <img src="${imageUrl}" alt="Ảnh minh họa">
+    </div>`;
+  }
+
+  // Các đáp án hiển thị cùng 1 hàng, tự xuống nếu dài
+  html += `<div class="answers-row">`;
+  previewFields
+    .filter(f => f.id !== 'mc_question')
+    .forEach(({ id, label }) => {
+      const value = document.getElementById(id)?.value.trim() || '';
+      const isCorrect = (correct === label); // ví dụ correct = "A"
+      html += `
+        <div class="answer-item ${isCorrect ? 'correct-answer' : ''}">
+          <strong>${label}.</strong> ${value}
+        </div>`;
+    });
+  html += `</div>`;
+
+  const fullPreviewEl = document.getElementById('mcPreviewContent');
+  if (fullPreviewEl) {
+    fullPreviewEl.innerHTML = html;
+    if (window.MathJax) {
+      MathJax.typesetPromise([fullPreviewEl]);
     }
-  });
+  }
 }
-
 
 // Khởi tạo tất cả khi DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
