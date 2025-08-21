@@ -24,7 +24,7 @@ window.MathJax = {
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
 
-<style>
+<!-- <style>
 /* Chỉ giữ lại phần cần inline */
 #mcTable td.mc-question-cell {
   max-width: 300px;
@@ -38,7 +38,7 @@ window.MathJax = {
 }
 .dataTables_filter { display: none; } /* Ẩn search mặc định */
 .dt-hidden { display: none; }         /* Ẩn nút gốc, chỉ trigger thủ công */
-</style>
+</style> -->
 </head>
 <body>
 
