@@ -1,32 +1,38 @@
 // js/mc/mc_table_arrow_key.js
-
 let selectedRowIndex = null;
 
 $(document).ready(function () {
   const table = $('#mcTable').DataTable();
 
-  // --- Xử lý phím lên/xuống ---
+  // Reset highlight khi redraw
+  table.on('draw', function () {
+    selectedRowIndex = null;
+    $('#mcTable tbody tr').removeClass('selected');
+  });
+
+  // --- Xử lý phím lên/xuống/enter ---
   $(document).on('keydown', function (e) {
     const rows = table.rows({ search: 'applied' }).nodes();
     if (!rows.length) return;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (selectedRowIndex === null || selectedRowIndex >= rows.length - 1) {
-        selectedRowIndex = 0;
-      } else {
-        selectedRowIndex++;
-      }
+      selectedRowIndex = (selectedRowIndex === null || selectedRowIndex >= rows.length - 1)
+        ? 0
+        : selectedRowIndex + 1;
       highlightAndSend(rows, selectedRowIndex, table);
     }
 
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (selectedRowIndex === null || selectedRowIndex <= 0) {
-        selectedRowIndex = rows.length - 1;
-      } else {
-        selectedRowIndex--;
-      }
+      selectedRowIndex = (selectedRowIndex === null || selectedRowIndex <= 0)
+        ? rows.length - 1
+        : selectedRowIndex - 1;
+      highlightAndSend(rows, selectedRowIndex, table);
+    }
+
+    if (e.key === 'Enter' && selectedRowIndex !== null) {
+      e.preventDefault();
       highlightAndSend(rows, selectedRowIndex, table);
     }
   });
@@ -41,14 +47,9 @@ $(document).ready(function () {
 
 // --- Hàm tô sáng dòng và gửi dữ liệu về form ---
 function highlightAndSend(rows, index, table) {
-  // Xóa highlight ở tất cả các dòng
-  $(rows).removeClass('selected');
+  $(rows).removeClass('selected'); // clear highlight
+  const selectedRow = $(rows).eq(index).addClass('selected');
 
-  // Tô sáng dòng đang chọn
-  const selectedRow = $(rows).eq(index);
-  selectedRow.addClass('selected');
-
-  // Lấy dữ liệu dòng
   const rowData = table.row(index).data();
   if (rowData) {
     const message = {
@@ -65,8 +66,6 @@ function highlightAndSend(rows, index, table) {
         mc_image_url: rowData.mc_image_url || ''
       }
     };
-
-    // Gửi dữ liệu sang form cha mc_form.php
     window.parent.postMessage(message, '*');
   }
 }
