@@ -1,4 +1,5 @@
 /* ===============================
+   sa_table_layout.css
    Layout bảng quản lý câu hỏi (#saTable)
    Override DataTables giữ style custom
    =============================== */
@@ -15,15 +16,20 @@
   border: none !important;
 }
 
-/* HEADER */
+/* HEADER – ép màu xanh, override mọi trạng thái */
 #saTable.dataTable thead th,
-#saTable.dataTable thead td {
+#saTable.dataTable thead td,
+#saTable.dataTable thead th.sorting,
+#saTable.dataTable thead th.sorting_asc,
+#saTable.dataTable thead th.sorting_desc,
+#saTable.dataTable thead th.sorting_asc_disabled,
+#saTable.dataTable thead th.sorting_desc_disabled {
   position: sticky;
   top: 0;
   z-index: 50;
   background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
   color: #fff !important;
-  font-weight: 600;
+  font-weight: 600 !important;
   text-align: center;
   padding: 10px 12px;
   border: none !important;
