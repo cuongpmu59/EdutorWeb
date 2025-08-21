@@ -21,23 +21,9 @@ window.MathJax = {
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
 <!-- Custom CSS -->
-<link rel="stylesheet" href="../../css/sa/sa_table_toolbar.css">
 <link rel="stylesheet" href="../../css/sa/sa_table_layout.css">
+<link rel="stylesheet" href="../../css/sa/sa_table_toolbar.css">
 
-<style>
-#saTable td.sa-question-cell {
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-#saTable img {
-  max-width: 80px;
-  height: auto;
-}
-.dataTables_filter { display: none; }
-.dt-hidden { display: none; }
-</style>
 </head>
 <body>
 
