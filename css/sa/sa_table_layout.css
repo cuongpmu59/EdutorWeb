@@ -1,101 +1,125 @@
 /* ===============================
-   Layout bảng quản lý câu hỏi
+   Layout bảng quản lý câu hỏi (#saTable)
+   Override DataTables để giữ style custom
    =============================== */
 
 /* Bảng chính */
-#saTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  
-  /* Header */
-  #saTable thead th {
-    position: sticky;          /* cố định khi cuộn */
-    top: 0;
-    z-index: 50;               /* cao hơn wrapper */
-    background: linear-gradient(135deg, #4a90e2, #357ab7);
-    color: #fff;
-    font-weight: 600;
-    text-align: center;
-    padding: 10px 12px;
-    border-bottom: 2px solid #2f5fa1;
-    white-space: nowrap;
-    font-size: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* tạo bóng để header tách biệt */
-  }
-  
-  /* Bo tròn góc header */
-  #saTable thead th:first-child {
-    border-top-left-radius: 6px;
-  }
-  #saTable thead th:last-child {
-    border-top-right-radius: 6px;
-  }
-  
-  /* Hàng dữ liệu */
-  #saTable tbody td {
-    padding: 8px 12px;
-    border-bottom: 1px solid #e6e6e6;
-    vertical-align: middle;
-  }
-  
-  /* Cột câu hỏi (giới hạn chiều rộng, ellipsis) */
-  #saTable td.sa-question-cell {
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Ảnh minh họa trong bảng */
-  #saTable td img {
-    max-width: 80px;
-    height: auto;
-    border-radius: 4px;
-    display: block;
-    margin: 0 auto;
-    border: 1px solid #eee;
-    transition: transform 0.2s ease-in-out;
-  }
-  #saTable td img:hover {
-    transform: scale(1.8);
-    z-index: 1000;
-    position: relative;
-  }
-  
-  /* Zebra striping */
-  #saTable tbody tr:nth-child(even) {
-    background: #f9f9f9;
-  }
-  
-  /* Hover row */
-  #saTable tbody tr:hover {
-    background-color: #f2f8ff;
-    transition: background 0.2s;
-    cursor: pointer;
-  }
-  
-  /* DataTables wrapper để sticky hoạt động */
-  .dataTables_wrapper {
-    width: 100%;
-    overflow-x: auto;
-    position: relative; /* để header sticky hiển thị đúng */
-    z-index: 1;
-  }
-  
-  /* Ẩn search box mặc định DataTables */
-  .dataTables_filter {
-    display: none !important;
-  }
-  
-  /* Ẩn các nút mặc định Excel/Print của DataTables */
-  button.dt-button.buttons-excel,
-  button.dt-button.buttons-print {
-    display: none !important;
-  }
-  
+table#saTable.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  border: none; /* xóa border mặc định DataTables */
+}
+
+/* Reset mặc định DataTables header */
+table#saTable.dataTable thead th,
+table#saTable.dataTable thead td {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+/* Header custom */
+table#saTable.dataTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
+  color: #fff !important;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 12px;
+  border-bottom: 2px solid #2f5fa1;
+  white-space: nowrap;
+  font-size: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Bo góc cho header */
+table#saTable.dataTable thead th:first-child {
+  border-top-left-radius: 6px;
+}
+table#saTable.dataTable thead th:last-child {
+  border-top-right-radius: 6px;
+}
+
+/* Reset tbody mặc định DataTables */
+table#saTable.dataTable tbody tr.odd,
+table#saTable.dataTable tbody tr.even {
+  background-color: transparent !important;
+}
+table#saTable.dataTable tbody th,
+table#saTable.dataTable tbody td {
+  border: none !important;
+}
+
+/* Hàng dữ liệu */
+table#saTable.dataTable tbody td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e6e6e6;
+  vertical-align: middle;
+}
+
+/* Cột câu hỏi (giới hạn chiều rộng, ellipsis) */
+table#saTable.dataTable td.sa-question-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ảnh minh họa */
+table#saTable.dataTable td img {
+  max-width: 80px;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid #eee;
+  transition: transform 0.2s ease-in-out;
+}
+table#saTable.dataTable td img:hover {
+  transform: scale(1.8);
+  z-index: 1000;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* Zebra striping custom */
+table#saTable.dataTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+table#saTable.dataTable tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+/* Hover row custom */
+table#saTable.dataTable tbody tr:hover {
+  background-color: #f2f8ff !important;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+/* DataTables wrapper để sticky header hoạt động */
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ẩn search box mặc định DataTables */
+.dataTables_filter {
+  display: none !important;
+}
+
+/* Ẩn nút Excel/Print mặc định DataTables */
+button.dt-button.buttons-excel,
+button.dt-button.buttons-print {
+  display: none !important;
+}
