@@ -12,11 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-// Nhận dữ liệu JSON
-$rawData = file_get_contents('php://input');
-$data = json_decode($rawData, true);
-
-if (!is_array($data) || empty($data)) {
+// Lấy dữ liệu từ POST
+$rows = isset($_POST['rows']) ? json_decode($_POST['rows'], true) : null;
+if (!is_array($rows) || empty($rows)) {
     echo json_encode([
         'status' => 'error',
         'message' => 'Dữ liệu không hợp lệ hoặc rỗng.'
@@ -36,59 +34,62 @@ $mapping = [
     'mc_image_url'      => ['mc_image_url', 'image', 'ảnh', 'hình ảnh']
 ];
 
-/**
- * Hàm tìm value theo mapping
- */
 function mapValue($row, $candidates) {
     foreach ($candidates as $key) {
         foreach ($row as $colName => $val) {
             if (mb_strtolower(trim($colName)) === mb_strtolower(trim($key))) {
-                return $val;
+                return trim($val);
             }
         }
     }
-    return ''; // Nếu không thấy thì trả về rỗng
+    return '';
 }
 
 $inserted = 0;
-$errors = [];
+$errors   = [];
 
-foreach ($data as $rowIndex => $row) {
-    // Lấy dữ liệu theo mapping
-    $mc_topic          = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_topic'])));
-    $mc_question       = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_question'])));
-    $mc_answer1        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer1'])));
-    $mc_answer2        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer2'])));
-    $mc_answer3        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer3'])));
-    $mc_answer4        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer4'])));
-    $mc_correct_answer = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_correct_answer'])));
-    $mc_image_url      = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_image_url'])));
+$stmt = $conn->prepare("
+    INSERT INTO multiple_choice (
+        mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4,
+        mc_correct_answer, mc_image_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+");
 
-    // Bắt buộc phải có topic và question
+foreach ($rows as $i => $row) {
+    $mc_topic          = mapValue($row, $mapping['mc_topic']);
+    $mc_question       = mapValue($row, $mapping['mc_question']);
+    $mc_answer1        = mapValue($row, $mapping['mc_answer1']);
+    $mc_answer2        = mapValue($row, $mapping['mc_answer2']);
+    $mc_answer3        = mapValue($row, $mapping['mc_answer3']);
+    $mc_answer4        = mapValue($row, $mapping['mc_answer4']);
+    $mc_correct_answer = mapValue($row, $mapping['mc_correct_answer']);
+    $mc_image_url      = mapValue($row, $mapping['mc_image_url']);
+
     if (empty($mc_topic) || empty($mc_question)) {
-        $errors[] = "Dòng " . ($rowIndex+1) . " thiếu dữ liệu bắt buộc (topic/question).";
+        $errors[] = "Dòng " . ($i+1) . " thiếu dữ liệu bắt buộc (topic/question).";
         continue;
     }
 
-    $sql = "
-        INSERT INTO multiple_choice (
-            mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4,
-            mc_correct_answer, mc_image_url
-        ) VALUES (
-            '$mc_topic', '$mc_question', '$mc_answer1', '$mc_answer2', '$mc_answer3', '$mc_answer4',
-            '$mc_correct_answer', '$mc_image_url'
-        )
-    ";
+    $stmt->bind_param(
+        'ssssssss',
+        $mc_topic, $mc_question,
+        $mc_answer1, $mc_answer2, $mc_answer3, $mc_answer4,
+        $mc_correct_answer, $mc_image_url
+    );
 
-    if (mysqli_query($conn, $sql)) {
+    if ($stmt->execute()) {
         $inserted++;
     } else {
-        $errors[] = "Lỗi dòng " . ($rowIndex+1) . ": " . mysqli_error($conn);
+        $errors[] = "Lỗi dòng " . ($i+1) . ": " . $stmt->error;
     }
 }
+
+$stmt->close();
+$conn->close();
 
 echo json_encode([
     'status'   => 'success',
     'inserted' => $inserted,
-    'errors'   => $errors
+    'errors'   => $errors,
+    'message'  => "Đã nhập thành công {$inserted} dòng."
 ]);
