@@ -123,3 +123,44 @@ button.dt-button.buttons-excel,
 button.dt-button.buttons-print {
   display: none !important;
 }
+
+/* ===============================
+   OVERRIDE FULL DATATABLES HEADER
+   =============================== */
+
+/* Áp dụng cho tất cả trạng thái */
+table#saTable.dataTable thead th,
+table#saTable.dataTable thead th.sorting,
+table#saTable.dataTable thead th.sorting_asc,
+table#saTable.dataTable thead th.sorting_desc,
+table#saTable.dataTable thead th.sorting_asc_disabled,
+table#saTable.dataTable thead th.sorting_desc_disabled {
+  background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  text-align: center;
+  padding: 10px 12px;
+  border-bottom: 2px solid #2f5fa1 !important;
+  white-space: nowrap;
+  font-size: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Bo tròn hai góc header */
+table#saTable.dataTable thead th:first-child {
+  border-top-left-radius: 6px;
+}
+table#saTable.dataTable thead th:last-child {
+  border-top-right-radius: 6px;
+}
+
+/* Loại bỏ mũi tên sort mặc định nếu muốn */
+table#saTable.dataTable thead th.sorting:before,
+table#saTable.dataTable thead th.sorting:after,
+table#saTable.dataTable thead th.sorting_asc:before,
+table#saTable.dataTable thead th.sorting_asc:after,
+table#saTable.dataTable thead th.sorting_desc:before,
+table#saTable.dataTable thead th.sorting_desc:after {
+  color: #fff !important;    /* đổi màu mũi tên thành trắng */
+  opacity: 0.8;
+}
