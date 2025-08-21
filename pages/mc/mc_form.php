@@ -151,31 +151,39 @@
 
   <script>
     // Nhận dữ liệu từ iframe DataTable để fill form
-    window.addEventListener('message', function (event) {
-      const { type, data } = event.data || {};
-      if (type !== 'fill-form' || !data) return;
+    // js/mc/mc_form_listener.js
+  window.addEventListener('message', function(event) {
+  if (event.data.type === 'fill-form') {
+    const d = event.data.data;
 
-      $('#mc_id').val(data.mc_id || '');
-      $('#mc_topic').val(data.mc_topic || '');
-      $('#mc_question').val(data.mc_question || '');
-      $('#mc_answer1').val(data.mc_answer1 || '');
-      $('#mc_answer2').val(data.mc_answer2 || '');
-      $('#mc_answer3').val(data.mc_answer3 || '');
-      $('#mc_answer4').val(data.mc_answer4 || '');
-      $('#mc_correct_answer').val(data.mc_correct_answer || '');
+    // Gán vào input
+    document.querySelector('[name="mc_id"]').value = d.mc_id || '';
+    document.querySelector('[name="mc_topic"]').value = d.mc_topic || '';
+    document.querySelector('[name="mc_question"]').value = d.mc_question || '';
+    document.querySelector('[name="mc_answer1"]').value = d.mc_answer1 || '';
+    document.querySelector('[name="mc_answer2"]').value = d.mc_answer2 || '';
+    document.querySelector('[name="mc_answer3"]').value = d.mc_answer3 || '';
+    document.querySelector('[name="mc_answer4"]').value = d.mc_answer4 || '';
+    document.querySelector('[name="mc_correct_answer"]').value = d.mc_correct_answer || '';
 
-      if (data.mc_image_url) {
-        $('#mc_preview_image').attr('src', data.mc_image_url).show();
-        $('#mc_image_url').val(data.mc_image_url);
+    // Xử lý preview ảnh (nếu có)
+    const img = document.getElementById('mc_preview_image');
+    if (img) {
+      if (d.mc_image_url) {
+        img.src = d.mc_image_url;
+        img.style.display = 'block';
       } else {
-        $('#mc_preview_image').hide().attr('src', '');
-        $('#mc_image_url').val('');
+        img.src = '';
+        img.style.display = 'none';
       }
-      // 👉 cập nhật lại toàn bộ preview sau khi fill form
-        previewFields.forEach(({ id }) => updatePreview(id));
-        updateFullPreview();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    }
+
+    // Gọi lại hàm preview toggle (nếu bạn có file mc_form_preview.js)
+    if (typeof updatePreview === 'function') {
+      updatePreview();
+    }
+    }
+  });
   </script>
   
 </body>
