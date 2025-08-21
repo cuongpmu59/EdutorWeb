@@ -2,7 +2,6 @@
 // mc_table_import_excel.php
 header('Content-Type: application/json; charset=utf-8');
 
-// Chỉ chấp nhận POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'status' => 'error',
@@ -11,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Kết nối CSDL
 require_once __DIR__ . '/../../includes/db_connection.php';
 
 // Nhận dữ liệu JSON
@@ -26,27 +24,52 @@ if (!is_array($data) || empty($data)) {
     exit;
 }
 
+// Mapping tiêu đề Excel → cột DB
+$mapping = [
+    'mc_topic'          => ['mc_topic', 'topic', 'chủ đề'],
+    'mc_question'       => ['mc_question', 'question', 'câu hỏi'],
+    'mc_answer1'        => ['mc_answer1', 'answer1', 'đáp án 1'],
+    'mc_answer2'        => ['mc_answer2', 'answer2', 'đáp án 2'],
+    'mc_answer3'        => ['mc_answer3', 'answer3', 'đáp án 3'],
+    'mc_answer4'        => ['mc_answer4', 'answer4', 'đáp án 4'],
+    'mc_correct_answer' => ['mc_correct_answer', 'correct', 'đáp án đúng'],
+    'mc_image_url'      => ['mc_image_url', 'image', 'ảnh', 'hình ảnh']
+];
+
+/**
+ * Hàm tìm value theo mapping
+ */
+function mapValue($row, $candidates) {
+    foreach ($candidates as $key) {
+        foreach ($row as $colName => $val) {
+            if (mb_strtolower(trim($colName)) === mb_strtolower(trim($key))) {
+                return $val;
+            }
+        }
+    }
+    return ''; // Nếu không thấy thì trả về rỗng
+}
+
 $inserted = 0;
 $errors = [];
 
 foreach ($data as $rowIndex => $row) {
-    // Kiểm tra cột bắt buộc
-    if (empty($row['mc_topic']) || empty($row['mc_question'])) {
-        $errors[] = "Dòng " . ($rowIndex + 1) . " thiếu dữ liệu bắt buộc.";
+    // Lấy dữ liệu theo mapping
+    $mc_topic          = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_topic'])));
+    $mc_question       = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_question'])));
+    $mc_answer1        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer1'])));
+    $mc_answer2        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer2'])));
+    $mc_answer3        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer3'])));
+    $mc_answer4        = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_answer4'])));
+    $mc_correct_answer = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_correct_answer'])));
+    $mc_image_url      = mysqli_real_escape_string($conn, trim(mapValue($row, $mapping['mc_image_url'])));
+
+    // Bắt buộc phải có topic và question
+    if (empty($mc_topic) || empty($mc_question)) {
+        $errors[] = "Dòng " . ($rowIndex+1) . " thiếu dữ liệu bắt buộc (topic/question).";
         continue;
     }
 
-    // Lấy dữ liệu, tránh lỗi SQL injection
-    $mc_topic          = mysqli_real_escape_string($conn, trim($row['mc_topic']));
-    $mc_question       = mysqli_real_escape_string($conn, trim($row['mc_question']));
-    $mc_answer1        = mysqli_real_escape_string($conn, trim($row['mc_answer1'] ?? ''));
-    $mc_answer2        = mysqli_real_escape_string($conn, trim($row['mc_answer2'] ?? ''));
-    $mc_answer3        = mysqli_real_escape_string($conn, trim($row['mc_answer3'] ?? ''));
-    $mc_answer4        = mysqli_real_escape_string($conn, trim($row['mc_answer4'] ?? ''));
-    $mc_correct_answer = mysqli_real_escape_string($conn, trim($row['mc_correct_answer'] ?? ''));
-    $mc_image_url      = mysqli_real_escape_string($conn, trim($row['mc_image_url'] ?? ''));
-
-    // Câu lệnh INSERT
     $sql = "
         INSERT INTO multiple_choice (
             mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4,
@@ -60,12 +83,12 @@ foreach ($data as $rowIndex => $row) {
     if (mysqli_query($conn, $sql)) {
         $inserted++;
     } else {
-        $errors[] = "Lỗi dòng " . ($rowIndex + 1) . ": " . mysqli_error($conn);
+        $errors[] = "Lỗi dòng " . ($rowIndex+1) . ": " . mysqli_error($conn);
     }
 }
 
 echo json_encode([
-    'status' => 'success',
+    'status'   => 'success',
     'inserted' => $inserted,
-    'errors' => $errors
+    'errors'   => $errors
 ]);
