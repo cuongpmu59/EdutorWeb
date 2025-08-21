@@ -4,7 +4,7 @@
    =============================== */
 
 /* Bảng chính */
-table#saTable.dataTable {
+#saTable.dataTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 15px;
@@ -12,17 +12,20 @@ table#saTable.dataTable {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   border-radius: 6px;
   overflow: hidden;
-  border: none; /* xóa border mặc định */
+  border: none !important; /* xóa border mặc định */
 }
 
-/* Header custom (reset + style) */
-table#saTable.dataTable thead th,
-table#saTable.dataTable thead td,
-table#saTable.dataTable thead th.sorting,
-table#saTable.dataTable thead th.sorting_asc,
-table#saTable.dataTable thead th.sorting_desc,
-table#saTable.dataTable thead th.sorting_asc_disabled,
-table#saTable.dataTable thead th.sorting_desc_disabled {
+/* HEADER OVERRIDE (cố định màu Blue) */
+#saTable.dataTable thead th,
+#saTable.dataTable thead td,
+#saTable.dataTable thead th.sorting,
+#saTable.dataTable thead th.sorting_asc,
+#saTable.dataTable thead th.sorting_desc,
+#saTable.dataTable thead th.sorting_asc_disabled,
+#saTable.dataTable thead th.sorting_desc_disabled {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
   color: #fff !important;
   font-weight: 600 !important;
@@ -33,41 +36,38 @@ table#saTable.dataTable thead th.sorting_desc_disabled {
   white-space: nowrap;
   font-size: 15px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  position: sticky;
-  top: 0;
-  z-index: 50;
 }
 
-/* Bo tròn hai góc header */
-table#saTable.dataTable thead th:first-child { border-top-left-radius: 6px; }
-table#saTable.dataTable thead th:last-child { border-top-right-radius: 6px; }
+/* Bo góc header */
+#saTable.dataTable thead th:first-child {
+  border-top-left-radius: 6px;
+}
+#saTable.dataTable thead th:last-child {
+  border-top-right-radius: 6px;
+}
 
-/* Icon sort */
-table#saTable.dataTable thead th.sorting:before,
-table#saTable.dataTable thead th.sorting:after,
-table#saTable.dataTable thead th.sorting_asc:before,
-table#saTable.dataTable thead th.sorting_asc:after,
-table#saTable.dataTable thead th.sorting_desc:before,
-table#saTable.dataTable thead th.sorting_desc:after {
+/* Sort arrow màu trắng */
+#saTable.dataTable thead th:before,
+#saTable.dataTable thead th:after {
   color: #fff !important;
   opacity: 0.8;
 }
 
-/* Body reset */
-table#saTable.dataTable tbody tr.odd,
-table#saTable.dataTable tbody tr.even {
-  background: transparent !important;
+/* BODY OVERRIDE */
+#saTable.dataTable tbody tr.odd,
+#saTable.dataTable tbody tr.even {
+  background-color: transparent !important;
 }
-table#saTable.dataTable tbody td,
-table#saTable.dataTable tbody th {
+#saTable.dataTable tbody th,
+#saTable.dataTable tbody td {
   border: none !important;
   padding: 8px 12px;
   border-bottom: 1px solid #e6e6e6;
   vertical-align: middle;
 }
 
-/* Cột câu hỏi (ellipsis) */
-table#saTable.dataTable td.sa-question-cell {
+/* Cột câu hỏi */
+#saTable.dataTable td.sa-question-cell {
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
@@ -75,7 +75,7 @@ table#saTable.dataTable td.sa-question-cell {
 }
 
 /* Ảnh minh họa */
-table#saTable.dataTable td img {
+#saTable.dataTable td img {
   max-width: 80px;
   height: auto;
   border-radius: 4px;
@@ -84,7 +84,7 @@ table#saTable.dataTable td img {
   border: 1px solid #eee;
   transition: transform 0.2s ease-in-out;
 }
-table#saTable.dataTable td img:hover {
+#saTable.dataTable td img:hover {
   transform: scale(1.8);
   z-index: 1000;
   position: relative;
@@ -92,17 +92,21 @@ table#saTable.dataTable td img:hover {
 }
 
 /* Zebra striping */
-table#saTable.dataTable tbody tr:nth-child(even) { background: #f9f9f9; }
-table#saTable.dataTable tbody tr:nth-child(odd)  { background: #fff; }
+#saTable.dataTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+#saTable.dataTable tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
 
 /* Hover row */
-table#saTable.dataTable tbody tr:hover {
-  background: #f2f8ff !important;
+#saTable.dataTable tbody tr:hover {
+  background-color: #f2f8ff !important;
   transition: background 0.2s;
   cursor: pointer;
 }
 
-/* Wrapper */
+/* DataTables wrapper */
 .dataTables_wrapper {
   width: 100%;
   overflow-x: auto;
@@ -110,7 +114,13 @@ table#saTable.dataTable tbody tr:hover {
   z-index: 1;
 }
 
-/* Ẩn search + nút mặc định */
-.dataTables_filter { display: none !important; }
+/* Ẩn search box mặc định */
+.dataTables_filter {
+  display: none !important;
+}
+
+/* Ẩn nút Excel/Print */
 button.dt-button.buttons-excel,
-button.dt-button.buttons-print { display: none !important; }
+button.dt-button.buttons-print {
+  display: none !important;
+}
