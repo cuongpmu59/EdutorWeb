@@ -80,7 +80,6 @@ window.MathJax = {
 <!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- DataTable init -->
 <script>
 $(function () {
   const table = $('#mcTable').DataTable({
@@ -92,43 +91,59 @@ $(function () {
     columns: [
       { data:'mc_id' },
       { data:'mc_topic' },
-      { data:'mc_question' },
+      { data:'mc_question', className:'mc-question-cell',
+        render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length>80 ? d.substr(0,80)+'…' : d}
+                          </span>` : ''
+      },
       { data:'mc_answer1' },
       { data:'mc_answer2' },
       { data:'mc_answer3' },
       { data:'mc_answer4' },
       { data:'mc_correct_answer' },
-      { data:'mc_image_url' },
+      { data:'mc_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'mc_created_at' }
     ],
     dom: 'Brtip',
     buttons: [
-      { extend:'excelHtml5', className:'dt-hidden' },
-      { extend:'print', className:'dt-hidden' }
-    ]
+      { extend:'excelHtml5', title:'Danh sách câu hỏi', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
+    ],
+    responsive: true,
+    scrollX: true,
+    initComplete: function() {
+      $.getJSON('../../includes/mc/mc_get_topics.php', function(topics){
+        topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
+      });
+    }
   });
 
-  // Gọi MathJax khi vẽ bảng
+  // MathJax render lại mỗi khi vẽ bảng
   table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
 
-  // Filter + Search
+  // Filter + Search thủ công
   $('#filterTopic').on('change', function(){ table.column(1).search(this.value).draw(); });
   $('#customSearch').on('keyup change', function(){ table.search(this.value).draw(); });
 
-  // Xuất Excel + Print
+  // Xuất Excel + Print trigger thủ công
   $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
   $('#btnPrint').on('click', ()=>table.button(1).trigger());
-});
-</script>
 
-<!-- File import Excel riêng -->
-<script src="../../js/mc/mc_table_import_excel.js"></script>
-<script>
-  $(function () {
-    const table = $('#mcTable').DataTable();
-    importExcel('#importExcelInput', table);
-  });
-</script>
+  // Toastr config mặc định
+  toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: "3000"
+  };
+
+  <script src="../../js/mc/mc_table_import_excel.js"></script>
+  <script>
+    $(function () {
+      const table = $('#mcTable').DataTable({ ... });
+      importExcel('#importExcelInput', table);
+    });
+  </script>
 
 
   // // Nhập Excel
