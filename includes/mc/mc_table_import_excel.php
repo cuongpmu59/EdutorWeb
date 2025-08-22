@@ -1,8 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once '../../includes/db_connection.php';
+require_once '../../includes/db_connection.php'; // Cập nhật đường dẫn DB
 
-$input = json_decode(file_get_contents('php://input'), true);
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, true);
 $rows = $input['rows'] ?? [];
 
 if (!is_array($rows) || empty($rows)) {
@@ -17,7 +18,7 @@ $stmt = $conn->prepare("INSERT INTO mc_questions
 (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-foreach ($rows as $i => $row) {
+foreach($rows as $i => $row){
     $topic   = trim($row['mc_topic'] ?? '');
     $question= trim($row['mc_question'] ?? '');
     $a       = trim($row['mc_answer1'] ?? '');
@@ -35,7 +36,7 @@ foreach ($rows as $i => $row) {
         $errors[] = "Dòng ".($i+2)." thiếu đáp án A/B/C/D";
         continue;
     }
-    if (!in_array($correct, ['A','B','C','D'])) {
+    if (!in_array($correct,['A','B','C','D'])) {
         $errors[] = "Dòng ".($i+2)." đáp án không hợp lệ (A/B/C/D)";
         continue;
     }
