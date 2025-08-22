@@ -12,12 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Kết nối DB
-require_once __DIR__ . '/../../includes/db_connection.php'; // chỉnh lại đường dẫn nếu khác
+require_once __DIR__ . '/../../includes/db_connection.php'; // chỉnh đường dẫn nếu cần
 
-// Nhận dữ liệu JSON từ JS
-$rows = isset($_POST['rows']) ? json_decode($_POST['rows'], true) : [];
+// Đọc raw JSON từ request body
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, true);
 
-if (!$rows || !is_array($rows)) {
+if (!isset($input['rows']) || !is_array($input['rows'])) {
     echo json_encode([
         'status' => 'error',
         'message' => 'Dữ liệu Excel không hợp lệ'
@@ -25,10 +26,11 @@ if (!$rows || !is_array($rows)) {
     exit;
 }
 
+$rows = $input['rows'];
 $inserted = 0;
 $errors = [];
 
-// Chuẩn bị câu lệnh INSERT
+// Chuẩn bị câu lệnh INSERT an toàn
 $stmt = $conn->prepare("
     INSERT INTO mc_questions 
     (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) 
@@ -38,14 +40,14 @@ $stmt = $conn->prepare("
 foreach ($rows as $index => $row) {
     try {
         // Map dữ liệu từ Excel
-        $topic   = trim($row['mc_topic'] ?? '');
-        $question= trim($row['mc_question'] ?? '');
-        $a1      = trim($row['mc_answer1'] ?? '');
-        $a2      = trim($row['mc_answer2'] ?? '');
-        $a3      = trim($row['mc_answer3'] ?? '');
-        $a4      = trim($row['mc_answer4'] ?? '');
-        $correct = trim($row['mc_correct_answer'] ?? '');
-        $image   = trim($row['mc_image_url'] ?? '');
+        $topic    = trim($row['mc_topic'] ?? '');
+        $question = trim($row['mc_question'] ?? '');
+        $a1       = trim($row['mc_answer1'] ?? '');
+        $a2       = trim($row['mc_answer2'] ?? '');
+        $a3       = trim($row['mc_answer3'] ?? '');
+        $a4       = trim($row['mc_answer4'] ?? '');
+        $correct  = trim($row['mc_correct_answer'] ?? '');
+        $image    = trim($row['mc_image_url'] ?? '');
 
         // Bỏ qua dòng không có câu hỏi
         if ($question === '') {
