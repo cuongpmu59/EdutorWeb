@@ -11,9 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once __DIR__ . '/../../includes/db_connection.php'; // chỉnh lại nếu khác
+// Kết nối DB
+require_once __DIR__ . '/../../includes/db_connection.php'; // chỉnh lại đường dẫn nếu khác
 
-// Nhận dữ liệu từ JS
+// Nhận dữ liệu JSON từ JS
 $rows = isset($_POST['rows']) ? json_decode($_POST['rows'], true) : [];
 
 if (!$rows || !is_array($rows)) {
@@ -27,6 +28,7 @@ if (!$rows || !is_array($rows)) {
 $inserted = 0;
 $errors = [];
 
+// Chuẩn bị câu lệnh INSERT
 $stmt = $conn->prepare("
     INSERT INTO mc_questions 
     (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url) 
@@ -35,9 +37,9 @@ $stmt = $conn->prepare("
 
 foreach ($rows as $index => $row) {
     try {
-        // ⚠️ Cột trong Excel phải đặt tên giống hệt key ở đây
-        $topic   = trim($row['mc_topic']   ?? '');
-        $question= trim($row['mc_question']?? '');
+        // Map dữ liệu từ Excel
+        $topic   = trim($row['mc_topic'] ?? '');
+        $question= trim($row['mc_question'] ?? '');
         $a1      = trim($row['mc_answer1'] ?? '');
         $a2      = trim($row['mc_answer2'] ?? '');
         $a3      = trim($row['mc_answer3'] ?? '');
@@ -51,7 +53,8 @@ foreach ($rows as $index => $row) {
             continue;
         }
 
-        $stmt->bind_param("ssssssss", 
+        $stmt->bind_param(
+            "ssssssss",
             $topic, $question, $a1, $a2, $a3, $a4, $correct, $image
         );
         $stmt->execute();
@@ -65,6 +68,7 @@ foreach ($rows as $index => $row) {
 $stmt->close();
 $conn->close();
 
+// Trả về kết quả JSON
 echo json_encode([
     'status' => 'success',
     'count'  => $inserted,
