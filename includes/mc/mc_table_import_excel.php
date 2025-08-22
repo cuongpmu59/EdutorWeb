@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Kết nối CSDL
-require_once __DIR__ . '/../../includes/db_connection.php';
+// Kết nối PDO
+require_once __DIR__ . '/../../includes/db_connection.php'; // đường dẫn tới file PDO
 
 // Nhận JSON từ client
 $inputJSON = file_get_contents('php://input');
@@ -21,57 +21,53 @@ $successCount = 0;
 $errors = [];
 
 foreach ($rows as $index => $row) {
-    $mc_topic = isset($row['mc_topic']) ? trim($row['mc_topic']) : '';
-    $mc_question = isset($row['mc_question']) ? trim($row['mc_question']) : '';
-    $mc_answer1 = isset($row['mc_answer1']) ? trim($row['mc_answer1']) : '';
-    $mc_answer2 = isset($row['mc_answer2']) ? trim($row['mc_answer2']) : '';
-    $mc_answer3 = isset($row['mc_answer3']) ? trim($row['mc_answer3']) : '';
-    $mc_answer4 = isset($row['mc_answer4']) ? trim($row['mc_answer4']) : '';
-    $mc_correct_answer = isset($row['mc_correct_answer']) ? strtoupper(trim($row['mc_correct_answer'])) : '';
-    $mc_image_url = isset($row['mc_image_url']) ? trim($row['mc_image_url']) : '';
+    $mc_topic = $row['mc_topic'] ?? '';
+    $mc_question = $row['mc_question'] ?? '';
+    $mc_answer1 = $row['mc_answer1'] ?? '';
+    $mc_answer2 = $row['mc_answer2'] ?? '';
+    $mc_answer3 = $row['mc_answer3'] ?? '';
+    $mc_answer4 = $row['mc_answer4'] ?? '';
+    $mc_correct_answer = strtoupper($row['mc_correct_answer'] ?? '');
+    $mc_image_url = $row['mc_image_url'] ?? '';
 
-    // Validation bắt buộc
+    // Validation cơ bản
     if (!$mc_topic || !$mc_question || !$mc_answer1 || !$mc_answer2 || !$mc_correct_answer) {
         $errors[] = "Dòng " . ($index + 2) . " thiếu dữ liệu bắt buộc.";
         continue;
     }
 
-    // Kiểm tra đáp án hợp lệ
     if (!in_array($mc_correct_answer, ['A','B','C','D'])) {
         $errors[] = "Dòng " . ($index + 2) . " đáp án đúng không hợp lệ (A/B/C/D).";
         continue;
     }
 
-    // Insert an toàn
-    $stmt = $conn->prepare("INSERT INTO mc_questions 
+    // Chuẩn bị query PDO
+    $stmt = $conn->prepare("
+        INSERT INTO mc_questions 
         (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url, mc_created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        VALUES (:topic, :question, :a1, :a2, :a3, :a4, :correct, :image, NOW())
+    ");
 
-    $stmt->bind_param(
-        "ssssssss",
-        $mc_topic,
-        $mc_question,
-        $mc_answer1,
-        $mc_answer2,
-        $mc_answer3,
-        $mc_answer4,
-        $mc_correct_answer,
-        $mc_image_url
-    );
-
-    if ($stmt->execute()) {
+    try {
+        $stmt->execute([
+            ':topic'   => $mc_topic,
+            ':question'=> $mc_question,
+            ':a1'      => $mc_answer1,
+            ':a2'      => $mc_answer2,
+            ':a3'      => $mc_answer3,
+            ':a4'      => $mc_answer4,
+            ':correct' => $mc_correct_answer,
+            ':image'   => $mc_image_url
+        ]);
         $successCount++;
-    } else {
-        $errors[] = "Dòng " . ($index + 2) . " không thể chèn: " . $stmt->error;
+    } catch (PDOException $e) {
+        $errors[] = "Dòng " . ($index + 2) . " không thể chèn: " . $e->getMessage();
     }
-
-    $stmt->close();
 }
 
 // Trả về JSON cho client
 echo json_encode([
     'status' => 'success',
-    'count' => $successCount,
+    'count'  => $successCount,
     'errors' => $errors
 ]);
-?>
