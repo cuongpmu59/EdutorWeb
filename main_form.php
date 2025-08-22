@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require 'dotenv.php';
+// require 'dotenv.php';
 ?>
 
 
@@ -12,7 +12,7 @@ require 'dotenv.php';
   <title>🧾 Quản lý Ngân hàng Câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Giao diện tổng hợp -->
+  Giao diện tổng hợp
   <link rel="stylesheet" href="css/main_ui.css">
 
   <!-- MathJax (Toán học) -->
