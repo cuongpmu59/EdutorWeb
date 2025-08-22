@@ -26,7 +26,7 @@ $('#importExcelInput').on('change', function(e) {
         console.log("Worksheet:", worksheet);
 
         $.ajax({
-            url: 'mc_table_import_excel.php', // chỉnh đường dẫn
+            url: '../../includes/mc/mc_table_import_excel.php', // chỉnh đường dẫn
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ rows: worksheet }),
