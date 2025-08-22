@@ -1,49 +1,81 @@
 /* Hộp xem trước ngay dưới input/textarea */
 .preview-box {
-    margin-top: 8px;
-    padding: 10px;
-    border: 1px dashed #999;
-    background-color: #f9f9f9;
-    color: #333;
-    border-radius: 5px;
-    font-size: 15px;
-    white-space: pre-wrap;
-  }
-  
-  /* Khu vực xem trước toàn bộ */
-  .sa-preview-zone {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f0f7ff;
-    border: 1px solid #aad4ff;
-    border-radius: 8px;
-  }
-  
-  /* Tiêu đề xem trước toàn bộ */
-  .sa-preview-zone h3 {
-    margin-bottom: 15px;
-    color: #0a5ea8;
-  }
-  
-  /* Nội dung xem trước toàn bộ */
-  #saPreviewContent {
-    line-height: 1.6;
-    color: #222;
-  }
-  
-  .preview-image img {
-    max-width: 100%;
-    max-height: 200px; /* ❗ Giới hạn chiều cao ảnh */
-    display: block;
-    margin: 0 auto;
-    object-fit: contain;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .preview-options li {
-    margin: 6px 0;
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-  
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px dashed #999;
+  background-color: #f9f9f9;
+  color: #333;
+  border-radius: 5px;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+/* Khu vực xem trước toàn bộ */
+.sa-preview-zone {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f0f7ff;
+  border: 1px solid #aad4ff;
+  border-radius: 8px;
+}
+
+/* Tiêu đề xem trước toàn bộ */
+.sa-preview-zone h3 {
+  margin-bottom: 15px;
+  color: #0a5ea8;
+}
+
+/* Nội dung xem trước toàn bộ */
+#saPreviewContent {
+  line-height: 1.6;
+  color: #222;
+}
+
+/* Ảnh minh họa trong preview */
+.preview-image {
+  margin: 12px 0;
+  text-align: center;
+}
+.preview-image img {
+  max-width: 100%;
+  max-height: 200px; /* ❗ Giới hạn chiều cao ảnh */
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Danh sách đáp án */
+.answers-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.answer-item {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f4f4f4;
+  min-width: 80px; /* để các item không bị quá hẹp */
+  word-break: break-word; /* xuống dòng nếu text dài */
+}
+
+.correct-answer {
+  border: 2px solid #4caf50;
+  background: #eaffea;
+  font-weight: bold;
+}
+
+/* Danh sách tùy chọn preview */
+.preview-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.preview-options li {
+  margin: 6px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
