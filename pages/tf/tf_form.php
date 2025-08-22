@@ -133,58 +133,68 @@
 <script src="../../js/tf/tf_form_button.js"></script>
 
 <script>
-  // Auto-resize textarea
-  function autoResize(el) {
-    el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
-  }
-
-  document.querySelectorAll("textarea").forEach(el => {
-    autoResize(el);
-    el.addEventListener("input", () => autoResize(el));
+  // Auto-resize tất cả textarea
+  document.addEventListener("input", function(e) {
+    if (e.target.tagName.toLowerCase() !== "textarea") return;
+    e.target.style.height = "auto";                     // reset trước
+    e.target.style.height = e.target.scrollHeight + "px"; // cao vừa đủ
   });
 
-  // Toggle preview từng mệnh đề
-  $('.toggle-preview').click(function() {
-    const target = $(this).data('target');
-    const content = $('#' + target).val();
-    $('#preview-' + target).text(content).slideToggle(200);
-    MathJax.typesetPromise([document.getElementById('preview-' + target)]);
+  // Chạy 1 lần khi trang load (để resize theo dữ liệu sẵn có)
+  window.addEventListener("load", function() {
+    document.querySelectorAll("textarea").forEach(function(el) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    });
   });
-
-  // Toggle preview toàn bộ
-  $('#tfTogglePreview').click(() => $('#tfPreview').fadeToggle(200));
-
-  // Nhận dữ liệu từ iframe DataTable
+  </script>
+  
+  <script>
+  // Nhận dữ liệu từ iframe DataTable để fill form
   window.addEventListener('message', function (event) {
     const { type, data } = event.data || {};
     if (type !== 'fill-form' || !data) return;
 
     $('#tf_id').val(data.tf_id || '');
     $('#tf_topic').val(data.tf_topic || '');
-    $('#tf_question').val(data.tf_question || '').trigger('input');
-
-    for (let i=1; i<=4; i++) {
-      $('#tf_statement'+i).val(data['tf_statement'+i] || '').trigger('input');
-      const correct = data['tf_correct_answer'+i];
-      if (correct !== undefined && correct !== null) {
-        $(`input[name="correct_answer${i}"][value="${correct}"]`).prop('checked', true);
-      }
-    }
+    $('#tf_question').val(data.tf_question || '');
+    $('#tf_statement1').val(data.tf_statement1 || '');
+    $('#tf_statement2').val(data.tf_statement2 || '');
+    $('#tf_statement3').val(data.tf_statement3 || '');
+    $('#tf_statement4').val(data.tf_statement4 || '');
+    $('#tf_correct_answer1').val(data.tf_correct_answer1 || '');
+    $('#tf_correct_answer2').val(data.tf_correct_answer2 || '');
+    $('#tf_correct_answer3').val(data.tf_correct_answer3 || '');
+    $('#tf_correct_answer4').val(data.tf_correct_answer4 || '');
 
     if (data.tf_image_url) {
-      $('#tf_preview_image').attr('src', data.tf_image_url).fadeIn(200);
+      $('#tf_preview_image').attr('src', data.tf_image_url).show();
       $('#tf_image_url').val(data.tf_image_url);
     } else {
-      $('#tf_preview_image').fadeOut(200, function() {
-        $(this).attr('src', '');
-      });
+      $('#tf_preview_image').hide().attr('src', '');
       $('#tf_image_url').val('');
     }
 
-    MathJax.typesetPromise();
+    // 👉 cập nhật lại các preview field
+    if (typeof previewFields !== 'undefined') {
+      previewFields.forEach(({ id }) => {
+        if (typeof updatePreview === 'function') {
+          updatePreview(id);
+        }
+      });
+    }
+
+    // 👉 chỉ update full preview nếu đang hiển thị
+    const fullPreviewZone = document.getElementById('tfPreview');
+    if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
+      if (typeof updateFullPreview === 'function') {
+        updateFullPreview();
+      }
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
+
 </body>
 </html>
