@@ -131,53 +131,32 @@ $(function () {
 
     const reader = new FileReader();
     reader.onload = function(evt) {
-        try {
-            const data = new Uint8Array(evt.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
 
-            if (!worksheet.length) {
-                toastr.warning('📂 File Excel rỗng!');
-                $('#importExcelInput').val('');
-                return;
+        console.log("Worksheet:", worksheet);
+
+        $.ajax({
+            url: '../../includes/mc/mc_table_import_excel.php', // chỉnh đường dẫn
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ rows: worksheet }),
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                $('#result').text(JSON.stringify(res, null, 2));
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                $('#result').text("Lỗi gửi dữ liệu tới server");
             }
-
-            toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
-
-            $.ajax({
-                url: '../../includes/mc/mc_table_import_excel.php', // đường dẫn PHP
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ rows: worksheet }),
-                dataType: 'json',
-                success: function(res) {
-                    if (res.status === 'success') {
-                        toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
-                        if(res.errors && res.errors.length) {
-                            res.errors.forEach(e => toastr.warning(e));
-                        }
-                        table.ajax.reload();
-                    } else {
-                        toastr.error(res.message || '❌ Lỗi khi nhập Excel');
-                    }
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText);
-                    toastr.error('❌ Không thể gửi dữ liệu tới server');
-                },
-                complete: function() {
-                    $('#importExcelInput').val('');
-                }
-            });
-        } catch (err) {
-            console.error(err);
-            toastr.error('❌ Không thể đọc file Excel');
-            $('#importExcelInput').val('');
-        }
+        });
     };
     reader.readAsArrayBuffer(file);
 });
+
 
   // ================== Tải Template Excel ==================
   $('#btnDownloadTemplate').on('click', function(){
