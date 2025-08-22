@@ -1,15 +1,12 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// --- Kết nối CSDL ---
+// Kết nối CSDL
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-// --- Nhận JSON raw từ client ---
+// Nhận JSON từ client
 $inputJSON = file_get_contents('php://input');
 $data = json_decode($inputJSON, true);
-
-// Log debug (nếu muốn)
-file_put_contents(__DIR__ . '/import_debug.log', print_r($data, true), FILE_APPEND);
 
 if (!$data || !isset($data['rows']) || !is_array($data['rows'])) {
     echo json_encode([
@@ -33,7 +30,7 @@ foreach ($rows as $index => $row) {
     $mc_correct_answer = isset($row['mc_correct_answer']) ? strtoupper(trim($row['mc_correct_answer'])) : '';
     $mc_image_url = isset($row['mc_image_url']) ? trim($row['mc_image_url']) : '';
 
-    // Validation cơ bản
+    // Validation bắt buộc
     if (!$mc_topic || !$mc_question || !$mc_answer1 || !$mc_answer2 || !$mc_correct_answer) {
         $errors[] = "Dòng " . ($index + 2) . " thiếu dữ liệu bắt buộc.";
         continue;
@@ -45,7 +42,7 @@ foreach ($rows as $index => $row) {
         continue;
     }
 
-    // Chuẩn bị query an toàn
+    // Insert an toàn
     $stmt = $conn->prepare("INSERT INTO mc_questions 
         (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url, mc_created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -71,7 +68,7 @@ foreach ($rows as $index => $row) {
     $stmt->close();
 }
 
-// Trả về JSON cho Toastr client
+// Trả về JSON cho client
 echo json_encode([
     'status' => 'success',
     'count' => $successCount,
