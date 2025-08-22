@@ -136,27 +136,42 @@ $(function () {
         const sheetName = workbook.SheetNames[0];
         const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
 
-        console.log("Worksheet:", worksheet);
+        if (!worksheet.length) {
+            toastr.warning('📂 File Excel rỗng!');
+            $('#importExcelInput').val('');
+            return;
+        }
+
+        toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
 
         $.ajax({
-            url: '../../includes/mc/mc_table_import_excel.php', // chỉnh đường dẫn
+            url: '../../includes/mc/mc_table_import_excel.php', // đường dẫn PHP
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ rows: worksheet }),
             dataType: 'json',
             success: function(res) {
-                console.log(res);
-                $('#result').text(JSON.stringify(res, null, 2));
+                if (res.status === 'success') {
+                    toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
+                    if(res.errors && res.errors.length) {
+                        res.errors.forEach(e => toastr.warning(e));
+                    }
+                    table.ajax.reload(); // reload DataTable nếu có
+                } else {
+                    toastr.error(res.message || '❌ Lỗi khi nhập Excel');
+                }
             },
             error: function(xhr) {
                 console.error(xhr.responseText);
-                $('#result').text("Lỗi gửi dữ liệu tới server");
+                toastr.error('❌ Không thể gửi dữ liệu tới server');
+            },
+            complete: function() {
+                $('#importExcelInput').val('');
             }
         });
     };
     reader.readAsArrayBuffer(file);
 });
-
 
   // ================== Tải Template Excel ==================
   $('#btnDownloadTemplate').on('click', function(){
