@@ -137,49 +137,58 @@ $(function () {
     timeOut: "3000"
   };
 
-  // Nhập Excel
-  $('#importExcelInput').on('change', function(e){
-    const file = e.target.files[0];
-    if(!file) return;
+  <script src="../../js/mc/mc_table_import_excel.js"></script>
+  <script>
+    $(function () {
+      const table = $('#mcTable').DataTable({ ... });
+      importExcel('#importExcelInput', table);
+    });
+  </script>
 
-    const reader = new FileReader();
-    reader.onload = function(evt){
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data,{type:'array'});
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{defval:''});
+  // // Nhập Excel
+  // $('#importExcelInput').on('change', function(e){
+  //   const file = e.target.files[0];
+  //   if(!file) return;
 
-      if(!worksheet.length){
-        toastr.warning('📂 File Excel rỗng!');
-        $('#importExcelInput').val('');
-        return;
-      }
+  //   const reader = new FileReader();
+  //   reader.onload = function(evt){
+  //     const data = new Uint8Array(evt.target.result);
+  //     const workbook = XLSX.read(data,{type:'array'});
+  //     const sheetName = workbook.SheetNames[0];
+  //     const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{defval:''});
 
-      toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
+  //     if(!worksheet.length){
+  //       toastr.warning('📂 File Excel rỗng!');
+  //       $('#importExcelInput').val('');
+  //       return;
+  //     }
 
-      $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
-        .done((res) => {
-          try {
-            const data = typeof res === 'string' ? JSON.parse(res) : res;
-            if(data.status === 'success'){
-              toastr.success(`📥 Nhập thành công ${data.count} dòng!`);
-              table.ajax.reload();
-            } else {
-              toastr.error(data.message || '❌ Lỗi khi nhập Excel');
-            }
-          } catch(err){
-            toastr.error('❌ Phản hồi không hợp lệ từ server');
-          }
-        })
-        .fail(() => {
-          toastr.error('❌ Lỗi khi gửi dữ liệu tới server');
-        })
-        .always(() => {
-          $('#importExcelInput').val('');
-        });
-    };
-    reader.readAsArrayBuffer(file);
-  });
+  //     toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
+
+  //     $.post('../../includes/mc/mc_table_import_excel.php', { rows: JSON.stringify(worksheet) })
+  //       .done((res) => {
+  //         try {
+  //           const data = typeof res === 'string' ? JSON.parse(res) : res;
+  //           if(data.status === 'success'){
+  //             toastr.success(`📥 Nhập thành công ${data.count} dòng!`);
+  //             table.ajax.reload();
+  //           } else {
+  //             toastr.error(data.message || '❌ Lỗi khi nhập Excel');
+  //           }
+  //         } catch(err){
+  //           toastr.error('❌ Phản hồi không hợp lệ từ server');
+  //         }
+  //       })
+  //       .fail(() => {
+  //         toastr.error('❌ Lỗi khi gửi dữ liệu tới server');
+  //       })
+  //       .always(() => {
+  //         $('#importExcelInput').val('');
+  //       });
+  //   };
+  //   reader.readAsArrayBuffer(file);
+  // });
+
 });
 </script>
 
