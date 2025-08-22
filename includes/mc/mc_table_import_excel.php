@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once '../../includes/db_connection.php'; // đường dẫn tới DB
+require_once '../../includes/db_connection.php'; // sửa theo đường dẫn DB
 
 $inputJSON = file_get_contents('php://input');
 $input = json_decode($inputJSON, true);
@@ -14,42 +14,15 @@ if (!$rows || !is_array($rows)) {
 $inserted = 0;
 $errors = [];
 
-$stmt = $conn->prepare("INSERT INTO mc_questions 
+$stmt = $conn->prepare("INSERT INTO mc_questions
 (mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4, mc_correct_answer, mc_image_url)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
 foreach ($rows as $i => $row) {
-    // Kiểm tra dữ liệu bắt buộc
     if (empty($row['mc_topic']) || empty($row['mc_question'])) {
         $errors[] = "Dòng ".($i+2)." thiếu topic hoặc question";
         continue;
     }
-    // Giới hạn đáp án đúng
+
     $correct = strtoupper($row['mc_correct_answer'] ?? '');
-    if (!in_array($correct, ['A','B','C','D'])) {
-        $errors[] = "Dòng ".($i+2)." đáp án đúng không hợp lệ";
-        continue;
-    }
-
-    $stmt->bind_param(
-        "ssssssss",
-        $row['mc_topic'],
-        $row['mc_question'],
-        $row['mc_answer1'],
-        $row['mc_answer2'],
-        $row['mc_answer3'],
-        $row['mc_answer4'],
-        $correct,
-        $row['mc_image_url']
-    );
-    if ($stmt->execute()) $inserted++;
-    else $errors[] = "Dòng ".($i+2)." lỗi DB: ".$stmt->error;
-}
-
-$stmt->close();
-
-echo json_encode([
-    'status' => 'success',
-    'count' => $inserted,
-    'errors' => $errors
-]);
+    if (!in_array($correct, ['
