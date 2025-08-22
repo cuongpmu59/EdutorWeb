@@ -26,7 +26,6 @@ window.MathJax = {
 <!-- Custom CSS -->
 <link rel="stylesheet" href="../../css/mc/mc_table_toolbar.css">
 <link rel="stylesheet" href="../../css/mc/mc_table_layout.css">
-
 </head>
 <body>
 
@@ -37,6 +36,7 @@ window.MathJax = {
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
+    <button class="toolbar-btn" id="btnDownloadTemplate">📝 Tải Template Excel</button>
     <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
     <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
   </div>
@@ -76,8 +76,6 @@ window.MathJax = {
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-<!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
@@ -118,28 +116,16 @@ $(function () {
     }
   });
 
-  // MathJax render lại mỗi khi vẽ bảng
   table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
-
-  // Filter + Search thủ công
   $('#filterTopic').on('change', function(){ table.column(1).search(this.value).draw(); });
   $('#customSearch').on('keyup change', function(){ table.search(this.value).draw(); });
-
-  // Xuất Excel + Print trigger thủ công
   $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
   $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
-  // Toastr config mặc định
-  toastr.options = {
-    closeButton: true,
-    progressBar: true,
-    positionClass: "toast-top-right",
-    timeOut: "3000"
-  };
+  toastr.options = { closeButton: true, progressBar: true, positionClass: "toast-top-right", timeOut: "3000" };
 
- 
-  // Nhập Excel
-$('#importExcelInput').on('change', function(e) {
+  // ================== Nhập Excel ==================
+  $('#importExcelInput').on('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -163,17 +149,19 @@ $('#importExcelInput').on('change', function(e) {
                 url: '../../includes/mc/mc_table_import_excel.php',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ rows: worksheet }), // quan trọng: phải có key 'rows'
+                data: JSON.stringify({ rows: worksheet }),
                 dataType: 'json',
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
                         table.ajax.reload();
+                        if(res.errors && res.errors.length) toastr.warning(res.errors.join("\n"));
                     } else {
                         toastr.error(res.message || '❌ Lỗi khi nhập Excel');
                     }
                 },
-                error: function() {
+                error: function(xhr,status,err) {
+                    console.error(xhr.responseText);
                     toastr.error('❌ Không thể gửi dữ liệu tới server');
                 },
                 complete: function() {
@@ -187,13 +175,18 @@ $('#importExcelInput').on('change', function(e) {
         }
     };
     reader.readAsArrayBuffer(file);
-});
+  });
 
+  // ================== Tải Template Excel ==================
+  $('#btnDownloadTemplate').on('click', function(){
+      const header = ["mc_topic","mc_question","mc_answer1","mc_answer2","mc_answer3","mc_answer4","mc_correct_answer","mc_image_url"];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet([{}], {header: header});
+      XLSX.utils.book_append_sheet(wb, ws, "Template");
+      XLSX.writeFile(wb, "template_mc_questions.xlsx");
+  });
 });
 </script>
-
-<!-- Hỗ trợ di chuyển bằng phím -->
-<script src="../../js/mc/mc_table_arrow_key.js"></script>
 
 </body>
 </html>
