@@ -146,7 +146,7 @@ $(function () {
             toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
 
             $.ajax({
-                url: '../../includes/mc/mc_table_import_excel.php',
+                url: '../../includes/mc/mc_table_import_excel.php', // đường dẫn PHP
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ rows: worksheet }),
@@ -154,13 +154,15 @@ $(function () {
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
+                        if(res.errors && res.errors.length) {
+                            res.errors.forEach(e => toastr.warning(e));
+                        }
                         table.ajax.reload();
-                        if(res.errors && res.errors.length) toastr.warning(res.errors.join("\n"));
                     } else {
                         toastr.error(res.message || '❌ Lỗi khi nhập Excel');
                     }
                 },
-                error: function(xhr, status, err) {
+                error: function(xhr) {
                     console.error(xhr.responseText);
                     toastr.error('❌ Không thể gửi dữ liệu tới server');
                 },
