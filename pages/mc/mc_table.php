@@ -160,7 +160,7 @@ $(function () {
                         toastr.error(res.message || '❌ Lỗi khi nhập Excel');
                     }
                 },
-                error: function(xhr,status,err) {
+                error: function(xhr, status, err) {
                     console.error(xhr.responseText);
                     toastr.error('❌ Không thể gửi dữ liệu tới server');
                 },
@@ -175,7 +175,7 @@ $(function () {
         }
     };
     reader.readAsArrayBuffer(file);
-  });
+});
 
   // ================== Tải Template Excel ==================
   $('#btnDownloadTemplate').on('click', function(){
