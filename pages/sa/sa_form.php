@@ -34,7 +34,7 @@
 <div id="formContainer">
   <form id="saForm" method="POST" enctype="multipart/form-data">
     <h2>
-      Câu hỏi Short Answer
+      Câu hỏi trắc nghiệm trả lời ngắn
       <span id="saTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
     </h2>
 
