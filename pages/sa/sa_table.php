@@ -131,7 +131,7 @@ $(function () {
 });
 </script>
 
-<script src="../../js/sa/sa_table_arrow_key.js"></script>
+<script src="../../js/sa/sa_table_event.js"></script>
 
 </body>
 </html>
