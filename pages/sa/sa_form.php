@@ -112,49 +112,85 @@
 <script src="../../js/sa/sa_form_image.js"></script>
 <script src="../../js/sa/sa_form_button.js"></script>
 
+
 <script>
-  // Auto-resize textarea
-  document.querySelectorAll("textarea").forEach(el => {
-    el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
-    el.addEventListener("input", () => {
+  // Auto-resize tất cả textarea trong form SA
+  document.addEventListener("input", function(e) {
+    if (e.target.tagName.toLowerCase() !== "textarea") return;
+    e.target.style.height = "auto";                     // reset trước
+    e.target.style.height = e.target.scrollHeight + "px"; // cao vừa đủ
+  });
+
+  // Chạy 1 lần khi trang load (để resize theo dữ liệu sẵn có)
+  window.addEventListener("load", function() {
+    // Chỉ áp dụng cho form SA
+    const saForm = document.getElementById("saForm");
+    if (!saForm) return;
+
+    saForm.querySelectorAll("textarea").forEach(function(el) {
       el.style.height = "auto";
       el.style.height = el.scrollHeight + "px";
     });
   });
-
-  // Toggle preview từng trường
-  $('.toggle-preview').click(function() {
-    const target = $(this).data('target');
-    const content = $('#' + target).val();
-    $('#preview-' + target).text(content).slideToggle(200);
-    MathJax.typesetPromise([document.getElementById('preview-' + target)]);
-  });
-
-  // Toggle preview toàn bộ
-  $('#saTogglePreview').click(() => $('#saPreview').fadeToggle(200));
-
-  // Nhận dữ liệu từ iframe DataTable
-  window.addEventListener('message', function (event) {
-    const { type, data } = event.data || {};
-    if (type !== 'fill-form' || !data) return;
-
-    $('#sa_id').val(data.sa_id || '');
-    $('#sa_topic').val(data.sa_topic || '');
-    $('#sa_question').val(data.sa_question || '');
-    $('#sa_correct_answer').val(data.sa_correct_answer || '');
-
-    if (data.sa_image_url) {
-      $('#sa_preview_image').attr('src', data.sa_image_url).show();
-      $('#sa_image_url').val(data.sa_image_url);
-    } else {
-      $('#sa_preview_image').hide().attr('src','');
-      $('#sa_image_url').val('');
-    }
-
-    MathJax.typesetPromise();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
 </script>
+
+<script>
+// Nhận dữ liệu từ iframe DataTable để fill form
+window.addEventListener('message', function (event) {
+  const { type, data } = event.data || {};
+  if (type !== 'fill-form' || !data) return;
+
+  const $form = $('#saForm');
+
+  Object.keys(data).forEach(key => {
+    const $field = $form.find(`[name="${key}"], #${key}`);
+    if (!$field.length) return;
+
+    const value = data[key];
+
+    if ($field.is(':radio')) {
+      $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+    } 
+    else if ($field.is(':checkbox')) {
+      $form.find(`input[name="${key}"]`).prop('checked', false);
+      if (Array.isArray(value)) {
+        value.forEach(v => $form.find(`input[name="${key}"][value="${v}"]`).prop('checked', true));
+      } else {
+        $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+      }
+    } 
+    else if ($field.is('select')) {
+      $field.val(value).trigger('change');
+    } 
+    else {
+      $field.val(value);
+    }
+  });
+
+  // Xử lý ảnh riêng
+  if (data.sa_image_url) {
+    $('#sa_preview_image').attr('src', data.sa_image_url).show();
+  } else {
+    $('#sa_preview_image').hide().attr('src', '');
+  }
+
+  // Cập nhật preview nhỏ (nếu có)
+  if (typeof previewFields !== 'undefined' && typeof updatePreview === 'function') {
+    previewFields.forEach(({ id }) => updatePreview(id));
+  }
+
+  // 👉 chỉ update full preview nếu đang hiển thị
+  const fullPreviewZone = document.getElementById('saPreview');
+  if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
+    if (typeof updateFullPreview === 'function') {
+      updateFullPreview();
+    }
+  }
+
+  // Cuộn lên đầu form
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
 </body>
 </html>
