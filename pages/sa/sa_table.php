@@ -5,7 +5,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quản lý câu hỏi tự luận ngắn</title>
+<title>Quản lý câu hỏi tự luận</title>
 
 <!-- MathJax -->
 <script>
@@ -29,7 +29,7 @@ window.MathJax = {
 </head>
 <body>
 
-<h2>📋 Danh sách câu hỏi tự luận ngắn</h2>
+<h2>📋 Danh sách câu hỏi tự luận</h2>
 
 <!-- Toolbar -->
 <div class="sa-toolbar">
@@ -58,7 +58,6 @@ window.MathJax = {
       <th>Chủ đề</th>
       <th>Câu hỏi</th>
       <th>Đáp án</th>
-      <th>Đáp án đúng</th>
       <th>Hình minh họa</th>
       <th>Ngày tạo</th>
     </tr>
@@ -91,15 +90,18 @@ $(function () {
                             ${d.length>80 ? d.substr(0,80)+'…' : d}
                           </span>` : ''
       },
-      { data:'sa_answer' },
-      { data:'sa_correct_answer' },
+      { data:'sa_correct_answer', className:'sa-answer-cell',
+        render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length>80 ? d.substr(0,80)+'…' : d}
+                          </span>` : ''
+      },
       { data:'sa_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'sa_created_at' }
     ],
     dom: 'Brtip',
     buttons: [
-      { extend:'excelHtml5', title:'Danh sách câu hỏi tự luận ngắn', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
-      { extend:'print', title:'Danh sách câu hỏi tự luận ngắn', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
+      { extend:'excelHtml5', title:'Danh sách câu hỏi tự luận', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi tự luận', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
     ],
     responsive: true,
     scrollX: true,
@@ -165,11 +167,11 @@ $(function () {
         });
     };
     reader.readAsArrayBuffer(file);
-});
+  });
 
   // ================== Tải Template Excel ==================
   $('#btnDownloadTemplate').on('click', function(){
-      const header = ["sa_topic","sa_question","sa_answer","sa_correct_answer","sa_image_url"];
+      const header = ["sa_topic","sa_question","sa_correct_answer","sa_image_url"];
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet([{}], {header: header});
       XLSX.utils.book_append_sheet(wb, ws, "Template");
