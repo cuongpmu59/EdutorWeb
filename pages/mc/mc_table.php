@@ -183,9 +183,8 @@ $(function () {
   });
 });
 </script>
-<!-- Hỗ trợ di chuyển bằng phím -->
+<!-- Hỗ trợ các sự kiện -->
  <script src="../../js/mc/mc_table_event.js"></script>
-<!-- <script src="../../js/mc/mc_table_click.js"></script> -->
 
 </body>
 </html>
