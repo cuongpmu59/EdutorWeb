@@ -5,7 +5,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quản lý câu hỏi True/False</title>
+<title>Quản lý câu hỏi Đúng/Sai</title>
 
 <!-- MathJax -->
 <script>
@@ -29,7 +29,7 @@ window.MathJax = {
 </head>
 <body>
 
-<h2>📋 Danh sách câu hỏi True/False (4 statement)</h2>
+<h2>📋 Danh sách câu hỏi Đúng/Sai</h2>
 
 <!-- Toolbar -->
 <div class="tf-toolbar">
@@ -57,14 +57,14 @@ window.MathJax = {
       <th>ID</th>
       <th>Chủ đề</th>
       <th>Câu hỏi</th>
-      <th>Statement 1</th>
-      <th>Answer 1</th>
-      <th>Statement 2</th>
-      <th>Answer 2</th>
-      <th>Statement 3</th>
-      <th>Answer 3</th>
-      <th>Statement 4</th>
-      <th>Answer 4</th>
+      <th>Mệnh đề 1</th>
+      <th>Đúng/Sai 1</th>
+      <th>Mệnh đề 2</th>
+      <th>Đúng/Sai 2</th>
+      <th>Mệnh đề 3</th>
+      <th>Đúng/Sai 3</th>
+      <th>Mệnh đề 4</th>
+      <th>Đúng/Sai 4</th>
       <th>Hình minh họa</th>
       <th>Ngày tạo</th>
     </tr>
@@ -98,20 +98,20 @@ $(function () {
                           </span>` : ''
       },
       { data:'tf_statement1' },
-      { data:'tf_correct_answer1' },
+      { data:'tf_correct_answer1', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
       { data:'tf_statement2' },
-      { data:'tf_correct_answer2' },
+      { data:'tf_correct_answer2', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
       { data:'tf_statement3' },
-      { data:'tf_correct_answer3' },
+      { data:'tf_correct_answer3', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
       { data:'tf_statement4' },
-      { data:'tf_correct_answer4' },
+      { data:'tf_correct_answer4', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
       { data:'tf_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'tf_created_at' }
     ],
     dom: 'Brtip',
     buttons: [
-      { extend:'excelHtml5', title:'Danh sách câu hỏi True/False', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
-      { extend:'print', title:'Danh sách câu hỏi True/False', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
+      { extend:'excelHtml5', title:'Danh sách câu hỏi Đúng/Sai', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi Đúng/Sai', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
     ],
     responsive: true,
     scrollX: true,
@@ -151,7 +151,7 @@ $(function () {
         toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
 
         $.ajax({
-            url: '../../includes/tf/tf_table_import_excel.php', 
+            url: '../../includes/tf/tf_table_import_excel.php',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ rows: worksheet }),
@@ -162,7 +162,7 @@ $(function () {
                     if(res.errors && res.errors.length) {
                         res.errors.forEach(e => toastr.warning(e));
                     }
-                    table.ajax.reload(); 
+                    table.ajax.reload();
                 } else {
                     toastr.error(res.message || '❌ Lỗi khi nhập Excel');
                 }
@@ -177,7 +177,7 @@ $(function () {
         });
     };
     reader.readAsArrayBuffer(file);
-  });
+});
 
   // ================== Tải Template Excel ==================
   $('#btnDownloadTemplate').on('click', function(){
@@ -196,8 +196,9 @@ $(function () {
   });
 });
 </script>
-</script>
+
 <!-- Hỗ trợ các sự kiện -->
 <script src="../../js/tf/tf_table_event.js"></script>
+
 </body>
 </html>
