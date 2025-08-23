@@ -50,14 +50,14 @@
 
             <div class="mc-field">
               <label for="mc_topic">Chủ đề:</label>
-              <input type="text" id="mc_topic" name="topic" required>
+              <input type="text" id="mc_topic" name="mc_topic" required>
             </div>
 
             <div class="mc-field">
               <label for="mc_question">Câu hỏi:
                 <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
               </label>
-              <textarea id="mc_question" name="question" required></textarea>
+              <textarea id="mc_question" name="mc_question" required></textarea>
               <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
             </div>
 
@@ -78,7 +78,7 @@
 
             <div class="mc-field mc-inline-field">
               <label for="mc_correct_answer">Đáp án đúng:</label>
-              <select id="mc_correct_answer" name="answer" required>
+              <select id="mc_correct_answer" name="mc_correct_answer" required>
                 <option value="A">A</option>
                 <option value="B">B</option>
                 <option value="C">C</option>
@@ -98,7 +98,7 @@
             <div class="mc-image-buttons">
               <label class="btn-upload">
                 Tải ảnh
-                <input type="file" id="mc_image" name="image" accept="image/*" hidden>
+                <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden>
               </label>
               <button type="button" id="mc_clear_image">Xóa ảnh</button>
             </div>
@@ -151,35 +151,64 @@
 
 <script>
   // Nhận dữ liệu từ iframe DataTable để fill form
-  window.addEventListener('message', function (event) {
-    const { type, data } = event.data || {};
-    if (type !== 'fill-form' || !data) return;
+  // Nhận dữ liệu từ iframe DataTable để fill form
+window.addEventListener('message', function (event) {
+  const { type, data } = event.data || {};
+  if (type !== 'fill-form' || !data) return;
 
-    $('#mc_id').val(data.mc_id || '');
-    $('#mc_topic').val(data.mc_topic || '');
-    $('#mc_question').val(data.mc_question || '');
-    $('#mc_answer1').val(data.mc_answer1 || '');
-    $('#mc_answer2').val(data.mc_answer2 || '');
-    $('#mc_answer3').val(data.mc_answer3 || '');
-    $('#mc_answer4').val(data.mc_answer4 || '');
-    $('#mc_correct_answer').val(data.mc_correct_answer || '');
+  const $form = $('#mcForm');
 
-    if (data.mc_image_url) {
-      $('#mc_preview_image').attr('src', data.mc_image_url).show();
-      $('#mc_image_url').val(data.mc_image_url);
-    } else {
-      $('#mc_preview_image').hide().attr('src', '');
-      $('#mc_image_url').val('');
+  Object.keys(data).forEach(key => {
+    const $field = $form.find(`[name="${key}"], #${key}`);
+    if (!$field.length) return;
+
+    const value = data[key];
+
+    if ($field.is(':radio')) {
+      $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+    } 
+    else if ($field.is(':checkbox')) {
+      $form.find(`input[name="${key}"]`).prop('checked', false);
+      if (Array.isArray(value)) {
+        value.forEach(v => $form.find(`input[name="${key}"][value="${v}"]`).prop('checked', true));
+      } else {
+        $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+      }
+    } 
+    else if ($field.is('select')) {
+      $field.val(value).trigger('change');
+    } 
+    else {
+      $field.val(value);
     }
+  });
 
-    // 👉 cập nhật lại các preview field
-    if (typeof previewFields !== 'undefined') {
-      previewFields.forEach(({ id }) => {
-        if (typeof updatePreview === 'function') {
-          updatePreview(id);
-        }
-      });
+  // Xử lý ảnh riêng
+  if (data.mc_image_url) {
+    $('#mc_preview_image').attr('src', data.mc_image_url).show();
+  } else {
+    $('#mc_preview_image').hide().attr('src', '');
+  }
+
+  // Cập nhật preview nhỏ
+  if (typeof previewFields !== 'undefined') {
+    previewFields.forEach(({ id }) => {
+      if (typeof updatePreview === 'function') {
+        updatePreview(id);
+      }
+    });
+  }
+
+  // Cập nhật preview toàn bộ
+  const fullPreviewZone = document.getElementById('mcPreview');
+  if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
+    if (typeof updateFullPreview === 'function') {
+      updateFullPreview();
     }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
     // 👉 chỉ update full preview nếu đang hiển thị
     const fullPreviewZone = document.getElementById('mcPreview');
