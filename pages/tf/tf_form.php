@@ -150,51 +150,63 @@
   </script>
   
   <script>
-  // Nhận dữ liệu từ iframe DataTable để fill form
-  window.addEventListener('message', function (event) {
-    const { type, data } = event.data || {};
-    if (type !== 'fill-form' || !data) return;
+// Nhận dữ liệu từ iframe DataTable để fill form (TF Questions)
+window.addEventListener('message', function (event) {
+  const { type, data } = event.data || {};
+  if (type !== 'fill-form' || !data) return;
 
-    $('#tf_id').val(data.tf_id || '');
-    $('#tf_topic').val(data.tf_topic || '');
-    $('#tf_question').val(data.tf_question || '');
-    $('#tf_statement1').val(data.tf_statement1 || '');
-    $('#tf_statement2').val(data.tf_statement2 || '');
-    $('#tf_statement3').val(data.tf_statement3 || '');
-    $('#tf_statement4').val(data.tf_statement4 || '');
-    $('#tf_correct_answer1').val(data.tf_correct_answer1 || '');
-    $('#tf_correct_answer2').val(data.tf_correct_answer2 || '');
-    $('#tf_correct_answer3').val(data.tf_correct_answer3 || '');
-    $('#tf_correct_answer4').val(data.tf_correct_answer4 || '');
+  const $form = $('#tfForm');
 
-    if (data.tf_image_url) {
-      $('#tf_preview_image').attr('src', data.tf_image_url).show();
-      $('#tf_image_url').val(data.tf_image_url);
-    } else {
-      $('#tf_preview_image').hide().attr('src', '');
-      $('#tf_image_url').val('');
-    }
+  Object.keys(data).forEach(key => {
+    const $field = $form.find(`[name="${key}"], #${key}`); 
+    if (!$field.length) return;
 
-    // 👉 cập nhật lại các preview field
-    if (typeof previewFields !== 'undefined') {
-      previewFields.forEach(({ id }) => {
-        if (typeof updatePreview === 'function') {
-          updatePreview(id);
-        }
-      });
-    }
+    const value = data[key];
 
-    // 👉 chỉ update full preview nếu đang hiển thị
-    const fullPreviewZone = document.getElementById('tfPreview');
-    if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
-      if (typeof updateFullPreview === 'function') {
-        updateFullPreview();
+    if ($field.is(':radio')) {
+      $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+    } 
+    else if ($field.is(':checkbox')) {
+      $form.find(`input[name="${key}"]`).prop('checked', false);
+      if (Array.isArray(value)) {
+        value.forEach(v => $form.find(`input[name="${key}"][value="${v}"]`).prop('checked', true));
+      } else {
+        $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
       }
+    } 
+    else if ($field.is('select')) {
+      $field.val(value).trigger('change');
+    } 
+    else {
+      $field.val(value);
     }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+
+  // Xử lý ảnh riêng
+  if (data.tf_image_url) {
+    $('#tf_preview_image').attr('src', data.tf_image_url).show();
+  } else {
+    $('#tf_preview_image').hide().attr('src', '');
+  }
+
+  // Cập nhật preview nhỏ (nếu có)
+  if (typeof previewFields !== 'undefined' && typeof updatePreview === 'function') {
+    previewFields.forEach(({ id }) => updatePreview(id));
+  }
+
+  // 👉 chỉ update full preview nếu đang hiển thị
+  const fullPreviewZone = document.getElementById('tfPreview');
+  if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
+    if (typeof updateFullPreview === 'function') {
+      updateFullPreview();
+    }
+  }
+
+  // Cuộn lên đầu form
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 </script>
+
 
 </body>
 </html>
