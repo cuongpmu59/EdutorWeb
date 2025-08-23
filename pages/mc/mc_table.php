@@ -184,7 +184,7 @@ $(function () {
 });
 </script>
 <!-- Hỗ trợ di chuyển bằng phím -->
- <script src="../../js/mc/mc_table_arrow_key.js"></script> -->
+ <script src="../../js/mc/mc_table_event.js"></script>
 <!-- <script src="../../js/mc/mc_table_click.js"></script> -->
 
 </body>
