@@ -197,8 +197,7 @@ $(function () {
 });
 </script>
 </script>
-<!-- Hỗ trợ di chuyển bằng phím -->
-<script src="../../js/tf/tf_table_arrow_key.js"></script>
-
+<!-- Hỗ trợ các sự kiện -->
+<script src="../../js/tf/tf_table_event.js"></script>
 </body>
 </html>
