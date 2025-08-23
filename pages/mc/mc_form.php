@@ -1,227 +1,122 @@
+<?php
+// mc_form.php
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Câu hỏi trắc nghiệm</title>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="../../css/mc/mc_form_image.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_preview.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_button.css">
-  <link rel="stylesheet" href="../../css/mc/mc_form_layout.css">
-
-  <!-- MathJax -->
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['\\[', '\\]'], ['$$', '$$']],
-        processEscapes: true
-      },
-      options: {
-        skipHtmlTags: ['script','noscript','style','textarea','pre'],
-        ignoreHtmlClass: 'tex2jax_ignore'
-      }
-    };
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-
-  <!-- jQuery + icon -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Form câu hỏi</title>
+  <style>
+    .form-group { margin-bottom: 10px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #mc_preview_image {
+      max-width: 200px;
+      margin-top: 10px;
+      display: none;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-  <div id="formContainer">
-    <form id="mcForm" method="POST" enctype="multipart/form-data">
-      <h2>
-        Câu hỏi trắc nghiệm
-        <span id="mcTogglePreview" title="Xem trước toàn bộ"><i class="fa fa-eye"></i></span>
-      </h2>
-
-      <div id="mcPreview" class="mc-preview-zone" style="display:none;">
-        <div id="mcPreviewContent"></div>
-      </div>
-
-      <div id="mcMainContent" class="mc-columns">
-        <!-- Cột trái -->
-        <div class="mc-col mc-col-left">
-          <fieldset class="mc-group">
-            <legend>Thông tin câu hỏi</legend>
-
-            <div class="mc-field">
-              <label for="mc_topic">Chủ đề:</label>
-              <input type="text" id="mc_topic" name="mc_topic" required>
-            </div>
-
-            <div class="mc-field">
-              <label for="mc_question">Câu hỏi:
-                <button type="button" class="toggle-preview" data-target="mc_question"><i class="fa fa-eye"></i></button>
-              </label>
-              <textarea id="mc_question" name="mc_question" required></textarea>
-              <div class="preview-box" id="preview-mc_question" style="display:none;"></div>
-            </div>
-
-            <!-- Câu trả lời A - D -->
-            <?php
-            $answers = ['A','B','C','D'];
-            foreach ($answers as $i => $label) {
-                $num = $i+1;
-                echo '<div class="mc-field mc-inline-field">
-                        <label for="mc_answer'.$num.'">'.$label.'. 
-                          <button type="button" class="toggle-preview" data-target="mc_answer'.$num.'"><i class="fa fa-eye"></i></button>
-                        </label>
-                        <input type="text" id="mc_answer'.$num.'" name="answer'.$num.'" required>
-                        <div class="preview-box" id="preview-mc_answer'.$num.'" style="display:none;"></div>
-                      </div>';
-            }
-            ?>
-
-            <div class="mc-field mc-inline-field">
-              <label for="mc_correct_answer">Đáp án đúng:</label>
-              <select id="mc_correct_answer" name="mc_correct_answer" required>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-              </select>
-            </div>
-          </fieldset>
-        </div>
-
-        <!-- Cột phải -->
-        <div class="mc-col mc-col-right">
-          <div class="mc-image-zone mc-group">
-            <h4>Ảnh minh họa</h4>
-            <div class="mc-image-preview">
-              <img id="mc_preview_image" src="" alt="Hình minh hoạ" style="display:none; max-width:200px;">
-            </div>
-            <div class="mc-image-buttons">
-              <label class="btn-upload">
-                Tải ảnh
-                <input type="file" id="mc_image" name="mc_image" accept="image/*" hidden>
-              </label>
-              <button type="button" id="mc_clear_image">Xóa ảnh</button>
-            </div>
-            <input type="hidden" name="mc_image_url" id="mc_image_url">
-            <div id="statusMsg"></div>
-          </div>
-
-          <div class="mc-buttons-wrapper mc-group">
-            <h4>Thao tác</h4>
-            <div class="mc-buttons">
-              <button type="submit" id="mc_save">Lưu</button>
-              <button type="button" id="mc_delete">Xóa</button>
-              <button type="button" id="mc_reset">Làm mới</button>
-              <button type="button" id="mc_view_list">Ẩn/hiện danh sách</button>
-              <button type="button" id="mc_preview_exam" class="full-width">Làm đề</button>
-            </div>
-            <input type="hidden" id="mc_id" name="mc_id">
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <!-- Bảng quản lý -->
-  <div id="mcTableWrapper" style="display:none;">
-    <iframe id="mcTableFrame" src="../../pages/mc/mc_table.php" style="width:100%; height:600px; border:none;"></iframe>
-  </div>
-
-  <!-- JS -->
-  <script src="../../js/mc/mc_form_preview.js"></script>
-  <script src="../../js/mc/mc_form_image.js"></script>
-  <script src="../../js/mc/mc_form_button.js"></script>
+  <form id="mcForm">
+    <div class="form-group">
+      <label for="mc_topic">Chủ đề</label>
+      <input type="text" id="mc_topic" name="mc_topic">
+    </div>
+    <div class="form-group">
+      <label for="mc_question">Câu hỏi</label>
+      <textarea id="mc_question" name="mc_question"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="mc_answer1">Đáp án 1</label>
+      <input type="text" id="mc_answer1" name="mc_answer1">
+    </div>
+    <div class="form-group">
+      <label for="mc_answer2">Đáp án 2</label>
+      <input type="text" id="mc_answer2" name="mc_answer2">
+    </div>
+    <div class="form-group">
+      <label for="mc_answer3">Đáp án 3</label>
+      <input type="text" id="mc_answer3" name="mc_answer3">
+    </div>
+    <div class="form-group">
+      <label for="mc_answer4">Đáp án 4</label>
+      <input type="text" id="mc_answer4" name="mc_answer4">
+    </div>
+    <div class="form-group">
+      <label for="mc_correct_answer">Đáp án đúng</label>
+      <select id="mc_correct_answer" name="mc_correct_answer">
+        <option value="">-- Chọn --</option>
+        <option value="1">Đáp án 1</option>
+        <option value="2">Đáp án 2</option>
+        <option value="3">Đáp án 3</option>
+        <option value="4">Đáp án 4</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mc_image_url">Hình ảnh</label>
+      <input type="text" id="mc_image_url" name="mc_image_url">
+      <img id="mc_preview_image" src="" alt="Preview">
+    </div>
+    <button type="submit">Lưu</button>
+  </form>
 
   <script>
-  // Auto-resize tất cả textarea
-  document.addEventListener("input", function(e) {
-    if (e.target.tagName.toLowerCase() !== "textarea") return;
-    e.target.style.height = "auto";                     // reset trước
-    e.target.style.height = e.target.scrollHeight + "px"; // cao vừa đủ
-  });
+    // Nhận dữ liệu từ bảng (qua postMessage)
+    window.addEventListener("message", function(event) {
+      if (!event.data || event.data.type !== "fill-form") return;
 
-  // Chạy 1 lần khi trang load (để resize theo dữ liệu sẵn có)
-  window.addEventListener("load", function() {
-    document.querySelectorAll("textarea").forEach(function(el) {
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + "px";
+      const rowData = event.data.data || {};
+
+      // Đổ dữ liệu vào form tự động
+      for (const key in rowData) {
+        if (!rowData.hasOwnProperty(key)) continue;
+
+        const value = rowData[key] ?? "";
+        const field = document.querySelector(`#${key}, [name="${key}"]`);
+
+        if (field) {
+          const tag = field.tagName.toLowerCase();
+          const type = field.type;
+
+          if (tag === "select") {
+            field.value = value;
+          } else if (tag === "textarea") {
+            field.value = value;
+          } else if (tag === "input") {
+            if (type === "radio" || type === "checkbox") {
+              const radios = document.querySelectorAll(`[name="${key}"]`);
+              radios.forEach(r => {
+                if (r.value == value) {
+                  r.checked = true;
+                }
+              });
+            } else {
+              field.value = value;
+            }
+          }
+        }
+
+        // Preview hình ảnh
+        if (key === "mc_image_url") {
+          const preview = document.getElementById("mc_preview_image");
+          if (value) {
+            preview.src = value;
+            preview.style.display = "block";
+          } else {
+            preview.src = "";
+            preview.style.display = "none";
+          }
+        }
+      }
     });
-  });
   </script>
-
-<script>
-  // Nhận dữ liệu từ iframe DataTable để fill form
-  // Nhận dữ liệu từ iframe DataTable để fill form
-window.addEventListener('message', function (event) {
-  const { type, data } = event.data || {};
-  if (type !== 'fill-form' || !data) return;
-
-  const $form = $('#mcForm');
-
-  Object.keys(data).forEach(key => {
-    const $field = $form.find(`[name="${key}"], #${key}`);
-    if (!$field.length) return;
-
-    const value = data[key];
-
-    if ($field.is(':radio')) {
-      $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
-    } 
-    else if ($field.is(':checkbox')) {
-      $form.find(`input[name="${key}"]`).prop('checked', false);
-      if (Array.isArray(value)) {
-        value.forEach(v => $form.find(`input[name="${key}"][value="${v}"]`).prop('checked', true));
-      } else {
-        $form.find(`input[name="${key}"][value="${value}"]`).prop('checked', true);
-      }
-    } 
-    else if ($field.is('select')) {
-      $field.val(value).trigger('change');
-    } 
-    else {
-      $field.val(value);
-    }
-  });
-
-  // Xử lý ảnh riêng
-  if (data.mc_image_url) {
-    $('#mc_preview_image').attr('src', data.mc_image_url).show();
-  } else {
-    $('#mc_preview_image').hide().attr('src', '');
-  }
-
-  // Cập nhật preview nhỏ
-  if (typeof previewFields !== 'undefined') {
-    previewFields.forEach(({ id }) => {
-      if (typeof updatePreview === 'function') {
-        updatePreview(id);
-      }
-    });
-  }
-
-  // Cập nhật preview toàn bộ
-  const fullPreviewZone = document.getElementById('mcPreview');
-  if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
-    if (typeof updateFullPreview === 'function') {
-      updateFullPreview();
-    }
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-    // 👉 chỉ update full preview nếu đang hiển thị
-    const fullPreviewZone = document.getElementById('mcPreview');
-    if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
-      if (typeof updateFullPreview === 'function') {
-        updateFullPreview();
-      }
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-</script>
-
-  
 </body>
 </html>
