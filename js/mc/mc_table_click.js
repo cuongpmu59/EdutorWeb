@@ -2,37 +2,63 @@
 $(document).ready(function () {
     const table = $('#mcTable').DataTable();
 
-    // Click vào 1 dòng
     $('#mcTable tbody').on('click', 'tr', function () {
         const rowData = table.row(this).data();
         if (!rowData) return;
+
+        console.log('Row clicked:', rowData); // Debug
 
         // Highlight dòng chọn
         $('#mcTable tbody tr').removeClass('selected');
         $(this).addClass('selected');
 
-        // Gán dữ liệu vào form
-        $('#mc_topic').val(rowData.mc_topic || '');
-        $('#mc_question').val(rowData.mc_question || '');
-        $('#mc_answer1').val(rowData.mc_answer1 || '');
-        $('#mc_answer2').val(rowData.mc_answer2 || '');
-        $('#mc_answer3').val(rowData.mc_answer3 || '');
-        $('#mc_answer4').val(rowData.mc_answer4 || '');
-        $('#mc_correct_answer').val(rowData.mc_correct_answer || '');
+        // Tự động gán dữ liệu cho form theo key
+        for (const key in rowData) {
+            if (!rowData.hasOwnProperty(key)) continue;
 
-        // Hình ảnh (nếu có)
-        if (rowData.mc_image_url) {
-            $('#mc_image_url').val(rowData.mc_image_url);
-            $('#mc_preview_image').attr('src', rowData.mc_image_url).show();
-        } else {
-            $('#mc_image_url').val('');
-            $('#mc_preview_image').attr('src', '').hide();
+            const value = rowData[key] ?? '';
+            const $field = $(`#${key}, [name="${key}"]`);
+
+            if ($field.length) {
+                $field.each(function () {
+                    const type = $(this).attr('type');
+                    const tag = this.tagName.toLowerCase();
+
+                    if (tag === 'input' && type === 'radio') {
+                        // Radio: chọn cái nào có value trùng
+                        if ($(this).val() == value) {
+                            $(this).prop('checked', true);
+                        }
+                    } else if (tag === 'input' && type === 'checkbox') {
+                        // Checkbox: tick nếu value truthy
+                        if (value === true || value === 1 || value === '1' || value === 'on') {
+                            $(this).prop('checked', true);
+                        } else {
+                            $(this).prop('checked', false);
+                        }
+                    } else if (tag === 'select' || tag === 'textarea' || tag === 'input') {
+                        // Textbox, textarea, select
+                        $(this).val(value);
+                    }
+                });
+            }
+
+            // Nếu là field ảnh → gán preview
+            if (key === 'mc_image_url') {
+                if (value) {
+                    $('#mc_preview_image').attr('src', value).show();
+                } else {
+                    $('#mc_preview_image').attr('src', '').hide();
+                }
+            }
         }
 
-        // Scroll tới form & focus vào ô đầu tiên
-        $('html, body').animate({
-            scrollTop: $('#mcForm').offset().top - 20
-        }, 400);
-        $('#mc_topic').focus();
+        // Cuộn tới form và focus vào ô đầu tiên
+        if ($('#mcForm').length) {
+            $('html, body').animate({
+                scrollTop: $('#mcForm').offset().top - 20
+            }, 400);
+            $('#mcForm').find('input, textarea, select').first().focus();
+        }
     });
 });
