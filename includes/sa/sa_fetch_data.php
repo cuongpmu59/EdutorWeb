@@ -3,10 +3,10 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../db_connection.php';
 
 // Lấy các tham số từ DataTables
-$draw  = intval($_POST['draw'] ?? 0);
-$start = intval($_POST['start'] ?? 0);
-$length= intval($_POST['length'] ?? 10);
-$search= trim($_POST['search']['value'] ?? '');
+$draw   = intval($_POST['draw'] ?? 0);
+$start  = intval($_POST['start'] ?? 0);
+$length = intval($_POST['length'] ?? 10);
+$search = trim($_POST['search']['value'] ?? '');
 $orderColIndex = intval($_POST['order'][0]['column'] ?? 0);
 $orderDir      = in_array($_POST['order'][0]['dir'] ?? '', ['asc','desc']) ? $_POST['order'][0]['dir'] : 'asc';
 
@@ -22,7 +22,7 @@ $columns = [
 
 $orderColumn = $columns[$orderColIndex] ?? 'sa_id';
 
-// Lọc chủ đề nếu có
+// Lọc theo chủ đề nếu có
 $topicFilter = trim($_POST['columns'][1]['search']['value'] ?? '');
 
 try {
@@ -62,7 +62,7 @@ try {
     $stmt->execute($params);
     $totalFiltered = $stmt->fetchColumn();
 
-    // Lấy dữ liệu với giới hạn, sắp xếp
+    // Lấy dữ liệu với limit + sort
     $sql = "SELECT * FROM sa_questions $where ORDER BY $orderColumn $orderDir LIMIT :start, :length";
     $stmt = $conn->prepare($sql);
 
@@ -76,7 +76,7 @@ try {
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Trả về JSON
+    // Trả về JSON cho DataTables
     echo json_encode([
         "draw" => $draw,
         "recordsTotal" => intval($totalRecords),
