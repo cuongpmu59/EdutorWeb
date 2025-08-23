@@ -90,33 +90,23 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
   const formData = new FormData();
   const getVal = id => document.getElementById(id)?.value.trim() || '';
 
-  // Các trường bắt buộc
   const requiredFields = [
     'tf_topic', 'tf_question',
     'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
     'tf_correct_answer1', 'tf_correct_answer2', 'tf_correct_answer3', 'tf_correct_answer4'
-  ];
+];
 
-  let valid = true;
-  requiredFields.forEach(field => {
-    const el = document.getElementById(field);
+for (const field of requiredFields) {
     if (!getVal(field)) {
-      el?.classList.add('input-error'); // highlight thiếu
-      valid = false;
-    } else {
-      el?.classList.remove('input-error');
+        alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
+        return;
     }
-  });
+}
 
-  if (!valid) {
-    alert('⚠️ Vui lòng nhập đầy đủ tất cả các trường.');
-    return;
-  }
-
-  ['tf_id', ...requiredFields].forEach(id => {
+['tf_id', ...requiredFields].forEach(id => {
     formData.append(id, getVal(id));
-  });
-  formData.append('tf_image_url', getVal('tf_image_url'));
+});
+formData.append('tf_image_url', getVal('tf_image_url'));
 
   try {
     const res = await fetch('../../includes/tf/tf_form_save.php', {
