@@ -150,8 +150,7 @@
   </script>
 
 <script>
-  // Nhận dữ liệu từ iframe DataTable để fill form
-  // Nhận dữ liệu từ iframe DataTable để fill form
+// Nhận dữ liệu từ iframe DataTable để fill form
 window.addEventListener('message', function (event) {
   const { type, data } = event.data || {};
   if (type !== 'fill-form' || !data) return;
@@ -190,16 +189,12 @@ window.addEventListener('message', function (event) {
     $('#mc_preview_image').hide().attr('src', '');
   }
 
-  // Cập nhật preview nhỏ
-  if (typeof previewFields !== 'undefined') {
-    previewFields.forEach(({ id }) => {
-      if (typeof updatePreview === 'function') {
-        updatePreview(id);
-      }
-    });
+  // Cập nhật preview nhỏ (nếu có)
+  if (typeof previewFields !== 'undefined' && typeof updatePreview === 'function') {
+    previewFields.forEach(({ id }) => updatePreview(id));
   }
 
-  // Cập nhật preview toàn bộ
+  // 👉 chỉ update full preview nếu đang hiển thị
   const fullPreviewZone = document.getElementById('mcPreview');
   if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
     if (typeof updateFullPreview === 'function') {
@@ -207,21 +202,10 @@ window.addEventListener('message', function (event) {
     }
   }
 
+  // Cuộn lên đầu form
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-    // 👉 chỉ update full preview nếu đang hiển thị
-    const fullPreviewZone = document.getElementById('mcPreview');
-    if (fullPreviewZone && window.getComputedStyle(fullPreviewZone).display !== 'none') {
-      if (typeof updateFullPreview === 'function') {
-        updateFullPreview();
-      }
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
 </script>
-
   
 </body>
 </html>
