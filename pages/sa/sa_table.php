@@ -5,7 +5,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quản lý câu hỏi SA</title>
+<title>Quản lý câu hỏi tự luận ngắn</title>
 
 <!-- MathJax -->
 <script>
@@ -17,23 +17,26 @@ window.MathJax = {
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
 
 <!-- DataTables + Buttons CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <!-- Custom CSS -->
-<link rel="stylesheet" href="../../css/sa/sa_table_layout.css">
 <link rel="stylesheet" href="../../css/sa/sa_table_toolbar.css">
-
+<link rel="stylesheet" href="../../css/sa/sa_table_layout.css">
 </head>
 <body>
 
-<h2>📋 Danh sách câu hỏi Short Answer</h2>
+<h2>📋 Danh sách câu hỏi tự luận ngắn</h2>
 
 <!-- Toolbar -->
 <div class="sa-toolbar">
   <div class="toolbar-left">
     <label for="importExcelInput" class="toolbar-btn">📥 Nhập Excel</label>
     <input type="file" id="importExcelInput" accept=".xlsx" hidden>
+    <button class="toolbar-btn" id="btnDownloadTemplate">📝 Tải Template Excel</button>
     <button class="toolbar-btn" id="btnExportExcel">📤 Xuất Excel</button>
     <button class="toolbar-btn" id="btnPrint">🖨️ In bảng</button>
   </div>
@@ -55,6 +58,7 @@ window.MathJax = {
       <th>Chủ đề</th>
       <th>Câu hỏi</th>
       <th>Đáp án</th>
+      <th>Đáp án đúng</th>
       <th>Hình minh họa</th>
       <th>Ngày tạo</th>
     </tr>
@@ -69,6 +73,7 @@ window.MathJax = {
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
 $(function () {
@@ -86,14 +91,15 @@ $(function () {
                             ${d.length>80 ? d.substr(0,80)+'…' : d}
                           </span>` : ''
       },
+      { data:'sa_answer' },
       { data:'sa_correct_answer' },
       { data:'sa_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'sa_created_at' }
     ],
     dom: 'Brtip',
     buttons: [
-      { extend:'excelHtml5', title:'Danh sách câu hỏi SA', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
-      { extend:'print', title:'Danh sách câu hỏi SA', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
+      { extend:'excelHtml5', title:'Danh sách câu hỏi tự luận ngắn', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
+      { extend:'print', title:'Danh sách câu hỏi tự luận ngắn', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
     ],
     responsive: true,
     scrollX: true,
@@ -105,33 +111,74 @@ $(function () {
   });
 
   table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
-
   $('#filterTopic').on('change', function(){ table.column(1).search(this.value).draw(); });
   $('#customSearch').on('keyup change', function(){ table.search(this.value).draw(); });
-
   $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
   $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
-  $('#importExcelInput').on('change', function(e){
+  toastr.options = { closeButton: true, progressBar: true, positionClass: "toast-top-right", timeOut: "3000" };
+
+  // ================== Nhập Excel ==================
+  $('#importExcelInput').on('change', function(e) {
     const file = e.target.files[0];
-    if(!file) return;
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = function(evt){
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data,{type:'array'});
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName],{defval:''});
-      if(!worksheet.length){ alert('File Excel rỗng!'); return; }
-      $.post('../../includes/sa/sa_table_import_excel.php',{rows:JSON.stringify(worksheet)})
-       .done(()=>{ alert('📥 Nhập dữ liệu thành công!'); table.ajax.reload(); })
-       .fail(()=>{ alert('❌ Lỗi khi nhập Excel'); });
+    reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+
+        if (!worksheet.length) {
+            toastr.warning('📂 File Excel rỗng!');
+            $('#importExcelInput').val('');
+            return;
+        }
+
+        toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
+
+        $.ajax({
+            url: '../../includes/sa/sa_table_import_excel.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ rows: worksheet }),
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
+                    if(res.errors && res.errors.length) {
+                        res.errors.forEach(e => toastr.warning(e));
+                    }
+                    table.ajax.reload();
+                } else {
+                    toastr.error(res.message || '❌ Lỗi khi nhập Excel');
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                toastr.error('❌ Không thể gửi dữ liệu tới server');
+            },
+            complete: function() {
+                $('#importExcelInput').val('');
+            }
+        });
     };
     reader.readAsArrayBuffer(file);
+});
+
+  // ================== Tải Template Excel ==================
+  $('#btnDownloadTemplate').on('click', function(){
+      const header = ["sa_topic","sa_question","sa_answer","sa_correct_answer","sa_image_url"];
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet([{}], {header: header});
+      XLSX.utils.book_append_sheet(wb, ws, "Template");
+      XLSX.writeFile(wb, "template_sa_questions.xlsx");
   });
 });
 </script>
-
-<script src="../../js/sa/sa_table_event.js"></script>
+<!-- Hỗ trợ các sự kiện -->
+ <script src="../../js/sa/sa_table_event.js"></script>
 
 </body>
 </html>
