@@ -1,49 +1,116 @@
-/* Thanh toolbar cho tf_table */
-.tf-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    gap: 10px;
-    flex-wrap: wrap;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  
-  .toolbar-left,
-  .toolbar-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  
-  .toolbar-btn {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
+/* ===============================
+   tf_table_layout.css
+   Layout bảng quản lý câu hỏi tự luận (#tfTable)
+   Override DataTables giữ style custom
+   =============================== */
+
+/* Bảng chính */
+#tfTable.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     border-radius: 6px;
+    overflow: hidden;
+    border: none !important;
+  }
+  
+  /* HEADER – ép màu xanh, override mọi trạng thái */
+  #tfTable.dataTable thead th,
+  #tfTable.dataTable thead td,
+  #tfTable.dataTable thead th.sorting,
+  #tfTable.dataTable thead th.sorting_asc,
+  #tfTable.dataTable thead th.sorting_desc,
+  #tfTable.dataTable thead th.sorting_asc_disabled,
+  #tfTable.dataTable thead th.sorting_desc_disabled {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(135deg, #4a90e2, #357ab7) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    text-align: center;
+    padding: 10px 12px;
+    border: none !important;
+    border-bottom: 2px solid #2f5fa1 !important;
+    white-space: nowrap;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  /* Bo góc header */
+  #tfTable.dataTable thead th:first-child { border-top-left-radius: 6px; }
+  #tfTable.dataTable thead th:last-child  { border-top-right-radius: 6px; }
+  
+  /* Sort arrow màu trắng */
+  #tfTable.dataTable thead th:before,
+  #tfTable.dataTable thead th:after {
+    color: #fff !important;
+    opacity: 0.8;
+  }
+  
+  /* BODY */
+  #tfTable.dataTable tbody th,
+  #tfTable.dataTable tbody td {
+    border: none !important;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e6e6e6;
+    vertical-align: middle;
+  }
+  
+  /* Cột câu hỏi */
+  #tfTable.dataTable td.tf-question-cell {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Ảnh minh họa */
+  #tfTable.dataTable td img {
+    max-width: 80px;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #eee;
+    transition: transform 0.2s ease-in-out;
+  }
+  #tfTable.dataTable td img:hover {
+    transform: scale(1.8);
+    z-index: 1000;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  
+  /* Zebra striping + hover */
+  #tfTable.dataTable tbody tr:nth-child(even) { background: #f9f9f9; }
+  #tfTable.dataTable tbody tr:nth-child(odd)  { background: #fff; }
+  #tfTable.dataTable tbody tr:hover {
+    background: #f2f8ff !important;
+    transition: background 0.2s;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
   }
   
-  .toolbar-btn:hover {
-    background: #0056b3;
+  /* Highlight dòng được chọn */
+  #tfTable.dataTable tbody tr.selected {
+    background: #bbdefb !important;
+    color: #0d47a1 !important;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 2px #1976d2;
   }
   
-  .tf-toolbar label {
-    font-weight: 500;
+  /* Wrapper */
+  .dataTables_wrapper {
+    width: 100%;
+    overflow-x: auto;
+    position: relative;
+    z-index: 1;
   }
   
-  .tf-toolbar input[type="text"],
-  .tf-toolbar select {
-    padding: 5px 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    min-width: 180px;
-  }
+  /* Ẩn search + Excel/Print */
+  .dataTables_filter { display: none !important; }
+  button.dt-button.buttons-excel,
+  button.dt-button.buttons-print { display: none !important; }
   
