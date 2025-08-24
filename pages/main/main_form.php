@@ -1,24 +1,14 @@
 <?php
-// ini_set('display_errors', 1);
-// error_reporting(E_ALL);
-// // require 'dotenv.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>🧾 Quản lý Ngân hàng Câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  Giao diện tổng hợp
   <link rel="stylesheet" href="../../css/main/main_form.css">
 
-  <!-- MathJax (Toán học) -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script> -->
-</head>
-<body class="main-layout">
-
+  <body class="main-layout">
   <!-- Thanh Tab điều hướng -->
   <div class="tab-bar">
     <button class="tab-button active" data-url="../../pages/mc/mc_form.php">❓ Trắc nghiệm nhiều lựa chọn</button>
