@@ -67,6 +67,38 @@
   text-overflow: ellipsis;
 }
 
+/* Cột statement1 */
+#tfTable.dataTable td.tf-statement1-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cột statement2 */
+#tfTable.dataTable td.tf-statement2-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cột statement3 */
+#tfTable.dataTable td.tf-statement3-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cột statement4 */
+#tfTable.dataTable td.tf-statement4-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Ảnh minh họa */
 #tfTable.dataTable td img {
   max-width: 80px;
