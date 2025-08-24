@@ -1,9 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-// require 'dotenv.php';
+// ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// // require 'dotenv.php';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,7 +15,7 @@ error_reporting(E_ALL);
   <link rel="stylesheet" href="css/main_ui.css">
 
   <!-- MathJax (Toán học) -->
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script> -->
 </head>
 <body class="main-layout">
 
