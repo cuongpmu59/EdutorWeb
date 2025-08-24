@@ -79,8 +79,8 @@
               <textarea id="tf_statement'.$i.'" name="statement'.$i.'" required></textarea>
               <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>
               <div class="tf-radio-group">
-                <label><input type="radio" name="correct_answer'.$i.'" value="1" required> Đúng</label>
-                <label><input type="radio" name="correct_answer'.$i.'" value="0"> Sai</label>
+                <label><input type="radio" name="tf_correct_answer'.$i.'" value="1" required> Đúng</label>
+                <label><input type="radio" name="tf_correct_answer'.$i.'" value="0"> Sai</label>
               </div>
             </div>';
           }
