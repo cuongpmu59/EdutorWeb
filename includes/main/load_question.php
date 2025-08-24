@@ -1,5 +1,5 @@
 <?php
-require 'db_connection.php'; // Kết nối CSDL
+require '../../includes/db_connection.php'; // Kết nối CSDL
 
 function latexWrap($str) {
     $str = str_replace('\\\\', '\\', $str); // khôi phục dấu gạch chéo
