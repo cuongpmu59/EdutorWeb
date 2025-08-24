@@ -76,7 +76,7 @@
                 <button type="button" class="toggle-preview" data-target="tf_statement'.$i.'"><i class="fa fa-eye"></i></button>
               </label>
               
-              <textarea id="tf_statement'.$i.'" name="statement'.$i.'" required></textarea>
+              <textarea id="tf_statement'.$i.'" name="tf_statement'.$i.'" required></textarea>
               <div class="preview-box" id="preview-tf_statement'.$i.'" style="display:none;"></div>
               <div class="tf-radio-group">
                 <label><input type="radio" name="tf_correct_answer'.$i.'" value="1" required> Đúng</label>
