@@ -49,12 +49,13 @@ document.getElementById('tf_save')?.addEventListener('click', async () => {
   ];
 
   // Validate
-  for (const field of requiredFields) {
-    if (!getVal(field)) {
-      alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
-      return;
-    }
+for (const field of requiredFields) {
+  const val = getVal(field);
+  if (val === '') {   // chỉ khi rỗng mới báo lỗi
+    alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
+    return;
   }
+}
 
   // Append dữ liệu
   [
