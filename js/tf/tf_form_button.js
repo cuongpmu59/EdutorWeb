@@ -1,112 +1,72 @@
+// ================== tf_form_button.js ==================
+
 // ==== Nút "Làm mới" (#tf_reset) ====
-document.getElementById('tf_reset').addEventListener('click', function () {
+document.getElementById('tf_reset')?.addEventListener('click', function () {
   const form = document.getElementById('tfForm');
 
+  // Reset text + textarea
   form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+
+  // Reset select
   form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
 
+  // Reset radio + checkbox
+  form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+
+  // Reset ảnh preview
   const img = document.getElementById('tf_preview_image');
   if (img) {
     img.src = '';
     img.style.display = 'none';
   }
 
-  const imageInput = form.querySelector('#tf_image');
-  if (imageInput) imageInput.value = '';
-
-  const hiddenImage = form.querySelector('input[name="existing_image"]');
-  if (hiddenImage) hiddenImage.remove();
-
-  document.querySelectorAll('.preview-box').forEach(div => {
-    div.innerHTML = '';
-    div.style.display = 'none';
-  });
-  document.getElementById('tfPreview').style.display = 'none';
-  document.getElementById('tfPreviewContent').innerHTML = '';
-
-  if (window.MathJax && window.MathJax.typeset) {
-    MathJax.typeset();
-  }
-
-  const idInput = document.getElementById('tf_id');
-  if (idInput) idInput.remove();
-
-  // Xóa highlight lỗi
-  form.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-});
-
-
-// ==== Nút "Xoá" (#tf_delete) ====
-document.getElementById('tf_delete').addEventListener('click', async function () {
-  const idInput = document.getElementById('tf_id');
-  if (!idInput) {
-    alert('⚠️ Không có câu hỏi nào để xoá.');
-    return;
-  }
-
-  const tf_id = idInput.value.trim();
-  if (!tf_id) {
-    alert('⚠️ ID câu hỏi không hợp lệ.');
-    return;
-  }
-
-  if (!confirm('❌ Bạn có chắc muốn xoá câu hỏi này?')) return;
-
-  const deleteBtn = this;
-  deleteBtn.disabled = true;
-  deleteBtn.textContent = 'Đang xoá...';
-
-  try {
-    const res = await fetch('../../includes/tf/tf_delete.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ tf_id })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      alert(data.message);
-      document.getElementById('tf_reset')?.click();
-      const frame = document.getElementById('tfTableFrame');
-      if (frame?.contentWindow) {
-        frame.contentWindow.location.reload(true);
-      }
-    } else {
-      alert(data.message);
-    }
-
-  } catch (err) {
-    alert('❌ Lỗi khi xoá: ' + err);
-  } finally {
-    deleteBtn.disabled = false;
-    deleteBtn.textContent = 'Xoá';
-  }
+  // Reset preview box
+  form.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
 });
 
 
 // ==== Nút "Lưu" (#tf_save) ====
 document.getElementById('tf_save')?.addEventListener('click', async () => {
   const formData = new FormData();
-  const getVal = id => document.getElementById(id)?.value.trim() || '';
 
+  // Hàm lấy giá trị (tự động xử lý text/textarea/select/radio/checkbox)
+  const getVal = nameOrId => {
+    const el = document.getElementById(nameOrId);
+    if (el) {
+      return el.value.trim();
+    }
+    // Nếu không tìm thấy theo id -> thử lấy radio/checkbox theo name
+    const checked = document.querySelector(`input[name="${nameOrId}"]:checked`);
+    if (checked) return checked.value;
+    return '';
+  };
+
+  // Các trường bắt buộc
   const requiredFields = [
     'tf_topic', 'tf_question',
     'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
-    'tf_correct_answer1', 'tf_correct_answer2', 'tf_correct_answer3', 'tf_correct_answer4'
-];
+    'correct_answer1', 'correct_answer2', 'correct_answer3', 'correct_answer4'
+  ];
 
-for (const field of requiredFields) {
+  // Validate
+  for (const field of requiredFields) {
     if (!getVal(field)) {
-        alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
-        return;
+      alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
+      return;
     }
-}
+  }
 
-['tf_id', ...requiredFields].forEach(id => {
-    formData.append(id, getVal(id));
-});
-formData.append('tf_image_url', getVal('tf_image_url'));
+  // Append dữ liệu
+  [
+    'tf_id', 'tf_topic', 'tf_question',
+    'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
+    'correct_answer1', 'correct_answer2', 'correct_answer3', 'correct_answer4'
+  ].forEach(name => {
+    formData.append(name, getVal(name));
+  });
+
+  // Ảnh (không bắt buộc)
+  formData.append('tf_image_url', getVal('tf_image_url'));
 
   try {
     const res = await fetch('../../includes/tf/tf_form_save.php', {
@@ -116,8 +76,11 @@ formData.append('tf_image_url', getVal('tf_image_url'));
 
     const data = await res.json();
     alert(data.message);
+
     if (data.status === 'success') {
+      // Reload bảng
       document.getElementById('tfTableFrame')?.contentWindow?.location.reload();
+      // Reset form
       document.getElementById('tf_reset')?.click();
     }
   } catch (err) {
@@ -125,11 +88,4 @@ formData.append('tf_image_url', getVal('tf_image_url'));
   }
 });
 
-
-// ==== Nút "Ẩn/hiện danh sách" (#tf_view_list) ====
-document.getElementById('tf_view_list').addEventListener('click', () => {
-  const wrapper = document.getElementById('tfTableWrapper');
-  wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
-    ? 'block'
-    : 'none';
-});
+// ========================================================
