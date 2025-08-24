@@ -21,13 +21,13 @@
 
   <!-- Thanh Tab điều hướng -->
   <div class="tab-bar">
-    <button class="tab-button active" data-url="pages/mc/mc_form.php">❓ Trắc nghiệm nhiều lựa chọn</button>
-    <button class="tab-button" data-url="pages/tf/tf_form.php">✔️ Trắc nghiệm Đúng/Sai</button>
-    <button class="tab-button" data-url="pages/sa/sa_form.php">✍️ Trắc nghiệm trả lời ngắn</button>
+    <button class="tab-button active" data-url="../../pages/mc/mc_form.php">❓ Trắc nghiệm nhiều lựa chọn</button>
+    <button class="tab-button" data-url="../../pages/tf/tf_form.php">✔️ Trắc nghiệm Đúng/Sai</button>
+    <button class="tab-button" data-url="../../pages/sa/sa_form.php">✍️ Trắc nghiệm trả lời ngắn</button>
   </div>
 
   <!-- Iframe chứa form tương ứng -->
-  <iframe id="formFrame" class="form-iframe" src="pages/mc/mc_form.php" allowfullscreen></iframe>
+  <iframe id="formFrame" class="form-iframe" src="../../pages/mc/mc_form.php" allowfullscreen></iframe>
 
   <!-- Script điều khiển chuyển tab -->
   <script>
