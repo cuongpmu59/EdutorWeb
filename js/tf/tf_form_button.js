@@ -1,92 +1,131 @@
-// ================== tf_form_button.js ==================
+// ===============================
+// tf_form_button.js
+// Xử lý nút bấm và validate form Đúng/Sai
+// ===============================
 
-// ==== Nút "Làm mới" (#tf_reset) ====
-document.getElementById('tf_reset')?.addEventListener('click', function () {
-  const form = document.getElementById('tfForm');
+$(document).ready(function () {
+  const $form = $("#tfForm");
 
-  // Reset text + textarea
-  form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+  // Hàm reset form
+  function resetForm() {
+    $form[0].reset();
+    $("#tf_id").val("");
+    $("#tf_preview_image").hide().attr("src", "");
+    $("#tf_image_url").val("");
+    $(".preview-box").hide().empty();
 
-  // Reset select
-  form.querySelectorAll('select').forEach(sel => sel.selectedIndex = 0);
-
-  // Reset radio + checkbox
-  form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
-
-  // Reset ảnh preview
-  const img = document.getElementById('tf_preview_image');
-  if (img) {
-    img.src = '';
-    img.style.display = 'none';
-  }
-
-  // Reset preview box
-  form.querySelectorAll('.preview-box').forEach(box => box.style.display = 'none');
-});
-
-
-// ==== Nút "Lưu" (#tf_save) ====
-document.getElementById('tf_save')?.addEventListener('click', async () => {
-  const formData = new FormData();
-
-  // Hàm lấy giá trị (tự động xử lý text/textarea/select/radio/checkbox)
-  const getVal = nameOrId => {
-    const el = document.getElementById(nameOrId);
-    if (el) {
-      return el.value.trim();
+    // reset radio
+    for (let i = 1; i <= 4; i++) {
+      $(`input[name="tf_correct_answer${i}"]`).prop("checked", false);
     }
-    // Nếu không tìm thấy theo id -> thử lấy radio/checkbox theo name
-    const checked = document.querySelector(`input[name="${nameOrId}"]:checked`);
-    if (checked) return checked.value;
-    return '';
-  };
 
-  // Các trường bắt buộc
-  const requiredFields = [
-    'tf_topic', 'tf_question',
-    'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
-    'correct_answer1', 'correct_answer2', 'correct_answer3', 'correct_answer4'
-  ];
-
-  // Validate
-for (const field of requiredFields) {
-  const val = getVal(field);
-  if (val === '') {   // chỉ khi rỗng mới báo lỗi
-    alert('⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi và đáp án.');
-    return;
+    if (typeof updateFullPreview === "function") {
+      updateFullPreview();
+    }
   }
-}
 
-  // Append dữ liệu
-  [
-    'tf_id', 'tf_topic', 'tf_question',
-    'tf_statement1', 'tf_statement2', 'tf_statement3', 'tf_statement4',
-    'correct_answer1', 'correct_answer2', 'correct_answer3', 'correct_answer4'
-  ].forEach(name => {
-    formData.append(name, getVal(name));
+  // Validate form
+  function validateForm() {
+    const topic = $("#tf_topic").val().trim();
+    const question = $("#tf_question").val().trim();
+
+    if (!topic || !question) {
+      alert("⚠️ Vui lòng nhập đầy đủ thông tin.");
+      return false;
+    }
+
+    for (let i = 1; i <= 4; i++) {
+      const stmt = $(`#tf_statement${i}`).val().trim();
+      const radios = $(`input[name="tf_correct_answer${i}"]:checked`).length;
+      if (!stmt || radios === 0) {
+        alert(`⚠️ Vui lòng nhập mệnh đề ${i} và chọn Đúng/Sai.`);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ====== Nút Lưu ======
+  $("#tf_save").on("click", function (e) {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const formData = new FormData($form[0]);
+
+    $.ajax({
+      url: "../../pages/tf/tf_save.php",
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      success: function (res) {
+        if (res.status === "success") {
+          alert("✅ Đã lưu thành công!");
+          resetForm();
+
+          // reload bảng nếu có
+          const frame = document.getElementById("tfTableFrame");
+          if (frame && frame.contentWindow) {
+            frame.contentWindow.location.reload();
+          }
+        } else {
+          alert("❌ Lỗi: " + res.message);
+        }
+      },
+      error: function (xhr) {
+        console.error(xhr.responseText);
+        alert("❌ Lỗi khi lưu dữ liệu.");
+      }
+    });
   });
 
-  // Ảnh (không bắt buộc)
-  formData.append('tf_image_url', getVal('tf_image_url'));
-
-  try {
-    const res = await fetch('../../includes/tf/tf_form_save.php', {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await res.json();
-    alert(data.message);
-
-    if (data.status === 'success') {
-      // Reload bảng
-      document.getElementById('tfTableFrame')?.contentWindow?.location.reload();
-      // Reset form
-      document.getElementById('tf_reset')?.click();
+  // ====== Nút Xóa ======
+  $("#tf_delete").on("click", function () {
+    const id = $("#tf_id").val();
+    if (!id) {
+      alert("⚠️ Chưa chọn câu hỏi để xóa.");
+      return;
     }
-  } catch (err) {
-    alert('❌ Lỗi khi lưu: ' + err.message);
-  }
-});
+    if (!confirm("Bạn có chắc muốn xóa câu hỏi này?")) return;
 
-// ========================================================
+    $.ajax({
+      url: "../../pages/tf/tf_delete.php",
+      type: "POST",
+      data: { id },
+      dataType: "json",
+      success: function (res) {
+        if (res.status === "success") {
+          alert("🗑️ Đã xóa thành công!");
+          resetForm();
+
+          // reload bảng
+          const frame = document.getElementById("tfTableFrame");
+          if (frame && frame.contentWindow) {
+            frame.contentWindow.location.reload();
+          }
+        } else {
+          alert("❌ Lỗi: " + res.message);
+        }
+      },
+      error: function () {
+        alert("❌ Lỗi khi xóa dữ liệu.");
+      }
+    });
+  });
+
+  // ====== Nút Làm mới ======
+  $("#tf_reset").on("click", function () {
+    resetForm();
+  });
+
+  // ====== Nút Ẩn/hiện danh sách ======
+  $("#tf_view_list").on("click", function () {
+    $("#tfTableWrapper").toggle();
+  });
+
+  // ====== Nút Làm đề (Preview exam) ======
+  $("#tf_preview_exam").on("click", function () {
+    window.open("../../pages/tf/tf_preview_exam.php", "_blank");
+  });
+});
