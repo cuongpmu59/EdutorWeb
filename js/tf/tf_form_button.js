@@ -1,6 +1,5 @@
 // ===============================
 // tf_form_button.js
-// Xử lý nút bấm và validate form Đúng/Sai
 // ===============================
 
 $(document).ready(function () {
@@ -14,7 +13,6 @@ $(document).ready(function () {
     $("#tf_image_url").val("");
     $(".preview-box").hide().empty();
 
-    // reset radio
     for (let i = 1; i <= 4; i++) {
       $(`input[name="tf_correct_answer${i}"]`).prop("checked", false);
     }
@@ -24,20 +22,19 @@ $(document).ready(function () {
     }
   }
 
-  // Validate form
+  // Hàm validate
   function validateForm() {
     const topic = $("#tf_topic").val().trim();
     const question = $("#tf_question").val().trim();
-
     if (!topic || !question) {
-      alert("⚠️ Vui lòng nhập đầy đủ thông tin.");
+      alert("⚠️ Vui lòng nhập đầy đủ thông tin câu hỏi.");
       return false;
     }
 
     for (let i = 1; i <= 4; i++) {
       const stmt = $(`#tf_statement${i}`).val().trim();
-      const radios = $(`input[name="tf_correct_answer${i}"]:checked`).length;
-      if (!stmt || radios === 0) {
+      const checked = $(`input[name="tf_correct_answer${i}"]:checked`).length;
+      if (!stmt || checked === 0) {
         alert(`⚠️ Vui lòng nhập mệnh đề ${i} và chọn Đúng/Sai.`);
         return false;
       }
@@ -64,7 +61,6 @@ $(document).ready(function () {
           alert("✅ Đã lưu thành công!");
           resetForm();
 
-          // reload bảng nếu có
           const frame = document.getElementById("tfTableFrame");
           if (frame && frame.contentWindow) {
             frame.contentWindow.location.reload();
@@ -99,7 +95,6 @@ $(document).ready(function () {
           alert("🗑️ Đã xóa thành công!");
           resetForm();
 
-          // reload bảng
           const frame = document.getElementById("tfTableFrame");
           if (frame && frame.contentWindow) {
             frame.contentWindow.location.reload();
@@ -124,7 +119,7 @@ $(document).ready(function () {
     $("#tfTableWrapper").toggle();
   });
 
-  // ====== Nút Làm đề (Preview exam) ======
+  // ====== Nút Làm đề ======
   $("#tf_preview_exam").on("click", function () {
     window.open("../../pages/tf/tf_preview_exam.php", "_blank");
   });
