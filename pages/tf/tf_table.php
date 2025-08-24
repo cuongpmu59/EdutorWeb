@@ -97,13 +97,34 @@ $(function () {
                             ${d.length>80 ? d.substr(0,80)+'…' : d}
                           </span>` : ''
       },
-      { data:'tf_statement1' },
+      { 
+        data: 'tf_statement1', className: 'tf_statement1-cell',
+        render: d => d? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length > 80 ? d.substr(0,80) + '…' : d}
+                          </span>`: ''
+      },
+      // { data:'tf_statement1' },
       { data:'tf_correct_answer1', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-      { data:'tf_statement2' },
+      // { data:'tf_statement2' },
+      data: 'tf_statement2', className: 'tf_statement2-cell',
+        render: d => d? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length > 80 ? d.substr(0,80) + '…' : d}
+                          </span>`: ''
+      },
       { data:'tf_correct_answer2', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-      { data:'tf_statement3' },
+      // { data:'tf_statement3' },
+      data: 'tf_statement3', className: 'tf_statement3-cell',
+        render: d => d? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length > 80 ? d.substr(0,80) + '…' : d}
+                          </span>`: ''
+      },
       { data:'tf_correct_answer3', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-      { data:'tf_statement4' },
+      // { data:'tf_statement4' },
+      data: 'tf_statement4', className: 'tf_statement4-cell',
+        render: d => d? `<span title="${d.replace(/"/g,'&quot;')}">
+                            ${d.length > 80 ? d.substr(0,80) + '…' : d}
+                          </span>`: ''
+      },
       { data:'tf_correct_answer4', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
       { data:'tf_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
       { data:'tf_created_at' }
