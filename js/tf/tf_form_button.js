@@ -114,10 +114,14 @@ $(document).ready(function () {
     resetForm();
   });
 
-  // ====== Nút Ẩn/hiện danh sách ======
-  $("#tf_view_list").on("click", function () {
-    $("#tfTableWrapper").toggle();
+  // Nút "Ẩn/hiện danh sách" (#mc_view_list)
+  document.getElementById('tf_view_list').addEventListener('click', () => {
+    const wrapper = document.getElementById('tfTableWrapper');
+    wrapper.style.display = (wrapper.style.display === 'none' || !wrapper.style.display)
+      ? 'block'
+      : 'none';
   });
+
 
   // ====== Nút Làm đề ======
   $("#tf_preview_exam").on("click", function () {
