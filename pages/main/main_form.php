@@ -12,7 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   Giao diện tổng hợp
-  <link rel="stylesheet" href="css/main_ui.css">
+  <link rel="stylesheet" href="../../css/main/main_form.css">
 
   <!-- MathJax (Toán học) -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script> -->
