@@ -57,14 +57,10 @@ window.MathJax = {
       <th>ID</th>
       <th>Chủ đề</th>
       <th>Câu hỏi</th>
-      <th>Mệnh đề 1</th>
-      <th>Đúng/Sai 1</th>
-      <th>Mệnh đề 2</th>
-      <th>Đúng/Sai 2</th>
-      <th>Mệnh đề 3</th>
-      <th>Đúng/Sai 3</th>
-      <th>Mệnh đề 4</th>
-      <th>Đúng/Sai 4</th>
+      <th>Mệnh đề 1</th><th>Đúng/Sai 1</th>
+      <th>Mệnh đề 2</th><th>Đúng/Sai 2</th>
+      <th>Mệnh đề 3</th><th>Đúng/Sai 3</th>
+      <th>Mệnh đề 4</th><th>Đúng/Sai 4</th>
       <th>Hình minh họa</th>
       <th>Ngày tạo</th>
     </tr>
@@ -83,55 +79,44 @@ window.MathJax = {
 
 <script>
 $(function () {
+
+  // ===== Hàm render dùng chung =====
+  const renderText = d => d 
+      ? `<span title="${d.replace(/"/g,'&quot;')}">
+           ${d.length > 80 ? d.substr(0,80) + '…' : d}
+         </span>` : '';
+
+  const renderBoolean = d => d == 1 ? '✔️ Đúng' : '❌ Sai';
+
+  // ===== Khởi tạo DataTable =====
   const table = $('#tfTable').DataTable({
     processing: true,
     serverSide: true,
     ajax: { url: '../../includes/tf/tf_fetch_data.php', type: 'POST' },
     order: [[0,'desc']],
     stateSave: true,
-    columns: [
-  { data:'tf_id' },
-  { data:'tf_topic' },
-  { data:'tf_question', className:'tf-question-cell',
-    render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
-                        ${d.length>80 ? d.substr(0,80)+'…' : d}
-                      </span>` : ''
-  },
-  { data:'tf_statement1', className:'tf-statement1-cell',
-    render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
-                        ${d.length>80 ? d.substr(0,80)+'…' : d}
-                      </span>` : ''
-  },
-  { data:'tf_correct_answer1', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-  { data:'tf_statement2', className:'tf-statement2-cell',
-    render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
-                        ${d.length>80 ? d.substr(0,80)+'…' : d}
-                      </span>` : ''
-  },
-  { data:'tf_correct_answer2', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-  { data:'tf_statement3', className:'tf-statement3-cell',
-    render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
-                        ${d.length>80 ? d.substr(0,80)+'…' : d}
-                      </span>` : ''
-  },
-  { data:'tf_correct_answer3', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-  { data:'tf_statement4', className:'tf-statement4-cell',
-    render: d => d ? `<span title="${d.replace(/"/g,'&quot;')}">
-                        ${d.length>80 ? d.substr(0,80)+'…' : d}
-                      </span>` : ''
-  },
-  { data:'tf_correct_answer4', render: d => d==1 ? '✔️ Đúng' : '❌ Sai' },
-  { data:'tf_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
-  { data:'tf_created_at' }
-],
-
+    responsive: true,
+    scrollX: true,
     dom: 'Brtip',
     buttons: [
       { extend:'excelHtml5', title:'Danh sách câu hỏi Đúng/Sai', exportOptions:{ columns:':visible' }, className:'dt-hidden' },
       { extend:'print', title:'Danh sách câu hỏi Đúng/Sai', exportOptions:{ columns:':visible' }, className:'dt-hidden' }
     ],
-    responsive: true,
-    scrollX: true,
+    columns: [
+      { data:'tf_id', responsivePriority:1 },
+      { data:'tf_topic', responsivePriority:2 },
+      { data:'tf_question', className:'tf-question-cell', render: renderText, responsivePriority:3 },
+      { data:'tf_statement1', className:'tf-statement1-cell', render: renderText },
+      { data:'tf_correct_answer1', render: renderBoolean },
+      { data:'tf_statement2', className:'tf-statement2-cell', render: renderText },
+      { data:'tf_correct_answer2', render: renderBoolean },
+      { data:'tf_statement3', className:'tf-statement3-cell', render: renderText },
+      { data:'tf_correct_answer3', render: renderBoolean },
+      { data:'tf_statement4', className:'tf-statement4-cell', render: renderText },
+      { data:'tf_correct_answer4', render: renderBoolean },
+      { data:'tf_image_url', render: d => d ? `<img src="${d}" alt="ảnh" loading="lazy">` : '' },
+      { data:'tf_created_at', responsivePriority:4 }
+    ],
     initComplete: function() {
       $.getJSON('../../includes/tf/tf_get_topics.php', function(topics){
         topics.forEach(t => $('#filterTopic').append(`<option value="${t}">${t}</option>`));
@@ -139,82 +124,81 @@ $(function () {
     }
   });
 
+  // MathJax render sau khi vẽ bảng
   table.on('draw', ()=>{ if(window.MathJax) MathJax.typesetPromise(); });
+
+  // ===== Bộ lọc & tìm kiếm =====
   $('#filterTopic').on('change', function(){ table.column(1).search(this.value).draw(); });
   $('#customSearch').on('keyup change', function(){ table.search(this.value).draw(); });
   $('#btnExportExcel').on('click', ()=>table.button(0).trigger());
   $('#btnPrint').on('click', ()=>table.button(1).trigger());
 
-  toastr.options = { closeButton: true, progressBar: true, positionClass: "toast-top-right", timeOut: "3000" };
+  // ===== Toastr config =====
+  toastr.options = { closeButton:true, progressBar:true, positionClass:"toast-top-right", timeOut:"3000" };
 
-  // ================== Nhập Excel ==================
+  // ===== Nhập Excel =====
   $('#importExcelInput').on('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
+
     reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+      const data = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { defval: '' });
 
-        if (!worksheet.length) {
-            toastr.warning('📂 File Excel rỗng!');
-            $('#importExcelInput').val('');
-            return;
-        }
+      if (!worksheet.length) {
+        toastr.warning('📂 File Excel rỗng!');
+        $('#importExcelInput').val('');
+        return;
+      }
 
-        toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
-
-        $.ajax({
-            url: '../../includes/tf/tf_table_import_excel.php',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ rows: worksheet }),
-            dataType: 'json',
-            success: function(res) {
-                if (res.status === 'success') {
-                    toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
-                    if(res.errors && res.errors.length) {
-                        res.errors.forEach(e => toastr.warning(e));
-                    }
-                    table.ajax.reload();
-                } else {
-                    toastr.error(res.message || '❌ Lỗi khi nhập Excel');
-                }
-            },
-            error: function(xhr) {
-                console.error(xhr.responseText);
-                toastr.error('❌ Không thể gửi dữ liệu tới server');
-            },
-            complete: function() {
-                $('#importExcelInput').val('');
-            }
-        });
+      toastr.info('⏳ Đang nhập dữ liệu, vui lòng chờ...');
+      $.ajax({
+        url: '../../includes/tf/tf_table_import_excel.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ rows: worksheet }),
+        dataType: 'json',
+        success: function(res) {
+          if (res.status === 'success') {
+            toastr.success(`📥 Nhập thành công ${res.count} dòng!`);
+            if(res.errors?.length) res.errors.forEach(e => toastr.warning(e));
+            table.ajax.reload();
+          } else {
+            toastr.error(res.message || '❌ Lỗi khi nhập Excel');
+          }
+        },
+        error: function(xhr) {
+          console.error(xhr.responseText);
+          toastr.error('❌ Không thể gửi dữ liệu tới server');
+        },
+        complete: () => $('#importExcelInput').val('')
+      });
     };
     reader.readAsArrayBuffer(file);
-});
-
-  // ================== Tải Template Excel ==================
-  $('#btnDownloadTemplate').on('click', function(){
-      const header = [
-        "tf_topic","tf_question",
-        "tf_statement1","tf_correct_answer1",
-        "tf_statement2","tf_correct_answer2",
-        "tf_statement3","tf_correct_answer3",
-        "tf_statement4","tf_correct_answer4",
-        "tf_image_url"
-      ];
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet([{}], {header: header});
-      XLSX.utils.book_append_sheet(wb, ws, "Template");
-      XLSX.writeFile(wb, "template_tf_questions.xlsx");
   });
+
+  // ===== Tải Template Excel =====
+  $('#btnDownloadTemplate').on('click', function(){
+    const header = [
+      "tf_topic","tf_question",
+      "tf_statement1","tf_correct_answer1",
+      "tf_statement2","tf_correct_answer2",
+      "tf_statement3","tf_correct_answer3",
+      "tf_statement4","tf_correct_answer4",
+      "tf_image_url"
+    ];
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet([{}], {header});
+    XLSX.utils.book_append_sheet(wb, ws, "Template");
+    XLSX.writeFile(wb, "template_tf_questions.xlsx");
+  });
+
 });
 </script>
 
-<!-- Hỗ trợ các sự kiện -->
+<!-- File JS sự kiện riêng -->
 <script src="../../js/tf/tf_table_event.js"></script>
 
 </body>
