@@ -21,10 +21,10 @@ function latexWrap($str) {
     return htmlspecialchars($str);
 }
 
-$selectedTopic = $_GET['topic'] ?? 'TênChủĐềMặcĐịnh';
+$selectedTopic = $_GET['mc_topic'] ?? 'TênChủĐềMặcĐịnh';
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM questions WHERE topic = :topic ORDER BY RAND() LIMIT 20");
+    $stmt = $conn->prepare("SELECT * FROM mc_questions WHERE mc_topic = :topic ORDER BY RAND() LIMIT 20");
     $stmt->bindParam(':topic', $selectedTopic);
     $stmt->execute();
     $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,13 +36,13 @@ try {
 
         $question = $q['question'];
         $answers = [
-            'a' => $q['answer1'],
-            'b' => $q['answer2'],
-            'c' => $q['answer3'],
-            'd' => $q['answer4']
+            'a' => $q['mc_answer1'],
+            'b' => $q['mc_answer2'],
+            'c' => $q['mc_answer3'],
+            'd' => $q['mc_answer4']
         ];
 
-        $correct = strtolower(trim($q['correct_answer']));
+        $correct = strtolower(trim($q['mc_correct_answer']));
         $shuffled = $answers;
         $keys = array_keys($shuffled);
         shuffle($keys);
