@@ -67,12 +67,12 @@
       <label for="topicSelect"><strong>Chọn chủ đề:</strong></label>
       <select name="topic" id="topicSelect" onchange="document.getElementById('topicForm').submit();">
         <?php
-        require 'db_connection.php';
-        $selectedTopic = $_GET['topic'] ?? '';
+        require '../../includes/db_connection.php';
+        $selectedTopic = $_GET['mc_topic'] ?? '';
         try {
-            $stmt = $conn->query("SELECT DISTINCT topic FROM questions ORDER BY topic ASC");
+            $stmt = $conn->query("SELECT DISTINCT mc_topic FROM mc_questions ORDER BY mc_topic ASC");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $topic = htmlspecialchars($row['topic']);
+                $topic = htmlspecialchars($row['mc_topic']);
                 $selected = ($topic == $selectedTopic) ? 'selected' : '';
                 echo "<option value=\"$topic\" $selected>$topic</option>";
             }
@@ -93,7 +93,7 @@
           <div id="progressBar">0%</div>
         </div>
 
-        <?php include 'load_question.php'; ?>
+        <?php include '../../includes/main/load_question.php'; ?>
 
         <button type="button" onclick="if(confirm('Bạn có chắc muốn nộp bài?')) submitQuiz();" style="margin-top: 10px;">
           ✅ Nộp bài
