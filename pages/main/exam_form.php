@@ -65,13 +65,12 @@ window.MathJax = {
     <?php foreach ($questions as $index => $q): ?>
       <!-- CHỈ fieldset chủ đề cho TỪNG CÂU -->
       <fieldset class="topic-block">
-        <legend><strong>Chủ đề: <?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
+        <legend><strong><?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
 
         <div class="question" data-qid="<?= $q['mc_id'] ?>">
           <h3>Câu <?= $index+1 ?>:</h3>
           <div class="qtext"><?= $q['mc_question'] ?></div>
 
-          <!-- BỎ fieldset nhóm đáp án, dùng div thường -->
           <div class="answers">
             <?php foreach (['A','B','C','D'] as $opt): ?>
               <label>
