@@ -132,7 +132,10 @@ window.MathJax = {
 </head>
 <body>
 <header>
-  <div class="logo">📘 Gia sư <strong>Thầy Cường</strong></div>
+  <div class="logo">
+  <img src="../../pages/image/logo_cuong.jpg" alt="Logo" style="height:50px; border-radius:6px; vertical-align:middle;">
+  </div>
+
   <div class="title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026 - Môn Toán</div>
 </header>
 
