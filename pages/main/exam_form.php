@@ -25,101 +25,7 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 <meta charset="UTF-8">
 <title>Đề thi thử 2026 - Môn Toán</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0; padding: 0;
-    background: #f5f7fa;
-    color: #333;
-  }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #005f99;
-    color: white;
-    padding: 15px 30px;
-  }
-  header .logo {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  header .title {
-    font-size: 22px;
-    font-weight: bold;
-  }
-  .container {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
-  }
-  .left-col {
-    flex: 2;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,.1);
-  }
-  .right-col {
-    flex: 1;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,.1);
-  }
-  .question {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-  }
-  .question h3 { margin: 0 0 10px; }
-  .answers label {
-    display: block;
-    margin: 4px 0;
-    cursor: pointer;
-  }
-  .answer-sheet h3 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #005f99;
-  }
-  .answer-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .answer-row span {
-    width: 25px;
-    display: inline-block;
-  }
-  .actions {
-    margin-top: 20px;
-    text-align: center;
-  }
-  button {
-    padding: 10px 20px;
-    margin: 0 8px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: bold;
-  }
-  #btnSubmit { background: #28a745; color: white; }
-  #btnShow { background: #ffc107; color: black; }
-  #btnSubmit:disabled, #btnShow:disabled {
-    opacity: .5; cursor: not-allowed;
-  }
-  .dim { opacity: .4; }
-  /* Đáp án đúng highlight */
-  .correct-answer {
-    outline: 2px solid red;
-    outline-offset: 2px;
-  }
-</style>
+<link rel="stylesheet" href="../../cs/main/exam_form.css">
 
 <!-- MathJax -->
 <script>
@@ -133,9 +39,8 @@ window.MathJax = {
 <body>
 <header>
   <div class="logo">
-  <img src="../../pages/image/logo_cuong.jpg" alt="Logo" style="height:50px; border-radius:6px; vertical-align:middle;">
+    <img src="../../pages/image/logo_cuong.jpg" alt="Logo" style="height:50px; border-radius:6px; vertical-align:middle;">
   </div>
-
   <div class="title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026 - Môn Toán</div>
 </header>
 
