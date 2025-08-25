@@ -165,23 +165,19 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 
-<script>
-  // Khi load, render LaTeX cho toàn bộ nội dung
+  <script>
   window.addEventListener('load', () => {
     if (window.MathJax) {
       MathJax.typesetPromise && MathJax.typesetPromise();
     }
-    // ensure Show button disabled initially
     document.getElementById('btnShow').disabled = true;
   });
 
-  // Đồng bộ: chọn ở cột trái -> tick phiếu phải
   function syncAnswer(qIndex, opt) {
     const rightRadio = document.querySelector(`input[name="ans${qIndex}"][value="${opt}"]`);
     if (rightRadio) rightRadio.checked = true;
   }
 
-  // Đồng bộ: chọn ở phiếu phải -> tick cột trái and scroll
   function syncQuestion(qIndex, opt) {
     const leftRadio = document.querySelector(`input[name="q${qIndex}"][value="${opt}"]`);
     if (leftRadio) leftRadio.checked = true;
@@ -189,53 +185,61 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (qBlock) qBlock.scrollIntoView({ behavior:'smooth', block:'center' });
   }
 
-  // Nộp bài: làm mờ hai cột, bật nút Xem đáp án
+  // Sau khi nộp bài
   function handleSubmit() {
+    // làm mờ câu hỏi + phiếu trả lời
     document.getElementById('leftCol').classList.add('dim');
     document.querySelector('.right-col').classList.add('dim');
+    // bật lại nút xem đáp án
     document.getElementById('btnShow').disabled = false;
-    // disable submit to avoid double submit
     document.getElementById('btnSubmit').disabled = true;
-    alert('📤 Bài đã nộp. Bạn có thể nhấn "Xem đáp án" để kiểm tra (khi cần).');
+    alert('📤 Bạn đã nộp bài. Có thể nhấn "Xem đáp án" để kiểm tra.');
   }
 
-  // Xem đáp án: hiện lại giao diện, highlight đáp án đúng và đánh dấu sai nếu thí sinh chọn sai
+  // Khi xem đáp án
   function handleShowAnswers() {
-    // enable view
+    // bỏ mờ để hiển thị rõ
     document.getElementById('leftCol').classList.remove('dim');
     document.querySelector('.right-col').classList.remove('dim');
 
-    // read correct answers from dataset
+    // reset đánh dấu cũ (nếu người dùng bấm lại nhiều lần)
+    document.querySelectorAll('.mark-correct, .mark-wrong').forEach(el => {
+      el.classList.remove('mark-correct','mark-wrong');
+    });
+
+    // duyệt từng câu hỏi bên trái
     document.querySelectorAll('.question').forEach(q => {
       const qIdx = q.getAttribute('data-q');
       const correct = q.getAttribute('data-correct') || '';
-      // mark in left choices
+
       if (correct) {
+        // đánh dấu đáp án đúng
         const leftLabel = document.getElementById(`q${qIdx}_${correct}`);
         if (leftLabel) leftLabel.classList.add('mark-correct');
       }
-      // check student's chosen option in this question (left side)
+
+      // kiểm tra lựa chọn của user
       const chosenLeft = q.querySelector('input[type="radio"]:checked');
       if (chosenLeft) {
         const chosenVal = chosenLeft.value;
         if (correct && chosenVal !== correct) {
-          // mark the student's chosen left label as wrong
           const wrongLeft = document.getElementById(`q${qIdx}_${chosenVal}`);
           if (wrongLeft) wrongLeft.classList.add('mark-wrong');
         }
       }
     });
 
-    // mark on answer sheet (right)
+    // duyệt phiếu trả lời bên phải
     document.querySelectorAll('.answer-row').forEach(r => {
       const qIdx = r.getAttribute('data-q');
       const qBlock = document.querySelector(`.question[data-q="${qIdx}"]`);
       const correct = qBlock ? qBlock.getAttribute('data-correct') : '';
+
       if (correct) {
         const rightLabel = document.getElementById(`a${qIdx}_${correct}`);
         if (rightLabel) rightLabel.classList.add('mark-correct');
       }
-      // mark wrong chosen on right
+
       const chosenRight = r.querySelector('input[type="radio"]:checked');
       if (chosenRight) {
         const chosenVal = chosenRight.value;
@@ -246,12 +250,8 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       }
     });
 
-    // ensure radios remain showing student's choices (we do not clear them)
-    // render LaTeX again (so newly highlighted content still typeset)
+    // render lại LaTeX (nếu có)
     if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
-
-    // Optionally lock show button to avoid double highlighting (keep it enabled if you want repeat)
-    document.getElementById('btnShow').disabled = true;
   }
 </script>
 </body>
