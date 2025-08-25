@@ -20,12 +20,6 @@ $sql = "
 ";
 $stmt = $conn->query($sql);
 $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Gom nhóm theo topic
-$grouped = [];
-foreach ($questions as $index => $q) {
-    $grouped[$q['mc_topic']][] = ['idx'=>$index, 'data'=>$q];
-}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -68,34 +62,30 @@ window.MathJax = {
 <div class="container">
   <!-- Cột trái: câu hỏi -->
   <div class="left-col" id="leftCol">
-    <?php foreach ($grouped as $topic => $qs): ?>
+    <?php foreach ($questions as $index => $q): ?>
+      <!-- CHỈ fieldset chủ đề cho TỪNG CÂU -->
       <fieldset class="topic-block">
-        <legend><strong>Chủ đề: <?= htmlspecialchars($topic) ?></strong></legend>
-        <?php foreach ($qs as $item): 
-              $i = $item['idx'];
-              $q = $item['data'];
-        ?>
-          <div class="question" data-qid="<?= $q['mc_id'] ?>">
-            <h3>Câu <?= $i+1 ?>:</h3>
-            <div class="qtext"><?= $q['mc_question'] ?></div>
+        <legend><strong>Chủ đề: <?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
 
-            <!-- Nhóm đáp án -->
-            <fieldset class="answers">
-              <legend>Chọn đáp án</legend>
-              <?php foreach (['A','B','C','D'] as $opt): ?>
-                <label>
-                  <input type="radio" 
-                         name="q<?= $i ?>" 
-                         value="<?= $opt ?>" 
-                         onchange="syncAnswer(<?= $i ?>,'<?= $opt ?>')">
-                  <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
-                </label>
-              <?php endforeach; ?>
-            </fieldset>
+        <div class="question" data-qid="<?= $q['mc_id'] ?>">
+          <h3>Câu <?= $index+1 ?>:</h3>
+          <div class="qtext"><?= $q['mc_question'] ?></div>
 
-            <input type="hidden" id="correct<?= $i ?>" value="<?= $q['mc_correct_answer'] ?>">
+          <!-- BỎ fieldset nhóm đáp án, dùng div thường -->
+          <div class="answers">
+            <?php foreach (['A','B','C','D'] as $opt): ?>
+              <label>
+                <input type="radio" 
+                       name="q<?= $index ?>" 
+                       value="<?= $opt ?>" 
+                       onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
+                <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
+              </label>
+            <?php endforeach; ?>
           </div>
-        <?php endforeach; ?>
+
+          <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+        </div>
       </fieldset>
     <?php endforeach; ?>
   </div>
@@ -131,12 +121,14 @@ window.MathJax = {
 <script>
 // Đồng bộ khi chọn ở câu hỏi
 function syncAnswer(idx,opt){
-  document.querySelector(`input[name="s${idx}"][value="${opt}"]`).checked = true;
+  const r = document.querySelector(`input[name="s${idx}"][value="${opt}"]`);
+  if (r) r.checked = true;
   updateProgress();
 }
 // Đồng bộ khi chọn ở phiếu trả lời
 function syncQuestion(idx,opt){
-  document.querySelector(`input[name="q${idx}"][value="${opt}"]`).checked = true;
+  const r = document.querySelector(`input[name="q${idx}"][value="${opt}"]`);
+  if (r) r.checked = true;
   updateProgress();
 }
 
@@ -162,7 +154,7 @@ function handleShowAnswers(){
   // highlight đáp án đúng
   document.querySelectorAll('.question').forEach((qDiv,idx)=>{
     let correct = document.getElementById('correct'+idx).value;
-    let radios = qDiv.querySelectorAll(`input[type=radio]`);
+    let radios = qDiv.querySelectorAll('input[type=radio]');
     radios.forEach(r=>{
       if(r.value===correct){
         r.parentElement.classList.add('correct-answer');
