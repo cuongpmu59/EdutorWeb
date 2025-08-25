@@ -116,17 +116,23 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <!-- Cột phải: Phiếu trả lời -->
-    <div class="right-col">
-      <div class="answer-sheet">
-        <?php for ($i=1; $i<=count($questions); $i++): ?>
-          <div class="answer-row" data-q="<?= $i ?>">
-            <span><?= $i ?>.</span>
-            <?php foreach (['A','B','C','D'] as $opt): ?>
-              <label>
-                <input type="radio" name="ans<?= $i ?>" value="<?= $opt ?>"
-                       onchange="syncQuestion(<?= $i ?>,'<?= $opt ?>')">
-                <?= $opt ?>
-              </label>
-            <?php endforeach; ?>
-          </div>
-        <?php e
+<div class="right-col">
+  <div class="answer-sheet">
+    <?php for ($i=1; $i<=count($questions); $i++): ?>
+      <div class="answer-row" data-q="<?= $i ?>">
+        <span><?= $i ?>.</span>
+        <?php foreach (['A','B','C','D'] as $opt): ?>
+          <label>
+            <input type="radio" name="ans<?= $i ?>" value="<?= $opt ?>"
+                   onchange="syncQuestion(<?= $i ?>,'<?= $opt ?>')">
+            <?= $opt ?>
+          </label>
+        <?php endforeach; ?>
+      </div>
+    <?php endfor; ?>
+  </div>
+  <div class="actions">
+    <button onclick="submitExam()">📤 Nộp bài</button>
+    <button onclick="showAnswers()">👀 Xem đáp án</button>
+  </div>
+</div>
