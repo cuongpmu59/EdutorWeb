@@ -1,11 +1,42 @@
 <?php
 // exam_form.php
-require_once __DIR__ . '/../../includes/db_connection.php'; // Kết nối PDO
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Lấy 20 câu hỏi ngẫu nhiên
-$sql = "SELECT * FROM mc_questions ORDER BY RAND() LIMIT 20";
-$stmt = $pdo->query($sql);
-$questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$questions = [];
+
+try {
+    require_once __DIR__ . '/../../includes/db_connection.php'; // phải tạo $pdo (PDO)
+    if (!isset($pdo)) {
+        throw new Exception('Kết nối PDO ($pdo) chưa được khởi tạo trong db_connection.php');
+    }
+
+    // Lấy 20 câu hỏi ngẫu nhiên
+    $sql = "SELECT mc_id, mc_topic, mc_question, mc_answer1, mc_answer2, mc_answer3, mc_answer4
+            FROM mc_questions
+            ORDER BY RAND() LIMIT 20";
+    $stmt = $pdo->query($sql);
+    $questions = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+    if (!$questions || count($questions) === 0) {
+        throw new Exception('Bảng mc_questions không có dữ liệu hoặc truy vấn trả về rỗng.');
+    }
+} catch (Throwable $e) {
+    // Fallback dữ liệu mẫu để bạn vẫn test được UI/JS
+    $msg = $e->getMessage();
+    $questions = [];
+    for ($i = 1; $i <= 20; $i++) {
+        $questions[] = [
+            'mc_id' => $i,
+            'mc_topic' => 'Demo',
+            'mc_question' => "Câu hỏi mẫu số {$i} (DB lỗi: {$msg})",
+            'mc_answer1' => 'Đáp án A',
+            'mc_answer2' => 'Đáp án B',
+            'mc_answer3' => 'Đáp án C',
+            'mc_answer4' => 'Đáp án D',
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -37,17 +68,28 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Cột trái: Câu hỏi -->
     <div class="left-col" id="leftCol">
       <?php foreach ($questions as $index => $q): ?>
-        <div class="question" data-q="<?= $index+1 ?>" id="q<?= $index+1 ?>">
-          <h3>Câu <?= $index+1 ?>: <?= htmlspecialchars($q['mc_question']) ?></h3>
+        <div class="question" data-q="<?php echo $index+1; ?>" id="q<?php echo $index+1; ?>">
+          <h3>
+            Câu <?php echo $index+1; ?>:
+            <?php echo htmlspecialchars($q['mc_question'] ?? ''); ?>
+          </h3>
           <div class="choices">
             <?php foreach (['A','B','C','D'] as $opt): ?>
+              <?php
+                $col = [
+                  'A' => 'mc_answer1',
+                  'B' => 'mc_answer2',
+                  'C' => 'mc_answer3',
+                  'D' => 'mc_answer4'
+                ][$opt];
+              ?>
               <label>
                 <input type="radio"
-                       name="q<?= $index+1 ?>"
-                       value="<?= $opt ?>"
-                       onchange="syncAnswer(<?= $index+1 ?>,'<?= $opt ?>')">
-                <?= $opt ?>.
-                <?= htmlspecialchars($q['mc_answer'.($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)))]) ?>
+                       name="q<?php echo $index+1; ?>"
+                       value="<?php echo $opt; ?>"
+                       onchange="syncAnswer(<?php echo $index+1; ?>,'<?php echo $opt; ?>')">
+                <?php echo $opt; ?>.
+                <?php echo htmlspecialchars($q[$col] ?? ''); ?>
               </label>
             <?php endforeach; ?>
           </div>
@@ -59,14 +101,14 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="right-col">
       <div class="answer-sheet">
         <?php for ($i=1; $i<=count($questions); $i++): ?>
-          <div class="answer-row" data-q="<?= $i ?>">
-            <span><?= $i ?>.</span>
+          <div class="answer-row" data-q="<?php echo $i; ?>">
+            <span><?php echo $i; ?>.</span>
             <?php foreach (['A','B','C','D'] as $opt): ?>
               <label>
                 <input type="radio"
-                       name="ans<?= $i ?>"
-                       value="<?= $opt ?>"
-                       onchange="syncQuestion(<?= $i ?>,'<?= $opt ?>')"> <?= $opt ?>
+                       name="ans<?php echo $i; ?>"
+                       value="<?php echo $opt; ?>"
+                       onchange="syncQuestion(<?php echo $i; ?>,'<?php echo $opt; ?>')"> <?php echo $opt; ?>
               </label>
             <?php endforeach; ?>
           </div>
@@ -93,14 +135,12 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       const qBlock = document.querySelector(`.question[data-q="${qIndex}"]`);
       if (!qBlock) return;
       qBlock.querySelectorAll('input[type="radio"]').forEach(r => r.checked = (r.value === opt));
-      // Cuộn tới câu hỏi tương ứng (dễ theo dõi)
       qBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo nộp bài: gom đáp án người dùng (bạn thay bằng fetch/POST tuỳ ý)
+    // Thu bài (demo): gom đáp án người dùng
     function submitExam() {
       const answers = {};
-      // lấy theo cột trái (ưu tiên vì có nội dung)
       document.querySelectorAll('.question').forEach(q => {
         const idx = q.getAttribute('data-q');
         const checked = q.querySelector('input[type="radio"]:checked');
@@ -110,7 +150,6 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       alert('📤 Đã thu bài (demo). Bạn có thể gửi lên server để chấm.');
     }
 
-    // Demo xem đáp án (cần backend trả lời đúng/sai)
     function showAnswers() {
       alert('👀 Xem đáp án: cần server trả đáp án đúng để highlight.');
     }
