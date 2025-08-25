@@ -38,10 +38,24 @@ window.MathJax = {
 </head>
 <body>
 <header>
-  <div class="logo">
-    <img src="../../pages/image/logo_cuong.jpg" alt="Logo" style="height:50px; border-radius:6px; vertical-align:middle;">
+  <!-- Logo bên trái -->
+  <div class="logo-left">
+    <img src="../../pages/image/logo_cuong.jpg" alt="Logo">
   </div>
-  <div class="title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026 - Môn Toán</div>
+
+  <!-- Giữa: Tiêu đề -->
+  <div class="header-center">
+    <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông quốc gia</div>
+    <div class="subject">Môn thi: Toán</div>
+  </div>
+
+  <!-- Bên phải: Thời gian + progress -->
+  <div class="header-right">
+    <div class="time">⏰ Thời gian làm bài: 20 phút</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
 </header>
 
 <div class="container">
