@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '../../includes/db_connection.php';
+// Kết nối CSDL
+require_once __DIR__ . '/../../includes/db_connection.php';
 
 // Lấy 20 câu hỏi ngẫu nhiên, đảm bảo đủ topic
 $sql = "
@@ -17,7 +18,7 @@ $sql = "
     LIMIT 20
 ";
 $stmt = $conn->query($sql);
-$questions = $stmt->fetchAll();
+$questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
