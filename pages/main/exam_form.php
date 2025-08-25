@@ -1,4 +1,5 @@
 <?php
+// exam_form.php
 // Kết nối CSDL
 require_once __DIR__ . '/../../includes/db_connection.php';
 
@@ -117,10 +118,20 @@ window.MathJax = {
 // Đồng bộ khi chọn ở câu hỏi
 function syncAnswer(idx,opt){
   document.querySelector(`input[name="s${idx}"][value="${opt}"]`).checked = true;
+  updateProgress();
 }
 // Đồng bộ khi chọn ở phiếu trả lời
 function syncQuestion(idx,opt){
   document.querySelector(`input[name="q${idx}"][value="${opt}"]`).checked = true;
+  updateProgress();
+}
+
+// Cập nhật progress bar theo số câu đã chọn
+function updateProgress(){
+  const total = <?= count($questions) ?>;
+  const checked = document.querySelectorAll('.left-col input[type=radio]:checked').length;
+  const percent = Math.round((checked / total) * 100);
+  document.getElementById('progressBar').style.width = percent + "%";
 }
 
 function handleSubmit(){
@@ -158,17 +169,26 @@ function handleShowAnswers(){
 function handleReset(){
   // Bỏ chọn tất cả radio
   document.querySelectorAll('input[type=radio]').forEach(r=> r.checked=false);
+
   // Xóa highlight
   document.querySelectorAll('.correct-answer').forEach(el=> el.classList.remove('correct-answer'));
+
   // Xóa dim
   document.getElementById('leftCol').classList.remove('dim');
   document.getElementById('answerSheet').classList.remove('dim');
+
+  // Reset progress bar
+  document.getElementById('progressBar').style.width = "0%";
+
   // Reset button
   document.getElementById('btnSubmit').disabled = false;
   document.getElementById('btnShow').disabled = true;
+
+  MathJax.typesetPromise();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  updateProgress();
   MathJax.typesetPromise();
 });
 </script>
