@@ -13,6 +13,16 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <title>📝 Bài thi trắc nghiệm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- MathJax -->
+  <script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    svg: { fontCache: 'global' }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
     .exam-container { display: flex; height: 100vh; }
@@ -20,11 +30,14 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     .left-col { flex: 3; padding: 20px; overflow-y: auto; background: #fff; border-right: 2px solid #ddd; }
     .question { margin-bottom: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
     .question h3 { margin-top: 0; }
-    .choices label { display: block; margin: 5px 0; }
+    .question img { max-width: 100%; margin: 10px 0; display: block; }
+    .choices { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
+    .choices label { display: flex; align-items: center; gap: 5px; white-space: normal; }
+
     /* Cột phải */
     .right-col { flex: 1; padding: 20px; background: #fdfdfd; display: flex; flex-direction: column; justify-content: space-between; }
     .answer-sheet { border: 1px solid #ccc; border-radius: 8px; padding: 10px; background: #fff; flex: 1; overflow-y: auto; }
-    .answer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .answer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
     .answer-row span { width: 30px; font-weight: bold; }
     .answer-row label { margin-right: 4px; }
     .actions { margin-top: 15px; text-align: center; }
@@ -38,16 +51,24 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="left-col" id="leftCol">
       <?php foreach ($questions as $index => $q): ?>
         <div class="question" data-q="<?= $index+1 ?>" id="q<?= $index+1 ?>">
-          <h3>Câu <?= $index+1 ?>: <?= htmlspecialchars($q['mc_question']) ?></h3>
+          <h3>Câu <?= $index+1 ?>: <span class="mathjax"><?= $q['mc_question'] ?></span></h3>
+          
+          <?php if (!empty($q['mc_image_url'])): ?>
+            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" alt="Hình câu hỏi">
+          <?php endif; ?>
+
           <div class="choices">
             <?php foreach (['A','B','C','D'] as $opt): ?>
+              <?php 
+                $col = ($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)));
+                $ans = $q['mc_answer'.$col];
+              ?>
               <label>
                 <input type="radio"
                        name="q<?= $index+1 ?>"
                        value="<?= $opt ?>"
                        onchange="syncAnswer(<?= $index+1 ?>,'<?= $opt ?>')">
-                <?= $opt ?>.
-                <?= htmlspecialchars($q['mc_answer'.($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)))]) ?>
+                <span class="mathjax"><?= $opt ?>. <?= $ans ?></span>
               </label>
             <?php endforeach; ?>
           </div>
@@ -93,14 +114,12 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       const qBlock = document.querySelector(`.question[data-q="${qIndex}"]`);
       if (!qBlock) return;
       qBlock.querySelectorAll('input[type="radio"]').forEach(r => r.checked = (r.value === opt));
-      // Cuộn tới câu hỏi tương ứng (dễ theo dõi)
       qBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo nộp bài: gom đáp án người dùng (bạn thay bằng fetch/POST tuỳ ý)
+    // Demo nộp bài
     function submitExam() {
       const answers = {};
-      // lấy theo cột trái (ưu tiên vì có nội dung)
       document.querySelectorAll('.question').forEach(q => {
         const idx = q.getAttribute('data-q');
         const checked = q.querySelector('input[type="radio"]:checked');
@@ -110,7 +129,7 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       alert('📤 Đã thu bài (demo). Bạn có thể gửi lên server để chấm.');
     }
 
-    // Demo xem đáp án (cần backend trả lời đúng/sai)
+    // Demo xem đáp án
     function showAnswers() {
       alert('👀 Xem đáp án: cần server trả đáp án đúng để highlight.');
     }
