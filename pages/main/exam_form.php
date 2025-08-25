@@ -46,46 +46,50 @@ window.MathJax = {
 
 <div class="container">
   <!-- Cột trái: câu hỏi -->
-  <div class="left-col" id="leftCol">
+<div class="left-col" id="leftCol">
+  <?php foreach ($questions as $index => $q): ?>
+    <div class="question" data-qid="<?= $q['mc_id'] ?>">
+      <h3>Câu <?= $index+1 ?> (<?= htmlspecialchars($q['mc_topic']) ?>):</h3>
+      <div class="qtext"><?= $q['mc_question'] ?></div>
+      
+      <!-- Nhóm đáp án -->
+      <fieldset class="answers">
+        <legend>Chọn đáp án</legend>
+        <?php foreach (['A','B','C','D'] as $opt): ?>
+          <label>
+            <input type="radio" 
+                   name="q<?= $index ?>" 
+                   value="<?= $opt ?>" 
+                   onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
+            <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
+          </label>
+        <?php endforeach; ?>
+      </fieldset>
+
+      <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+    </div>
+  <?php endforeach; ?>
+</div>
+
+<!-- Cột phải: phiếu trả lời -->
+<div class="right-col">
+  <div class="answer-sheet" id="answerSheet">
+    <h3>Phiếu trả lời</h3>
     <?php foreach ($questions as $index => $q): ?>
-      <div class="question" data-qid="<?= $q['mc_id'] ?>">
-        <h3>Câu <?= $index+1 ?> (<?= htmlspecialchars($q['mc_topic']) ?>):</h3>
-        <div class="qtext"><?= $q['mc_question'] ?></div>
-        <div class="answers">
-          <?php foreach (['A','B','C','D'] as $opt): ?>
-            <label>
-              <input type="radio" 
-                     name="q<?= $index ?>" 
-                     value="<?= $opt ?>" 
-                     onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
-              <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
-            </label>
-          <?php endforeach; ?>
-        </div>
-        <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
-      </div>
+      <fieldset class="answer-row">
+        <legend>Câu <?= $index+1 ?></legend>
+        <?php foreach (['A','B','C','D'] as $opt): ?>
+          <label style="margin-right:5px;">
+            <input type="radio" 
+                   name="s<?= $index ?>" 
+                   value="<?= $opt ?>" 
+                   onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
+            <?= $opt ?>
+          </label>
+        <?php endforeach; ?>
+      </fieldset>
     <?php endforeach; ?>
   </div>
-
-  <!-- Cột phải: phiếu trả lời -->
-  <div class="right-col">
-    <div class="answer-sheet" id="answerSheet">
-      <h3>Phiếu trả lời</h3>
-      <?php foreach ($questions as $index => $q): ?>
-        <div class="answer-row">
-          <span><?= $index+1 ?>.</span>
-          <?php foreach (['A','B','C','D'] as $opt): ?>
-            <label style="margin-right:5px;">
-              <input type="radio" 
-                     name="s<?= $index ?>" 
-                     value="<?= $opt ?>" 
-                     onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
-              <?= $opt ?>
-            </label>
-          <?php endforeach; ?>
-        </div>
-      <?php endforeach; ?>
-    </div>
 
     <div class="actions">
       <button id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
