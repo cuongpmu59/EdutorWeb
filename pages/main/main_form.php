@@ -7,8 +7,8 @@
   <title>🧾 Quản lý Ngân hàng Câu hỏi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../css/main/main_form.css">
-
-  <body class="main-layout">
+</head>
+<body class="main-layout">
   <!-- Thanh Tab điều hướng -->
   <div class="tab-bar">
     <button class="tab-button active" data-url="../../pages/mc/mc_form.php">❓ Trắc nghiệm nhiều lựa chọn</button>
@@ -27,11 +27,10 @@
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
         tabs.forEach(t => t.classList.remove("active"));  // Xóa trạng thái active cũ
-        tab.classList.add("active");                     // Kích hoạt tab mới
-        iframe.src = tab.getAttribute("data-url");       // Đổi URL trong iframe
+        tab.classList.add("active");                      // Kích hoạt tab mới
+        iframe.src = tab.getAttribute("data-url");        // Đổi URL trong iframe
       });
     });
   </script>
-
 </body>
 </html>
