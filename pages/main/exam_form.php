@@ -61,55 +61,55 @@ window.MathJax = {
 
 <div class="container">
   <!-- Cột trái: câu hỏi -->
-<div class="left-col" id="leftCol">
-  <?php foreach ($questions as $index => $q): ?>
-    <div class="question" data-qid="<?= $q['mc_id'] ?>">
-      <h3>Câu <?= $index+1 ?> (<?= htmlspecialchars($q['mc_topic']) ?>):</h3>
-      <div class="qtext"><?= $q['mc_question'] ?></div>
-      
-      <!-- Nhóm đáp án -->
-      <fieldset class="answers">
-        <legend>Chọn đáp án</legend>
-        <?php foreach (['A','B','C','D'] as $opt): ?>
-          <label>
-            <input type="radio" 
-                   name="q<?= $index ?>" 
-                   value="<?= $opt ?>" 
-                   onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
-            <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
-          </label>
-        <?php endforeach; ?>
-      </fieldset>
-
-      <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
-    </div>
-  <?php endforeach; ?>
-</div>
-
-<!-- Cột phải: phiếu trả lời -->
-<div class="right-col">
-  <div class="answer-sheet" id="answerSheet">
-    <h3>Phiếu trả lời</h3>
+  <div class="left-col" id="leftCol">
     <?php foreach ($questions as $index => $q): ?>
-      <fieldset class="answer-row">
-        <legend>Câu <?= $index+1 ?></legend>
-        <?php foreach (['A','B','C','D'] as $opt): ?>
-          <label style="margin-right:5px;">
-            <input type="radio" 
-                   name="s<?= $index ?>" 
-                   value="<?= $opt ?>" 
-                   onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
-            <?= $opt ?>
-          </label>
-        <?php endforeach; ?>
-      </fieldset>
+      <div class="question" data-qid="<?= $q['mc_id'] ?>">
+        <h3>Câu <?= $index+1 ?> (<?= htmlspecialchars($q['mc_topic']) ?>):</h3>
+        <div class="qtext"><?= $q['mc_question'] ?></div>
+        
+        <!-- Nhóm đáp án -->
+        <fieldset class="answers">
+          <legend>Chọn đáp án</legend>
+          <?php foreach (['A','B','C','D'] as $opt): ?>
+            <label>
+              <input type="radio" 
+                     name="q<?= $index ?>" 
+                     value="<?= $opt ?>" 
+                     onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
+              <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
+            </label>
+          <?php endforeach; ?>
+        </fieldset>
+
+        <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+      </div>
     <?php endforeach; ?>
   </div>
 
+  <!-- Cột phải: phiếu trả lời -->
+  <div class="right-col">
+    <div class="answer-sheet" id="answerSheet">
+      <h3>Phiếu trả lời</h3>
+      <?php foreach ($questions as $index => $q): ?>
+        <fieldset class="answer-row">
+          <legend>Câu <?= $index+1 ?></legend>
+          <?php foreach (['A','B','C','D'] as $opt): ?>
+            <label style="margin-right:5px;">
+              <input type="radio" 
+                     name="s<?= $index ?>" 
+                     value="<?= $opt ?>" 
+                     onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
+              <?= $opt ?>
+            </label>
+          <?php endforeach; ?>
+        </fieldset>
+      <?php endforeach; ?>
+    </div>
+
     <div class="actions">
-      <button id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
-      <button id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
-      <button id="btnReset" onclick="handleReset()">Reset</button>
+      <button type="button" id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
+      <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
+      <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
     </div>
   </div>
 </div>
@@ -165,26 +165,9 @@ function handleShowAnswers(){
   MathJax.typesetPromise();
 }
 
-// Reset toàn bộ form
+// Reset toàn bộ form -> load lại trang và random lại đề
 function handleReset(){
-  // Bỏ chọn tất cả radio
-  document.querySelectorAll('input[type=radio]').forEach(r=> r.checked=false);
-
-  // Xóa highlight
-  document.querySelectorAll('.correct-answer').forEach(el=> el.classList.remove('correct-answer'));
-
-  // Xóa dim
-  document.getElementById('leftCol').classList.remove('dim');
-  document.getElementById('answerSheet').classList.remove('dim');
-
-  // Reset progress bar
-  document.getElementById('progressBar').style.width = "0%";
-
-  // Reset button
-  document.getElementById('btnSubmit').disabled = false;
-  document.getElementById('btnShow').disabled = true;
-
-  MathJax.typesetPromise();
+  location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
