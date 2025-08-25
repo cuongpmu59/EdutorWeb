@@ -25,7 +25,7 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 <meta charset="UTF-8">
 <title>Đề thi thử 2026 - Môn Toán</title>
-<link rel="stylesheet" href="../../cs/main/exam_form.css">
+<link rel="stylesheet" href="../../css/main/exam_form.css">
 
 <!-- MathJax -->
 <script>
