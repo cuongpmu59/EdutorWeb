@@ -4,6 +4,7 @@ body {
     background: #f5f7fa;
     color: #333;
   }
+  
   header {
     display: flex;
     justify-content: space-between;
@@ -11,15 +12,57 @@ body {
     background: #005f99;
     color: white;
     padding: 15px 30px;
+    gap: 20px;
   }
-  header .logo {
+  
+  /* Logo trái */
+  .logo-left img {
+    height: 55px;
+    border-radius: 6px;
+    display: block;
+  }
+  
+  /* Giữa */
+  .header-center {
+    flex: 2;
+    text-align: center;
+  }
+  .header-center .exam-title {
     font-size: 20px;
     font-weight: bold;
   }
-  header .title {
-    font-size: 22px;
+  .header-center .subject {
+    font-size: 18px;
+    margin-top: 4px;
+  }
+  
+  /* Bên phải */
+  .header-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .header-right .time {
+    font-size: 15px;
     font-weight: bold;
   }
+  .progress-container {
+    width: 180px;
+    height: 12px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #ffcc00;
+    transition: width 0.3s linear;
+  }
+  
+  /* Layout container */
   .container {
     display: flex;
     gap: 20px;
