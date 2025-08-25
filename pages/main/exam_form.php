@@ -1,6 +1,6 @@
 <?php
 // exam_form.php
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../includes/db_connection.php'; // kết nối $conn
 
 // Lấy 20 câu hỏi ngẫu nhiên
 $sql = "SELECT * FROM mc_questions ORDER BY RAND() LIMIT 20";
@@ -10,147 +10,129 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>📝 Bài thi trắc nghiệm</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    color: #333;
-  }
-  /* Header */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: #2c3e50;
-    color: #fff;
-  }
-  .logo {
-    font-size: 22px;
-    font-weight: bold;
-  }
-  .exam-title {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  /* Layout */
-  .exam-container {
-    display: flex;
-    height: calc(100vh - 70px);
-  }
-  .left-col {
-    flex: 3;
-    padding: 20px;
-    overflow-y: auto;
-    background: #fff;
-    border-right: 2px solid #ddd;
-    transition: opacity 0.3s;
-  }
-  .question {
-    margin-bottom: 25px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fafafa;
-  }
-  .question h3 { margin-top: 0; }
-  .choices label { display: block; margin: 5px 0; }
+  <meta charset="UTF-8" />
+  <title>📝 Đề thi thử - Môn Toán</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  .right-col {
-    flex: 1;
-    padding: 20px;
-    background: #fdfdfd;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: opacity 0.3s;
-  }
-  .answer-sheet {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    background: #fff;
-    flex: 1;
-    overflow-y: auto;
-  }
-  .answer-sheet h3 {
-    text-align: center;
-    margin: 10px 0 15px;
-    font-size: 18px;
-    color: #2c3e50;
-  }
-  .answer-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .answer-row span {
-    width: 30px;
-    font-weight: bold;
-  }
-  .answer-row label { margin-right: 10px; position: relative; padding-left: 2px; }
+  <!-- MathJax (render LaTeX) -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
-  /* Đánh dấu đáp án đúng */
-  .correct-answer {
-    border: 2px solid #27ae60;
-    border-radius: 4px;
-    padding: 2px 4px;
-  }
+  <style>
+    :root {
+      --accent: #3498db;
+      --correct-border: #27ae60;
+      --wrong-bg: #f8d7da;
+    }
 
-  /* Action buttons */
-  .actions {
-    margin-top: 15px;
-    text-align: center;
-  }
-  .actions button {
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    background: #3498db;
-    color: #fff;
-    transition: 0.3s;
-  }
-  .actions button:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-  }
-  .actions button:hover:not(:disabled) {
-    background: #217dbb;
-  }
+    body { margin: 0; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f7fb; color: #222; }
 
-  /* Làm mờ */
-  .disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-</style>
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px;
+      background: linear-gradient(90deg,#243b55 0%, #141e30 100%);
+      color: #fff;
+      border-bottom: 4px solid var(--accent);
+    }
+    .logo { display:flex; align-items:center; gap:12px; font-weight:700; font-size:20px; color:#ffd54a; }
+    .logo .icon { font-size:28px; }
+    .exam-title { text-align:right; font-size:16px; line-height:1.1; font-weight:600; max-width:70%; }
+
+    /* Layout */
+    .exam-container { display:flex; height: calc(100vh - 70px); gap: 0; }
+
+    /* Left - questions */
+    .left-col { flex: 3; padding: 18px; overflow-y: auto; background: #ffffff; border-right: 1px solid #e6e9ef; transition: opacity .3s ease; }
+    .question { margin-bottom: 20px; padding: 14px; border-radius: 10px; background: #fbfdff; border: 1px solid #e6eef8; box-shadow: 0 1px 4px rgba(18,40,80,0.03); }
+    .question h3 { margin: 0 0 8px 0; font-size:16px; font-weight:600; color:#0f2140; }
+    .question .img-wrap { margin: 10px 0; text-align:center; }
+    .question img { max-width:100%; height:auto; border-radius:6px; border:1px solid #dde8f5; }
+
+    /* Choices: same row, wrap when too long */
+    .choices { display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:8px; }
+    .choice { display:flex; align-items:flex-start; gap:8px; background: #fff; border-radius:8px; padding:8px 10px; border:1px solid #e8f0fb; min-width: 220px; max-width: calc(50% - 20px); box-sizing: border-box; }
+    .choice input[type="radio"] { margin-top:3px; }
+    .choice .text { white-space: normal; font-size:14px; color:#123; line-height:1.35; }
+
+    /* Right - answer sheet */
+    .right-col { flex: 1; padding: 18px; background: #fbfdff; display:flex; flex-direction:column; gap:12px; transition: opacity .3s ease; }
+    .answer-sheet { border-radius:10px; border:1px solid #e6eef8; padding:12px; background:#fff; overflow-y:auto; flex:1; }
+    .answer-sheet h3 { margin:6px 0 12px 0; text-align:center; color:#0f2140; font-size:18px; }
+    .answer-row { display:flex; align-items:center; gap:8px; padding:6px 4px; border-radius:6px; }
+    .answer-row span.num { width:34px; font-weight:700; color:#1b2b48; }
+    .answer-row label { display:inline-flex; align-items:center; gap:6px; padding:4px 6px; border-radius:6px; cursor:pointer; }
+    .answer-row input[type="radio"] { transform:scale(1); }
+
+    /* Correct answer highlight: square border */
+    .mark-correct { outline: 3px solid var(--correct-border); outline-offset: -4px; border-radius:6px; }
+
+    /* Wrong selection highlight (the student's wrong choice) */
+    .mark-wrong { background: var(--wrong-bg); border-radius:6px; }
+
+    /* Buttons */
+    .actions { display:flex; justify-content:center; gap:10px; margin-top:8px; }
+    .btn {
+      border: none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px;
+      color:#fff; background:var(--accent);
+      transition: transform .08s ease, filter .08s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn[disabled] { background:#9aa6b2; cursor:not-allowed; }
+
+    /* Disabled container styling (dim) */
+    .dim { opacity: 0.42; pointer-events: none; filter: grayscale(.02); }
+
+    /* small screens */
+    @media (max-width: 900px) {
+      .exam-container { flex-direction: column; height: auto; }
+      .left-col { order:1; height:auto; }
+      .right-col { order:2; height:auto; }
+      .choice { max-width: 100%; min-width: auto; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <div class="logo">📘 Thầy Cường</div>
-    <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026 - Môn Toán</div>
-  </div>
+  <header class="header">
+    <div class="logo"><span class="icon">📘</span><span>Thầy Cường</span></div>
+    <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026<br><strong>Môn Toán</strong></div>
+  </header>
 
   <div class="exam-container">
-    <!-- Cột trái: Câu hỏi -->
-    <div class="left-col" id="questions">
-      <?php foreach ($questions as $index => $q): ?>
-        <div class="question" data-q="<?= $index+1 ?>" data-correct="<?= $q['mc_correct_answer'] ?>">
-          <h3>Câu <?= $index+1 ?>: <?= htmlspecialchars($q['mc_question']) ?></h3>
+    <!-- Left: questions -->
+    <div class="left-col" id="leftCol">
+      <?php foreach ($questions as $index => $q): 
+        $num = $index + 1;
+        // ensure correct-answer normalized to A/B/C/D (if stored otherwise adapt)
+        $correct = isset($q['mc_correct_answer']) ? $q['mc_correct_answer'] : '';
+      ?>
+        <div class="question" data-q="<?= $num ?>" data-correct="<?= htmlspecialchars($correct) ?>">
+          <h3>Câu <?= $num ?>: <span class="q-text"><?= $q['mc_question'] ?></span></h3>
+
+          <?php if (!empty($q['mc_image_url'])): ?>
+            <div class="img-wrap">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" alt="Hình minh họa câu <?= $num ?>">
+            </div>
+          <?php endif; ?>
+
           <div class="choices">
-            <?php foreach (['A','B','C','D'] as $opt): ?>
-              <label id="q<?= $index+1 ?>_<?= $opt ?>">
-                <input type="radio" name="q<?= $index+1 ?>" value="<?= $opt ?>"
-                       onchange="syncAnswer(<?= $index+1 ?>,'<?= $opt ?>')">
-                <?= $opt ?>. <?= htmlspecialchars($q['mc_answer'.($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)))]) ?>
+            <?php
+              $opts = ['A'=>'mc_answer1','B'=>'mc_answer2','C'=>'mc_answer3','D'=>'mc_answer4'];
+              foreach ($opts as $label => $col):
+                $text = isset($q[$col]) ? $q[$col] : '';
+                // ID for label so we can mark it later: q{num}_{label}
+                $labId = "q{$num}_{$label}";
+            ?>
+              <label class="choice" id="<?= $labId ?>">
+                <input type="radio" name="q<?= $num ?>" value="<?= $label ?>" onchange="syncAnswer(<?= $num ?>,'<?= $label ?>')">
+                <div class="text"><?= $label ?>. <span class="latex"><?= $text ?></span></div>
               </label>
             <?php endforeach; ?>
           </div>
@@ -158,66 +140,119 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <?php endforeach; ?>
     </div>
 
-    <!-- Cột phải: Phiếu trả lời -->
-    <div class="right-col" id="answers">
-      <div class="answer-sheet">
+    <!-- Right: answer sheet -->
+    <div class="right-col">
+      <div class="answer-sheet" id="answerSheet">
         <h3>📝 Phiếu trả lời</h3>
         <?php for ($i=1; $i<=count($questions); $i++): ?>
           <div class="answer-row" data-q="<?= $i ?>">
-            <span><?= $i ?>.</span>
-            <?php foreach (['A','B','C','D'] as $opt): ?>
-              <label id="a<?= $i ?>_<?= $opt ?>">
-                <input type="radio" name="ans<?= $i ?>" value="<?= $opt ?>"
-                       onchange="syncQuestion(<?= $i ?>,'<?= $opt ?>')">
-                <?= $opt ?>
+            <span class="num"><?= $i ?>.</span>
+            <?php foreach (['A','B','C','D'] as $opt): 
+              $aId = "a{$i}_{$opt}";
+            ?>
+              <label id="<?= $aId ?>">
+                <input type="radio" name="ans<?= $i ?>" value="<?= $opt ?>" onchange="syncQuestion(<?= $i ?>,'<?= $opt ?>')"> <?= $opt ?>
               </label>
             <?php endforeach; ?>
           </div>
         <?php endfor; ?>
       </div>
+
       <div class="actions">
-        <button onclick="submitExam()">📤 Nộp bài</button>
-        <button id="btnShowAns" onclick="showAnswers()" disabled>👀 Xem đáp án</button>
+        <button class="btn" id="btnSubmit" onclick="handleSubmit()">📤 Nộp bài</button>
+        <button class="btn" id="btnShow" onclick="handleShowAnswers()" disabled>👀 Xem đáp án</button>
       </div>
     </div>
   </div>
 
 <script>
-function syncAnswer(q,opt){
-  document.querySelector(`input[name="ans${q}"][value="${opt}"]`).checked = true;
-}
-function syncQuestion(q,opt){
-  document.querySelector(`input[name="q${q}"][value="${opt}"]`).checked = true;
-}
-
-function submitExam(){
-  document.getElementById('questions').classList.add('disabled');
-  document.getElementById('answers').classList.add('disabled');
-  document.getElementById('btnShowAns').disabled = false;
-}
-
-function showAnswers(){
-  // Hiển thị lại
-  document.getElementById('questions').classList.remove('disabled');
-  document.getElementById('answers').classList.remove('disabled');
-
-  // Đánh dấu đáp án đúng
-  document.querySelectorAll('.question').forEach(q=>{
-    let correct = q.dataset.correct;
-    if(correct){
-      let label = q.querySelector(`#q${q.dataset.q}_${correct}`);
-      if(label) label.classList.add('correct-answer');
+  // Khi load, render LaTeX cho toàn bộ nội dung
+  window.addEventListener('load', () => {
+    if (window.MathJax) {
+      MathJax.typesetPromise && MathJax.typesetPromise();
     }
+    // ensure Show button disabled initially
+    document.getElementById('btnShow').disabled = true;
   });
-  document.querySelectorAll('.answer-row').forEach(r=>{
-    let q = r.dataset.q;
-    let correct = document.querySelector(`.question[data-q="${q}"]`).dataset.correct;
-    if(correct){
-      let label = r.querySelector(`#a${q}_${correct}`);
-      if(label) label.classList.add('correct-answer');
-    }
-  });
-}
+
+  // Đồng bộ: chọn ở cột trái -> tick phiếu phải
+  function syncAnswer(qIndex, opt) {
+    const rightRadio = document.querySelector(`input[name="ans${qIndex}"][value="${opt}"]`);
+    if (rightRadio) rightRadio.checked = true;
+  }
+
+  // Đồng bộ: chọn ở phiếu phải -> tick cột trái and scroll
+  function syncQuestion(qIndex, opt) {
+    const leftRadio = document.querySelector(`input[name="q${qIndex}"][value="${opt}"]`);
+    if (leftRadio) leftRadio.checked = true;
+    const qBlock = document.querySelector(`.question[data-q="${qIndex}"]`);
+    if (qBlock) qBlock.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  // Nộp bài: làm mờ hai cột, bật nút Xem đáp án
+  function handleSubmit() {
+    document.getElementById('leftCol').classList.add('dim');
+    document.querySelector('.right-col').classList.add('dim');
+    document.getElementById('btnShow').disabled = false;
+    // disable submit to avoid double submit
+    document.getElementById('btnSubmit').disabled = true;
+    alert('📤 Bài đã nộp. Bạn có thể nhấn "Xem đáp án" để kiểm tra (khi cần).');
+  }
+
+  // Xem đáp án: hiện lại giao diện, highlight đáp án đúng và đánh dấu sai nếu thí sinh chọn sai
+  function handleShowAnswers() {
+    // enable view
+    document.getElementById('leftCol').classList.remove('dim');
+    document.querySelector('.right-col').classList.remove('dim');
+
+    // read correct answers from dataset
+    document.querySelectorAll('.question').forEach(q => {
+      const qIdx = q.getAttribute('data-q');
+      const correct = q.getAttribute('data-correct') || '';
+      // mark in left choices
+      if (correct) {
+        const leftLabel = document.getElementById(`q${qIdx}_${correct}`);
+        if (leftLabel) leftLabel.classList.add('mark-correct');
+      }
+      // check student's chosen option in this question (left side)
+      const chosenLeft = q.querySelector('input[type="radio"]:checked');
+      if (chosenLeft) {
+        const chosenVal = chosenLeft.value;
+        if (correct && chosenVal !== correct) {
+          // mark the student's chosen left label as wrong
+          const wrongLeft = document.getElementById(`q${qIdx}_${chosenVal}`);
+          if (wrongLeft) wrongLeft.classList.add('mark-wrong');
+        }
+      }
+    });
+
+    // mark on answer sheet (right)
+    document.querySelectorAll('.answer-row').forEach(r => {
+      const qIdx = r.getAttribute('data-q');
+      const qBlock = document.querySelector(`.question[data-q="${qIdx}"]`);
+      const correct = qBlock ? qBlock.getAttribute('data-correct') : '';
+      if (correct) {
+        const rightLabel = document.getElementById(`a${qIdx}_${correct}`);
+        if (rightLabel) rightLabel.classList.add('mark-correct');
+      }
+      // mark wrong chosen on right
+      const chosenRight = r.querySelector('input[type="radio"]:checked');
+      if (chosenRight) {
+        const chosenVal = chosenRight.value;
+        if (correct && chosenVal !== correct) {
+          const wrongRight = document.getElementById(`a${qIdx}_${chosenVal}`);
+          if (wrongRight) wrongRight.classList.add('mark-wrong');
+        }
+      }
+    });
+
+    // ensure radios remain showing student's choices (we do not clear them)
+    // render LaTeX again (so newly highlighted content still typeset)
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+
+    // Optionally lock show button to avoid double highlighting (keep it enabled if you want repeat)
+    document.getElementById('btnShow').disabled = true;
+  }
 </script>
 </body>
 </html>
