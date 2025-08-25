@@ -11,28 +11,39 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📝 Bài thi trắc nghiệm</title>
+  <title>📝 Đề thi thử - Môn Toán</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- MathJax -->
   <script>
-  window.MathJax = {
-    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-    svg: { fontCache: 'global' }
-  };
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
-    .exam-container { display: flex; height: 100vh; }
+    
+    /* ===== Header ===== */
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 30px; background: #2c3e50; color: white;
+      border-bottom: 4px solid #3498db;
+    }
+    .logo { font-size: 24px; font-weight: bold; color: #f1c40f; }
+    .exam-title { font-size: 20px; font-weight: bold; text-align: right; max-width: 70%; }
+
+    /* ===== Layout chính ===== */
+    .exam-container { display: flex; height: calc(100vh - 70px); }
     /* Cột trái */
     .left-col { flex: 3; padding: 20px; overflow-y: auto; background: #fff; border-right: 2px solid #ddd; }
     .question { margin-bottom: 25px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
     .question h3 { margin-top: 0; }
-    .question img { max-width: 100%; margin: 10px 0; display: block; }
-    .choices { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
-    .choices label { display: flex; align-items: center; gap: 5px; white-space: normal; }
+    .question img { max-width: 100%; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc; }
+    .choices { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 10px; }
+    .choices label { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
 
     /* Cột phải */
     .right-col { flex: 1; padding: 20px; background: #fdfdfd; display: flex; flex-direction: column; justify-content: space-between; }
@@ -46,29 +57,32 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </style>
 </head>
 <body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">📘 Thầy Cường</div>
+    <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông 2026<br>Môn Toán</div>
+  </div>
+
   <div class="exam-container">
     <!-- Cột trái: Câu hỏi -->
     <div class="left-col" id="leftCol">
       <?php foreach ($questions as $index => $q): ?>
         <div class="question" data-q="<?= $index+1 ?>" id="q<?= $index+1 ?>">
-          <h3>Câu <?= $index+1 ?>: <span class="mathjax"><?= $q['mc_question'] ?></span></h3>
-          
+          <h3>Câu <?= $index+1 ?>: <?= $q['mc_question'] ?></h3>
+
           <?php if (!empty($q['mc_image_url'])): ?>
-            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" alt="Hình câu hỏi">
+            <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" alt="Hình minh họa">
           <?php endif; ?>
 
           <div class="choices">
             <?php foreach (['A','B','C','D'] as $opt): ?>
-              <?php 
-                $col = ($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)));
-                $ans = $q['mc_answer'.$col];
-              ?>
               <label>
                 <input type="radio"
                        name="q<?= $index+1 ?>"
                        value="<?= $opt ?>"
                        onchange="syncAnswer(<?= $index+1 ?>,'<?= $opt ?>')">
-                <span class="mathjax"><?= $opt ?>. <?= $ans ?></span>
+                <?= $opt ?>.
+                <?= $q['mc_answer'.($opt=='A'?1:($opt=='B'?2:($opt=='C'?3:4)))] ?>
               </label>
             <?php endforeach; ?>
           </div>
@@ -101,7 +115,6 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
   <script>
-    // Đồng bộ: chọn ở cột trái -> tick ở phiếu trả lời
     function syncAnswer(qIndex, opt) {
       const row = document.querySelector(`.answer-row[data-q="${qIndex}"]`);
       if (!row) return;
@@ -109,7 +122,6 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       if (radio) radio.checked = true;
     }
 
-    // Đồng bộ: chọn ở phiếu trả lời -> tick ở cột trái và cuộn tới câu hỏi
     function syncQuestion(qIndex, opt) {
       const qBlock = document.querySelector(`.question[data-q="${qIndex}"]`);
       if (!qBlock) return;
@@ -117,7 +129,6 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       qBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Demo nộp bài
     function submitExam() {
       const answers = {};
       document.querySelectorAll('.question').forEach(q => {
@@ -129,7 +140,6 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
       alert('📤 Đã thu bài (demo). Bạn có thể gửi lên server để chấm.');
     }
 
-    // Demo xem đáp án
     function showAnswers() {
       alert('👀 Xem đáp án: cần server trả đáp án đúng để highlight.');
     }
