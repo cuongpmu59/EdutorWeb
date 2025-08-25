@@ -108,6 +108,7 @@ window.MathJax = {
     <div class="actions">
       <button id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
       <button id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
+      <button id="btnReset" onclick="handleReset()">Reset</button>
     </div>
   </div>
 </div>
@@ -153,7 +154,20 @@ function handleShowAnswers(){
   MathJax.typesetPromise();
 }
 
-// Render lại LaTeX khi load trang
+// Reset toàn bộ form
+function handleReset(){
+  // Bỏ chọn tất cả radio
+  document.querySelectorAll('input[type=radio]').forEach(r=> r.checked=false);
+  // Xóa highlight
+  document.querySelectorAll('.correct-answer').forEach(el=> el.classList.remove('correct-answer'));
+  // Xóa dim
+  document.getElementById('leftCol').classList.remove('dim');
+  document.getElementById('answerSheet').classList.remove('dim');
+  // Reset button
+  document.getElementById('btnSubmit').disabled = false;
+  document.getElementById('btnShow').disabled = true;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   MathJax.typesetPromise();
 });
