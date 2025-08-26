@@ -1,12 +1,18 @@
+/* ===== Base ===== */
 body {
   font-family: Arial, sans-serif;
-  margin: 0; 
+  margin: 0;
   padding: 0;
   background: #f5f7fa;
   color: #333;
+  line-height: 1.5;
+  padding-top: 90px; /* chừa chỗ cho header fixed */
 }
 
+/* ===== Header ===== */
 header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,6 +20,8 @@ header {
   color: white;
   padding: 15px 30px;
   gap: 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* Logo trái */
@@ -63,7 +71,7 @@ header {
   transition: width 0.3s linear;
 }
 
-/* Layout container */
+/* ===== Layout container ===== */
 .container {
   display: flex;
   gap: 20px;
@@ -82,9 +90,11 @@ header {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 3px 8px rgba(0,0,0,.1);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
 }
 
-/* Fieldset nhóm theo topic */
+/* ===== Fieldset nhóm theo topic ===== */
 .topic-block {
   border: 2px solid #005f99;
   border-radius: 8px;
@@ -115,7 +125,7 @@ header {
   background-color: #eef6ff;
 }
 
-/* Câu hỏi */
+/* ===== Câu hỏi ===== */
 .question {
   margin-bottom: 20px;
   padding: 15px;
@@ -125,7 +135,7 @@ header {
   margin: 0 0 10px; 
 }
 
-/* Đáp án A B C D tự co giãn */
+/* ===== Đáp án A B C D tự co giãn ===== */
 .answers-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -140,7 +150,7 @@ header {
   cursor: pointer;
 }
 
-/* Ảnh minh họa câu hỏi */
+/* ===== Ảnh minh họa câu hỏi ===== */
 .qimage {
   text-align: center;
   margin-top: 12px;
@@ -152,7 +162,7 @@ header {
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
-/* Phiếu trả lời */
+/* ===== Phiếu trả lời ===== */
 .answer-sheet h3 {
   text-align: center;
   margin-top: 0;
@@ -171,7 +181,7 @@ header {
   display: inline-block;
 }
 
-/* Nút thao tác */
+/* ===== Nút thao tác ===== */
 .actions {
   margin-top: 20px;
   text-align: center;
@@ -191,10 +201,10 @@ button {
   opacity: .5; cursor: not-allowed;
 }
 
-/* Khi nộp bài thì làm mờ */
+/* ===== Khi nộp bài thì làm mờ ===== */
 .dim { opacity: .4; }
 
-/* Đáp án đúng highlight */
+/* ===== Đáp án đúng highlight ===== */
 .correct-answer {
   background-color: #d9fdd3 !important;
   font-weight: bold;
