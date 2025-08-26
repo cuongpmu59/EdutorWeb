@@ -76,7 +76,26 @@ window.MathJax = {
             </div>
           <?php endif; ?>
 
-          <div class="answers">
+          <?php 
+            // --- Phân loại độ dài đáp án ---
+            $lengths = [
+              strlen(strip_tags($q['mc_answer1'])),
+              strlen(strip_tags($q['mc_answer2'])),
+              strlen(strip_tags($q['mc_answer3'])),
+              strlen(strip_tags($q['mc_answer4']))
+            ];
+            $maxLen = max($lengths);
+
+            if($maxLen <= 30){
+              $layoutClass = "layout-1"; // Ngắn: 1 dòng 4 cột
+            } elseif($maxLen <= 80){
+              $layoutClass = "layout-2"; // Trung bình: 2 dòng × 2 cột
+            } else {
+              $layoutClass = "layout-4"; // Dài: 4 dòng
+            }
+          ?>
+
+          <div class="answers <?= $layoutClass ?>">
             <?php foreach (['A','B','C','D'] as $opt): ?>
               <label>
                 <input type="radio" 
