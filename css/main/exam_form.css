@@ -1,18 +1,34 @@
+/* ===== exam_form.css (complete) ===== */
+/* chỉnh chiều cao header ở một chỗ để dễ thay đổi */
+:root {
+  --HEADER-H: 90px; /* thay đổi nếu header cao/thoải hơn */
+}
+
 /* ===== Base ===== */
-body {
-  font-family: Arial, sans-serif;
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
   background: #f5f7fa;
   color: #333;
   line-height: 1.5;
-  padding-top: 90px; /* chừa chỗ cho header fixed */
+  /* chừa chỗ cho header (vẫn giữ khoảng trống),
+     nhưng KHÔNG cho phép body cuộn -> chỉ .container cuộn */
+  padding-top: var(--HEADER-H);
+  overflow: hidden; /* ❌ body không cuộn */
+  box-sizing: border-box;
 }
 
-/* ===== Header ===== */
+/* ===== Header (fixed) ===== */
 header {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--HEADER-H);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -72,11 +88,20 @@ header {
 }
 
 /* ===== Layout container ===== */
+/* Đây là vùng nội dung cuộn chung cho cả left + right */
 .container {
   display: flex;
   gap: 20px;
   padding: 20px;
+  align-items: flex-start;
+  /* chiều cao tối đa = viewport - header */
+  max-height: calc(100vh - var(--HEADER-H));
+  overflow-y: auto;              /* ✅ duy nhất 1 thanh cuộn chung */
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
+
+/* Nội dung bên trong container (2 cột) */
 .left-col {
   flex: 2;
   background: white;
@@ -90,8 +115,7 @@ header {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 3px 8px rgba(0,0,0,.1);
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
+  /* KHÔNG đặt overflow ở đây — để cuộn chung ở .container */
 }
 
 /* ===== Fieldset nhóm theo topic ===== */
@@ -146,7 +170,7 @@ header {
   display: flex;
   align-items: center;
   word-break: break-word;
-  white-space: normal; /* cho phép xuống dòng */
+  white-space: normal;
   cursor: pointer;
 }
 
@@ -209,4 +233,12 @@ button {
   background-color: #d9fdd3 !important;
   font-weight: bold;
   color: #1d5e23;
+}
+
+/* ===== Mobile tweaks (optional) ===== */
+@media (max-width: 900px) {
+  .container { flex-direction: column; padding: 12px; }
+  .header-center .exam-title { font-size: 18px; }
+  .header-center .subject { font-size: 16px; }
+  .header-right { align-items: center; }
 }
