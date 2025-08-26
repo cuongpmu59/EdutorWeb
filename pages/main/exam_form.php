@@ -70,9 +70,9 @@ window.MathJax = {
           <h3>Câu <?= $index+1 ?>:</h3>
           <div class="qtext"><?= $q['mc_question'] ?></div>
 
-          <?php if (!empty($q['mc_image'])): ?>
+          <?php if (!empty($q['mc_image_url'])): ?>
             <div class="qimage">
-              <img src="../../uploads/<?= htmlspecialchars($q['mc_image']) ?>" alt="Minh họa">
+              <img src="<?= htmlspecialchars($q['mc_image_url']) ?>" alt="Minh họa câu hỏi <?= $index+1 ?>">
             </div>
           <?php endif; ?>
 
