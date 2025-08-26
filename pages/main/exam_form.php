@@ -109,6 +109,7 @@ window.MathJax = {
       <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
       <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
     </div>
+    <div class="score-box" id="scoreBox" style="display:none; margin-top:15px; font-size:18px; font-weight:bold;"></div>
   </div>
 </div>
 
@@ -173,6 +174,21 @@ function handleSubmit(auto=false){
   document.getElementById('answerSheet').classList.add('dim');
   document.getElementById('btnShow').disabled = false;
   document.getElementById('btnSubmit').disabled = true;
+
+  // Chấm điểm
+  let total = document.querySelectorAll('.question').length;
+  let correctCount = 0;
+  document.querySelectorAll('.question').forEach((qDiv,idx)=>{
+    let correct = document.getElementById('correct'+idx).value;
+    let chosen = document.querySelector(`input[name="q${idx}"]:checked`);
+    if(chosen && chosen.value===correct){
+      correctCount++;
+    }
+  });
+  let score = correctCount + "/" + total + " câu đúng (" + (correctCount*10/total).toFixed(2) + " điểm)";
+  document.getElementById('scoreBox').style.display="block";
+  document.getElementById('scoreBox').textContent = "✅ Kết quả: " + score;
+
   if(!auto){
     alert("📤 Bạn đã nộp bài thành công!");
   }
@@ -188,11 +204,17 @@ function handleShowAnswers(){
       if(r.value===correct){
         r.parentElement.classList.add('correct-answer');
       }
+      if(r.checked && r.value!==correct){
+        r.parentElement.classList.add('wrong-answer');
+      }
     });
     let sheetRadios = document.querySelectorAll(`input[name="s${idx}"]`);
     sheetRadios.forEach(r=>{
       if(r.value===correct){
         r.parentElement.classList.add('correct-answer');
+      }
+      if(r.checked && r.value!==correct){
+        r.parentElement.classList.add('wrong-answer');
       }
     });
   });
