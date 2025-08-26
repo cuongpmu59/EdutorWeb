@@ -59,65 +59,59 @@ window.MathJax = {
   </div>
 </header>
 
-<header> ... </header>
-
-<!-- Thay container bằng wrapper cuộn chung -->
-<div class="main-wrapper">
-  <div class="container">
-    <!-- Cột trái -->
-    <div class="left-col" id="leftCol">
-      <?php foreach ($questions as $index => $q): ?>
-        <fieldset class="topic-block">
-          <legend><strong><?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
-          <div class="question" data-qid="<?= $q['mc_id'] ?>">
-            <h3>Câu <?= $index+1 ?>:</h3>
-            <div class="qtext"><?= $q['mc_question'] ?></div>
-            <div class="answers">
-              <?php foreach (['A','B','C','D'] as $opt): ?>
-                <label>
-                  <input type="radio" 
-                        name="q<?= $index ?>" 
-                        value="<?= $opt ?>" 
-                        onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
-                  <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
-                </label>
-              <?php endforeach; ?>
-            </div>
-            <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+<div class="container">
+  <!-- Cột trái: câu hỏi -->
+  <div class="left-col" id="leftCol">
+    <?php foreach ($questions as $index => $q): ?>
+      <fieldset class="topic-block">
+        <legend><strong><?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
+        <div class="question" data-qid="<?= $q['mc_id'] ?>">
+          <h3>Câu <?= $index+1 ?>:</h3>
+          <div class="qtext"><?= $q['mc_question'] ?></div>
+          <div class="answers">
+            <?php foreach (['A','B','C','D'] as $opt): ?>
+              <label>
+                <input type="radio" 
+                       name="q<?= $index ?>" 
+                       value="<?= $opt ?>" 
+                       onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
+                <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
+              </label>
+            <?php endforeach; ?>
           </div>
+          <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+        </div>
+      </fieldset>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Cột phải: phiếu trả lời -->
+  <div class="right-col">
+    <div class="answer-sheet" id="answerSheet">
+      <h3>Phiếu trả lời</h3>
+      <?php foreach ($questions as $index => $q): ?>
+        <fieldset class="answer-row">
+          <legend>Câu <?= $index+1 ?></legend>
+          <?php foreach (['A','B','C','D'] as $opt): ?>
+            <label style="margin-right:5px;">
+              <input type="radio" 
+                     name="s<?= $index ?>" 
+                     value="<?= $opt ?>" 
+                     onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
+              <?= $opt ?>
+            </label>
+          <?php endforeach; ?>
         </fieldset>
       <?php endforeach; ?>
     </div>
 
-    <!-- Cột phải -->
-    <div class="right-col">
-      <div class="answer-sheet" id="answerSheet">
-        <h3>Phiếu trả lời</h3>
-        <?php foreach ($questions as $index => $q): ?>
-          <fieldset class="answer-row">
-            <legend>Câu <?= $index+1 ?></legend>
-            <?php foreach (['A','B','C','D'] as $opt): ?>
-              <label style="margin-right:5px;">
-                <input type="radio" 
-                      name="s<?= $index ?>" 
-                      value="<?= $opt ?>" 
-                      onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
-                <?= $opt ?>
-              </label>
-            <?php endforeach; ?>
-          </fieldset>
-        <?php endforeach; ?>
-      </div>
-
-      <div class="actions">
-        <button type="button" id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
-        <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
-        <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
-      </div>
+    <div class="actions">
+      <button type="button" id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
+      <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
+      <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
     </div>
   </div>
 </div>
-
 
 <!-- Âm thanh -->
 <audio id="tickSound" src="../../assets/sound/tick.mp3" preload="auto"></audio>
