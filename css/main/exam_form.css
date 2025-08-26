@@ -134,35 +134,35 @@ header .logo-left img {
   margin-top: 8px;
 }
 
+/* 1 dòng 4 cột */
 .answers.layout-1 {
-  grid-template-columns: repeat(4, 1fr); /* 1 dòng 4 cột */
+  grid-template-columns: repeat(4, 1fr);
 }
 
+/* 2 dòng 2 cột */
 .answers.layout-2 {
-  grid-template-columns: repeat(2, 1fr); /* 2 dòng × 2 cột */
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.answers.layout-4 {
-  grid-template-columns: 1fr; /* 4 dòng dọc */
+/* 4 dòng (mỗi đáp án 1 dòng) */
+.answers.layout-3 {
+  grid-template-columns: 1fr;
 }
 
 .answers label {
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  padding: 6px 10px;
-  background: #f1f1f1;
-  border-radius: 6px;
+  padding: 8px;
   border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
   cursor: pointer;
-  transition: background 0.2s;
+  white-space: normal; /* cho phép xuống dòng */
+  word-break: break-word;
 }
 
-.answers label:hover {
-  background: #e0f0ff;
-}
-
-.answers input[type=radio] {
+.answers input[type="radio"] {
   margin-top: 3px;
 }
 
