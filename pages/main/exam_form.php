@@ -43,13 +43,13 @@ window.MathJax = {
     <img src="../../pages/image/logo_cuong.jpg" alt="Logo">
   </div>
 
-  <!-- Giữa: Tiêu đề -->
+  <!-- Tiêu đề giữa -->
   <div class="header-center">
     <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông quốc gia</div>
     <div class="subject">Môn thi: Toán</div>
   </div>
 
-  <!-- Bên phải: Thời gian + progress -->
+  <!-- Thời gian bên phải -->
   <div class="header-right">
     <div class="time">⏰ Thời gian làm bài: 20 phút</div>
     <div class="progress-container">
@@ -59,8 +59,9 @@ window.MathJax = {
   </div>
 </header>
 
-<!-- Container chung có scroll -->
+<!-- Container chung -->
 <div class="container">
+  <!-- Cột trái: Câu hỏi -->
   <div class="left-col" id="leftCol">
     <?php foreach ($questions as $index => $q): ?>
       <fieldset class="topic-block">
@@ -85,6 +86,7 @@ window.MathJax = {
     <?php endforeach; ?>
   </div>
 
+  <!-- Cột phải: Phiếu trả lời -->
   <div class="right-col">
     <div class="answer-sheet" id="answerSheet">
       <h3>Phiếu trả lời</h3>
@@ -92,7 +94,7 @@ window.MathJax = {
         <fieldset class="answer-row">
           <legend>Câu <?= $index+1 ?></legend>
           <?php foreach (['A','B','C','D'] as $opt): ?>
-            <label style="margin-right:5px;">
+            <label>
               <input type="radio" 
                      name="s<?= $index ?>" 
                      value="<?= $opt ?>" 
@@ -104,12 +106,13 @@ window.MathJax = {
       <?php endforeach; ?>
     </div>
 
+    <!-- Nút thao tác -->
     <div class="actions">
       <button type="button" id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
       <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
       <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
     </div>
-    <div class="score-box" id="scoreBox" style="display:none; margin-top:15px; font-size:18px; font-weight:bold;"></div>
+    <div class="score-box" id="scoreBox" style="display:none;"></div>
   </div>
 </div>
 
@@ -129,7 +132,7 @@ function syncQuestion(idx,opt){
 }
 
 // === Timer + Progress bar ===
-let duration = 20 * 60; // 20 phút (giây)
+let duration = 20 * 60; // 20 phút
 let remaining = duration;
 let timer;
 
