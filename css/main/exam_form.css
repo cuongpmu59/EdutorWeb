@@ -127,21 +127,33 @@ header .logo-left img {
   font-size: 15px;
 }
 
-/* ====== Đáp án (2 cột ngang) ====== */
+/* ====== Đáp án (linh hoạt 1 / 2 / 4 layout) ====== */
 .answers {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 cột */
   gap: 10px;
   margin-top: 8px;
 }
 
+.answers.layout-1 {
+  grid-template-columns: repeat(4, 1fr); /* 1 dòng 4 cột */
+}
+
+.answers.layout-2 {
+  grid-template-columns: repeat(2, 1fr); /* 2 dòng × 2 cột */
+}
+
+.answers.layout-4 {
+  grid-template-columns: 1fr; /* 4 dòng dọc */
+}
+
 .answers label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   padding: 6px 10px;
   background: #f1f1f1;
   border-radius: 6px;
+  border: 1px solid #ddd;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -151,7 +163,7 @@ header .logo-left img {
 }
 
 .answers input[type=radio] {
-  margin: 0;
+  margin-top: 3px;
 }
 
 /* Ảnh minh họa trong câu hỏi */
