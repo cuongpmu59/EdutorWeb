@@ -105,8 +105,29 @@ function handleReset(){
   location.reload();
 }
 
+// === Auto điều chỉnh layout đáp án ===
+function adjustLayout() {
+  document.querySelectorAll('.answers').forEach(ans => {
+    ans.classList.remove('layout-1','layout-2','layout-3');
+    ans.classList.add('layout-1'); // mặc định: 1 dòng 4 cột
+
+    // nếu bị tràn → thử layout-2
+    if (ans.scrollHeight > ans.clientHeight + 5) {
+      ans.classList.remove('layout-1');
+      ans.classList.add('layout-2');
+    }
+
+    // nếu layout-2 vẫn tràn → ép về layout-3
+    if (ans.scrollHeight > ans.clientHeight + 5) {
+      ans.classList.remove('layout-2');
+      ans.classList.add('layout-3');
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   MathJax.typesetPromise();
   startTimer();
+  adjustLayout();           // chạy lúc load
+  window.addEventListener("resize", adjustLayout); // chạy khi thay đổi kích thước
 });
-
