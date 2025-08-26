@@ -6,7 +6,7 @@ body {
   background: #f5f7fa;
   color: #333;
   line-height: 1.5;
-  padding-top: 90px; /* chừa chỗ cho header fixed */
+  padding-top: 100px; /* chừa chỗ cho header fixed */
 }
 
 /* ===== Header ===== */
@@ -22,6 +22,7 @@ header {
   gap: 20px;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 0 0 12px 12px; /* bo tròn góc dưới */
 }
 
 /* Logo trái */
@@ -90,78 +91,65 @@ header {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 3px 8px rgba(0,0,0,.1);
-
-  /* bỏ scroll riêng, để toàn trang cuộn chung */
   max-height: none;
   overflow: visible;
 }
 
-/* ===== Fieldset nhóm theo topic ===== */
-.topic-block {
-  border: 2px solid #005f99;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  padding: 15px 20px;
-  background-color: #f9fbff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-.topic-block legend {
-  font-weight: bold;
-  font-size: 18px;
-  color: #005f99;
-  padding: 0 10px;
-}
-.topic-block .qtext {
-  margin: 10px 0 15px 0;
-  font-size: 16px;
-}
-.topic-block .answers label {
-  display: block;
-  margin: 6px 0;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.topic-block .answers label:hover {
-  background-color: #eef6ff;
-}
-
 /* ===== Câu hỏi ===== */
 .question {
-  margin-bottom: 20px;
-  padding: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #ddd;
 }
 .question h3 { 
-  margin: 0 0 10px; 
+  margin: 0 0 12px; 
+  font-size: 17px;
 }
-
-/* ===== Đáp án A B C D tự co giãn ===== */
-.answers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px 16px;
-  margin-top: 10px;
-}
-.answers-grid label {
-  display: flex;
-  align-items: center;
-  word-break: break-word;
-  white-space: normal; /* cho phép xuống dòng */
-  cursor: pointer;
-}
-
-/* ===== Ảnh minh họa câu hỏi ===== */
 .qimage {
   text-align: center;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 .qimage img {
   max-width: 90%;
   height: auto;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
+/* ===== Đáp án ===== */
+.answers-grid {
+  display: grid;
+  gap: 10px 15px;
+  margin-top: 10px;
+}
+
+/* Nếu ngắn → 4 cột ngang */
+.answers-grid.short {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Nếu trung bình → 2 hàng × 2 cột */
+.answers-grid.medium {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Nếu dài → 1 hàng / đáp án */
+.answers-grid.long {
+  grid-template-columns: 1fr;
+}
+
+.answers-grid label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  word-break: break-word;
+}
+.answers-grid label:hover {
+  background-color: #eef6ff;
 }
 
 /* ===== Phiếu trả lời ===== */
