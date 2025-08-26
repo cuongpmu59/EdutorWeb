@@ -27,6 +27,42 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <title>Đề thi thử 2026 - Môn Toán</title>
 <link rel="stylesheet" href="../../css/main/exam_form.css">
 
+<style>
+/* === Bổ sung CSS hiển thị đáp án theo hàng ngang === */
+.answers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 cột */
+  gap: 10px;
+  margin-top: 8px;
+}
+.answers label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #f1f1f1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.answers label:hover {
+  background: #e0f0ff;
+}
+.answers input[type=radio] {
+  margin: 0;
+}
+.qimage {
+  margin: 10px 0;
+  text-align: center;
+}
+.qimage img {
+  max-width: 90%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+</style>
+
 <!-- MathJax -->
 <script>
 window.MathJax = {
@@ -69,6 +105,13 @@ window.MathJax = {
         <div class="question" data-qid="<?= $q['mc_id'] ?>">
           <h3>Câu <?= $index+1 ?>:</h3>
           <div class="qtext"><?= $q['mc_question'] ?></div>
+
+          <?php if (!empty($q['mc_image'])): ?>
+            <div class="qimage">
+              <img src="../../uploads/<?= htmlspecialchars($q['mc_image']) ?>" alt="Minh họa">
+            </div>
+          <?php endif; ?>
+
           <div class="answers">
             <?php foreach (['A','B','C','D'] as $opt): ?>
               <label>
