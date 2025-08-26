@@ -200,3 +200,23 @@ button {
   font-weight: bold;
   color: #1d5e23;
 }
+/* ===== Khi nộp bài thì làm mờ ===== */
+.dim { 
+  opacity: .4; 
+}
+
+/* ===== Đáp án đúng highlight ===== */
+.correct-answer {
+  background-color: #d9fdd3 !important;
+  font-weight: bold;
+  color: #1d5e23;
+  border: 1px solid #9cd48c;
+}
+
+/* ===== Đáp án sai highlight ===== */
+.wrong-answer {
+  background-color: #ffe0e0 !important;
+  font-weight: bold;
+  color: #b00020;
+  border: 1px solid #e09a9a;
+}
