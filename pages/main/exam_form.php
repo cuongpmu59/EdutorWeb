@@ -59,8 +59,8 @@ window.MathJax = {
   </div>
 </header>
 
+<!-- Container chung có scroll -->
 <div class="container">
-  <!-- Cột trái: câu hỏi -->
   <div class="left-col" id="leftCol">
     <?php foreach ($questions as $index => $q): ?>
       <fieldset class="topic-block">
@@ -85,7 +85,6 @@ window.MathJax = {
     <?php endforeach; ?>
   </div>
 
-  <!-- Cột phải: phiếu trả lời -->
   <div class="right-col">
     <div class="answer-sheet" id="answerSheet">
       <h3>Phiếu trả lời</h3>
