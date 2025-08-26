@@ -1,9 +1,8 @@
 <?php
 // exam_form.php
-// Kết nối CSDL
 require_once __DIR__ . '/../../includes/db_connection.php';
 
-// Lấy 20 câu hỏi ngẫu nhiên, đảm bảo đủ topic
+// Lấy 20 câu hỏi ngẫu nhiên
 $sql = "
     SELECT * 
     FROM mc_questions 
@@ -56,6 +55,7 @@ window.MathJax = {
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
+    <div class="countdown" id="countdown">20:00</div>
   </div>
 </header>
 
@@ -63,14 +63,11 @@ window.MathJax = {
   <!-- Cột trái: câu hỏi -->
   <div class="left-col" id="leftCol">
     <?php foreach ($questions as $index => $q): ?>
-      <!-- CHỈ fieldset chủ đề cho TỪNG CÂU -->
       <fieldset class="topic-block">
         <legend><strong><?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
-
         <div class="question" data-qid="<?= $q['mc_id'] ?>">
           <h3>Câu <?= $index+1 ?>:</h3>
           <div class="qtext"><?= $q['mc_question'] ?></div>
-
           <div class="answers">
             <?php foreach (['A','B','C','D'] as $opt): ?>
               <label>
@@ -82,7 +79,6 @@ window.MathJax = {
               </label>
             <?php endforeach; ?>
           </div>
-
           <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
         </div>
       </fieldset>
@@ -117,40 +113,75 @@ window.MathJax = {
   </div>
 </div>
 
+<!-- Âm thanh -->
+<audio id="tickSound" src="../../assets/sound/tick.mp3" preload="auto"></audio>
+<audio id="bellSound" src="../../assets/sound/bell.mp3" preload="auto"></audio>
+
 <script>
-// Đồng bộ khi chọn ở câu hỏi
+// === Đồng bộ phiếu trả lời ===
 function syncAnswer(idx,opt){
   const r = document.querySelector(`input[name="s${idx}"][value="${opt}"]`);
   if (r) r.checked = true;
-  updateProgress();
 }
-// Đồng bộ khi chọn ở phiếu trả lời
 function syncQuestion(idx,opt){
   const r = document.querySelector(`input[name="q${idx}"][value="${opt}"]`);
   if (r) r.checked = true;
-  updateProgress();
 }
 
-// Cập nhật progress bar theo số câu đã chọn
-function updateProgress(){
-  const total = <?= count($questions) ?>;
-  const checked = document.querySelectorAll('.left-col input[type=radio]:checked').length;
-  const percent = Math.round((checked / total) * 100);
-  document.getElementById('progressBar').style.width = percent + "%";
+// === Timer + Progress bar ===
+let duration = 20 * 60; // 20 phút (giây)
+let remaining = duration;
+let timer;
+
+function formatTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,'0');
+  const s = (sec%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
 }
 
-function handleSubmit(){
+function startTimer() {
+  clearInterval(timer);
+  remaining = duration;
+  document.getElementById('countdown').textContent = formatTime(remaining);
+
+  const tickAudio = document.getElementById('tickSound');
+  const bellAudio = document.getElementById('bellSound');
+
+  timer = setInterval(()=>{
+    remaining--;
+    let percent = Math.max(0, Math.round(((duration-remaining)/duration)*100));
+    document.getElementById('progressBar').style.width = percent + "%";
+    document.getElementById('countdown').textContent = formatTime(remaining);
+
+    if(remaining <= 60 && remaining > 0){
+      tickAudio.currentTime = 0;
+      tickAudio.play().catch(()=>{});
+    }
+
+    if(remaining <= 0){
+      clearInterval(timer);
+      bellAudio.currentTime = 0;
+      bellAudio.play().catch(()=>{});
+      handleSubmit(true);
+      alert("⏰ Hết giờ! Hệ thống đã tự động nộp bài.");
+    }
+  },1000);
+}
+
+// === Nút xử lý ===
+function handleSubmit(auto=false){
   document.getElementById('leftCol').classList.add('dim');
   document.getElementById('answerSheet').classList.add('dim');
   document.getElementById('btnShow').disabled = false;
   document.getElementById('btnSubmit').disabled = true;
-  alert("📤 Bạn đã nộp bài. Hãy nhấn 'Xem đáp án' để kiểm tra.");
+  if(!auto){
+    alert("📤 Bạn đã nộp bài thành công!");
+  }
 }
 
 function handleShowAnswers(){
   document.getElementById('leftCol').classList.remove('dim');
   document.getElementById('answerSheet').classList.remove('dim');
-  // highlight đáp án đúng
   document.querySelectorAll('.question').forEach((qDiv,idx)=>{
     let correct = document.getElementById('correct'+idx).value;
     let radios = qDiv.querySelectorAll('input[type=radio]');
@@ -159,7 +190,6 @@ function handleShowAnswers(){
         r.parentElement.classList.add('correct-answer');
       }
     });
-    // Phiếu trả lời cũng highlight
     let sheetRadios = document.querySelectorAll(`input[name="s${idx}"]`);
     sheetRadios.forEach(r=>{
       if(r.value===correct){
@@ -170,14 +200,13 @@ function handleShowAnswers(){
   MathJax.typesetPromise();
 }
 
-// Reset toàn bộ form -> load lại trang và random lại đề
 function handleReset(){
   location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  updateProgress();
   MathJax.typesetPromise();
+  startTimer();
 });
 </script>
 </body>
