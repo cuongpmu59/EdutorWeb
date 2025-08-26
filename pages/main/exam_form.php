@@ -1,213 +1,213 @@
-/* ===== Base ===== */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f5f7fa;
-  color: #333;
-  line-height: 1.5;
-  padding-top: 90px; /* chừa chỗ cho header fixed */
-  overflow-y: scroll; /* chỉ có một thanh cuộn chung */
+<?php
+// exam_form.php
+require_once __DIR__ . '/../../includes/db_connection.php';
+
+// Lấy 20 câu hỏi ngẫu nhiên
+$sql = "
+    SELECT * 
+    FROM mc_questions 
+    WHERE mc_id IN (
+        SELECT mc_id FROM (
+            SELECT mc_id,
+                   ROW_NUMBER() OVER (PARTITION BY mc_topic ORDER BY RAND()) as rn
+            FROM mc_questions
+        ) t
+        WHERE rn <= 20
+    )
+    ORDER BY RAND()
+    LIMIT 20
+";
+$stmt = $conn->query($sql);
+$questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đề thi thử 2026 - Môn Toán</title>
+<link rel="stylesheet" href="../../css/main/exam_form.css">
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<header>
+  <!-- Logo bên trái -->
+  <div class="logo-left">
+    <img src="../../pages/image/logo_cuong.jpg" alt="Logo">
+  </div>
+
+  <!-- Giữa: Tiêu đề -->
+  <div class="header-center">
+    <div class="exam-title">Đề thi thử tham khảo tốt nghiệp phổ thông quốc gia</div>
+    <div class="subject">Môn thi: Toán</div>
+  </div>
+
+  <!-- Bên phải: Thời gian + progress -->
+  <div class="header-right">
+    <div class="time">⏰ Thời gian làm bài: 20 phút</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="countdown" id="countdown">20:00</div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Cột trái: câu hỏi -->
+  <div class="left-col" id="leftCol">
+    <?php foreach ($questions as $index => $q): ?>
+      <fieldset class="topic-block">
+        <legend><strong><?= htmlspecialchars($q['mc_topic']) ?></strong></legend>
+        <div class="question" data-qid="<?= $q['mc_id'] ?>">
+          <h3>Câu <?= $index+1 ?>:</h3>
+          <div class="qtext"><?= $q['mc_question'] ?></div>
+          <div class="answers">
+            <?php foreach (['A','B','C','D'] as $opt): ?>
+              <label>
+                <input type="radio" 
+                       name="q<?= $index ?>" 
+                       value="<?= $opt ?>" 
+                       onchange="syncAnswer(<?= $index ?>,'<?= $opt ?>')">
+                <?= $opt ?>. <?= $q['mc_answer'. (ord($opt)-64)] ?>
+              </label>
+            <?php endforeach; ?>
+          </div>
+          <input type="hidden" id="correct<?= $index ?>" value="<?= $q['mc_correct_answer'] ?>">
+        </div>
+      </fieldset>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Cột phải: phiếu trả lời -->
+  <div class="right-col">
+    <div class="answer-sheet" id="answerSheet">
+      <h3>Phiếu trả lời</h3>
+      <?php foreach ($questions as $index => $q): ?>
+        <fieldset class="answer-row">
+          <legend>Câu <?= $index+1 ?></legend>
+          <?php foreach (['A','B','C','D'] as $opt): ?>
+            <label style="margin-right:5px;">
+              <input type="radio" 
+                     name="s<?= $index ?>" 
+                     value="<?= $opt ?>" 
+                     onchange="syncQuestion(<?= $index ?>,'<?= $opt ?>')">
+              <?= $opt ?>
+            </label>
+          <?php endforeach; ?>
+        </fieldset>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="btnSubmit" onclick="handleSubmit()">Nộp bài</button>
+      <button type="button" id="btnShow" onclick="handleShowAnswers()" disabled>Xem đáp án</button>
+      <button type="button" id="btnReset" onclick="handleReset()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- Âm thanh -->
+<audio id="tickSound" src="../../assets/sound/tick.mp3" preload="auto"></audio>
+<audio id="bellSound" src="../../assets/sound/bell.mp3" preload="auto"></audio>
+
+<script>
+// === Đồng bộ phiếu trả lời ===
+function syncAnswer(idx,opt){
+  const r = document.querySelector(`input[name="s${idx}"][value="${opt}"]`);
+  if (r) r.checked = true;
+}
+function syncQuestion(idx,opt){
+  const r = document.querySelector(`input[name="q${idx}"][value="${opt}"]`);
+  if (r) r.checked = true;
 }
 
-/* ===== Header ===== */
-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #005f99;
-  color: white;
-  padding: 15px 30px;
-  gap: 20px;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+// === Timer + Progress bar ===
+let duration = 20 * 60; // 20 phút (giây)
+let remaining = duration;
+let timer;
+
+function formatTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,'0');
+  const s = (sec%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
 }
 
-/* Logo trái */
-.logo-left img {
-  height: 55px;
-  border-radius: 6px;
-  display: block;
+function startTimer() {
+  clearInterval(timer);
+  remaining = duration;
+  document.getElementById('countdown').textContent = formatTime(remaining);
+
+  const tickAudio = document.getElementById('tickSound');
+  const bellAudio = document.getElementById('bellSound');
+
+  timer = setInterval(()=>{
+    remaining--;
+    let percent = Math.max(0, Math.round(((duration-remaining)/duration)*100));
+    document.getElementById('progressBar').style.width = percent + "%";
+    document.getElementById('countdown').textContent = formatTime(remaining);
+
+    if(remaining <= 60 && remaining > 0){
+      tickAudio.currentTime = 0;
+      tickAudio.play().catch(()=>{});
+    }
+
+    if(remaining <= 0){
+      clearInterval(timer);
+      bellAudio.currentTime = 0;
+      bellAudio.play().catch(()=>{});
+      handleSubmit(true);
+      alert("⏰ Hết giờ! Hệ thống đã tự động nộp bài.");
+    }
+  },1000);
 }
 
-/* Giữa */
-.header-center {
-  flex: 2;
-  text-align: center;
-}
-.header-center .exam-title {
-  font-size: 20px;
-  font-weight: bold;
-}
-.header-center .subject {
-  font-size: 18px;
-  margin-top: 4px;
+// === Nút xử lý ===
+function handleSubmit(auto=false){
+  document.getElementById('leftCol').classList.add('dim');
+  document.getElementById('answerSheet').classList.add('dim');
+  document.getElementById('btnShow').disabled = false;
+  document.getElementById('btnSubmit').disabled = true;
+  if(!auto){
+    alert("📤 Bạn đã nộp bài thành công!");
+  }
 }
 
-/* Bên phải */
-.header-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-.header-right .time {
-  font-size: 15px;
-  font-weight: bold;
-}
-.progress-container {
-  width: 180px;
-  height: 12px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #ffcc00;
-  transition: width 0.3s linear;
+function handleShowAnswers(){
+  document.getElementById('leftCol').classList.remove('dim');
+  document.getElementById('answerSheet').classList.remove('dim');
+  document.querySelectorAll('.question').forEach((qDiv,idx)=>{
+    let correct = document.getElementById('correct'+idx).value;
+    let radios = qDiv.querySelectorAll('input[type=radio]');
+    radios.forEach(r=>{
+      if(r.value===correct){
+        r.parentElement.classList.add('correct-answer');
+      }
+    });
+    let sheetRadios = document.querySelectorAll(`input[name="s${idx}"]`);
+    sheetRadios.forEach(r=>{
+      if(r.value===correct){
+        r.parentElement.classList.add('correct-answer');
+      }
+    });
+  });
+  MathJax.typesetPromise();
 }
 
-/* ===== Layout container ===== */
-.container {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  align-items: flex-start;
-}
-.left-col {
-  flex: 2;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.1);
-}
-.right-col {
-  flex: 1;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,.1);
-  /* ❌ bỏ max-height + overflow-y để cuộn chung */
+function handleReset(){
+  location.reload();
 }
 
-/* ===== Fieldset nhóm theo topic ===== */
-.topic-block {
-  border: 2px solid #005f99;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  padding: 15px 20px;
-  background-color: #f9fbff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-.topic-block legend {
-  font-weight: bold;
-  font-size: 18px;
-  color: #005f99;
-  padding: 0 10px;
-}
-.topic-block .qtext {
-  margin: 10px 0 15px 0;
-  font-size: 16px;
-}
-.topic-block .answers label {
-  display: block;
-  margin: 6px 0;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.topic-block .answers label:hover {
-  background-color: #eef6ff;
-}
-
-/* ===== Câu hỏi ===== */
-.question {
-  margin-bottom: 20px;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-}
-.question h3 { 
-  margin: 0 0 10px; 
-}
-
-/* ===== Đáp án A B C D tự co giãn ===== */
-.answers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px 16px;
-  margin-top: 10px;
-}
-.answers-grid label {
-  display: flex;
-  align-items: center;
-  word-break: break-word;
-  white-space: normal;
-  cursor: pointer;
-}
-
-/* ===== Ảnh minh họa câu hỏi ===== */
-.qimage {
-  text-align: center;
-  margin-top: 12px;
-}
-.qimage img {
-  max-width: 90%;
-  height: auto;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
-}
-
-/* ===== Phiếu trả lời ===== */
-.answer-sheet h3 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #005f99;
-}
-.answer-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.answer-row span {
-  width: 25px;
-  display: inline-block;
-}
-
-/* ===== Nút thao tác ===== */
-.actions {
-  margin-top: 20px;
-  text-align: center;
-}
-button {
-  padding: 10px 20px;
-  margin: 0 8px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: bold;
-}
-#btnSubmit { background: #28a745; color: white; }
-#btnShow { background: #ffc107; color: black; }
-#btnSubmit:disabled, #btnShow:disabled {
-  opacity: .5; cursor: not-allowed;
-}
-
-/* ===== Khi nộp bài thì làm mờ ===== */
-.dim { opacity: .4; }
-
-/* ===== Đáp án đúng highlight ===== */
-.correct-answer {
-  background-color: #d9fdd3 !important;
-  font-weight: bold;
-  color: #1d5e23;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  MathJax.typesetPromise();
+  startTimer();
+});
+</script>
+</body>
+</html>
