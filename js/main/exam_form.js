@@ -9,14 +9,22 @@ function syncQuestion(idx,opt){
 }
 
 // === Timer + Progress bar ===
-let duration = 1.5 * 60; // 20 phút (bạn có thể chỉnh lại)
+let duration = 20 * 60; // 20 phút
 let remaining = duration;
 let timer;
+let ticking = false;
 
 function formatTime(sec){
   const m = Math.floor(sec/60).toString().padStart(2,'0');
   const s = (sec%60).toString().padStart(2,'0');
   return `${m}:${s}`;
+}
+
+function showBanner(msg){
+  const box = document.getElementById('msgBox');
+  if (!box) return;
+  box.textContent = msg;
+  box.style.display = "block";
 }
 
 function startTimer() {
@@ -33,19 +41,24 @@ function startTimer() {
     document.getElementById('progressBar').style.width = percent + "%";
     document.getElementById('countdown').textContent = formatTime(remaining);
 
-    // Chỉ phát tick trong 60 giây cuối
-    if(remaining <= 60 && remaining > 0){
-      tickAudio.currentTime = 0;
-      tickAudio.play().catch(()=>{});
+    // Bắt đầu phát tick khi còn 60 giây
+    if(remaining === 60 && !ticking){
+      ticking = true;
+      if (tickAudio){
+        tickAudio.currentTime = 0;
+        tickAudio.play().catch(()=>{});
+      }
     }
 
     // Hết giờ
     if(remaining <= 0){
       clearInterval(timer);
-      bellAudio.currentTime = 0;
-      bellAudio.play().catch(()=>{});
+      if (bellAudio){
+        bellAudio.currentTime = 0;
+        bellAudio.play().catch(()=>{});
+      }
       handleSubmit(true);
-      alert("⏰ Hết giờ! Hệ thống đã tự động nộp bài.");
+      showBanner("⏰ Hết giờ! Hệ thống đã tự động nộp bài.");
     }
   },1000);
 }
@@ -72,8 +85,19 @@ function handleSubmit(auto=false){
   document.getElementById('scoreBox').textContent = "✅ Kết quả: " + score;
 
   if(!auto){
-    alert("📤 Bạn đã nộp bài thành công!");
+    showBanner("📤 Bạn đã nộp bài thành công!");
   }
+}
+
+function markAnswers(radioGroup, correct){
+  radioGroup.forEach(r=>{
+    if(r.value===correct){
+      r.parentElement.classList.add('correct-answer');
+    }
+    if(r.checked && r.value!==correct){
+      r.parentElement.classList.add('wrong-answer');
+    }
+  });
 }
 
 function handleShowAnswers(){
@@ -81,24 +105,8 @@ function handleShowAnswers(){
   document.getElementById('answerSheet').classList.remove('dim');
   document.querySelectorAll('.question').forEach((qDiv,idx)=>{
     let correct = document.getElementById('correct'+idx).value;
-    let radios = qDiv.querySelectorAll('input[type=radio]');
-    radios.forEach(r=>{
-      if(r.value===correct){
-        r.parentElement.classList.add('correct-answer');
-      }
-      if(r.checked && r.value!==correct){
-        r.parentElement.classList.add('wrong-answer');
-      }
-    });
-    let sheetRadios = document.querySelectorAll(`input[name="s${idx}"]`);
-    sheetRadios.forEach(r=>{
-      if(r.value===correct){
-        r.parentElement.classList.add('correct-answer');
-      }
-      if(r.checked && r.value!==correct){
-        r.parentElement.classList.add('wrong-answer');
-      }
-    });
+    markAnswers(qDiv.querySelectorAll('input[type=radio]'), correct);
+    markAnswers(document.querySelectorAll(`input[name="s${idx}"]`), correct);
   });
   MathJax.typesetPromise();
 }
@@ -108,27 +116,31 @@ function handleReset(){
 }
 
 // === Auto điều chỉnh layout đáp án ===
+// === Auto điều chỉnh layout đáp án ===
 function adjustLayout() {
   document.querySelectorAll('.answers').forEach(ans => {
     ans.classList.remove('layout-1','layout-2','layout-3');
     ans.classList.add('layout-1'); // mặc định: 1 dòng 4 cột
 
-    // nếu bị tràn → thử layout-2
-    if (ans.scrollHeight > ans.clientHeight + 5) {
+    // nếu bị tràn ngang → thử layout-2 (2 dòng 2 cột)
+    if (ans.scrollWidth > ans.clientWidth + 5) {
       ans.classList.remove('layout-1');
       ans.classList.add('layout-2');
     }
 
-    // nếu layout-2 vẫn tràn → ép về layout-3
-    if (ans.scrollHeight > ans.clientHeight + 5) {
+    // nếu layout-2 vẫn tràn → ép về layout-3 (4 dòng 1 cột)
+    if (ans.scrollWidth > ans.clientWidth + 5) {
       ans.classList.remove('layout-2');
       ans.classList.add('layout-3');
     }
   });
 }
 
+
 document.addEventListener("DOMContentLoaded", () => {
-  MathJax.typesetPromise();
+  if (typeof MathJax !== "undefined") {
+    MathJax.typesetPromise();
+  }
   startTimer();
   adjustLayout();           
   window.addEventListener("resize", adjustLayout);
