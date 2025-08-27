@@ -129,24 +129,24 @@ header .logo-left img {
 
 /* ====== Đáp án (linh hoạt 1 / 2 / 4 layout) ====== */
 .answers {
-  display: flex;
+  display: grid;
   gap: 10px;
-  flex-wrap: wrap; /* Cho phép xuống hàng */
+  margin-top: 10px;
 }
 
-.answers.layout-1 > label {
-  flex: 1 1 25%;   /* 4 cột */
-  max-width: 25%;
+/* layout-1: đáp án ngắn (4 cột ngang) */
+.answers.layout-1 {
+  grid-template-columns: repeat(4, 1fr);
 }
 
-.answers.layout-2 > label {
-  flex: 1 1 45%;   /* 2 cột */
-  max-width: 45%;
+/* layout-2: đáp án trung bình (2 hàng x 2 cột) */
+.answers.layout-2 {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.answers.layout-3 > label {
-  flex: 1 1 100%;  /* 1 cột */
-  max-width: 100%;
+/* layout-3: đáp án dài (1 cột dọc) */
+.answers.layout-3 {
+  grid-template-columns: 1fr;
 }
 
 .answers label {
@@ -156,14 +156,17 @@ header .logo-left img {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  background: #f9f9f9;
+  background: #fafafa;
   cursor: pointer;
-  white-space: normal; /* cho phép xuống dòng */
-  word-break: break-word;
+  transition: background 0.2s;
+}
+
+.answers label:hover {
+  background: #f0f8ff;
 }
 
 .answers input[type="radio"] {
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 /* Ảnh minh họa trong câu hỏi */
