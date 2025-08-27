@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../env/dotenv.php'; 
+require_once __DIR__ . '/../../includes/env/dotenv.php'; 
 
 $host    = env('DB_HOST', 'localhost');
 $db      = env('DB_NAME', 'test');
