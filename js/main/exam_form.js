@@ -108,7 +108,9 @@ function handleShowAnswers(){
     markAnswers(qDiv.querySelectorAll('input[type=radio]'), correct);
     markAnswers(document.querySelectorAll(`input[name="s${idx}"]`), correct);
   });
-  MathJax.typesetPromise();
+  if (typeof MathJax !== "undefined") {
+    MathJax.typesetPromise();
+  }
 }
 
 function handleReset(){
