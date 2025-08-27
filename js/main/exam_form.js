@@ -116,7 +116,6 @@ function handleReset(){
 }
 
 // === Auto điều chỉnh layout đáp án ===
-// === Auto điều chỉnh layout đáp án ===
 function adjustLayout() {
   document.querySelectorAll('.answers').forEach(ans => {
     ans.classList.remove('layout-1','layout-2','layout-3');
@@ -135,7 +134,6 @@ function adjustLayout() {
     }
   });
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof MathJax !== "undefined") {
