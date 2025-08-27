@@ -91,7 +91,7 @@ window.MathJax = {
             } elseif($maxLen <= 80){
               $layoutClass = "layout-2"; // Trung bình: 2 dòng × 2 cột
             } else {
-              $layoutClass = "layout-4"; // Dài: 4 dòng
+              $layoutClass = "layout-3"; // Dài: 4 dòng (đổi từ layout-4 sang layout-3)
             }
           ?>
 
