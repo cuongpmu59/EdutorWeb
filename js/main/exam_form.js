@@ -1,133 +1,116 @@
 // === Đồng bộ phiếu trả lời ===
-function syncAnswer(idx,opt){
+function syncAnswer(idx, opt) {
   const r = document.querySelector(`input[name="s${idx}"][value="${opt}"]`);
   if (r) r.checked = true;
 }
-function syncQuestion(idx,opt){
+function syncQuestion(idx, opt) {
   const r = document.querySelector(`input[name="q${idx}"][value="${opt}"]`);
   if (r) r.checked = true;
 }
 
-// === Timer + Progress bar ===
-let duration = 2 * 60; // 20 phút
-let remaining = duration;
-let timer;
-
-function formatTime(sec){
-  const m = Math.floor(sec/60).toString().padStart(2,'0');
-  const s = (sec%60).toString().padStart(2,'0');
-  return `${m}:${s}`;
-}
+// === Timer + Progress bar + Âm thanh ===
+let duration = 20 * 60; // 20 phút
+let interval = null;
+let timerStarted = false;
 
 function startTimer() {
-  clearInterval(timer);
-  remaining = duration;
-  document.getElementById('countdown').textContent = formatTime(remaining);
+  if (timerStarted) return;
+  timerStarted = true;
 
-  const tickAudio = document.getElementById('tickSound');
-  const bellAudio = document.getElementById('bellSound');
+  const countdown = document.getElementById("countdown");
+  const progressBar = document.getElementById("progressBar");
 
-  timer = setInterval(()=>{
-    remaining--;
-    let percent = Math.max(0, Math.round(((duration-remaining)/duration)*100));
-    document.getElementById('progressBar').style.width = percent + "%";
-    document.getElementById('countdown').textContent = formatTime(remaining);
+  const tickSound = document.getElementById("tickSound");
+  const bellSound = document.getElementById("bellSound");
 
-    if(remaining <= 60 && remaining > 0){
-      tickAudio.currentTime = 0;
-      tickAudio.play().catch(()=>{});
+  interval = setInterval(() => {
+    duration--;
+
+    let minutes = Math.floor(duration / 60);
+    let seconds = duration % 60;
+    countdown.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    progressBar.style.width = `${(duration / (20 * 60)) * 100}%`;
+
+    // Tick khi còn <= 60s
+    if (duration <= 60 && duration > 0) {
+      tickSound.currentTime = 0;
+      tickSound.play().catch(() => {});
     }
 
-    if(remaining <= 0){
-      clearInterval(timer);
-      bellAudio.currentTime = 0;
-      bellAudio.play().catch(()=>{});
-      handleSubmit(true);
-      alert("⏰ Hết giờ! Hệ thống đã tự động nộp bài.");
+    // Hết giờ
+    if (duration <= 0) {
+      clearInterval(interval);
+      bellSound.play().catch(() => {});
+      handleSubmit();
     }
-  },1000);
+  }, 1000);
 }
 
-// === Nút xử lý ===
-function handleSubmit(auto=false){
-  document.getElementById('leftCol').classList.add('dim');
-  document.getElementById('answerSheet').classList.add('dim');
-  document.getElementById('btnShow').disabled = false;
-  document.getElementById('btnSubmit').disabled = true;
-
-  // Chấm điểm
-  let total = document.querySelectorAll('.question').length;
-  let correctCount = 0;
-  document.querySelectorAll('.question').forEach((qDiv,idx)=>{
-    let correct = document.getElementById('correct'+idx).value;
-    let chosen = document.querySelector(`input[name="q${idx}"]:checked`);
-    if(chosen && chosen.value===correct){
-      correctCount++;
-    }
-  });
-  let score = correctCount + "/" + total + " câu đúng (" + (correctCount*10/total).toFixed(2) + " điểm)";
-  document.getElementById('scoreBox').style.display="block";
-  document.getElementById('scoreBox').textContent = "✅ Kết quả: " + score;
-
-  if(!auto){
-    alert("📤 Bạn đã nộp bài thành công!");
-  }
-}
-
-function handleShowAnswers(){
-  document.getElementById('leftCol').classList.remove('dim');
-  document.getElementById('answerSheet').classList.remove('dim');
-  document.querySelectorAll('.question').forEach((qDiv,idx)=>{
-    let correct = document.getElementById('correct'+idx).value;
-    let radios = qDiv.querySelectorAll('input[type=radio]');
-    radios.forEach(r=>{
-      if(r.value===correct){
-        r.parentElement.classList.add('correct-answer');
-      }
-      if(r.checked && r.value!==correct){
-        r.parentElement.classList.add('wrong-answer');
-      }
-    });
-    let sheetRadios = document.querySelectorAll(`input[name="s${idx}"]`);
-    sheetRadios.forEach(r=>{
-      if(r.value===correct){
-        r.parentElement.classList.add('correct-answer');
-      }
-      if(r.checked && r.value!==correct){
-        r.parentElement.classList.add('wrong-answer');
-      }
-    });
-  });
-  MathJax.typesetPromise();
-}
-
-function handleReset(){
-  location.reload();
-}
-
-// === Auto điều chỉnh layout đáp án ===
-function adjustLayout() {
-  document.querySelectorAll('.answers').forEach(ans => {
-    ans.classList.remove('layout-1','layout-2','layout-3');
-    ans.classList.add('layout-1'); // mặc định: 1 dòng 4 cột
-
-    // nếu bị tràn → thử layout-2
-    if (ans.scrollHeight > ans.clientHeight + 5) {
-      ans.classList.remove('layout-1');
-      ans.classList.add('layout-2');
-    }
-
-    // nếu layout-2 vẫn tràn → ép về layout-3
-    if (ans.scrollHeight > ans.clientHeight + 5) {
-      ans.classList.remove('layout-2');
-      ans.classList.add('layout-3');
-    }
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  MathJax.typesetPromise();
+// Chỉ bắt đầu khi user có hành động (tránh chặn autoplay)
+document.addEventListener("click", function once() {
   startTimer();
-  adjustLayout();           // chạy lúc load
-  window.addEventListener("resize", adjustLayout); // chạy khi thay đổi kích thước
+  document.removeEventListener("click", once);
 });
+
+// === Xử lý Nộp bài ===
+function handleSubmit() {
+  clearInterval(interval);
+
+  let total = document.querySelectorAll(".question").length;
+  let score = 0;
+
+  document.querySelectorAll(".question").forEach((q, i) => {
+    const correct = q.querySelector(`#correct${i}`).value;
+    const chosen = q.querySelector(`input[name="q${i}"]:checked`);
+    if (chosen && chosen.value === correct) {
+      score++;
+    }
+  });
+
+  document.getElementById("scoreBox").style.display = "block";
+  document.getElementById("scoreBox").innerHTML =
+    `<h3>Kết quả: ${score}/${total} câu đúng</h3>`;
+
+  document.getElementById("btnSubmit").disabled = true;
+  document.getElementById("btnShow").disabled = false;
+}
+
+// === Xử lý Xem đáp án ===
+function handleShowAnswers() {
+  document.querySelectorAll(".question").forEach((q, i) => {
+    const correct = q.querySelector(`#correct${i}`).value;
+    q.querySelectorAll("input[type=radio]").forEach(r => {
+      if (r.value === correct) {
+        r.parentElement.style.backgroundColor = "#c8e6c9"; // xanh nhạt
+      } else if (r.checked) {
+        r.parentElement.style.backgroundColor = "#ffcdd2"; // đỏ nhạt
+      }
+    });
+  });
+  document.getElementById("btnShow").disabled = true;
+}
+
+// === Xử lý Reset ===
+function handleReset() {
+  clearInterval(interval);
+  duration = 20 * 60;
+  timerStarted = false;
+
+  document.querySelectorAll("input[type=radio]").forEach(r => {
+    r.checked = false;
+    r.parentElement.style.backgroundColor = "";
+  });
+
+  document.getElementById("scoreBox").style.display = "none";
+  document.getElementById("btnSubmit").disabled = false;
+  document.getElementById("btnShow").disabled = true;
+
+  document.getElementById("countdown").textContent = "20:00";
+  document.getElementById("progressBar").style.width = "100%";
+
+  // Chờ click để start lại
+  document.addEventListener("click", function once() {
+    startTimer();
+    document.removeEventListener("click", once);
+  });
+}
