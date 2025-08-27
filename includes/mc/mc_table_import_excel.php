@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // Kết nối PDO
-require_once __DIR__ . '/../../includes/db_connection.php'; // đường dẫn tới file PDO
+require_once __DIR__ . '/../../includes/env/db_connection.php'; // đường dẫn tới file PDO
 
 // Nhận JSON từ client
 $inputJSON = file_get_contents('php://input');
