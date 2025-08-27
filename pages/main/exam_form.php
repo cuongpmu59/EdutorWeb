@@ -1,6 +1,6 @@
 <?php
 // exam_form.php
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
 
 // Lấy 20 câu hỏi ngẫu nhiên
 $sql = "
