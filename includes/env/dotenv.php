@@ -9,7 +9,7 @@ function env($key, $default = null) {
 
     if ($env === null) {
         $env = [];
-        $envPath = realpath(__DIR__ . '/includes/env/.env'); // đảm bảo đúng đường dẫn thực
+        $envPath = realpath(__DIR__ . '../../includes/env/.env'); // đảm bảo đúng đường dẫn thực
 
         if ($envPath && file_exists($envPath)) {
             $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
