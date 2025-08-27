@@ -9,7 +9,7 @@ function syncQuestion(idx,opt){
 }
 
 // === Timer + Progress bar ===
-let duration = 20 * 60; // 20 phút
+let duration = 2 * 60; // 20 phút
 let remaining = duration;
 let timer;
 
