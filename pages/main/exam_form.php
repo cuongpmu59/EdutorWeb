@@ -143,8 +143,8 @@ window.MathJax = {
 </div>
 
 <!-- Âm thanh -->
-<audio id="tickSound" src="../../assets/sound/tick.mp3" preload="auto"></audio>
-<audio id="bellSound" src="../../assets/sound/bell.mp3" preload="auto"></audio>
+<audio id="tickSound" src="../../pages/sound/tick_sound.mp3" preload="auto"></audio>
+<audio id="bellSound" src="../../pages/sound/bell_sound.mp3" preload="auto"></audio>
 <script src="../../js/main/exam_form.js"></script>
 
 </body>
