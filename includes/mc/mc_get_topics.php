@@ -3,7 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 if($_SERVER['REQUEST_METHOD']!=='GET'){
     echo json_encode(['status'=>'error','message'=>'Phương thức không hợp lệ']); exit;
 }
-require_once __DIR__ . '/../db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
 
 try{
     $sql = "SELECT DISTINCT mc_topic FROM mc_questions ORDER BY mc_topic ASC";
