@@ -103,7 +103,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="../../pages/image/offline.png" alt="Gia sư dạy kèm tại nhà" />
+                <img src="../../pages/image/daynha.png" alt="Gia sư dạy kèm tại nhà" />
                 <figcaption>Gia sư dạy tại nhà, tận tâm và hiệu quả</figcaption>
               </figure>
             </div>
