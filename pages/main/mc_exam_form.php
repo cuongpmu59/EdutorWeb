@@ -25,7 +25,7 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 <meta charset="UTF-8">
 <title>Đề thi thử 2026 - Môn Toán</title>
-<link rel="stylesheet" href="../../css/main/exam_form.css">
+<link rel="stylesheet" href="../../css/main/mc_exam_form.css">
 
 <!-- MathJax -->
 <script>
@@ -145,7 +145,7 @@ window.MathJax = {
 <!-- Âm thanh -->
 <audio id="tickSound" src="../../pages/sound/tick_sound.mp3" preload="auto"></audio>
 <audio id="bellSound" src="../../pages/sound/bell_sound.mp3" preload="auto"></audio>
-<script src="../../js/main/exam_form.js"></script>
+<script src="../../js/main/mc_exam_form.js"></script>
 
 </body>
 </html>
