@@ -5,7 +5,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit(json_encode(['status' => 'error', 'message' => 'Phương thức không hợp lệ.']));
 }
 
-require_once __DIR__ . '/../../env/config.php';
+require_once __DIR__ . '/../../includes/env/config.php';
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {
