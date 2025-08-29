@@ -254,7 +254,7 @@
 
               <div class="register-button">
                 <a href="registerForm.html" class="btn-register">Đăng ký</a>
-                <a href="payment.html" class="btn-payment">Thanh toán học phí</a>
+                <a href="../../pages/main/payment.php" class="btn-payment">Thanh toán học phí</a>
               </div>
 
             </div>
