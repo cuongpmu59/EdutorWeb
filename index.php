@@ -28,8 +28,8 @@
 <body>
   <div class="container">
     <header>
-      <div class="banner">
-        <img src="../../pages/image/logo_cuong.png" alt="Gia sư Thầy Cường" />
+      <div class="logo">
+        <img src="../../pages/image/logo.png" alt="" />
       </div>
 
       <div class="title">
@@ -37,8 +37,8 @@
         <p class="slogan">Dễ hiểu - Nhiệt tình - Tận tâm - Hiệu quả</p>
       </div>
 
-      <div class="logo">
-        <img src="../../pages/image/logo.png" alt="Logo Học Với Thầy Cường" />
+      <div class="gioithieu">
+        <img src="../../pages/image/gioithieu.png" alt="Học cùng thầy Cường" />
       </div>
     </header>
 
