@@ -192,5 +192,12 @@ window.addEventListener('message', function (event) {
 });
 </script>
 
+<script>
+// Xử lý nút "Làm đề"
+  document.getElementById("sa_preview_exam").addEventListener("click", function() {
+  window.location.href = "../../pages/main/sa_exam_form.php";
+});
+</script>
+
 </body>
 </html>
