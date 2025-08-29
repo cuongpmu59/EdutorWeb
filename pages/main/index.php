@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Dịch vụ học tập và gia sư chất lượng cao" />
+  <title>Học cùng Thầy Cường</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="images/favicon.png" type="image/x-icon" />
+
+  <!-- MathJax CDN -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']], // Cho phép hiển thị công thức toán học trong dòng
+        displayMath: [['$$', '$$'], ['\\[', '\\]']] // Cho phép công thức hiển thị riêng dòng
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="banner">
+        <img src="images/gioithieu.png" alt="Banner Học cùng Thầy Cường" />
+      </div>
+
+      <div class="title">
+        <h1>Học cùng Thầy Cường</h1>
+        <p class="slogan">Dễ hiểu - Nhiệt tình - Tận tâm - Hiệu quả</p>
+      </div>
+
+      <div class="logo">
+        <img src="images/logo.png" alt="Logo Học Với Thầy Cường" />
+      </div>
+    </header>
+
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#dichvu">Dịch vụ</a></li>
+        <li><a href="#giasu">Gia Sư</a></li>
+        <li><a href="#phanhoi">Phản hồi</a></li>
+        <li><a href="#lienhe">Liên hệ</a></li>
+        <li><a href="examdisplay.html" style="text-decoration: none;">
+            <button style="padding: 10px 20px; font-size: 16px;">Thi thử trắc nghiệm</button>
+          </a></li>
+        <li><a href="tailieuhoctap.html" style="text-decoration: none;">
+            <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
+          </a></li>
+         <li><a href="pages/main/prepare_form.php" style="text-decoration: none;">
+            <button style="padding: 10px 20px; font-size: 16px;">Ngân hàng đề thi</button>
+          </a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section class="courses" id="dichvu">
+        <!-- DỊCH VỤ HỌC TẬP -->
+        <article>
+          <section class="tutor-service">
+            <div class="tutor-image">
+              <figure>
+                <img src="images/cuong.png" alt="Dịch vụ học tập" />
+                <figcaption>Dịch vụ học tập chất lượng</figcaption>
+              </figure>
+            </div>
+            <div class="tutor-text">
+              <p>
+                Với phương châm "Dạy thật – Học thật – Kết quả thật", chúng tôi cung cấp các chương trình học linh hoạt
+                và hiệu quả, đáp ứng nhu cầu học tập đa dạng của học sinh ở mọi lứa tuổi và trình độ. Từ các lớp học cá
+                nhân hóa đến học nhóm và học online, đội ngũ gia sư và giảng viên tận tâm sẽ giúp học sinh đạt được mục
+                tiêu học tập một cách tối ưu.
+              </p>
+              <p>
+                Các dịch vụ bao gồm: dạy kèm tại nhà, học tại nhà thầy, học trực tuyến, và học theo nhóm. Tất cả đều
+                được xây dựng dựa trên nền tảng giáo dục hiện đại, chú trọng vào chất lượng, phương pháp sư phạm hiệu
+                quả và sự tiến bộ thực tế của học viên.
+              </p>
+            </div>
+          </section>
+        </article>
+
+        <!-- GIA SƯ -->
+        <article id="giasu">
+          
+          <!-- Gia sư tại nhà -->
+          <section class="tutor-service">
+            <div class="tutor-image">
+              <figure>
+                <img src="images/offline.png" alt="Gia sư dạy kèm tại nhà" />
+                <figcaption>Gia sư dạy tại nhà, tận tâm và hiệu quả</figcaption>
+              </figure>
+            </div>
+            <div class="tutor-text">
+              <h4>Gia sư dạy kèm tại nhà</h4>
+              <p>
+                Chương trình gia sư tại nhà được thiết kế riêng biệt theo từng học sinh, giúp tối ưu hóa quá trình học
+                tập và phát triển toàn diện. Dưới đây là những lợi ích nổi bật:
+              </p>
+              <ul>
+                <li><strong>Tiết kiệm thời gian và công sức:</strong> Học sinh không cần di chuyển, giúp phụ huynh dễ
+                  dàng quản lý lịch học của con em mình.</li>
+                <li><strong>Giờ học linh hoạt:</strong> Thời gian học được sắp xếp theo lịch trình của học sinh và gia
+                  đình, thuận tiện cho việc học tập và sinh hoạt.</li>
+                <li><strong>Chương trình học cá nhân hóa:</strong> Gia sư xây dựng lộ trình học phù hợp với năng lực và
+                  mục tiêu của từng học sinh.</li>
+                <li><strong>Tăng cường sự tự tin:</strong> Môi trường học tập riêng tư giúp học sinh thoải mái đặt câu
+                  hỏi và phát biểu ý kiến.</li>
+                <li><strong>Phát triển kỹ năng tự học:</strong> Gia sư hướng dẫn phương pháp học hiệu quả, giúp học sinh
+                  nâng cao khả năng tự học và quản lý thời gian.</li>
+                <li><strong>Hỗ trợ ôn luyện thi cử:</strong> Gia sư giúp học sinh chuẩn bị tốt cho các kỳ thi quan trọng
+                  như thi chuyển cấp, thi đại học.</li>
+                <li><strong>Giám sát tiến độ học tập:</strong> Phụ huynh dễ dàng theo dõi và đánh giá sự tiến bộ của con
+                  em mình qua từng buổi học.</li>
+                <li><strong>Khắc phục điểm yếu:</strong> Gia sư tập trung vào những môn học hoặc kỹ năng mà học sinh còn
+                  yếu, giúp cải thiện nhanh chóng.</li>
+                <li><strong>Tạo động lực học tập:</strong> Sự quan tâm và hỗ trợ từ gia sư giúp học sinh duy trì hứng
+                  thú và động lực trong học tập.</li>
+                <li><strong>Phù hợp với mọi lứa tuổi:</strong> Dịch vụ gia sư tại nhà phù hợp với học sinh từ tiểu học
+                  đến trung học phổ thông và cả sinh viên.</li>
+              </ul>
+              <div class="register-button">
+                <a href="registerForm.html" class="btn-register">Đăng ký</a>
+                <a href="payment.html" class="btn-payment">Thanh toán học phí</a>
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- Gia sư học tại nhà thầy -->
+          <section class="tutor-service">
+            <div class="tutor-image">
+              <figure>
+                <img src="images/teacherHome.png" alt="Gia sư học tại nhà thầy" />
+                <figcaption>Học tập hiệu quả tại nhà thầy</figcaption>
+              </figure>
+            </div>
+            <div class="tutor-text">
+              <h4>Gia sư học tại nhà thầy</h4>
+              <p>Học tại nhà thầy là lựa chọn lý tưởng cho học sinh mong muốn một môi trường học tập yên tĩnh, tập trung
+                và được hướng dẫn trực tiếp bởi thầy Cường. Dưới đây là những lợi ích nổi bật:</p>
+              <ul>
+                <li><strong>Môi trường học tập chuyên nghiệp:</strong> Không gian học được thiết kế tối ưu, giúp học
+                  sinh tập trung và tiếp thu kiến thức hiệu quả.</li>
+                <li><strong>Tiết kiệm chi phí:</strong> Học tại nhà thầy giúp giảm thiểu chi phí so với việc mời gia sư
+                  đến nhà, đồng thời vẫn đảm bảo chất lượng giảng dạy.</li>
+                <li><strong>Thời gian linh hoạt:</strong> Học sinh có thể lựa chọn khung giờ học phù hợp với lịch trình
+                  cá nhân.</li>
+                <li><strong>Chương trình học cá nhân hóa:</strong> Thầy Cường xây dựng lộ trình học phù hợp với năng lực
+                  và mục tiêu của từng học sinh.</li>
+                <li><strong>Tăng cường sự tự tin:</strong> Môi trường học tập riêng tư giúp học sinh thoải mái đặt câu
+                  hỏi và phát biểu ý kiến.</li>
+                <li><strong>Phát triển kỹ năng tự học:</strong> Thầy hướng dẫn phương pháp học hiệu quả, giúp học sinh
+                  nâng cao khả năng tự học và quản lý thời gian.</li>
+                <li><strong>Hỗ trợ ôn luyện thi cử:</strong> Thầy giúp học sinh chuẩn bị tốt cho các kỳ thi quan trọng
+                  như thi chuyển cấp, thi đại học.</li>
+                <li><strong>Giám sát tiến độ học tập:</strong> Phụ huynh dễ dàng theo dõi và đánh giá sự tiến bộ của con
+                  em mình qua từng buổi học.</li>
+                <li><strong>Khắc phục điểm yếu:</strong> Thầy tập trung vào những môn học hoặc kỹ năng mà học sinh còn
+                  yếu, giúp cải thiện nhanh chóng.</li>
+                <li><strong>Tạo động lực học tập:</strong> Sự quan tâm và hỗ trợ từ thầy giúp học sinh duy trì hứng thú
+                  và động lực trong học tập.</li>
+              </ul>
+              <div class="register-button">
+                <a href="registerForm.html" class="btn-register">Đăng ký</a>
+                <a href="payment.html" class="btn-payment">Thanh toán học phí</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Gia sư online -->
+          <section class="tutor-service">
+            <div class="tutor-image">
+              <figure>
+                <img src="images/online.png" alt="Gia sư dạy online" />
+                <figcaption>Học online mọi lúc mọi nơi</figcaption>
+              </figure>
+            </div>
+            <div class="tutor-text">
+              <h4>Gia sư dạy online</h4>
+              <p>
+                Với dịch vụ gia sư online, học viên có thể tiếp cận kiến thức mọi lúc, mọi nơi thông qua nền tảng học
+                tập hiện đại. Dưới đây là những lợi ích nổi bật:
+              </p>
+              <ul>
+                <li><strong>Tiết kiệm thời gian và chi phí:</strong> Học trực tuyến giúp học viên không phải di chuyển,
+                  tiết kiệm thời gian và chi phí đi lại.</li>
+                <li><strong>Linh hoạt về thời gian và địa điểm:</strong> Học viên có thể lựa chọn thời gian và địa điểm
+                  học phù hợp với lịch trình cá nhân.</li>
+                <li><strong>Tiếp cận đa dạng nguồn tài liệu:</strong> Học trực tuyến cho phép học viên truy cập vào
+                  nhiều nguồn tài liệu phong phú và cập nhật.</li>
+                <li><strong>Ghi lại và xem lại bài giảng:</strong> Các buổi học có thể được ghi lại, giúp học viên xem
+                  lại nội dung khi cần thiết.</li>
+                <li><strong>Phù hợp với nhiều đối tượng học viên:</strong> Dịch vụ gia sư online phù hợp với học sinh ở
+                  mọi lứa tuổi và trình độ.</li>
+                <li><strong>Tăng cường sự tự giác trong học tập:</strong> Học trực tuyến giúp học viên phát triển kỹ
+                  năng tự học và quản lý thời gian hiệu quả.</li>
+                <li><strong>Giảm áp lực tâm lý:</strong> Môi trường học trực tuyến giúp học viên cảm thấy thoải mái và
+                  tự tin hơn khi đặt câu hỏi.</li>
+                <li><strong>Tiếp cận giáo viên chất lượng:</strong> Học viên có thể lựa chọn gia sư phù hợp với nhu cầu
+                  và mục tiêu học tập của mình.</li>
+                <li><strong>Phản hồi nhanh chóng và kịp thời:</strong> Gia sư online có thể cung cấp phản hồi và hỗ trợ
+                  học viên một cách nhanh chóng.</li>
+                <li><strong>Phát triển kỹ năng công nghệ:</strong> Học trực tuyến giúp học viên làm quen và sử dụng
+                  thành thạo các công cụ công nghệ hỗ trợ học tập.</li>
+              </ul>
+              <div class="register-button">
+                <a href="registerForm.html" class="btn-register">Đăng ký</a>
+                <a href="payment.html" class="btn-payment">Thanh toán học phí</a>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- Gia sư theo nhóm -->
+          <section class="tutor-service">
+            <div class="tutor-image">
+              <figure>
+                <img src="images/nhom.png" alt="Gia sư dạy theo nhóm" />
+                <figcaption>Gia sư dạy theo nhóm, học tập vui vẻ</figcaption>
+              </figure>
+            </div>
+            <div class="tutor-text">
+              <h4>Gia sư dạy theo nhóm</h4>
+              <p>Dịch vụ gia sư theo nhóm là giải pháp tiết kiệm chi phí nhưng vẫn đảm bảo chất lượng giảng dạy. Việc
+                học theo nhóm không chỉ giúp học sinh tiếp thu kiến thức hiệu quả mà còn thúc đẩy tinh thần hợp tác và
+                tương tác giữa các học viên. Bằng cách học cùng nhau, học sinh có thể chia sẻ kinh nghiệm, học hỏi từ
+                bạn bè và cùng nhau giải quyết các vấn đề khó khăn. </p>
+              <p>Ngoài ra, việc tham gia vào các nhóm học cũng giúp học sinh phát triển kỹ năng giao tiếp và làm việc
+                nhóm, là những kỹ năng quan trọng trong học tập và cuộc sống. Các gia sư sẽ chú trọng đến việc tạo ra
+                một môi trường học tập tích cực, nơi học sinh có thể thoải mái trao đổi, thảo luận và củng cố kiến thức
+                một cách hiệu quả. Chương trình học nhóm được thiết kế phù hợp với từng đối tượng học viên, đảm bảo mỗi
+                buổi học đều mang lại giá trị thực tiễn cao.</p>
+              <p>Học nhóm cũng giúp tạo động lực học tập, vì mỗi học viên đều có thể hỗ trợ lẫn nhau và duy trì được sự
+                hứng thú trong quá trình học. Phụ huynh và học sinh có thể chọn lựa các nhóm học phù hợp với mục tiêu
+                học tập và nhu cầu của từng cá nhân.</p>
+
+              <div class="register-button">
+                <a href="registerForm.html" class="btn-register">Đăng ký</a>
+                <a href="payment.html" class="btn-payment">Thanh toán học phí</a>
+              </div>
+
+            </div>
+          </section>
+        </article>
+      </section>
+    </main>
+
+    <!-- PHẢN HỒI + LIÊN HỆ -->
+    <aside class="sidebar">
+      <section id="phanhoi" class="feedback">
+        <header>
+          <h2>Phản hồi</h2>
+        </header>
+        <p>Chúng tôi luôn lắng nghe và cải thiện dịch vụ từ các phản hồi quý báu từ học viên.</p>
+        <ul class="feedback-links">
+          <li><a href="feedbackDisplay.html">📖 Đọc thêm các phản hồi từ học viên</a></li>
+          <li><a href="feedbackForm.html" class="feedback-link">✍️ Chia sẻ ý kiến của bạn</a></li>
+        </ul>
+      </section>
+
+      <section id="lienhe" class="contact">
+        <header>
+          <h2>Liên hệ</h2>
+        </header>
+        <p>Để biết thêm thông tin chi tiết về các dịch vụ của chúng tôi, vui lòng liên hệ qua các phương thức dưới đây:
+        </p>
+        <ul class="contact-info">
+          <li><strong>📞 Điện thoại:</strong> <a href="tel:0913159942">0913159942</a></li>
+          <li><strong>📧 Email:</strong> <a href="mailto:phungkhaccuong59@gmail.com">phungkhaccuong59@gmail.com</a></li>
+          <li><strong>📍 Địa chỉ:</strong> 1135/15/4, Đường Huỳnh Tấn Phát, Phường Phú Thuận, Quận 7, TP.HCM</li>
+        </ul>
+      </section>
+    </aside>
+
+    <footer>
+      <p>&copy; 2025 Học Với Thầy Cường. Tất cả các quyền được bảo lưu.</p>
+    </footer>
+  </div>
+
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <button class="close-btn" id="closePopup">&times;</button>
+      <h2>Phản hồi từ học viên</h2>
+      <form id="feedbackForm">
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <label>Đánh giá (1-5 sao):</label>
+        <div class="rating">
+          <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+          <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
+          <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
+          <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
+          <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
+        </div>
+
+        <label for="message">Ý kiến đóng góp:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit">Gửi phản hồi</button>
+        <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
+      </form>
+    </div>
+  </div>
+  <a href="#" class="back-to-top">⬆️ Lên đầu trang</a>
+  <script>
+    window.onscroll = function () {
+      var button = document.querySelector('.back-to-top');
+      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        button.style.display = "block";
+      } else {
+        button.style.display = "none";
+      }
+    };
+
+    document.querySelector('.back-to-top').addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+
+</html>
