@@ -25,7 +25,7 @@ $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 <meta charset="UTF-8">
 <title>Đề thi thử 2026 - Môn SA</title>
-<link rel="stylesheet" href="../../css/main/exam_form.css">
+<link rel="stylesheet" href="../../css/main/sa_exam_form.css">
 
 <!-- MathJax -->
 <script>
@@ -107,54 +107,8 @@ window.MathJax = {
 
 <audio id="tickSound" src="../../pages/sound/tick_sound.mp3" preload="auto"></audio>
 <audio id="bellSound" src="../../pages/sound/bell_sound.mp3" preload="auto"></audio>
+<script src="../../js/main/sa_exam_form.js"></script>
 
-<script>
-// Đồng bộ giữa cột câu hỏi và phiếu trả lời
-function syncAnswer(idx, val){
-  const sheet = document.getElementById(`sheet${idx}`);
-  if(sheet) sheet.value = val;
-}
-function syncQuestion(idx, val){
-  const input = document.getElementById(`input${idx}`);
-  if(input) input.value = val;
-}
-
-// Chấm điểm
-function handleSubmit(){
-  const total = <?= count($questions) ?>;
-  let score = 0;
-  for(let i=0;i<total;i++){
-    const answer = document.getElementById(`input${i}`).value.trim();
-    const correct = document.getElementById(`correct${i}`).value.trim();
-    if(answer === correct) score++;
-  }
-  const percent = (score / total * 100).toFixed(2);
-  const box = document.getElementById('scoreBox');
-  box.style.display = 'block';
-  box.innerHTML = `Bạn đạt: ${score} / ${total} (${percent}%)`;
-}
-
-// Xem đáp án
-function handleShowAnswers(){
-  const total = <?= count($questions) ?>;
-  for(let i=0;i<total;i++){
-    document.getElementById(`input${i}`).value = document.getElementById(`correct${i}`).value;
-    document.getElementById(`sheet${i}`).value = document.getElementById(`correct${i}`).value;
-  }
-  document.getElementById('btnShow').disabled = true;
-}
-
-// Reset
-function handleReset(){
-  const total = <?= count($questions) ?>;
-  for(let i=0;i<total;i++){
-    document.getElementById(`input${i}`).value = '';
-    document.getElementById(`sheet${i}`).value = '';
-  }
-  document.getElementById('scoreBox').style.display = 'none';
-  document.getElementById('btnShow').disabled = false;
-}
-</script>
 
 </body>
 </html>
