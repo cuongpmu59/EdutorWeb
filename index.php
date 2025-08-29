@@ -296,7 +296,7 @@
     </footer>
   </div>
 
-  <div class="popup-overlay" id="popupOverlay">
+  <!-- <div class="popup-overlay" id="popupOverlay">
     <div class="popup">
       <button class="close-btn" id="closePopup">&times;</button>
       <h2>Phản hồi từ học viên</h2>
@@ -323,7 +323,7 @@
         <div class="success-message" id="successMessage">Cảm ơn bạn đã gửi phản hồi!</div>
       </form>
     </div>
-  </div>
+  </div> -->
   <a href="#" class="back-to-top">⬆️ Lên đầu trang</a>
   <script>
     window.onscroll = function () {
