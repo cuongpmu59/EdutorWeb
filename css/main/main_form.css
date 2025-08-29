@@ -308,6 +308,32 @@ main {
   background-color: #218838;
 }
 
+/* --- Custom 3 Main Buttons (Thi thử, Tài liệu, Ngân hàng) --- */
+.btn-exam,
+.btn-material,
+.btn-bank {
+  display: inline-block;
+  min-width: 200px;
+  text-align: center;
+  padding: 14px 22px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 10px;
+}
+
+.btn-exam { background-color: #007bff; }
+.btn-material { background-color: #ff9800; }
+.btn-bank { background-color: #9c27b0; }
+
+.btn-exam:hover { background-color: #0056b3; transform: scale(1.05); }
+.btn-material:hover { background-color: #e68900; transform: scale(1.05); }
+.btn-bank:hover { background-color: #7b1fa2; transform: scale(1.05); }
+
 /* ====================
    Form Inputs
 ==================== */
@@ -388,5 +414,13 @@ footer {
   .dropdown-content {
     left: 50%;
     transform: translateX(-50%);
+  }
+
+  /* Đảm bảo 3 nút full-width trên mobile */
+  .btn-exam,
+  .btn-material,
+  .btn-bank {
+    width: 100%;
+    min-width: unset;
   }
 }
