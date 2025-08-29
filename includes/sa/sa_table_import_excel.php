@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Kết nối CSDL
-require_once __DIR__ . '/../../includes/db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php'; // đường dẫn tới file PDO
 
 // Nhận dữ liệu JSON
 $rawData = file_get_contents('php://input');
