@@ -207,6 +207,12 @@ window.addEventListener('message', function (event) {
 });
 </script>
 
+<script>
+// Xử lý nút "Làm đề"
+  document.getElementById("tf_preview_exam").addEventListener("click", function() {
+  window.location.href = "../../pages/main/tf_exam_form.php";
+});
+</script>
 
 </body>
 </html>
