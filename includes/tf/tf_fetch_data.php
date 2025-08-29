@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
 
 // Nếu có POST tf_id → lấy chi tiết 1 bản ghi
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tf_id'])) {
