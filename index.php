@@ -104,7 +104,7 @@
             <div class="tutor-image">
               <figure>
                 <img src="../../pages/image/daynha.png" alt="Gia sư dạy kèm tại nhà" />
-                <figcaption>Gia sư dạy tại nhà, tận tâm và hiệu quả</figcaption>
+                <figcaption>Tận tâm và hiệu quả</figcaption>
               </figure>
             </div>
             <div class="tutor-text">
@@ -148,7 +148,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="../../pages/image/daynha.png" alt="Gia sư học tại nhà thầy" />
+                <img src="../../pages/image/daytruong.png" alt="" />
                 <figcaption>Học tập hiệu quả tại nhà thầy</figcaption>
               </figure>
             </div>
