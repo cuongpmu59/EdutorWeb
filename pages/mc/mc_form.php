@@ -206,19 +206,19 @@ window.addEventListener('message', function (event) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
-<script>
+<!-- <script>
 // Xử lý nút "Làm đề"
   document.getElementById("mc_preview_exam").addEventListener("click", function() {
   window.location.href = "../../pages/main/exam_form.php";
 });
-</script>
+</script> -->
 
-<!-- <script>
+<script>
 // Xử lý nút "Làm đề" mở trong tab mới
 document.getElementById("mc_preview_exam").addEventListener("click", function() {
-  window.open("../../pages/main/exam_form.php", "_blank");
+  window.open("../../pages/main/mc_exam_form.php", "_blank");
 });
-</script> -->
+</script>
 
 </body>
 </html>
