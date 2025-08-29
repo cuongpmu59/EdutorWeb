@@ -29,7 +29,7 @@
   <div class="container">
     <header>
       <div class="logo">
-        <img src="../../pages/image/logo_cuong.png" alt="" />
+        <img src="../../pages/image/logo_cuong.jpg" alt="" />
       </div>
 
       <div class="title">
