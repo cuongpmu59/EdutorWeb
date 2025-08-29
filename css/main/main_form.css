@@ -770,4 +770,14 @@ h2 {
   .dropdown:hover .dropbtn {
     background-color: #2980b9;
   }
+
+  .gioithieu img {
+    width: 200px;     /* Chiều rộng mong muốn */
+    height: auto;     /* Tự động điều chỉnh chiều cao theo tỷ lệ */
+    max-height: 150px; /* Nếu muốn giới hạn chiều cao tối đa */
+    object-fit: contain; /* Giữ tỷ lệ hình ảnh, không bị méo */
+    display: block;
+    margin: 0 auto;   /* Căn giữa */
+  }
+  
   
