@@ -80,10 +80,10 @@
 
     <div class="qr-code">
       <p>Quét mã QR để thanh toán nhanh:</p>
-      <img src="../../main/image/nganhang.png" alt="Mã QR thanh toán học phí tới tài khoản Phùng Khắc Cường">
+      <img src="../../pages/image/nganhang.png" alt="Mã QR thanh toán học phí tới tài khoản Phùng Khắc Cường">
     </div>
 
-    <a href="index.html" class="back-button">← Quay lại đăng ký</a>
+    <a href="../../pages/main/index.html" class="back-button">← Quay lại đăng ký</a>
   </div>
 
 </body>
