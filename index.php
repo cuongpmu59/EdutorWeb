@@ -29,7 +29,7 @@
   <div class="container">
     <header>
       <div class="banner">
-        <img src="images/gioithieu.png" alt="Banner Học cùng Thầy Cường" />
+        <img src="../../pages/image/logo_cuong.png" alt="Gia sư Thầy Cường" />
       </div>
 
       <div class="title">
