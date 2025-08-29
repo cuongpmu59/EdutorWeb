@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Dịch vụ học tập và gia sư chất lượng cao" />
   <title>Học cùng Thầy Cường</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="icon" href="images/favicon.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../../css/main/main_form.css" />
+  <link rel="icon" href="../../pages/image/favicon.png" type="image/x-icon" />
 
   <!-- MathJax CDN -->
   <script>
@@ -38,7 +38,7 @@
       </div>
 
       <div class="logo">
-        <img src="images/logo.png" alt="Logo Học Với Thầy Cường" />
+        <img src="../../pages/image/logo.png" alt="Logo Học Với Thầy Cường" />
       </div>
     </header>
 
@@ -67,7 +67,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="images/cuong.png" alt="Dịch vụ học tập" />
+                <img src="../../pages/image/cuong.png" alt="Dịch vụ học tập" />
                 <figcaption>Dịch vụ học tập chất lượng</figcaption>
               </figure>
             </div>
@@ -89,11 +89,12 @@
 
         <!-- GIA SƯ -->
         <article id="giasu">
+          
           <!-- Gia sư tại nhà -->
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="images/offline.png" alt="Gia sư dạy kèm tại nhà" />
+                <img src="../../pages/image/offline.png" alt="Gia sư dạy kèm tại nhà" />
                 <figcaption>Gia sư dạy tại nhà, tận tâm và hiệu quả</figcaption>
               </figure>
             </div>
@@ -138,7 +139,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="images/teacherHome.png" alt="Gia sư học tại nhà thầy" />
+                <img src="../../pages/image/teacherHome.png" alt="Gia sư học tại nhà thầy" />
                 <figcaption>Học tập hiệu quả tại nhà thầy</figcaption>
               </figure>
             </div>
@@ -179,7 +180,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="images/online.png" alt="Gia sư dạy online" />
+                <img src="../../pages/image/online.png" alt="Gia sư dạy online" />
                 <figcaption>Học online mọi lúc mọi nơi</figcaption>
               </figure>
             </div>
@@ -223,7 +224,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="images/nhom.png" alt="Gia sư dạy theo nhóm" />
+                <img src="../../pages/image/nhom.png" alt="Gia sư dạy theo nhóm" />
                 <figcaption>Gia sư dạy theo nhóm, học tập vui vẻ</figcaption>
               </figure>
             </div>
