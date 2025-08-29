@@ -54,10 +54,9 @@
         <li><a href="tailieuhoctap.html" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
           </a></li>
-        <li><a href="question_form.html" style="text-decoration: none;">
+         <li><a href="pages/main/prepare_form.php" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Ngân hàng đề thi</button>
           </a></li>
-
       </ul>
     </nav>
 
@@ -65,16 +64,10 @@
       <section class="courses" id="dichvu">
         <!-- DỊCH VỤ HỌC TẬP -->
         <article>
-          <header>
-            <h2 style="color: #0056b3;">Dịch vụ học tập</h2>
-            <h3>Đồng hành cùng bạn trên hành trình chinh phục tri thức</h3>
-          </header>
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
                 <img src="images/cuong.png" alt="Dịch vụ học tập" />
-
-
                 <figcaption>Dịch vụ học tập chất lượng</figcaption>
               </figure>
             </div>
