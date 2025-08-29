@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once __DIR__ . '/../db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
 
 try {
     $sql = "SELECT DISTINCT tf_topic FROM tf_questions ORDER BY tf_topic ASC";
