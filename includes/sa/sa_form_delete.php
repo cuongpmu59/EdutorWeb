@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../includes/db_connection.php';
-require_once __DIR__ . '/../../env/config.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
+require_once __DIR__ . '/../../includes/env/config.php';
 
 $cloud_name     = CLOUDINARY_CLOUD_NAME;
 $api_key        = CLOUDINARY_API_KEY;
