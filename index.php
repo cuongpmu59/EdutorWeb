@@ -43,22 +43,31 @@
     </header>
 
     <nav class="main-nav">
-      <ul>
-        <li><a href="#dichvu">Dịch vụ</a></li>
-        <li><a href="#giasu">Gia Sư</a></li>
-        <li><a href="#phanhoi">Phản hồi</a></li>
-        <li><a href="#lienhe">Liên hệ</a></li>
-        <li><a href="examdisplay.html" style="text-decoration: none;">
-            <button style="padding: 10px 20px; font-size: 16px;">Thi thử trắc nghiệm</button>
-          </a></li>
-        <li><a href="tailieuhoctap.html" style="text-decoration: none;">
-            <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
-          </a></li>
-         <li><a href="../../pages/main/prepare_form.php" style="text-decoration: none;">
-            <button style="padding: 10px 20px; font-size: 16px;">Ngân hàng đề thi</button>
-          </a></li>
-      </ul>
-    </nav>
+  <ul>
+    <li><a href="#dichvu">Dịch vụ</a></li>
+    <li><a href="#giasu">Gia Sư</a></li>
+    <li><a href="#phanhoi">Phản hồi</a></li>
+    <li><a href="#lienhe">Liên hệ</a></li>
+
+    <!-- Dropdown Thi thử trắc nghiệm -->
+    <li class="dropdown">
+      <button class="dropbtn">Thi thử trắc nghiệm ▼</button>
+      <div class="dropdown-content">
+        <a href="../../pages/main/mc_exam_form.php">Trắc nghiệm nhiều lựa chọn</a>
+        <a href="../../pages/main/tf_exam_form.php">Trắc nghiệm đúng sai</a>
+        <a href="../../pages/main/sa_exam_form.php">Trắc nghiệm trả lời ngắn</a>
+      </div>
+    </li>
+
+    <li><a href="../../pages/main/tailieugiangday.php" style="text-decoration: none;">
+        <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
+      </a></li>
+    <li><a href="../../pages/main/prepare_form.php" style="text-decoration: none;">
+        <button style="padding: 10px 20px; font-size: 16px;">Ngân hàng đề thi</button>
+      </a></li>
+  </ul>
+</nav>
+
 
     <main>
       <section class="courses" id="dichvu">
