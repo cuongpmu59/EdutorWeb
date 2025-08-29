@@ -54,7 +54,7 @@
         <li><a href="tailieuhoctap.html" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Tài liệu giảng dạy</button>
           </a></li>
-         <li><a href="pages/main/prepare_form.php" style="text-decoration: none;">
+         <li><a href="../../pages/main/prepare_form.php" style="text-decoration: none;">
             <button style="padding: 10px 20px; font-size: 16px;">Ngân hàng đề thi</button>
           </a></li>
       </ul>
