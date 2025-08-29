@@ -213,12 +213,5 @@ window.addEventListener('message', function (event) {
 });
 </script>
 
-<!-- <script>
-// Xử lý nút "Làm đề" mở trong tab mới
-document.getElementById("mc_preview_exam").addEventListener("click", function() {
-  window.open("../../pages/main/mc_exam_form.php", "_blank");
-});
-</script> -->
-
 </body>
 </html>
