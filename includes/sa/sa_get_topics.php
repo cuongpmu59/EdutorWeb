@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once __DIR__ . '/../db_connection.php';
+require_once __DIR__ . '/../../includes/env/db_connection.php';
 
 try {
     $sql = "SELECT DISTINCT sa_topic FROM sa_questions ORDER BY sa_topic ASC";
