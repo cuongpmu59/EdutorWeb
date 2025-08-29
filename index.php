@@ -148,7 +148,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="../../pages/image/teacherHome.png" alt="Gia sư học tại nhà thầy" />
+                <img src="../../pages/image/daynha.png" alt="Gia sư học tại nhà thầy" />
                 <figcaption>Học tập hiệu quả tại nhà thầy</figcaption>
               </figure>
             </div>
@@ -189,7 +189,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="../../pages/image/online.png" alt="Gia sư dạy online" />
+                <img src="../../pages/image/dayonline.png" alt="Gia sư dạy online" />
                 <figcaption>Học online mọi lúc mọi nơi</figcaption>
               </figure>
             </div>
@@ -233,7 +233,7 @@
           <section class="tutor-service">
             <div class="tutor-image">
               <figure>
-                <img src="../../pages/image/nhom.png" alt="Gia sư dạy theo nhóm" />
+                <img src="../../pages/image/daynhom.png" alt="Gia sư dạy theo nhóm" />
                 <figcaption>Gia sư dạy theo nhóm, học tập vui vẻ</figcaption>
               </figure>
             </div>
