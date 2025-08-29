@@ -89,11 +89,6 @@
 
         <!-- GIA SƯ -->
         <article id="giasu">
-          <header>
-            <h2>Gia sư</h2>
-            <h3>Chúng tôi cung cấp các dịch vụ gia sư đa dạng</h3>
-          </header>
-
           <!-- Gia sư tại nhà -->
           <section class="tutor-service">
             <div class="tutor-image">
