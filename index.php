@@ -68,6 +68,11 @@
       </a></li>
   </ul>
 </nav>
+<div class="feature-buttons">
+  <a href="thi-thu.php" class="btn-feature btn-thi-thu">Thi thử trắc nghiệm</a>
+  <a href="tai-lieu.php" class="btn-feature btn-tai-lieu">Tài liệu giảng dạy</a>
+  <a href="ngan-hang.php" class="btn-feature btn-ngan-hang">Ngân hàng đề thi</a>
+</div>
 
 
     <main>
