@@ -149,6 +149,15 @@ header .logo-left img {
   grid-template-columns: 1fr;
 }
 
+/* layout-sa: input text cho short-answer */
+.answers.layout-sa input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Label đáp án radio */
 .answers label {
   display: flex;
   align-items: flex-start;
@@ -169,27 +178,30 @@ header .logo-left img {
   margin-top: 2px;
 }
 
-/* Ảnh minh họa trong câu hỏi */
-.qimage {
-  margin: 10px 0;
-  text-align: center;
+/* Ảnh minh họa trong câu hỏi - cố định khung, thu nhỏ và căn giữa */
+.qimage img {
+    width: 180px;           /* chiều rộng cố định */
+    height: 120px;          /* chiều cao cố định */
+    object-fit: contain;     /* giữ tỉ lệ ảnh, không méo */
+    display: block;
+    margin: 10px auto;       /* căn giữa */
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
-/* Thu nhỏ ảnh trong khung câu hỏi */
-.qimage img {
-  max-width: 200px;      /* chiều rộng tối đa */
-  max-height: 150px;     /* chiều cao tối đa */
-  width: auto;
-  height: auto;
-  display: block;
-  margin: 10px 0;
+/* Responsive: màn hình nhỏ */
+@media (max-width: 768px) {
+    .qimage img {
+        width: 140px;
+        height: 100px;
+    }
 }
 
-.qimage img {
-  max-width: 90%;
-  height: auto;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+@media (max-width: 480px) {
+    .qimage img {
+        width: 100px;
+        height: 80px;
+    }
 }
 
 /* Highlight đúng / sai */
