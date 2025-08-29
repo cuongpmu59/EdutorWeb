@@ -40,6 +40,7 @@
       <div class="gioithieu">
         <img src="../../pages/image/gioithieu.png" alt="Học cùng thầy Cường" />
       </div>
+
     </header>
 
     <nav class="main-nav">
